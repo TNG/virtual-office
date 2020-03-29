@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const Login = () => {
+const Login = () => {
   const classes = useStyles();
 
   const signInWithSlack = () => {
@@ -56,3 +56,5 @@ export const Login = () => {
     </Box>
   );
 };
+
+export default Login;

@@ -1,23 +1,57 @@
-import React from "react";
+import { Box } from "@material-ui/core";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { RoomEvent } from "../../../server/express/types/RoomEvent";
+import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
+import RoomGrid from "./RoomGrid";
 
-export class Dashboard extends React.Component {
-  static contextType = SocketContext;
+const Dashboard = () => {
+  let history = useHistory();
 
-  componentDidMount() {
-    this.context.init();
+  const context = useContext(SocketContext);
+  const [rooms, setRooms] = useState([] as RoomWithParticipants[]);
 
-    const stateUpdate = this.context.onNotify();
-    stateUpdate.subscribe((incomingMessage: any) => {
+  useEffect(() => {
+    context.init();
+
+    const stateUpdate = context.onNotify();
+    stateUpdate.subscribe((incomingMessage: RoomEvent) => {
       console.log(`Notify: ${JSON.stringify(incomingMessage)}`);
+      setRooms(
+        rooms.map((room) => {
+          if (room.id === incomingMessage.roomId) {
+            if (incomingMessage.type === "join") {
+              return { ...room, participants: [...room.participants, incomingMessage.participant] };
+            } else if (incomingMessage.type === "leave") {
+              return {
+                ...room,
+                participants: room.participants.filter(({ id }) => id !== incomingMessage.participant.id),
+              };
+            }
+          }
+          return room;
+        })
+      );
     });
-  }
 
-  componentWillUnmount() {
-    this.context.disconnect();
-  }
+    return () => context.disconnect();
+  }, [context, rooms]); // TODO is rooms as dependency a good idea..?
 
-  render() {
-    return <h1>Dashboard</h1>;
-  }
-}
+  useEffect(() => {
+    axios
+      .get("/api/rooms")
+      .then(({ data }) => setRooms(data))
+      .catch(() => history.push("/login"));
+  }, [history]);
+
+  return (
+    <Box>
+      <h1>Dashboard</h1>
+      <RoomGrid rooms={rooms} />
+    </Box>
+  );
+};
+
+export default Dashboard;
