@@ -2,6 +2,7 @@ import { RoomsService } from "./RoomsService";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
+import { RoomEvent } from "../express/types/RoomEvent";
 
 describe("RoomsService", () => {
   let roomsService: RoomsService;
@@ -13,6 +14,8 @@ describe("RoomsService", () => {
     name: "Test",
     joinUrl: "http://bla.blub",
   };
+
+  const listener = jest.fn();
 
   beforeEach(() => {
     const config = mock(Config);
@@ -74,5 +77,32 @@ describe("RoomsService", () => {
     roomsService.leaveRoom(existingRoomId + "a", participant);
 
     expect(roomsService.getRoomWithParticipants(existingRoomId)).toEqual({ ...existingRoom, participants: [] });
+  });
+
+  it("notifies on enter", () => {
+    const participant = { id: "123", username: "bla" };
+    roomsService.listen(listener);
+
+    roomsService.joinRoom(existingRoomId, participant);
+
+    expect(listener).toHaveBeenCalledWith({
+      type: "join",
+      roomId: existingRoomId,
+      participant,
+    } as RoomEvent);
+  });
+
+  it("notifies on leave", () => {
+    const participant = { id: "123", username: "bla" };
+    roomsService.joinRoom(existingRoomId, participant);
+    roomsService.listen(listener);
+
+    roomsService.leaveRoom(existingRoomId, participant);
+
+    expect(listener).toHaveBeenCalledWith({
+      type: "leave",
+      roomId: existingRoomId,
+      participant,
+    } as RoomEvent);
   });
 });

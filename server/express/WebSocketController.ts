@@ -2,14 +2,20 @@ import { Service } from "typedi";
 import { Socket } from "socket.io";
 import { logger } from "../log";
 import { Server } from "http";
+import { RoomsService } from "../services/RoomsService";
 
 @Service({ multiple: false })
 export class WebSocketController {
   private socket?: Socket = undefined;
 
+  constructor(private readonly roomsService: RoomsService) {}
+
   init(server: Server) {
     this.socket = this.createSocket(server);
-    logger.info("init " + this.socket);
+
+    this.roomsService.listen((event) => {
+      this.socket.emit("notify", event);
+    });
   }
 
   private createSocket(server: Server): Socket {

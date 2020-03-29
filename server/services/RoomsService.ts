@@ -4,12 +4,14 @@ import { Config } from "../Config";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
+import { EventListener, EventType, RoomEvent } from "../express/types/RoomEvent";
 
 @Service({ multiple: false })
 export class RoomsService {
   private roomParticipants: {
     [roomId: string]: MeetingParticipant[];
   } = {};
+  private listeners: EventListener[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
     config.rooms.map((room) => room.id).forEach((roomId) => (this.roomParticipants[roomId] = []));
@@ -40,6 +42,8 @@ export class RoomsService {
     logger.info(`joinRoom - participant with username ${participant.username}`);
 
     this.roomParticipants[roomId].push(participant);
+
+    this.notify(roomId, participant, "join");
   }
 
   leaveRoom(roomId: string, toLeave: MeetingParticipant) {
@@ -51,6 +55,8 @@ export class RoomsService {
     logger.info(`leaveRoom - participant with username ${toLeave.username}`);
 
     this.roomParticipants[roomId] = this.roomParticipants[roomId].filter((participant) => participant !== toLeave);
+
+    this.notify(roomId, toLeave, "leave");
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {
@@ -64,5 +70,19 @@ export class RoomsService {
       email: participant.email || user.email,
       imageUrl: participant.imageUrl || user.imageUrl,
     };
+  }
+
+  private notify(roomId: string, participant: MeetingParticipant, type: EventType) {
+    const event: RoomEvent = {
+      participant: this.enrich(participant),
+      roomId,
+      type,
+    };
+
+    this.listeners.forEach((listener) => listener(event));
+  }
+
+  listen(listener: (event: RoomEvent) => void) {
+    this.listeners.push(listener);
   }
 }
