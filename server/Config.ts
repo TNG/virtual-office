@@ -1,4 +1,5 @@
 import { Service } from "typedi";
+import { Room } from "./express/types/Room";
 
 export interface SlackConfig {
   clientId: string;
@@ -9,6 +10,7 @@ export interface SlackConfig {
 export class Config {
   public readonly port = process.env.port || 8080;
   public readonly slack = Config.readSlackConfig();
+  public readonly rooms: Room[] = Config.readRooms();
 
   constructor() {}
 
@@ -23,5 +25,13 @@ export class Config {
       clientId,
       secret,
     };
+  }
+
+  private static readRooms(): Room[] {
+    if (process.env.ROOM_CONFIG) {
+      return JSON.parse(process.env.ROOM_CONFIG);
+    }
+
+    return require(process.env.ROOMS_CONFIG_LOCATION || "./rooms_config.json");
   }
 }

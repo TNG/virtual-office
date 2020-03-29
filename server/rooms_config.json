@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1234567",
+    "name": "Meeting 1",
+    "joinUrl": "https://zoom.us/j/1234567",
+    "links": [
+      {
+        "href": "http://www.google.de",
+        "text": "Google",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+      }
+    ],
+    "group": "main",
+    "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+  }
+]
