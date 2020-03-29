@@ -12,3 +12,4 @@ jshint*.xml
 build
 junit.xml
 coverage
+server/build
