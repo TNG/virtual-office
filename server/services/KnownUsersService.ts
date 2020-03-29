@@ -1,5 +1,7 @@
 import { User } from "../express/types/User";
+import { Service } from "typedi";
 
+@Service({ multiple: false })
 export class KnownUsersService {
   private knownUsers: User[] = [];
 

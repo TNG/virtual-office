@@ -1,11 +1,11 @@
-import { Inject } from "typedi";
+import { Service } from "typedi";
 import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { Config } from "../Config";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
 
-@Inject()
+@Service({ multiple: false })
 export class RoomsService {
   private roomParticipants: {
     [roomId: string]: MeetingParticipant[];
