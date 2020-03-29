@@ -4,10 +4,15 @@ import { Router } from "express";
 import { MonitoringRoute } from "./MonitoringRoute";
 import { RoomsService } from "../../services/RoomsService";
 import ensureLoggedIn from "../middleware/ensureLoggedIn";
+import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
-  constructor(private readonly monitoringRoute: MonitoringRoute, private readonly roomsService: RoomsService) {}
+  constructor(
+    private readonly monitoringRoute: MonitoringRoute,
+    private readonly roomsService: RoomsService,
+    private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute
+  ) {}
 
   public router(): Router {
     const router = Router();
@@ -17,6 +22,8 @@ export class ApiRoute implements ExpressRoute {
     router.get("/rooms", ensureLoggedIn, (req, res) => {
       res.json(this.roomsService.getAllRooms());
     });
+
+    router.use("/", this.zoomUsWebHookRoute.router());
 
     return router;
   }

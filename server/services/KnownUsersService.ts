@@ -13,11 +13,12 @@ export class KnownUsersService {
 
   add(user: User) {
     this.remove(user);
+    console.log(JSON.stringify(user));
     this.knownUsers.push(user);
   }
 
   find(username: string): User | undefined {
-    const toComparable = (username) => username.toLowerCase().replace(/\s/g, "");
+    const toComparable = (username) => username.toLowerCase().replace(/\s/g, "").normalize().replace("ß", "ss");
     return this.knownUsers.find((user) => toComparable(user.name) === toComparable(username));
   }
 }

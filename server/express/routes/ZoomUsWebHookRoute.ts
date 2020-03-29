@@ -7,10 +7,12 @@ import { MeetingParticipant } from "../types/MeetingParticipant";
 interface ZoomUsEvent {
   event: string;
   payload: {
-    id: string;
-    participant: {
-      user_id: string;
-      user_name: string;
+    object: {
+      id: string;
+      participant: {
+        user_id: string;
+        user_name: string;
+      };
     };
   };
 }
@@ -23,9 +25,12 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
     const router = Router();
 
     router.post("/zoomus/webhook", (req, res) => {
+      console.log(JSON.stringify(req.body));
       const {
         event,
-        payload: { id, participant },
+        payload: {
+          object: { id, participant },
+        },
       } = req.body as ZoomUsEvent;
 
       const mappedParticipant: MeetingParticipant = {
@@ -36,14 +41,14 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
       switch (event) {
         case "meeting.participant_joined":
           this.roomsService.joinRoom(id, mappedParticipant);
-          res.send(200);
+          res.sendStatus(200);
           break;
         case "meeting.participant_left":
           this.roomsService.leaveRoom(id, mappedParticipant);
-          res.send(200);
+          res.sendStatus(200);
           break;
         default:
-          res.send(400);
+          res.sendStatus(400);
       }
     });
 

@@ -37,4 +37,11 @@ describe("KnownUsersService", () => {
     expect(knownUsersService.find("maxmustermann")).toEqual(user);
     expect(knownUsersService.find("maxmusterman")).toBeUndefined();
   });
+
+  it("can find users with umlauts", () => {
+    const userWithUmlauts = { ...user, name: "äöß" };
+    knownUsersService.add(userWithUmlauts);
+
+    expect(knownUsersService.find("äöss")).toEqual(userWithUmlauts);
+  });
 });
