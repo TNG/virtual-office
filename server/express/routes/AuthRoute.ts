@@ -5,6 +5,7 @@ import passport from "passport";
 import { Config } from "../../Config";
 import { Strategy as SlackStrategy } from "passport-slack";
 import { User } from "../types/User";
+import { KnownUsersService } from "../../services/KnownUsersService";
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -31,7 +32,7 @@ function adaptSlackUser(profile: any): User {
 
 @Service()
 export class AuthRoute implements ExpressRoute {
-  constructor(readonly config: Config) {
+  constructor(readonly config: Config, readonly knownUsersService: KnownUsersService) {
     const slackConfig = config.slack;
     passport.use(
       new SlackStrategy(
@@ -60,6 +61,7 @@ export class AuthRoute implements ExpressRoute {
           return res.redirect(`/?error=${encodeURIComponent(message)}`);
         }
 
+        this.knownUsersService.add(profile);
         (req as any).session.currentUser = profile;
 
         return res.redirect("/");

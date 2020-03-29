@@ -1,7 +1,6 @@
 import { Room } from "./Room";
-import { User } from "./User";
-import { Participant } from "./Participant";
+import { MeetingParticipant } from "./MeetingParticipant";
 
 export interface RoomWithParticipants extends Room {
-  participants: Participant[];
+  participants: MeetingParticipant[];
 }
