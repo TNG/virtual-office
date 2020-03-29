@@ -13,6 +13,9 @@
   "tags": [
     {
       "name": "Monitoring"
+    },
+    {
+      "name": "API"
     }
   ],
   "paths": {
@@ -29,9 +32,104 @@
           }
         }
       }
+    },
+    "/api/rooms": {
+      "get": {
+        "summary": "Get all rooms incl. participants",
+        "tags": ["API"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rooms"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
     }
   },
   "components": {
-    "schemas": {}
+    "schemas": {
+      "participant": {
+        "required": ["username"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "hans.example"
+          },
+          "name": {
+            "type": "string",
+            "example": "Hans Example"
+          },
+          "email": {
+            "type": "string",
+            "example": "hans.example@example.com"
+          },
+          "profileImage": {
+            "type": "string",
+            "example": "http://my.image.com/bla.png"
+          }
+        }
+      },
+      "link": {
+        "required": ["href", "text"],
+        "properties": {
+          "href": {
+            "type": "string",
+            "example": "http://www.google.de"
+          },
+          "text": {
+            "type": "string",
+            "example": "Google"
+          },
+          "icon": {
+            "type": "string",
+            "example": "http://example.com/bla.png"
+          }
+        }
+      },
+      "room": {
+        "required": ["name", "joinUrl", "participants"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Coffee Kitchen"
+          },
+          "joinUrl": {
+            "type": "string",
+            "example": "https://zoom.us/j/xxxxxxxx"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/participant"
+            }
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/link"
+            }
+          },
+          "icon": {
+            "type": "string",
+            "example": "http://example.com/myRoomIcon.png"
+          }
+        }
+      },
+      "rooms": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/room"
+        }
+      }
+    }
   }
 }

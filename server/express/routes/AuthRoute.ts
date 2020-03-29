@@ -4,7 +4,7 @@ import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
 import { Strategy as SlackStrategy } from "passport-slack";
-import { LoginUser } from "../types/LoginUser";
+import { User } from "../types/User";
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -14,7 +14,7 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-function adaptSlackUser(profile: any): LoginUser {
+function adaptSlackUser(profile: any): User {
   const {
     id,
     displayName: name,
