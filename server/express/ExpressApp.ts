@@ -7,15 +7,17 @@ import passport from "passport";
 import { ContentRoute } from "./routes/ContentRoute";
 import { AuthRoute } from "./routes/AuthRoute";
 import exceptionHandler from "./middleware/exceptionHandler";
-import { MonitoringRoute } from "./routes/MonitoringRoute";
 import bodyParser = require("body-parser");
+import { ApiDocsRoute } from "./routes/ApiDocsRoute";
+import { ApiRoute } from "./routes/ApiRoute";
 
 @Service()
 export class ExpressApp {
   constructor(
     private readonly contentRoute: ContentRoute,
     private readonly authRoute: AuthRoute,
-    private readonly monitoringRoute: MonitoringRoute
+    private readonly apiRoute: ApiRoute,
+    private readonly apiDocsRoute: ApiDocsRoute
   ) {}
 
   public create(): Express {
@@ -29,7 +31,8 @@ export class ExpressApp {
 
     app.use("/", this.contentRoute.router());
     app.use("/", this.authRoute.router());
-    app.use("/monitoring", this.monitoringRoute.router());
+    app.use("/", this.apiDocsRoute.router());
+    app.use("/api", this.apiRoute.router());
 
     app.use(exceptionHandler);
 

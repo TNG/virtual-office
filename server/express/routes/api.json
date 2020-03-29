@@ -1,0 +1,37 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Virtual Office",
+    "description": "This is the API documentation for Virtual Office",
+    "version": "0.1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Monitoring"
+    }
+  ],
+  "paths": {
+    "/api/monitoring/health": {
+      "get": {
+        "summary": "Health",
+        "tags": ["Monitoring"],
+        "responses": {
+          "200": {
+            "description": "Healthy"
+          },
+          "500": {
+            "description": "Unhealthy"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
