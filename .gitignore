@@ -1,0 +1,14 @@
+*.*~
+.idea
+*.iml
+node_modules
+*.swp
+TEST*.xml
+*.ipr
+*.iws
+atlassian-ide-plugin.xml
+jshint*.xml
+*.log
+build
+junit.xml
+coverage
