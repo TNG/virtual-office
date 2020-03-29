@@ -96,8 +96,16 @@
         }
       },
       "room": {
-        "required": ["name", "joinUrl", "participants"],
+        "required": ["id", "name", "joinUrl", "participants"],
         "properties": {
+          "id": {
+            "type": "string",
+            "example": "xxxxxxxx"
+          },
+          "group": {
+            "type": "string",
+            "example": "Team 1"
+          },
           "name": {
             "type": "string",
             "example": "Coffee Kitchen"
