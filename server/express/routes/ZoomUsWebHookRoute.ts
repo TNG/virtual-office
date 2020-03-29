@@ -25,7 +25,6 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
     const router = Router();
 
     router.post("/zoomus/webhook", (req, res) => {
-      console.log(JSON.stringify(req.body));
       const {
         event,
         payload: {

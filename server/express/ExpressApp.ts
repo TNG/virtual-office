@@ -10,7 +10,6 @@ import exceptionHandler from "./middleware/exceptionHandler";
 import bodyParser = require("body-parser");
 import { ApiDocsRoute } from "./routes/ApiDocsRoute";
 import { ApiRoute } from "./routes/ApiRoute";
-import { WebSocketController } from "./WebSocketController";
 
 @Service()
 export class ExpressApp {
@@ -18,8 +17,7 @@ export class ExpressApp {
     private readonly contentRoute: ContentRoute,
     private readonly authRoute: AuthRoute,
     private readonly apiRoute: ApiRoute,
-    private readonly apiDocsRoute: ApiDocsRoute,
-    private readonly webSocketController: WebSocketController
+    private readonly apiDocsRoute: ApiDocsRoute
   ) {}
 
   public create(): Express {
@@ -37,9 +35,6 @@ export class ExpressApp {
     app.use("/api", this.apiRoute.router());
 
     app.use(exceptionHandler);
-
-    const server = require("http").createServer(app);
-    this.webSocketController.init(server);
 
     return app;
   }
