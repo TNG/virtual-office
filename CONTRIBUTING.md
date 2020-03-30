@@ -4,7 +4,7 @@ Contributions are very welcome. The following will provide some helpful guidelin
 
 ## Follow the Code of Conduct
 
-Contributors must follow the Code of Conduct outlined at [CODE-OF-CONDUCT.md](CODE-OF-CONDUCT.md).
+Contributors must follow the [CODE-OF-CONDUCT.md](Code of Conduct).
 
 ## How to contribute
 
@@ -28,7 +28,7 @@ If your commit refers to an issue, please post-fix it with the issue number, e.g
 Issue: #123
 ```
 
-Furthermore, commits should be signed off according to the [DCO](DCO).
+Furthermore, commits should be signed off according to the [DCO](DCO.md).
 
 ### Pull Requests
 
