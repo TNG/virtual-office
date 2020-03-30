@@ -1,8 +1,8 @@
 [
   {
-    "id": "1234567",
-    "name": "Meeting 1",
-    "joinUrl": "https://zoom.us/j/1234567",
+    "id": "1",
+    "name": "Lobby",
+    "joinUrl": "https://zoom.us/j/1",
     "links": [
       {
         "href": "http://www.google.de",
@@ -10,7 +10,48 @@
         "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
       }
     ],
-    "group": "main",
+    "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+  },
+  {
+    "id": "2",
+    "name": "Alderaan",
+    "joinUrl": "https://zoom.us/j/2",
+    "links": [
+      {
+        "href": "http://www.google.de",
+        "text": "Google",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+      }
+    ],
+    "group": "Star Wars",
+    "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+  },
+  {
+    "id": "3",
+    "name": "Jakku",
+    "joinUrl": "https://zoom.us/j/3",
+    "links": [
+      {
+        "href": "http://www.google.de",
+        "text": "Google",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+      }
+    ],
+    "group": "Star Wars",
+    "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+  },
+  {
+    "id": "4",
+    "name": "Mordor",
+    "joinUrl": "https://zoom.us/j/4",
+    "links": [
+      {
+        "href": "http://www.google.de",
+        "text": "Google",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+      }
+    ],
+    "group": "Lord of the Rings",
     "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
   }
 ]

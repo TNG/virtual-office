@@ -38,12 +38,13 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
         title={<Typography variant="h5">{room.name}</Typography>}
       />
+
       <CardContent className={classes.content}>
         {room.participants.length > 0 ? (
           <AvatarGroup className={classes.avatarGroup} max={5} spacing="medium">
             {room.participants.map(({ id, username, imageUrl }) => (
-              <Tooltip title={username}>
-                <Avatar key={id} alt={username} src={imageUrl} />
+              <Tooltip key={id} title={username}>
+                <Avatar alt={username} src={imageUrl} />
               </Tooltip>
             ))}
           </AvatarGroup>
@@ -53,8 +54,9 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
           </Box>
         )}
       </CardContent>
+
       <CardActions>
-        <Button size="small" color="primary" href={room.joinUrl} target="_blank">
+        <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
           Join
         </Button>
       </CardActions>

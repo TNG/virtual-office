@@ -1,12 +1,16 @@
-import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/styles";
+import { groupBy } from "lodash";
+
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
+import AppBar from "./AppBar";
+import Box from "@material-ui/core/Box/Box";
 
 const useStyles = makeStyles({
   background: {
@@ -16,15 +20,20 @@ const useStyles = makeStyles({
     backgroundPosition: "center",
     filter: "blur(8px)",
     "-webkit-filter": "blur(8px)",
+    opacity: 0.8,
   },
   content: {
     position: "absolute",
     height: "100vh",
     width: "100vw",
-
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  rooms: {
+    paddingTop: 72,
+    padding: 12,
   },
 });
 
@@ -51,9 +60,8 @@ const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): R
 };
 
 const Dashboard = () => {
+  const history = useHistory();
   const classes = useStyles();
-
-  let history = useHistory();
 
   const context = useContext(SocketContext);
   const [rooms, setRooms] = useState([] as RoomWithParticipants[]);
@@ -79,13 +87,20 @@ const Dashboard = () => {
       .catch(() => history.push("/login"));
   }, [history]);
 
+  const groups = groupBy(rooms, (room) => room.group || "");
   return (
-    <div>
-      <div className={classes.background} />
-      <div className={classes.content}>
-        <RoomGrid rooms={rooms} />
-      </div>
-    </div>
+    <Box>
+      <Box className={classes.background} />
+      <Box className={classes.content}>
+        <AppBar />
+
+        <Box className={classes.rooms}>
+          {Object.entries(groups).map(([group, rooms]) => (
+            <RoomGrid group={group} rooms={rooms} />
+          ))}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
