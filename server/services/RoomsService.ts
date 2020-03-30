@@ -46,9 +46,6 @@ export class RoomsService {
 
     logger.info(`joinRoom - participant with username ${toJoin.username}`);
 
-    console.log(participants);
-    console.log(toJoin);
-
     if (participants.find((participant) => participant.id === toJoin.id)) {
       return;
     }
