@@ -15,12 +15,14 @@ if (result.error) {
   logger.info(`Loaded dotenv config: ${JSON.stringify(result.parsed)}`);
 }
 
-const expressApp = Container.get(ExpressApp);
-const appInstance = expressApp.create();
-const config = Container.get(Config);
+(async function () {
+  const expressApp = Container.get(ExpressApp);
+  const appInstance = await expressApp.create();
+  const config = Container.get(Config);
 
-const server = appInstance.listen(config.port);
+  const server = appInstance.listen(config.port);
 
-Container.get(WebSocketController).init(server);
+  Container.get(WebSocketController).init(server);
 
-logger.info(`started on port ${config.port}`);
+  logger.info(`started on port ${config.port}`);
+})();

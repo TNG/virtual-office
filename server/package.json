@@ -6,7 +6,8 @@
     "dev": "nodemon",
     "build": "tsc",
     "test": "jest",
-    "format": "cd .. && npm run format"
+    "format": "cd .. && npm run format",
+    "start": "node build/server/index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
