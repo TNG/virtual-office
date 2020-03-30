@@ -1,13 +1,36 @@
-import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
+import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 
+const useStyles = makeStyles({
+  background: {
+    height: "100vh",
+    backgroundImage: `url(${Background})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    filter: "blur(8px)",
+    "-webkit-filter": "blur(8px)",
+  },
+  content: {
+    position: "absolute",
+    height: "100vh",
+    width: "100vw",
+
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  },
+});
+
 const Dashboard = () => {
+  const classes = useStyles();
+
   let history = useHistory();
 
   const context = useContext(SocketContext);
@@ -47,10 +70,12 @@ const Dashboard = () => {
   }, [history]);
 
   return (
-    <Box>
-      <h1>Rooms</h1>
-      <RoomGrid rooms={rooms} />
-    </Box>
+    <div>
+      <div className={classes.background} />
+      <div className={classes.content}>
+        <RoomGrid rooms={rooms} />
+      </div>
+    </div>
   );
 };
 
