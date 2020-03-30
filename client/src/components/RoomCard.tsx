@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Avatar,
   Box,
@@ -11,12 +12,20 @@ import {
 } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
-import React from "react";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import theme from "../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<typeof theme>((theme) => ({
   root: {
-    width: 350,
+    margin: 8,
+    padding: 0,
+    width: "90%",
+    minWidth: 260,
+    maxWidth: 320,
+    flex: "0 0 auto",
+    [theme.breakpoints.up("sm")]: {
+      width: 320,
+    },
   },
   header: { height: 40 },
   content: {
@@ -26,7 +35,7 @@ const useStyles = makeStyles({
   avatarGroup: {
     marginLeft: 8,
   },
-});
+}));
 
 const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   const classes = useStyles();

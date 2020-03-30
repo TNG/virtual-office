@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     opacity: 0.8,
   },
   content: {
-    position: "absolute",
+    position: "fixed",
     height: "100vh",
     width: "100vw",
     top: 0,

@@ -23,9 +23,7 @@ const RoomGrid = ({ group, rooms }: { group: string | undefined; rooms: RoomWith
 
       <Box display={"flex"} flexWrap={"wrap"}>
         {rooms.map((room) => (
-          <Box key={room.id} p={2}>
-            <RoomCard room={room} />
-          </Box>
+          <RoomCard key={room.id} room={room} />
         ))}
       </Box>
     </Box>
