@@ -28,6 +28,20 @@ const useStyles = makeStyles({
   },
 });
 
+const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): RoomWithParticipants => {
+  if (room.id === roomEvent.roomId) {
+    if (roomEvent.type === "join") {
+      return { ...room, participants: [...room.participants, roomEvent.participant] };
+    } else if (roomEvent.type === "leave") {
+      return {
+        ...room,
+        participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
+      };
+    }
+  }
+  return room;
+};
+
 const Dashboard = () => {
   const classes = useStyles();
 
@@ -40,26 +54,14 @@ const Dashboard = () => {
     context.init();
 
     const stateUpdate = context.onNotify();
-    stateUpdate.subscribe((incomingMessage: RoomEvent) => {
-      console.log(`Notify: ${JSON.stringify(incomingMessage)}`);
-      setRooms((prevRooms) =>
-        prevRooms.map((room) => {
-          if (room.id === incomingMessage.roomId) {
-            if (incomingMessage.type === "join") {
-              return { ...room, participants: [...room.participants, incomingMessage.participant] };
-            } else if (incomingMessage.type === "leave") {
-              return {
-                ...room,
-                participants: room.participants.filter(({ id }) => id !== incomingMessage.participant.id),
-              };
-            }
-          }
-          return room;
-        })
-      );
+    const subscription = stateUpdate.subscribe((incomingMessage: RoomEvent) => {
+      setRooms((prevRooms) => prevRooms.map((room) => mapRoomEventToRoom(room, incomingMessage)));
     });
 
-    return () => context.disconnect();
+    return () => {
+      subscription.unsubscribe();
+      context.disconnect();
+    };
   }, [context]);
 
   useEffect(() => {
