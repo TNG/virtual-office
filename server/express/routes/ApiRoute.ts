@@ -23,6 +23,15 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.roomsService.getAllRooms());
     });
 
+    router.get("/me", (req, res) => {
+      const session = (req as any).session;
+      if (!session.currentUser) {
+        res.sendStatus(401);
+        return;
+      }
+      res.status(200).send(session.currentUser);
+    });
+
     router.use("/", this.zoomUsWebHookRoute.router());
 
     return router;
