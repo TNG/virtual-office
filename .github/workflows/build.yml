@@ -1,0 +1,22 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: npm install
+      run: npm run installAll
+    - name: lint
+      run: npm run lint
+    - name: build
+      run: npm run buildAll
+    - name: test server
+      run: cd server && npm run test
