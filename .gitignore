@@ -13,3 +13,4 @@ build
 junit.xml
 coverage
 server/build
+*.env

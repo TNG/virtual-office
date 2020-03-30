@@ -8,7 +8,7 @@ export interface SlackConfig {
 
 @Service()
 export class Config {
-  public readonly port = process.env.port || 8080;
+  public readonly port = process.env.PORT || 8080;
   public readonly slack = Config.readSlackConfig();
   public readonly rooms: Room[] = Config.readRooms();
 

@@ -1,10 +1,19 @@
 import "reflect-metadata";
 
-import { logger } from "./log";
+import dotenv from "dotenv";
 import { Container } from "typedi";
-import { ExpressApp } from "./express/ExpressApp";
+
+import { logger } from "./log";
 import { Config } from "./Config";
+import { ExpressApp } from "./express/ExpressApp";
 import { WebSocketController } from "./express/WebSocketController";
+
+const result = dotenv.config();
+if (result.error) {
+  logger.warn(`Ignored dotenv config: ${result.error.message}`);
+} else {
+  logger.info(`Loaded dotenv config: ${JSON.stringify(result.parsed)}`);
+}
 
 const expressApp = Container.get(ExpressApp);
 const appInstance = expressApp.create();
