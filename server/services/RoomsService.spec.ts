@@ -118,6 +118,20 @@ describe("RoomsService", () => {
     } as RoomEvent);
   });
 
+  it("notifies leave for all participants on meeting end", () => {
+    const participant = { id: "123", username: "bla" };
+    roomsService.joinRoom(existingRoomId, participant);
+    roomsService.listen(listener);
+
+    roomsService.endRoom(existingRoomId);
+
+    expect(listener).toHaveBeenCalledWith({
+      type: "leave",
+      roomId: existingRoomId,
+      participant,
+    } as RoomEvent);
+  });
+
   it("can update a user", () => {
     const user: User = {
       name: "Hans Wurst",

@@ -67,6 +67,20 @@ export class RoomsService {
     this.notify(roomId, toLeave, "leave");
   }
 
+  endRoom(roomId: string) {
+    if (!this.roomParticipants[roomId]) {
+      logger.info(`cannot end room, as room with id=${roomId} is unknown`);
+      return;
+    }
+
+    logger.info(`endRoom - all participants had to leave`);
+
+    this.roomParticipants[roomId].forEach((participant) => {
+      this.notify(roomId, participant, "leave");
+    });
+    this.roomParticipants[roomId] = [];
+  }
+
   private enrich(participant: MeetingParticipant): MeetingParticipant {
     const user = this.knownUsersService.find(participant.username);
     if (!user) {
