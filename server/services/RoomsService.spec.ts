@@ -3,6 +3,7 @@ import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
 import { RoomEvent } from "../express/types/RoomEvent";
+import { User } from "../express/types/User";
 
 describe("RoomsService", () => {
   let roomsService: RoomsService;
@@ -114,6 +115,30 @@ describe("RoomsService", () => {
       type: "leave",
       roomId: existingRoomId,
       participant,
+    } as RoomEvent);
+  });
+
+  it("can update a user", () => {
+    const user: User = {
+      name: "Hans Wurst",
+      id: "abc",
+      email: "hans.wurst@gmail.com",
+      imageUrl: "http://my.image.com/myImage.png",
+    };
+    const participant = { id: "123", username: user.name.toLowerCase() };
+    roomsService.joinRoom(existingRoomId, participant);
+    roomsService.listen(listener);
+
+    roomsService.onUserUpdate(user);
+
+    expect(listener).toHaveBeenCalledWith({
+      participant: {
+        ...participant,
+        imageUrl: user.imageUrl,
+        email: user.email,
+      },
+      roomId: existingRoomId,
+      type: "update",
     } as RoomEvent);
   });
 });

@@ -5,6 +5,9 @@ import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
 import { EventListener, EventType, RoomEvent } from "../express/types/RoomEvent";
+import { User } from "../express/types/User";
+import { comparableUsername } from "../express/utils/compareableUsername";
+import { enrichParticipant } from "../express/utils/enrichUser";
 
 @Service({ multiple: false })
 export class RoomsService {
@@ -15,6 +18,7 @@ export class RoomsService {
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
     config.rooms.map((room) => room.id).forEach((roomId) => (this.roomParticipants[roomId] = []));
+    this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
   getAllRooms(): RoomWithParticipants[] {
@@ -72,11 +76,7 @@ export class RoomsService {
       return participant;
     }
 
-    return {
-      ...participant,
-      email: participant.email || user.email,
-      imageUrl: participant.imageUrl || user.imageUrl,
-    };
+    return enrichParticipant(participant, user);
   }
 
   private notify(roomId: string, participant: MeetingParticipant, type: EventType) {
@@ -91,5 +91,15 @@ export class RoomsService {
 
   listen(listener: (event: RoomEvent) => void) {
     this.listeners.push(listener);
+  }
+
+  onUserUpdate(user: User) {
+    const username = comparableUsername(user.name);
+    Object.entries(this.roomParticipants).map(([room, participants]) => {
+      const found = participants.find((participant) => comparableUsername(participant.username) === username);
+      if (found) {
+        this.notify(room, enrichParticipant(found, user), "update");
+      }
+    });
   }
 }

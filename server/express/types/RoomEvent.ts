@@ -1,6 +1,6 @@
 import { MeetingParticipant } from "./MeetingParticipant";
 
-export type EventType = "join" | "leave";
+export type EventType = "join" | "leave" | "update";
 
 export type EventListener = (event: RoomEvent) => void;
 

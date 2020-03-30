@@ -30,13 +30,21 @@ const useStyles = makeStyles({
 
 const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): RoomWithParticipants => {
   if (room.id === roomEvent.roomId) {
-    if (roomEvent.type === "join") {
-      return { ...room, participants: [...room.participants, roomEvent.participant] };
-    } else if (roomEvent.type === "leave") {
-      return {
-        ...room,
-        participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
-      };
+    switch (roomEvent.type) {
+      case "join":
+        return { ...room, participants: [...room.participants, roomEvent.participant] };
+      case "leave":
+        return {
+          ...room,
+          participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
+        };
+      case "update":
+        return {
+          ...room,
+          participants: room.participants
+            .filter(({ id }) => id !== roomEvent.participant.id)
+            .concat([roomEvent.participant]),
+        };
     }
   }
   return room;

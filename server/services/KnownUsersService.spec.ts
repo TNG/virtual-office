@@ -3,6 +3,8 @@ import { User } from "../express/types/User";
 
 describe("KnownUsersService", () => {
   let knownUsersService: KnownUsersService;
+  let listener: jest.Mock;
+
   const user: User = {
     name: "Max Mustermann",
     email: "max.mustermann@example.com",
@@ -12,6 +14,7 @@ describe("KnownUsersService", () => {
 
   beforeEach(() => {
     knownUsersService = new KnownUsersService();
+    listener = jest.fn();
   });
 
   it("can add users", () => {
@@ -43,5 +46,13 @@ describe("KnownUsersService", () => {
     knownUsersService.add(userWithUmlauts);
 
     expect(knownUsersService.find("äöss")).toEqual(userWithUmlauts);
+  });
+
+  it("notifies a listener when a user has been added", () => {
+    knownUsersService.listen(listener);
+
+    knownUsersService.add(user);
+
+    expect(listener).toHaveBeenCalledWith(user);
   });
 });
