@@ -32,18 +32,13 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      const mappedParticipant: MeetingParticipant = {
-        username: participant.user_name,
-        id: participant.user_id,
-      };
-
       switch (event) {
         case "meeting.participant_joined":
-          this.roomsService.joinRoom(id, mappedParticipant);
+          this.roomsService.joinRoom(id, mapParticipant(participant));
           res.sendStatus(200);
           break;
         case "meeting.participant_left":
-          this.roomsService.leaveRoom(id, mappedParticipant);
+          this.roomsService.leaveRoom(id, mapParticipant(participant));
           res.sendStatus(200);
           break;
         case "meeting.ended":
@@ -58,3 +53,8 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
     return router;
   }
 }
+
+const mapParticipant = (participant: { user_id: string; user_name: string }): MeetingParticipant => ({
+  username: participant.user_name,
+  id: participant.user_id,
+});
