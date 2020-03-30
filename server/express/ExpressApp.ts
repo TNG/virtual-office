@@ -20,12 +20,14 @@ export class ExpressApp {
     private readonly apiDocsRoute: ApiDocsRoute
   ) {}
 
+  public readonly expressSession = session({ secret: "secret", resave: true, saveUninitialized: false });
+
   public create(): Express {
     const app = express();
     app.set("trust proxy", true);
     app.use(cors());
     app.use(bodyParser.json());
-    app.use(session({ secret: "secret", resave: true, saveUninitialized: false }));
+    app.use(this.expressSession);
     app.use(passport.initialize());
     app.use(passport.session());
 
