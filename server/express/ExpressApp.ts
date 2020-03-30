@@ -8,7 +8,7 @@ import { AuthRoute } from "./routes/AuthRoute";
 import exceptionHandler from "./middleware/exceptionHandler";
 import { ApiDocsRoute } from "./routes/ApiDocsRoute";
 import { ApiRoute } from "./routes/ApiRoute";
-import { findRootDir } from "../findRootDir";
+import { findRootDir } from "./utils/findRootDir";
 import bodyParser = require("body-parser");
 
 @Service()

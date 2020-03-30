@@ -10,7 +10,8 @@
     "lint": "prettier --check \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
     "installAll": "npm install && (cd client && npm install) && (cd server && npm install)",
     "buildAll": "(cd client && npm run build) && (cd server && npm run build)",
-    "testAll": "(cd server && npm run test)"
+    "testAll": "(cd server && npm run test)",
+    "start": "cd server && npm run start"
   },
   "husky": {
     "hooks": {

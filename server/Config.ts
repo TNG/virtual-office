@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { Room } from "./express/types/Room";
-import defaultRooms from "./rooms_config.json";
+import { findRootDir } from "./express/utils/findRootDir";
 
 export interface SlackConfig {
   clientId: string;
@@ -32,9 +32,6 @@ export class Config {
     if (process.env.ROOM_CONFIG) {
       return JSON.parse(process.env.ROOM_CONFIG);
     }
-    if (process.env.ROOMS_CONFIG_LOCATION) {
-      return require(process.env.ROOMS_CONFIG_LOCATION);
-    }
-    return defaultRooms;
+    return require(process.env.ROOMS_CONFIG_LOCATION || `${findRootDir()}/server/rooms_config.json`);
   }
 }
