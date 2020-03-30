@@ -5,7 +5,8 @@ export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
   public init(): SocketService {
-    this.socket = io(process.env.REACT_APP_BACKEND_API!!, { path: "/api/updates" });
+    const basePath = process.env.NODE_ENV === "production" ? "/" : process.env.REACT_APP_BACKEND_API!!;
+    this.socket = io(basePath, { path: "/api/updates" });
     return this;
   }
 

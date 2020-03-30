@@ -1,7 +1,7 @@
 ###
 # Join
 
-POST http://localhost:9000/api/zoomus/webhook
+POST http://localhost:8080/api/zoomus/webhook
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 ###
 # Leave
 
-POST http://localhost:9000/api/zoomus/webhook
+POST http://localhost:8080/api/zoomus/webhook
 Content-Type: application/json
 
 {
