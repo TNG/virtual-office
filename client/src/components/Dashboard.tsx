@@ -11,8 +11,9 @@ import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 import AppBar from "./AppBar";
 import Box from "@material-ui/core/Box/Box";
+import theme from "../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
     height: "100vh",
     backgroundImage: `url(${Background})`,
@@ -30,12 +31,16 @@ const useStyles = makeStyles({
     right: 0,
     bottom: 0,
     left: 0,
+    overflowY: "scroll",
   },
   rooms: {
-    paddingTop: 72,
+    marginTop: 56,
+    [theme.breakpoints.up("sm")]: {
+      marginTop: 64,
+    },
     padding: 12,
   },
-});
+}));
 
 const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): RoomWithParticipants => {
   if (room.id === roomEvent.roomId) {

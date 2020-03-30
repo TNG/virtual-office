@@ -13,19 +13,10 @@ import {
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles({
   root: {
-    margin: 8,
-    padding: 0,
-    width: "90%",
-    minWidth: 260,
-    maxWidth: 320,
-    flex: "0 0 auto",
-    [theme.breakpoints.up("sm")]: {
-      width: 320,
-    },
+    width: "100%",
   },
   header: { height: 40 },
   content: {
@@ -35,7 +26,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
   },
-}));
+});
 
 const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   const classes = useStyles();
