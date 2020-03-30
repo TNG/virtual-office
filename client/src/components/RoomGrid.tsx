@@ -21,7 +21,6 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     width: "100%",
     [theme.breakpoints.up("sm")]: {
       width: "50%",
-      transition: "all 120ms ease-out",
     },
     [theme.breakpoints.up("md")]: {
       width: "33%",
