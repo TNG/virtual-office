@@ -25,7 +25,8 @@
     "reflect-metadata": "^0.1.13",
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.0.7",
-    "typedi": "^0.8.0"
+    "typedi": "^0.8.0",
+    "uuid": "^7.0.2"
   },
   "engines": {
     "node": "10.x",

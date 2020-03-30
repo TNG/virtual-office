@@ -1,17 +1,22 @@
 import { Service } from "typedi";
 import { Room } from "./express/types/Room";
 import { findRootDir } from "./express/utils/findRootDir";
+import { v4 as uuid } from "uuid";
 
 export interface SlackConfig {
   clientId: string;
   secret: string;
 }
 
+const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
+
 @Service()
 export class Config {
   public readonly port = process.env.PORT || 8080;
   public readonly slack = Config.readSlackConfig();
   public readonly rooms: Room[] = Config.readRooms();
+  public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
+  public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
 
   constructor() {}
 

@@ -9,6 +9,7 @@ import exceptionHandler from "./middleware/exceptionHandler";
 import { ApiDocsRoute } from "./routes/ApiDocsRoute";
 import { ApiRoute } from "./routes/ApiRoute";
 import { findRootDir } from "./utils/findRootDir";
+import { Config } from "../Config";
 import bodyParser = require("body-parser");
 
 @Service()
@@ -16,10 +17,18 @@ export class ExpressApp {
   constructor(
     private readonly authRoute: AuthRoute,
     private readonly apiRoute: ApiRoute,
-    private readonly apiDocsRoute: ApiDocsRoute
+    private readonly apiDocsRoute: ApiDocsRoute,
+    private readonly config: Config
   ) {}
 
-  public readonly expressSession = session({ secret: "secret", resave: true, saveUninitialized: false });
+  public readonly expressSession = session({
+    secret: this.config.sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: this.config.cookieMaxAgeMs,
+    },
+  });
 
   public async create(): Promise<Express> {
     const app = express();
