@@ -33,17 +33,24 @@ export class RoomsService {
     };
   }
 
-  joinRoom(roomId: string, participant: MeetingParticipant) {
-    if (!this.roomParticipants[roomId]) {
+  joinRoom(roomId: string, toJoin: MeetingParticipant) {
+    const participants = this.roomParticipants[roomId];
+    if (!participants) {
       logger.info(`cannot join room, as room with id=${roomId} is unknown`);
       return;
     }
 
-    logger.info(`joinRoom - participant with username ${participant.username}`);
+    logger.info(`joinRoom - participant with username ${toJoin.username}`);
 
-    this.roomParticipants[roomId].push(participant);
+    console.log(participants);
+    console.log(toJoin);
 
-    this.notify(roomId, participant, "join");
+    if (participants.find((participant) => participant.id === toJoin.id)) {
+      return;
+    }
+
+    participants.push(toJoin);
+    this.notify(roomId, toJoin, "join");
   }
 
   leaveRoom(roomId: string, toLeave: MeetingParticipant) {

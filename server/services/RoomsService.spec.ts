@@ -15,11 +15,12 @@ describe("RoomsService", () => {
     joinUrl: "http://bla.blub",
   };
 
-  const listener = jest.fn();
+  let listener: jest.Mock;
 
   beforeEach(() => {
     const config = mock(Config);
     knownUsersService = mock(KnownUsersService);
+    listener = jest.fn();
 
     when(config.rooms).thenReturn([existingRoom]);
 
@@ -90,6 +91,16 @@ describe("RoomsService", () => {
       roomId: existingRoomId,
       participant,
     } as RoomEvent);
+  });
+
+  it("won't notify on enter when the user is already in the room", () => {
+    const participant = { id: "123", username: "bla" };
+    roomsService.joinRoom(existingRoomId, participant);
+
+    roomsService.listen(listener);
+    roomsService.joinRoom(existingRoomId, participant);
+
+    expect(listener).not.toHaveBeenCalled();
   });
 
   it("notifies on leave", () => {

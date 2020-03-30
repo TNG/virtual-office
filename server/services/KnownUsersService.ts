@@ -13,7 +13,6 @@ export class KnownUsersService {
 
   add(user: User) {
     this.remove(user);
-    console.log(JSON.stringify(user));
     this.knownUsers.push(user);
   }
 
