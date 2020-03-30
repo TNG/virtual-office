@@ -39,6 +39,7 @@ export class AuthRoute implements ExpressRoute {
         {
           clientID: slackConfig.clientId,
           clientSecret: slackConfig.secret,
+          callbackURL: slackConfig.callbackURL,
           scope: ["identity.basic", "identity.email", "identity.avatar"],
         },
         (accessToken, refreshToken, profile, cb) => {

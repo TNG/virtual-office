@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 export interface SlackConfig {
   clientId: string;
   secret: string;
+  callbackURL?: string;
 }
 
 const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
@@ -23,6 +24,7 @@ export class Config {
   private static readSlackConfig(): SlackConfig {
     const secret = process.env.SLACK_SECRET;
     const clientId = process.env.SLACK_CLIENT_ID;
+    const callbackURL = process.env.SLACK_CALLBACK_URL;
     if (!secret || !clientId) {
       throw new Error("Slack Config invalid: SLACK_SECRET and SLACK_CLIENT_ID must be set.");
     }
@@ -30,6 +32,7 @@ export class Config {
     return {
       clientId,
       secret,
+      callbackURL,
     };
   }
 
