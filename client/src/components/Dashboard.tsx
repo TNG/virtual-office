@@ -92,12 +92,9 @@ const Dashboard = () => {
       .catch(() => history.push("/login"));
   }, [history]);
 
-  function getSortedGroupEntries() {
-    const groups = groupBy(rooms, (room) => room.group || "");
-    const groupsWithSortedRooms = mapValues(groups, (rooms) => sortBy(rooms, (room) => room.name));
-
-    return sortBy(Object.entries(groupsWithSortedRooms), ([group, _]) => group);
-  }
+  const groups = groupBy(rooms, (room) => room.group || "");
+  const groupsWithSortedRooms = mapValues(groups, (rooms) => sortBy(rooms, (room) => room.name));
+  const sortedGroups = sortBy(Object.entries(groupsWithSortedRooms), ([group, _]) => group);
 
   return (
     <Box>
@@ -106,8 +103,8 @@ const Dashboard = () => {
         <AppBar />
 
         <Box className={classes.rooms}>
-          {getSortedGroupEntries().map(([group, rooms]) => (
-            <RoomGrid group={group} rooms={rooms} />
+          {sortedGroups.map(([group, rooms]) => (
+            <RoomGrid key={group} group={group} rooms={rooms} />
           ))}
         </Box>
       </Box>

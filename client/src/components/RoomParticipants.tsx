@@ -1,22 +1,62 @@
 import React from "react";
-
-import { Avatar, Box, Tooltip, Typography } from "@material-ui/core";
+import { Box, Card, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import CloseIcon from "@material-ui/icons/Close";
 import { sortBy } from "lodash";
+
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import ParticipantAvatar from "./ParticipantAvatar";
 import theme from "../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<typeof theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
+    cursor: "pointer",
+  },
+  avatar: {
+    flex: "0 0 auto",
   },
   emptyGroup: {
     color: theme.palette.grey.A200,
   },
-});
+  dialog: {
+    position: "fixed",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    borderRadius: 0,
+    [theme.breakpoints.up("sm")]: {
+      width: "80%",
+      height: "80%",
+      top: "10%",
+      right: "10%",
+      left: "10%",
+      bottom: "10%",
+      borderRadius: 4,
+    },
+    outline: "none",
+  },
+  dialogAction: {
+    margin: 0,
+    cursor: "pointer",
+  },
+  participant: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  participantData: {
+    flex: "1 0 auto",
+    marginLeft: 12,
+  },
+}));
 
-const RoomParticipants = ({ participants }: { participants: MeetingParticipant[] }) => {
+const RoomParticipants = ({ name, participants }: { name: string; participants: MeetingParticipant[] }) => {
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   if (participants.length <= 0) {
@@ -29,18 +69,43 @@ const RoomParticipants = ({ participants }: { participants: MeetingParticipant[]
     );
   }
 
-  function getSortedParticipants() {
-    return sortBy(participants, (participant) => participant.username);
+  function renderParticipant(participant: MeetingParticipant) {
+    return (
+      <Box key={participant.id} className={classes.participant}>
+        <ParticipantAvatar participant={participant} />
+        <Typography className={classes.participantData}>
+          {participant.username}&nbsp;{participant.email}
+        </Typography>
+      </Box>
+    );
   }
 
+  const sortedParticipants = sortBy(participants, (participant) => participant.username);
+
   return (
-    <AvatarGroup className={classes.avatarGroup} max={5} spacing="medium">
-      {getSortedParticipants().map((participant) => (
-        <Tooltip key={participant.id} title={participant.username}>
-          <Avatar alt={participant.username} src={participant.imageUrl} />
-        </Tooltip>
-      ))}
-    </AvatarGroup>
+    <Box>
+      <AvatarGroup className={classes.avatarGroup} max={5} spacing="medium" onClick={() => setOpen(true)}>
+        {sortedParticipants.map((participant) => (
+          <ParticipantAvatar participant={participant} />
+        ))}
+      </AvatarGroup>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <Card className={classes.dialog}>
+          <CardHeader
+            title={<Typography variant="h5">{name}</Typography>}
+            action={<CloseIcon color="action" fontSize="default" onClick={() => setOpen(false)} />}
+            classes={{ action: classes.dialogAction }}
+          />
+
+          <CardContent>{sortedParticipants.map(renderParticipant)}</CardContent>
+        </Card>
+      </Modal>
+    </Box>
   );
 };
 

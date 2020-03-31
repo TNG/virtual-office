@@ -35,7 +35,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
       />
 
       <CardContent className={classes.content}>
-        <RoomParticipants participants={room.participants} />
+        <RoomParticipants name={room.name} participants={room.participants} />
         <RoomLinks links={room.links} />
       </CardContent>
 

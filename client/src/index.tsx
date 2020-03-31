@@ -11,20 +11,18 @@ import "./index.css";
 import theme from "./theme";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <Switch>
-          <Route exact path="/">
-            <Dashboard />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-        </Switch>
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <Switch>
+        <Route exact path="/">
+          <Dashboard />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+      </Switch>
+    </ThemeProvider>
+  </BrowserRouter>,
   document.getElementById("root")
 );
 

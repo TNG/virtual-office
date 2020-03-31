@@ -6,6 +6,9 @@ import { RoomLink } from "../../../server/express/types/RoomLink";
 import { sortBy } from "lodash";
 
 const useStyles = makeStyles({
+  root: {
+    marginTop: 20,
+  },
   link: {
     display: "flex",
     justifyContent: "flex-start",
@@ -27,13 +30,11 @@ const RoomLinks = ({ links }: { links: RoomLink[] | undefined }) => {
     return null;
   }
 
-  function getSortedLinks() {
-    return sortBy(links, (link) => link.text);
-  }
+  const sortedLinks = sortBy(links, (link) => link.text);
 
   return (
-    <Box>
-      {getSortedLinks().map((link) => (
+    <Box className={classes.root}>
+      {sortedLinks.map((link) => (
         <Link key={link.text} className={classes.link} href={link.href}>
           <img className={classes.icon} src={link.icon} alt={link.text} />
           <Typography variant="body2">{link.text}</Typography>
