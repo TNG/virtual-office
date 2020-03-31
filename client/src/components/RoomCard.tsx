@@ -1,18 +1,9 @@
 import React from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import { AvatarGroup } from "@material-ui/lab";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import RoomParticipants from "./RoomParticipants";
+import RoomLinks from "./RoomLinks";
 
 const useStyles = makeStyles({
   root: {
@@ -25,6 +16,10 @@ const useStyles = makeStyles({
   },
   avatarGroup: {
     marginLeft: 8,
+  },
+  actions: {
+    display: "flex",
+    flexDirection: "row-reverse",
   },
 });
 
@@ -40,22 +35,11 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
       />
 
       <CardContent className={classes.content}>
-        {room.participants.length > 0 ? (
-          <AvatarGroup className={classes.avatarGroup} max={5} spacing="medium">
-            {room.participants.map(({ id, username, imageUrl }) => (
-              <Tooltip key={id} title={username}>
-                <Avatar alt={username} src={imageUrl} />
-              </Tooltip>
-            ))}
-          </AvatarGroup>
-        ) : (
-          <Box height={44}>
-            <Typography variant="caption">No one is here</Typography>
-          </Box>
-        )}
+        <RoomParticipants participants={room.participants} />
+        <RoomLinks links={room.links} />
       </CardContent>
 
-      <CardActions>
+      <CardActions className={classes.actions}>
         <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
           Join
         </Button>

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
-import { groupBy } from "lodash";
+import { groupBy, mapValues, sortBy } from "lodash";
 
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
@@ -92,7 +92,13 @@ const Dashboard = () => {
       .catch(() => history.push("/login"));
   }, [history]);
 
-  const groups = groupBy(rooms, (room) => room.group || "");
+  function getSortedGroupEntries() {
+    const groups = groupBy(rooms, (room) => room.group || "");
+    const groupsWithSortedRooms = mapValues(groups, (rooms) => sortBy(rooms, (room) => room.name));
+
+    return sortBy(Object.entries(groupsWithSortedRooms), ([group, _]) => group);
+  }
+
   return (
     <Box>
       <Box className={classes.background} />
@@ -100,7 +106,7 @@ const Dashboard = () => {
         <AppBar />
 
         <Box className={classes.rooms}>
-          {Object.entries(groups).map(([group, rooms]) => (
+          {getSortedGroupEntries().map(([group, rooms]) => (
             <RoomGrid group={group} rooms={rooms} />
           ))}
         </Box>

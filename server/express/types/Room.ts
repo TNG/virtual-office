@@ -1,10 +1,10 @@
-import { Link } from "./Link";
+import { RoomLink } from "./RoomLink";
 
 export interface Room {
   id: string;
   name: string;
   joinUrl: string;
-  links?: Link[];
+  links?: RoomLink[];
   group?: string;
   icon?: string;
 }
