@@ -16,6 +16,9 @@
     },
     {
       "name": "API"
+    },
+    {
+      "name": "Zoom.us"
     }
   ],
   "paths": {
@@ -53,10 +56,72 @@
           }
         }
       }
+    },
+    "/api/zoomus/webhook": {
+      "post": {
+        "summary": "Webhook for zoom.us calls",
+        "tags": ["Zoom.us"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/zoomusEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "zoomusEvent": {
+        "properties": {
+          "event": {
+            "type": "string",
+            "example": "meeting.participant_joined",
+            "enum": ["meeting.participant_joined", "meeting.participant_left"]
+          },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "123456",
+                    "description": "Zoom.us meeting id"
+                  },
+                  "participant": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "string",
+                        "example": "4566",
+                        "description": "unique zoom user id"
+                      },
+                      "user_name": {
+                        "type": "string",
+                        "example": "Hans Example",
+                        "description": "Name of the user (which she/he entered upon joining the meeting)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "participant": {
         "required": ["username"],
         "properties": {
