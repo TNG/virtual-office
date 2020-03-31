@@ -88,7 +88,7 @@
           "event": {
             "type": "string",
             "example": "meeting.participant_joined",
-            "enum": ["meeting.participant_joined", "meeting.participant_left"]
+            "enum": ["meeting.participant_joined", "meeting.participant_left", "meeting.ended"]
           },
           "payload": {
             "type": "object",
