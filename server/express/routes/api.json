@@ -104,7 +104,7 @@
                   "participant": {
                     "type": "object",
                     "properties": {
-                      "user_id": {
+                      "id": {
                         "type": "string",
                         "example": "4566",
                         "description": "unique zoom user id"

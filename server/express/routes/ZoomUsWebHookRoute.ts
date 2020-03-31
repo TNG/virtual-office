@@ -10,7 +10,7 @@ interface ZoomUsEvent {
     object: {
       id: string;
       participant: {
-        user_id: string;
+        id: string;
         user_name: string;
       };
     };
@@ -54,7 +54,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
   }
 }
 
-const mapParticipant = (participant: { user_id: string; user_name: string }): MeetingParticipant => ({
+const mapParticipant = (participant: { id: string; user_name: string }): MeetingParticipant => ({
   username: participant.user_name,
-  id: participant.user_id,
+  id: participant.id,
 });

@@ -10,7 +10,7 @@ Content-Type: application/json
     "account_id": "abc",
     "object": {
       "uuid": "uuid",
-      "id": "1234567",
+      "id": "1",
       "host_id": "abc",
       "topic": "My Meeting",
       "type": 2,
