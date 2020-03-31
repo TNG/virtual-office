@@ -12,7 +12,8 @@ interface ZoomUsEvent {
     object: {
       id: string;
       participant: {
-        id: string;
+        id?: string;
+        user_id: string;
         user_name: string;
       };
     };
@@ -35,7 +36,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info({ message: "Received an zoom.us notification", event: event, meetinId: id, participant, traceId });
+      logger.info({ message: "Received an zoom.us notification", event: event, meetingId: id, participant, traceId });
 
       switch (event) {
         case "meeting.participant_joined":
@@ -59,7 +60,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
   }
 }
 
-const mapParticipant = (participant: { id: string; user_name: string }): MeetingParticipant => ({
+const mapParticipant = (participant: { id?: string; user_name: string; user_id: string }): MeetingParticipant => ({
   username: participant.user_name,
-  id: participant.id,
+  id: "zoomus_" + (participant.id || participant.user_id), // id is permanent for logged in users, user_id is temporary per meeting
 });
