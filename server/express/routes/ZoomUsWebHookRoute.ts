@@ -3,6 +3,7 @@ import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { RoomsService } from "../../services/RoomsService";
 import { MeetingParticipant } from "../types/MeetingParticipant";
+import { logger } from "../../log";
 
 interface ZoomUsEvent {
   event: string;
@@ -31,6 +32,8 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
           object: { id, participant },
         },
       } = req.body as ZoomUsEvent;
+
+      logger.info({ message: "Received an zoom.us notification", event: event, meetinId: id, participant });
 
       switch (event) {
         case "meeting.participant_joined":
