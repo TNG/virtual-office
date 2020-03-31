@@ -7,6 +7,7 @@ import { logger } from "../../log";
 
 interface ZoomUsEvent {
   event: string;
+  traceId;
   payload: {
     object: {
       id: string;
@@ -28,12 +29,13 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
     router.post("/zoomus/webhook", (req, res) => {
       const {
         event,
+        traceId,
         payload: {
           object: { id, participant },
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info({ message: "Received an zoom.us notification", event: event, meetinId: id, participant });
+      logger.info({ message: "Received an zoom.us notification", event: event, meetinId: id, participant, traceId });
 
       switch (event) {
         case "meeting.participant_joined":
