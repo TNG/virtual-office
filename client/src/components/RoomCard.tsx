@@ -8,11 +8,15 @@ import RoomLinks from "./RoomLinks";
 const useStyles = makeStyles({
   root: {
     width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   header: { height: 40 },
   content: {
     paddingTop: 0,
     paddingBottom: 4,
+    flexGrow: 1,
   },
   avatarGroup: {
     marginLeft: 8,
