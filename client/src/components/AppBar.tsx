@@ -36,10 +36,6 @@ const AppBar = () => {
     axios.get("/api/me").then(({ data }) => setUser(data));
   }, []);
 
-  const logout = () => {
-    window.location.href = "/logout";
-  };
-
   return (
     <MaterialAppBar position="fixed">
       <Toolbar>
@@ -54,7 +50,7 @@ const AppBar = () => {
             <Box px={1}>
               <Avatar src={user.imageUrl} className={classes.avatar} />
             </Box>
-            <Button color="inherit" onClick={() => logout()}>
+            <Button color="inherit" href="/logout">
               Logout
             </Button>
           </Box>
