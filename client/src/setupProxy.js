@@ -2,13 +2,18 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const backendUrl = process.env.REACT_APP_BACKEND_API;
 
-module.exports = function (app) {
+function proxy(app, route, changeOrigin) {
   app.use(
-    "/auth",
+    route,
     createProxyMiddleware({
       target: backendUrl,
-      changeOrigin: true,
+      changeOrigin,
     })
   );
-  app.use("/api", createProxyMiddleware({ target: backendUrl }));
+}
+
+module.exports = function (app) {
+  proxy(app, "/auth", true);
+  proxy(app, "/logout", true);
+  proxy(app, "/api", false);
 };
