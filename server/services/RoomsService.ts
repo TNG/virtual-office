@@ -62,7 +62,9 @@ export class RoomsService {
 
     logger.info(`leaveRoom - participant with username ${toLeave.username}`);
 
-    this.roomParticipants[roomId] = this.roomParticipants[roomId].filter((participant) => participant !== toLeave);
+    this.roomParticipants[roomId] = this.roomParticipants[roomId].filter(
+      (participant) => participant.id !== toLeave.id
+    );
 
     this.notify(roomId, toLeave, "leave");
   }
