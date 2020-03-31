@@ -47,26 +47,33 @@ export class RoomsService {
     logger.info(`joinRoom - participant with username ${toJoin.username}`);
 
     if (participants.find((participant) => participant.id === toJoin.id)) {
+      logger.info(
+        `joinRoom - participant with username ${toJoin.username} is already in the room, ignoring this call.`
+      );
       return;
     }
 
-    participants.push(toJoin);
+    this.leave(toJoin);
+
+    this.roomParticipants[roomId].push(toJoin);
     this.notify(roomId, toJoin, "join");
   }
 
-  leaveRoom(roomId: string, toLeave: MeetingParticipant) {
-    if (!this.roomParticipants[roomId]) {
-      logger.info(`cannot leave room, as room with id=${roomId} is unknown`);
-      return;
-    }
-
+  leave(toLeave: MeetingParticipant) {
     logger.info(`leaveRoom - participant with username ${toLeave.username}`);
 
-    this.roomParticipants[roomId] = this.roomParticipants[roomId].filter(
-      (participant) => participant.id !== toLeave.id
-    );
+    Object.entries(this.roomParticipants).forEach(([room, participants]) => {
+      const newParticipants = participants.filter((participant) => participant.id !== toLeave.id);
+      this.roomParticipants[room] = newParticipants;
 
-    this.notify(roomId, toLeave, "leave");
+      if (participants.length !== newParticipants.length) {
+        participants
+          .filter((participant) => !newParticipants.includes(participant))
+          .forEach((participant) => {
+            this.notify(room, toLeave, "leave");
+          });
+      }
+    });
   }
 
   endRoom(roomId: string) {
