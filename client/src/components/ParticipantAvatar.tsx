@@ -8,10 +8,12 @@ import theme from "../theme";
 const useStyles = makeStyles<typeof theme>({
   avatar: {
     flex: "0 0 auto",
+    marginLeft: -8,
+    border: "2px solid #fafafa",
   },
 });
 
-const ParticipantAvatar = ({ participant }: { participant: MeetingParticipant }) => {
+const ParticipantAvatar = ({ participant, zIndex }: { participant: MeetingParticipant; zIndex?: number }) => {
   function getInitialsFrom(username: string) {
     return username
       .split(" ")
@@ -46,11 +48,13 @@ const ParticipantAvatar = ({ participant }: { participant: MeetingParticipant })
   const backgroundColor = stringToColor(participant.username);
   const textColor = theme.palette.getContrastText(backgroundColor);
   const classes = useStyles();
-  const avatarColorStyle = participant.imageUrl ? undefined : { color: textColor, backgroundColor };
-
+  const avatarStyle = {
+    zIndex: zIndex || 1,
+    ...(participant.imageUrl ? {} : { color: textColor, backgroundColor }),
+  };
   return (
     <Tooltip key={participant.id} className={classes.avatar} title={participant.username}>
-      <Avatar alt={participant.username} src={participant.imageUrl} style={avatarColorStyle}>
+      <Avatar alt={participant.username} src={participant.imageUrl} style={avatarStyle}>
         {initials}
       </Avatar>
     </Tooltip>
