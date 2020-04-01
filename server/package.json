@@ -7,7 +7,8 @@
     "build": "tsc",
     "test": "jest",
     "format": "cd .. && npm run format",
-    "start": "node build/server/index.js"
+    "start": "node build/server/index.js",
+    "generateTestData": "ts-node ./generateTestData.ts"
   },
   "dependencies": {
     "axios": "^0.19.2",

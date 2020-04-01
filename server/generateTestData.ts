@@ -3,6 +3,8 @@ import { v4 as uuid } from "uuid";
 
 (async function generate() {
   for (let i = 0; i < 200; i++) {
+    const userId = uuid();
+
     await axios.post("http://localhost:8080/api/zoomus/webhook", {
       event: "meeting.participant_joined",
       payload: {
@@ -17,9 +19,9 @@ import { v4 as uuid } from "uuid";
           duration: 60,
           timezone: "America/Los_Angeles",
           participant: {
-            user_id: "167782044",
-            user_name: "s",
-            id: uuid(),
+            user_id: userId,
+            user_name: `User ${userId}`,
+            id: userId,
             join_time: "2019-07-16T17:13:13Z",
           },
         },
