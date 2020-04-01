@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { Container } from "typedi";
+import { Config } from "../../Config";
 
 function isLoggedIn(req: Request): boolean {
   const session = (req as any).session;
@@ -8,7 +10,8 @@ function isLoggedIn(req: Request): boolean {
 }
 
 export default function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
-  if (!isLoggedIn(req)) {
+  const disableAuth = Container.get(Config).disableAuthOnApi;
+  if (!isLoggedIn(req) && !disableAuth) {
     res.status(401).end();
     next("router");
     return;
