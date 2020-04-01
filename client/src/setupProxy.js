@@ -16,4 +16,5 @@ module.exports = function (app) {
   proxy(app, "/auth", true);
   proxy(app, "/logout", true);
   proxy(app, "/api", false);
+  proxy(app, "/api-docs", true);
 };
