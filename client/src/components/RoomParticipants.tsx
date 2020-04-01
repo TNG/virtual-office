@@ -94,7 +94,11 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
     <Box>
       <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => setOpen(true)}>
         {sortedParticipants.map((participant, index) => (
-          <ParticipantAvatar participant={participant} zIndex={sortedParticipants.length - index} />
+          <ParticipantAvatar
+            key={participant.id}
+            participant={participant}
+            zIndex={sortedParticipants.length - index}
+          />
         ))}
       </AvatarGroup>
       <Modal

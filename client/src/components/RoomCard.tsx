@@ -31,7 +31,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} key={room.id}>
       <CardHeader
         className={classes.header}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
