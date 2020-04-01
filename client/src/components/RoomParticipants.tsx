@@ -32,12 +32,12 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     bottom: 0,
     borderRadius: 0,
     [theme.breakpoints.up("sm")]: {
-      width: "80%",
-      height: "80%",
+      width: "90%",
+      height: "85%",
       top: "10%",
-      right: "10%",
-      left: "10%",
-      bottom: "10%",
+      right: "5%",
+      left: "5%",
+      bottom: "5%",
       borderRadius: 4,
     },
     outline: "none",
@@ -47,10 +47,19 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     cursor: "pointer",
   },
   participant: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    margin: 3,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      maxWidth: Math.round(theme.breakpoints.width("lg") / 3),
+    },
+    flex: "0 0 auto",
+    padding: 4,
+    boxSizing: "border-box",
   },
   participantData: {
     flex: "1 0 auto",
@@ -66,6 +75,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     flexWrap: "wrap",
     flexDirection: "row",
   },
+  dialogCell: {},
 }));
 
 const RoomParticipants = ({ name, participants }: { name: string; participants: MeetingParticipant[] }) => {
@@ -84,13 +94,15 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
 
   function renderParticipant(participant: MeetingParticipant) {
     return (
-      <Card key={participant.id} className={classes.participant}>
-        <CardHeader
-          avatar={<ParticipantAvatar participant={participant} />}
-          title={participant.username}
-          subheader={participant.email}
-        />
-      </Card>
+      <Box className={classes.participant}>
+        <Card key={participant.id}>
+          <CardHeader
+            avatar={<ParticipantAvatar participant={participant} />}
+            title={participant.username}
+            subheader={participant.email}
+          />
+        </Card>
+      </Box>
     );
   }
 
