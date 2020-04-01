@@ -39,6 +39,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
       borderRadius: 4,
     },
     outline: "none",
+    overflowX: "auto",
   },
   dialogAction: {
     margin: 0,
@@ -48,10 +49,17 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    margin: 3,
   },
   participantData: {
     flex: "1 0 auto",
     marginLeft: 12,
+  },
+  grid: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "column",
+    height: "100%",
   },
 }));
 
@@ -71,12 +79,13 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
 
   function renderParticipant(participant: MeetingParticipant) {
     return (
-      <Box key={participant.id} className={classes.participant}>
-        <ParticipantAvatar participant={participant} />
-        <Typography className={classes.participantData}>
-          {participant.username}&nbsp;{participant.email}
-        </Typography>
-      </Box>
+      <Card key={participant.id} className={classes.participant}>
+        <CardHeader
+          avatar={<ParticipantAvatar participant={participant} />}
+          title={participant.username}
+          subheader={participant.email}
+        />
+      </Card>
     );
   }
 
@@ -102,7 +111,7 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
             classes={{ action: classes.dialogAction }}
           />
 
-          <CardContent>{sortedParticipants.map(renderParticipant)}</CardContent>
+          <CardContent className={classes.grid}>{sortedParticipants.map(renderParticipant)}</CardContent>
         </Card>
       </Modal>
     </Box>
