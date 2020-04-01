@@ -22,7 +22,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: 4,
   },
   title: {
-    flexGrow: 1,
+    flex: "1 0 auto",
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
   },
   avatar: {
     width: theme.spacing(4),
