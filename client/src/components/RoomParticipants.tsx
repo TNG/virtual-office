@@ -94,8 +94,8 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
 
   function renderParticipant(participant: MeetingParticipant) {
     return (
-      <Box className={classes.participant}>
-        <Card key={participant.id}>
+      <Box key={participant.id} className={classes.participant}>
+        <Card>
           <CardHeader
             avatar={<ParticipantAvatar participant={participant} />}
             title={participant.username}
