@@ -12,6 +12,7 @@ import RoomGrid from "./RoomGrid";
 import AppBar from "./AppBar";
 import Box from "@material-ui/core/Box/Box";
 import theme from "../theme";
+import { search } from "../search";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -70,6 +71,7 @@ const Dashboard = () => {
 
   const context = useContext(SocketContext);
   const [rooms, setRooms] = useState([] as RoomWithParticipants[]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     context.init();
@@ -92,7 +94,8 @@ const Dashboard = () => {
       .catch(() => history.push("/login"));
   }, [history]);
 
-  const groups = groupBy(rooms, (room) => room.group || "");
+  const searchResult = search(searchText, rooms);
+  const groups = groupBy(searchResult, (room) => room.group || "");
   const groupsWithSortedRooms = mapValues(groups, (rooms) => sortBy(rooms, (room) => room.name));
   const sortedGroups = sortBy(Object.entries(groupsWithSortedRooms), ([group, _]) => group);
 
@@ -100,7 +103,7 @@ const Dashboard = () => {
     <Box>
       <Box className={classes.background} />
       <Box className={classes.content}>
-        <AppBar />
+        <AppBar onSearchTextChange={setSearchText} />
 
         <Box className={classes.rooms}>
           {sortedGroups.map(([group, rooms]) => (
