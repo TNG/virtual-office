@@ -21,6 +21,8 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     color: theme.palette.grey.A200,
   },
   dialog: {
+    display: "flex",
+    flexDirection: "column",
     position: "fixed",
     width: "100%",
     height: "100%",
@@ -39,7 +41,6 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
       borderRadius: 4,
     },
     outline: "none",
-    overflowY: "auto",
   },
   dialogAction: {
     margin: 0,
@@ -55,7 +56,12 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     flex: "1 0 auto",
     marginLeft: 12,
   },
-  grid: {
+  dialogHeader: {
+    flex: "0 0 auto",
+  },
+  dialogContent: {
+    flex: "1 1 auto",
+    overflowY: "auto",
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
@@ -109,12 +115,13 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
       >
         <Card className={classes.dialog}>
           <CardHeader
+            className={classes.dialogHeader}
             title={<Typography variant="h5">{name}</Typography>}
             action={<CloseIcon color="action" fontSize="default" onClick={() => setOpen(false)} />}
             classes={{ action: classes.dialogAction }}
           />
 
-          <CardContent className={classes.grid}>{sortedParticipants.map(renderParticipant)}</CardContent>
+          <CardContent className={classes.dialogContent}>{sortedParticipants.map(renderParticipant)}</CardContent>
         </Card>
       </Modal>
     </Box>

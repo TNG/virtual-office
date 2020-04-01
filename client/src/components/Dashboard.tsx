@@ -32,7 +32,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     right: 0,
     bottom: 0,
     left: 0,
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   rooms: {
     marginTop: 56,
