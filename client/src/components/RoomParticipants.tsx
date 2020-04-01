@@ -39,7 +39,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
       borderRadius: 4,
     },
     outline: "none",
-    overflowX: "auto",
+    overflowY: "auto",
   },
   dialogAction: {
     margin: 0,
@@ -58,8 +58,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   grid: {
     display: "flex",
     flexWrap: "wrap",
-    flexDirection: "column",
-    height: "100%",
+    flexDirection: "row",
   },
 }));
 
