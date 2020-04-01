@@ -76,6 +76,14 @@ export class RoomsService {
     });
   }
 
+  leaveRoom(roomId: string, userId: string) {
+    if (this.roomParticipants[roomId]) {
+      const toLeave = this.roomParticipants[roomId].filter((user) => user.id === userId);
+      this.roomParticipants[roomId] = this.roomParticipants[roomId].filter((user) => !toLeave.includes(user));
+      toLeave.forEach((user) => this.notify(roomId, user, "leave"));
+    }
+  }
+
   endRoom(roomId: string) {
     if (!this.roomParticipants[roomId]) {
       logger.info(`cannot end room, as room with id=${roomId} is unknown`);

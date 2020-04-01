@@ -23,6 +23,15 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.roomsService.getAllRooms());
     });
 
+    router.delete("/admin/rooms/:roomId", ensureLoggedIn, (req, res) => {
+      this.roomsService.endRoom(req.params.roomId);
+      res.sendStatus(200);
+    });
+    router.delete("/admin/rooms/:roomId/:userId", ensureLoggedIn, (req, res) => {
+      this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
+      res.sendStatus(200);
+    });
+
     router.get("/me", (req, res) => {
       const session = (req as any).session;
       if (!session.currentUser) {

@@ -19,6 +19,9 @@
     },
     {
       "name": "Zoom.us"
+    },
+    {
+      "name": "Admin"
     }
   ],
   "paths": {
@@ -70,6 +73,65 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/admin/rooms/{roomId}": {
+      "delete": {
+        "summary": "Delete all room's users",
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "id of the room that should be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/admin/rooms/{roomId}/{userId}": {
+      "delete": {
+        "summary": "Delete a user in a room",
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "if of the room"
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "id of the user"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
