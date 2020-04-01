@@ -52,7 +52,9 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
           res.sendStatus(200);
           break;
         default:
-          res.sendStatus(400);
+          logger.info(`don't know what to do with ${event}`);
+          res.sendStatus(200);
+          break;
       }
     });
 
