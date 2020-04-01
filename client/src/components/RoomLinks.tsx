@@ -35,7 +35,7 @@ const RoomLinks = ({ links }: { links: RoomLink[] | undefined }) => {
   return (
     <Box className={classes.root}>
       {sortedLinks.map((link) => (
-        <Link key={link.text} className={classes.link} href={link.href}>
+        <Link key={link.text} className={classes.link} href={link.href} target="_blank">
           <img className={classes.icon} src={link.icon} alt={link.text} />
           <Typography variant="body2">{link.text}</Typography>
         </Link>
