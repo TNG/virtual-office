@@ -60,11 +60,23 @@
         }
       },
       "post": {
-        "summary": "Create a temporary room",
+        "summary": "Create a user-specific temporary room",
         "tags": ["API"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/room"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Success"
+          },
+          "405": {
+            "description": "Room creation requires a valid user"
           },
           "409": {
             "description": "Room with same id already exists"

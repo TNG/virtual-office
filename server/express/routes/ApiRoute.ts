@@ -23,7 +23,12 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.roomsService.getAllRooms());
     });
     router.post("/rooms", ensureLoggedIn, (req, res) => {
-      const success = this.roomsService.createRoom(req.body);
+      const userId = (req as any).session?.currentUser?.id;
+      if (!userId) {
+        return 405;
+      }
+
+      const success = this.roomsService.createRoom({ ...req.body, id: userId });
       res.sendStatus(success ? 204 : 409);
     });
     router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
