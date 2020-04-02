@@ -25,7 +25,7 @@ export class WebSocketController {
     socket.on("connection", (request: any) => {
       const session = request.handshake.session;
       if (!session.currentUser) {
-        socket.emit("unauthenticated");
+        socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);

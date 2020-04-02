@@ -1,5 +1,4 @@
 import { Box, Card, CardHeader } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import theme from "../theme";
