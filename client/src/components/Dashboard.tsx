@@ -7,12 +7,13 @@ import { groupBy, mapValues, sortBy } from "lodash";
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
+import { search } from "../search";
+
+import Box from "@material-ui/core/Box/Box";
+import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
-import AppBar from "./AppBar";
-import Box from "@material-ui/core/Box/Box";
 import theme from "../theme";
-import { search } from "../search";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -35,9 +36,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     overflowY: "auto",
   },
   rooms: {
-    marginTop: 56,
+    marginTop: 12,
+    paddingTop: 56,
     [theme.breakpoints.up("sm")]: {
-      marginTop: 64,
+      paddingTop: 64,
     },
     padding: 12,
   },

@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+import { User } from "../../../server/express/types/User";
 import {
   AppBar as MaterialAppBar,
   Avatar,
@@ -13,9 +17,6 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { User } from "../../../server/express/types/User";
 
 const useStyles = makeStyles((theme: Theme) => ({
   menuButton: {
