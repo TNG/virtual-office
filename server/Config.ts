@@ -19,7 +19,7 @@ export class Config {
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
   public readonly disableAuthOnApi = !!process.env.DISABLE_AUTH_ON_API;
-  public readonly enableParticipantLogging = !!process.env.ENABLE_PARTICIPANT_LOGGING;
+  public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
 
   constructor() {}
 
