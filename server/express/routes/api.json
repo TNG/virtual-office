@@ -58,6 +58,38 @@
             "description": "Internal error"
           }
         }
+      },
+      "post": {
+        "summary": "Create a temporary room",
+        "tags": ["API"],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "409": {
+            "description": "Room with same id already exists"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/rooms/{roomId}": {
+      "delete": {
+        "summary": "Delete a temporary room",
+        "tags": ["API"],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "405": {
+            "description": "Room is protected from deletion"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
       }
     },
     "/api/zoomus/webhook": {

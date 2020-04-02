@@ -5,6 +5,7 @@ import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
 import { EventListener, EventType, RoomEvent } from "../express/types/RoomEvent";
+import { Room } from "../express/types/Room";
 import { User } from "../express/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
@@ -15,18 +16,19 @@ export class RoomsService {
     [roomId: string]: MeetingParticipant[];
   } = {};
   private listeners: EventListener[] = [];
+  private rooms: Room[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
-    config.rooms.map((room) => room.id).forEach((roomId) => (this.roomParticipants[roomId] = []));
+    config.rooms.map((room) => this.createRoom(room));
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
   getAllRooms(): RoomWithParticipants[] {
-    return this.config.rooms.map((room) => room.id).map((roomId) => this.getRoomWithParticipants(roomId));
+    return this.rooms.map((room) => room.id).map((roomId) => this.getRoomWithParticipants(roomId));
   }
 
   getRoomWithParticipants(roomId: string): RoomWithParticipants | undefined {
-    const room = this.config.rooms.find((room) => room.id === roomId);
+    const room = this.rooms.find((room) => room.id === roomId);
     if (!room) {
       return undefined;
     }
@@ -35,6 +37,30 @@ export class RoomsService {
       ...room,
       participants: this.roomParticipants[roomId].map((participant) => this.enrich(participant)),
     };
+  }
+
+  createRoom(room: Room): boolean {
+    if (this.rooms.some((knownRoom) => knownRoom.id === room.id)) {
+      logger.info(`cannot create room, as room with id=${room.id} already exists`);
+      return false;
+    }
+
+    this.rooms = [...this.rooms, room];
+    this.roomParticipants[room.id] = [];
+
+    return true;
+  }
+
+  deleteRoom(roomId: string): boolean {
+    if (this.config.rooms.some((protectedRoom) => protectedRoom.id === roomId)) {
+      logger.info(`cannot delete room, as room with id=${roomId} is protected`);
+      return false;
+    }
+
+    this.rooms = this.rooms.filter((room) => roomId !== room.id);
+    delete this.roomParticipants[roomId];
+
+    return true;
   }
 
   joinRoom(roomId: string, toJoin: MeetingParticipant) {

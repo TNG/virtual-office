@@ -164,4 +164,43 @@ describe("RoomsService", () => {
       type: "update",
     } as RoomEvent);
   });
+
+  it("can create and delete temporary rooms", () => {
+    const temporaryRoom = {
+      id: "3",
+      name: "Puppenkiste",
+      joinUrl: "http://kasperl.theater",
+      group: "fun",
+      icon: "http://my.image.com/urmel.png",
+    };
+
+    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toBeUndefined();
+
+    roomsService.createRoom(temporaryRoom);
+    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toMatchObject(temporaryRoom);
+
+    roomsService.deleteRoom(temporaryRoom.id);
+    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toBeUndefined();
+  });
+
+  it("can not overwrite existing rooms", () => {
+    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+
+    const success = roomsService.createRoom({
+      ...existingRoom,
+      joinUrl: "http://happy-phishing.com",
+    });
+
+    expect(success).toBe(false);
+    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toMatchObject(existingRoom);
+  });
+
+  it("can not delete protected rooms", () => {
+    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+
+    const success = roomsService.deleteRoom(existingRoom.id);
+
+    expect(success).toBe(false);
+    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+  });
 });
