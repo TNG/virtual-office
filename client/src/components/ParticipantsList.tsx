@@ -21,13 +21,6 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     padding: 4,
     boxSizing: "border-box",
   },
-  dialogContent: {
-    flex: "0 0 auto",
-    overflowY: "auto",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-  },
 }));
 
 const ParticipantsList = ({ participants }: { participants: MeetingParticipant[] }) => {
@@ -47,7 +40,7 @@ const ParticipantsList = ({ participants }: { participants: MeetingParticipant[]
     );
   }
 
-  return <Box className={classes.dialogContent}>{participants.map(renderParticipant)}</Box>;
+  return <React.Fragment>{participants.map(renderParticipant)}</React.Fragment>;
 };
 
 export default ParticipantsList;
