@@ -69,6 +69,13 @@ const Dashboard = () => {
   const history = useHistory();
   const classes = useStyles();
 
+  useEffect(() => {
+    axios
+      .get("/api/rooms")
+      .then(({ data }) => setRooms(data))
+      .catch(() => history.push("/login"));
+  }, [history]);
+
   const context = useContext(SocketContext);
   const [rooms, setRooms] = useState([] as RoomWithParticipants[]);
   const [searchText, setSearchText] = useState("");
@@ -86,13 +93,6 @@ const Dashboard = () => {
       context.disconnect();
     };
   }, [context]);
-
-  useEffect(() => {
-    axios
-      .get("/api/rooms")
-      .then(({ data }) => setRooms(data))
-      .catch(() => history.push("/login"));
-  }, [history]);
 
   const searchResult = search(searchText, rooms);
   const groups = groupBy(searchResult, (room) => room.group || "");

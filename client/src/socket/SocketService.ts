@@ -7,6 +7,9 @@ export class SocketService {
   public init(): SocketService {
     const basePath = process.env.NODE_ENV === "production" ? "/" : process.env.REACT_APP_BACKEND_API!!;
     this.socket = io(basePath, { path: "/api/updates" });
+    this.socket.on("unauthenticated", () => {
+      document.location.reload();
+    });
     return this;
   }
 

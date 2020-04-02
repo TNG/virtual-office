@@ -3,6 +3,10 @@ import cors from "cors";
 import { Service } from "typedi";
 import session from "express-session";
 import passport from "passport";
+import { Server } from "http";
+import { Socket } from "socket.io";
+import sharedSession from "express-socket.io-session";
+import bodyParser = require("body-parser");
 
 import { AuthRoute } from "./routes/AuthRoute";
 import exceptionHandler from "./middleware/exceptionHandler";
@@ -10,7 +14,6 @@ import { ApiDocsRoute } from "./routes/ApiDocsRoute";
 import { ApiRoute } from "./routes/ApiRoute";
 import { findRootDir } from "./utils/findRootDir";
 import { Config } from "../Config";
-import bodyParser = require("body-parser");
 
 @Service()
 export class ExpressApp {
@@ -21,7 +24,7 @@ export class ExpressApp {
     private readonly config: Config
   ) {}
 
-  public readonly expressSession = session({
+  private readonly expressSession = session({
     secret: this.config.sessionSecret,
     resave: false,
     saveUninitialized: false,
@@ -35,9 +38,9 @@ export class ExpressApp {
     app.set("trust proxy", true);
     app.use(cors());
     app.use(bodyParser.json());
-    app.use(this.expressSession);
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(this.expressSession);
 
     app.use("/", this.authRoute.router());
     app.use("/", this.apiDocsRoute.router());
@@ -48,5 +51,15 @@ export class ExpressApp {
     app.use(exceptionHandler);
 
     return app;
+  }
+
+  public updateWebsocket(server: Server): Socket {
+    const socket: Socket = require("socket.io")(server, {
+      path: "/api/updates",
+      pingInterval: 5000,
+      pingTimeout: 5000,
+    });
+    socket.use(sharedSession(this.expressSession, { autoSave: true }));
+    return socket;
   }
 }

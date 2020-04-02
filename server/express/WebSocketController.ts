@@ -4,7 +4,6 @@ import { logger } from "../log";
 import { Server } from "http";
 import { RoomsService } from "../services/RoomsService";
 import { ExpressApp } from "./ExpressApp";
-import sharedSession from "express-socket.io-session";
 
 @Service({ multiple: false })
 export class WebSocketController {
@@ -21,16 +20,14 @@ export class WebSocketController {
   }
 
   private createSocket(server: Server): Socket {
-    const socket: Socket = require("socket.io")(server, {
-      path: "/api/updates",
-    });
-    socket.use(sharedSession(this.expressApp.expressSession, { autoSave: true }));
-    socket.on("connection", function (socket: any) {
-      const session = socket.handshake.session;
-      if (!session.currentUser) {
-        socket.disconnect();
-      }
+    const socket = this.expressApp.updateWebsocket(server);
 
+    socket.on("connection", (request: any) => {
+      const session = request.handshake.session;
+      if (!session.currentUser) {
+        socket.emit("unauthenticated");
+        request.disconnect(true);
+      }
       logger.trace(`createSocket - new client socket connection => sending current state`);
       socket.on("disconnect", () => {
         logger.trace(`createSocket - client socket connection disconnected`);
