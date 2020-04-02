@@ -1,8 +1,11 @@
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 
+const toGenerate = parseInt(process.argv[2] || "200", 10);
+console.log(`Generating ${toGenerate} entries`);
+
 (async function generate() {
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < toGenerate; i++) {
     const userId = uuid();
 
     await axios.post("http://localhost:8080/api/zoomus/webhook", {

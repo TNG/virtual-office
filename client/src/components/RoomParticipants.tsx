@@ -69,7 +69,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     flex: "0 0 auto",
   },
   dialogContent: {
-    flex: "1 1 auto",
+    flex: "0 0 auto",
     overflowY: "auto",
     display: "flex",
     flexWrap: "wrap",
