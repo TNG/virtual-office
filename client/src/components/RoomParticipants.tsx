@@ -2,24 +2,23 @@ import React from "react";
 import { Box, Card, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
-import CloseIcon from "@material-ui/icons/Close";
 import { sortBy } from "lodash";
 
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import ParticipantAvatar from "./ParticipantAvatar";
 import theme from "../theme";
+import ParticipantsList from "./ParticipantsList";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
     cursor: "pointer",
   },
-  avatar: {
-    flex: "0 0 auto",
-  },
   emptyGroup: {
     color: theme.palette.grey.A200,
   },
+
   dialog: {
     display: "flex",
     flexDirection: "column",
@@ -46,36 +45,9 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     margin: 0,
     cursor: "pointer",
   },
-  participant: {
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "50%",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "33%",
-    },
-    [theme.breakpoints.up("lg")]: {
-      maxWidth: Math.round(theme.breakpoints.width("lg") / 3),
-    },
-    flex: "0 0 auto",
-    padding: 4,
-    boxSizing: "border-box",
-  },
-  participantData: {
-    flex: "1 0 auto",
-    marginLeft: 12,
-  },
   dialogHeader: {
     flex: "0 0 auto",
   },
-  dialogContent: {
-    flex: "0 0 auto",
-    overflowY: "auto",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-  },
-  dialogCell: {},
 }));
 
 const RoomParticipants = ({ name, participants }: { name: string; participants: MeetingParticipant[] }) => {
@@ -88,20 +60,6 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
         <Typography className={classes.emptyGroup} variant="body2">
           No one is here
         </Typography>
-      </Box>
-    );
-  }
-
-  function renderParticipant(participant: MeetingParticipant) {
-    return (
-      <Box key={participant.id} className={classes.participant}>
-        <Card>
-          <CardHeader
-            avatar={<ParticipantAvatar participant={participant} />}
-            title={participant.username}
-            subheader={participant.email}
-          />
-        </Card>
       </Box>
     );
   }
@@ -133,7 +91,9 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
             classes={{ action: classes.dialogAction }}
           />
 
-          <CardContent className={classes.dialogContent}>{sortedParticipants.map(renderParticipant)}</CardContent>
+          <CardContent>
+            <ParticipantsList participants={sortedParticipants} />
+          </CardContent>
         </Card>
       </Modal>
     </Box>
