@@ -4,6 +4,20 @@ import { Router } from "express";
 import { RoomsService } from "../../services/RoomsService";
 import { MeetingParticipant } from "../types/MeetingParticipant";
 import { logger } from "../../log";
+import { Config } from "../../Config";
+
+function loggableParticipant(participant: ZoomusParticipant, enableParticipantLogging: boolean): ZoomusParticipant {
+  return {
+    ...participant,
+    user_name: enableParticipantLogging ? participant.user_name : "xxxx",
+  };
+}
+
+interface ZoomusParticipant {
+  id?: string;
+  user_id: string;
+  user_name: string;
+}
 
 interface ZoomUsEvent {
   event: string;
@@ -11,18 +25,14 @@ interface ZoomUsEvent {
   payload: {
     object: {
       id: string;
-      participant: {
-        id?: string;
-        user_id: string;
-        user_name: string;
-      };
+      participant: ZoomusParticipant;
     };
   };
 }
 
 @Service()
 export class ZoomUsWebHookRoute implements ExpressRoute {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(private readonly roomsService: RoomsService, private readonly config: Config) {}
 
   router(): Router {
     const router = Router();
@@ -36,7 +46,13 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info({ message: "Received an zoom.us notification", event: event, meetingId: id, participant, traceId });
+      logger.info({
+        message: "Received an zoom.us notification",
+        event: event,
+        meetingId: id,
+        participant: loggableParticipant(participant, this.config.enableParticipantLogging),
+        traceId,
+      });
 
       switch (event) {
         case "meeting.participant_joined":

@@ -44,12 +44,10 @@ export class RoomsService {
       return;
     }
 
-    logger.info(`joinRoom - participant with username ${toJoin.username}`);
+    logger.info(`joinRoom - participant with id ${toJoin.id}`);
 
     if (participants.find((participant) => participant.id === toJoin.id)) {
-      logger.info(
-        `joinRoom - participant with username ${toJoin.username} is already in the room, ignoring this call.`
-      );
+      logger.info(`joinRoom - participant with id ${toJoin.id} is already in the room, ignoring this call.`);
       return;
     }
 
@@ -60,7 +58,7 @@ export class RoomsService {
   }
 
   leave(toLeave: MeetingParticipant) {
-    logger.info(`leaveRoom - participant with username ${toLeave.username}`);
+    logger.info(`leaveRoom - participant with id ${toLeave.id}`);
 
     Object.entries(this.roomParticipants).forEach(([room, participants]) => {
       const newParticipants = participants.filter((participant) => participant.id !== toLeave.id);
