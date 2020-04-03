@@ -285,6 +285,10 @@
             "type": "string",
             "example": "https://zoom.us/j/xxxxxxxx"
           },
+          "temporary": {
+            "type": "boolean",
+            "example": "true"
+          },
           "participants": {
             "type": "array",
             "items": {
