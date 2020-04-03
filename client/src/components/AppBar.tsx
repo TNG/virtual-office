@@ -17,6 +17,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
+import SearchInput from "./SearchInput";
 
 const useStyles = makeStyles((theme: Theme) => ({
   menuButton: {
@@ -93,21 +94,7 @@ const AppBar = (props: Props) => {
         <Typography variant="h6" className={classes.title}>
           Virtual Office
         </Typography>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            onChange={(event) => props.onSearchTextChange(event.target.value)}
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            inputProps={{ "aria-label": "search" }}
-          />
-        </div>
-
+        <SearchInput onSearchTextChange={props.onSearchTextChange} />
         {user && (
           <Box display="flex" alignItems="center">
             <Box px={1}>
