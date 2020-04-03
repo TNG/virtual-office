@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     cursor: "pointer",
     width: theme.spacing(4),
     height: theme.spacing(4),
+    marginLeft: 12,
   },
   search: {
     position: "relative",
