@@ -267,7 +267,7 @@
         }
       },
       "room": {
-        "required": ["id", "name", "joinUrl", "participants", "temporary"],
+        "required": ["id", "name", "joinUrl", "participants"],
         "properties": {
           "id": {
             "type": "string",

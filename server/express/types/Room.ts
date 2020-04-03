@@ -4,7 +4,7 @@ export interface Room {
   id: string;
   name: string;
   joinUrl: string;
-  temporary: boolean;
+  temporary?: boolean;
   links?: RoomLink[];
   group?: string;
   icon?: string;
