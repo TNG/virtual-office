@@ -267,7 +267,7 @@
         }
       },
       "room": {
-        "required": ["id", "name", "joinUrl", "participants"],
+        "required": ["id", "name", "joinUrl", "participants", "temporary"],
         "properties": {
           "id": {
             "type": "string",
@@ -284,6 +284,10 @@
           "joinUrl": {
             "type": "string",
             "example": "https://zoom.us/j/xxxxxxxx"
+          },
+          "temporary": {
+            "type": "boolean",
+            "example": "true"
           },
           "participants": {
             "type": "array",

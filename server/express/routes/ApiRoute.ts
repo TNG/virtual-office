@@ -23,12 +23,8 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.roomsService.getAllRooms());
     });
     router.post("/rooms", ensureLoggedIn, (req, res) => {
-      const userId = (req as any).session?.currentUser?.id;
-      if (!userId) {
-        return 405;
-      }
-
-      const success = this.roomsService.createRoom({ ...req.body, id: userId });
+      // ToDo: Should we even restrict that on the backend API?
+      const success = this.roomsService.createRoom({ ...req.body, temporary: true });
       res.sendStatus(success ? 204 : 409);
     });
     router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
