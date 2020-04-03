@@ -25,8 +25,9 @@ const RoomDialog = (props: { open: boolean; setOpen: (open: boolean) => void }) 
     setId(event.target.value || "");
   }
   function validateId() {
-    const valid = id.length < 5 || id.length > 20;
-    setIdError(valid ? "Please select an id between 5 and 20 characters" : "");
+    const valid = name.length >= 5 && name.length <= 20;
+    setIdError(valid ? "" : "Please select an id between 5 and 20 characters");
+    return valid;
   }
 
   const [name, setName] = useState("");
@@ -36,18 +37,15 @@ const RoomDialog = (props: { open: boolean; setOpen: (open: boolean) => void }) 
     setName(event.target.value || "");
   }
   function validateName() {
-    const valid = name.length < 5 || name.length > 20;
-    setNameError(valid ? "Please select a name between 5 and 20 characters" : "");
+    const valid = name.length >= 5 && name.length <= 20;
+    setNameError(valid ? "" : "Please select a name between 5 and 20 characters");
+    return valid;
   }
 
   const [submitError, setSubmitError] = useState("");
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-
-    validateId();
-    validateName();
-
-    if (idError || nameError) {
+    if (![validateId, validateName].every((validator) => validator())) {
       return;
     }
 

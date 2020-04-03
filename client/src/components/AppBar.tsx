@@ -91,6 +91,7 @@ const AppBar = (props: { onSearchTextChange: (searchText: string) => void }) => 
   const [dialogOpen, setDialogOpen] = useState(false);
 
   function handleAddRoom() {
+    setMenuOpen(false);
     setDialogOpen(true);
   }
 
