@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import { User } from "../../../server/express/types/User";
@@ -6,9 +6,10 @@ import {
   AppBar as MaterialAppBar,
   Avatar,
   Box,
-  Button,
   fade,
   IconButton,
+  Menu,
+  MenuItem,
   Theme,
   Toolbar,
   Typography,
@@ -18,8 +19,8 @@ import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  menuButton: {
-    marginRight: 4,
+  coffee: {
+    margin: 0,
   },
   title: {
     flex: "1 0 auto",
@@ -29,22 +30,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   avatar: {
+    cursor: "pointer",
     width: theme.spacing(4),
     height: theme.spacing(4),
   },
   search: {
     position: "relative",
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "auto",
+    },
+    marginLeft: 8,
+    marginRight: 8,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
     },
   },
   searchIcon: {
@@ -68,6 +69,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: "20ch",
     },
   },
+  menuItem: {
+    width: 240,
+  },
 }));
 
 export interface Props {
@@ -78,15 +82,21 @@ const AppBar = (props: Props) => {
   const classes = useStyles();
 
   const [user, setUser] = useState<User | undefined>(undefined);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     axios.get("/api/me").then(({ data }) => setUser(data));
   }, []);
 
+  function handleLogout() {
+    window.location.href = "/logout";
+  }
+
   return (
     <MaterialAppBar position="fixed">
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
           <LocalCafeIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
@@ -95,12 +105,26 @@ const AppBar = (props: Props) => {
         <SearchInput onSearchTextChange={props.onSearchTextChange} drawBorder={false} />
         {user && (
           <Box display="flex" alignItems="center">
-            <Box px={1}>
-              <Avatar src={user.imageUrl} className={classes.avatar} />
-            </Box>
-            <Button color="inherit" href="/logout">
-              Logout
-            </Button>
+            <Avatar
+              className={classes.avatar}
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              ref={menuRef}
+              src={user.imageUrl}
+              onClick={() => setMenuOpen(true)}
+            />
+
+            <Menu
+              id="user-menu"
+              anchorEl={menuRef.current}
+              keepMounted
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+            >
+              <MenuItem className={classes.menuItem} onClick={handleLogout}>
+                Logout
+              </MenuItem>
+            </Menu>
           </Box>
         )}
       </Toolbar>
