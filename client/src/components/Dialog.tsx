@@ -37,9 +37,6 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   dialogContent: {
     flex: "1 1 auto",
     overflowY: "auto",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
   },
 }));
 

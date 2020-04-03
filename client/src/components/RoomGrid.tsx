@@ -16,6 +16,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   grid: {
     display: "flex",
     flexWrap: "wrap",
+    alignItems: "flex-start",
   },
   card: {
     width: "100%",

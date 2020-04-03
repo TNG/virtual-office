@@ -6,6 +6,13 @@ import ParticipantAvatar from "./ParticipantAvatar";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
+  root: {
+    position: "relative",
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+  },
   participant: {
     width: "100%",
     [theme.breakpoints.up("sm")]: {
@@ -40,7 +47,7 @@ const ParticipantsList = ({ participants }: { participants: MeetingParticipant[]
     );
   }
 
-  return <React.Fragment>{participants.map(renderParticipant)}</React.Fragment>;
+  return <Box className={classes.root}>{participants.map(renderParticipant)}</Box>;
 };
 
 export default ParticipantsList;
