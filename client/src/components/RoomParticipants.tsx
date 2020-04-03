@@ -63,7 +63,7 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
         ))}
       </AvatarGroup>
 
-      <Dialog open={open} setOpen={openDialog} title={name} handleSearch={_.debounce(handleSearch, 200)}>
+      <Dialog open={open} setOpen={openDialog} title={name} variant="big" handleSearch={_.debounce(handleSearch, 200)}>
         <ParticipantsList participants={filteredParticipants} />
       </Dialog>
     </Box>
