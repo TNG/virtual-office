@@ -1,8 +1,9 @@
 import React from "react";
-import { Card, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
+import { Box, Card, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import theme from "../theme";
+import SearchInput from "./SearchInput";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   dialog: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
   dialogAction: {
     margin: 0,
+    marginLeft: 8,
     cursor: "pointer",
   },
   dialogHeader: {
@@ -38,6 +40,18 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     flex: "1 1 auto",
     overflowY: "auto",
   },
+  cardHeader: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardCaption: {
+    flex: "0 0 auto",
+  },
+  cardSearch: {
+    flex: "1 1 auto",
+    marginLeft: 8,
+  },
 }));
 
 const Dialog = ({
@@ -45,13 +59,35 @@ const Dialog = ({
   setOpen,
   title,
   children,
+  handleSearch,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   title: string;
   children: any;
+  handleSearch?: (searchText: string) => void;
 }) => {
   const classes = useStyles();
+
+  function renderHeader() {
+    const caption = (
+      <Typography variant="h5" className={classes.cardCaption}>
+        {title}
+      </Typography>
+    );
+    const action = handleSearch && (
+      <Box className={classes.cardSearch}>
+        <SearchInput onSearchTextChange={handleSearch} drawBorder={true} />
+      </Box>
+    );
+
+    return (
+      <Box className={classes.cardHeader}>
+        {caption}
+        {action}
+      </Box>
+    );
+  }
 
   return (
     <Modal
@@ -63,7 +99,7 @@ const Dialog = ({
       <Card className={classes.dialog}>
         <CardHeader
           className={classes.dialogHeader}
-          title={<Typography variant="h5">{title}</Typography>}
+          title={renderHeader()}
           action={<CloseIcon color="action" fontSize="default" onClick={() => setOpen(false)} />}
           classes={{ action: classes.dialogAction }}
         />

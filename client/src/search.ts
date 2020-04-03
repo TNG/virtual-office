@@ -1,7 +1,7 @@
 import { RoomWithParticipants } from "../../server/express/types/RoomWithParticipants";
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
 
-function participantMatches(search: string, participant: MeetingParticipant): boolean {
+export function participantMatches(search: string, participant: MeetingParticipant): boolean {
   const email = participant.email || "";
   return (
     participant.id === search ||

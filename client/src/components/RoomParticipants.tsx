@@ -2,13 +2,14 @@ import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
-import { sortBy } from "lodash";
+import _, { sortBy } from "lodash";
 
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import ParticipantAvatar from "./ParticipantAvatar";
 import theme from "../theme";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
+import { participantMatches } from "../search";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   avatarGroup: {
@@ -22,6 +23,17 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 
 const RoomParticipants = ({ name, participants }: { name: string; participants: MeetingParticipant[] }) => {
   const [open, setOpen] = React.useState(false);
+  const [participantSearch, setParticipantSearch] = React.useState("");
+
+  function handleSearch(searchText: string) {
+    setParticipantSearch(searchText.toLowerCase());
+  }
+
+  function openDialog(open: boolean) {
+    setParticipantSearch("");
+    setOpen(open);
+  }
+
   const classes = useStyles();
 
   if (participants.length <= 0) {
@@ -35,6 +47,9 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
   }
 
   const sortedParticipants = sortBy(participants, (participant) => participant.username);
+  const filteredParticipants = sortedParticipants.filter((participant) =>
+    participantMatches(participantSearch, participant)
+  );
 
   return (
     <Box>
@@ -48,8 +63,8 @@ const RoomParticipants = ({ name, participants }: { name: string; participants: 
         ))}
       </AvatarGroup>
 
-      <Dialog open={open} setOpen={setOpen} title={name}>
-        <ParticipantsList participants={sortedParticipants} />
+      <Dialog open={open} setOpen={openDialog} title={name} handleSearch={_.debounce(handleSearch, 200)}>
+        <ParticipantsList participants={filteredParticipants} />
       </Dialog>
     </Box>
   );

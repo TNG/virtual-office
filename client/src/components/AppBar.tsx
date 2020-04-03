@@ -92,7 +92,7 @@ const AppBar = (props: Props) => {
         <Typography variant="h6" className={classes.title}>
           Virtual Office
         </Typography>
-        <SearchInput onSearchTextChange={props.onSearchTextChange} />
+        <SearchInput onSearchTextChange={props.onSearchTextChange} drawBorder={false} />
         {user && (
           <Box display="flex" alignItems="center">
             <Box px={1}>
