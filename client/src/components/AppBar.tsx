@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { makeStyles } from "@material-ui/styles";
 
-import { User } from "../../../server/express/types/User";
 import {
   AppBar as MaterialAppBar,
   Avatar,
@@ -15,8 +15,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
-import { makeStyles } from "@material-ui/styles";
+
+import { User } from "../../../server/express/types/User";
 import SearchInput from "./SearchInput";
+import RoomDialog from "./RoomDialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
   coffee: {
@@ -75,20 +77,22 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export interface Props {
-  onSearchTextChange: (searchText: string) => void;
-}
-
-const AppBar = (props: Props) => {
+const AppBar = (props: { onSearchTextChange: (searchText: string) => void }) => {
   const classes = useStyles();
 
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-
   useEffect(() => {
     axios.get("/api/me").then(({ data }) => setUser(data));
   }, []);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  function handleAddRoom() {
+    setDialogOpen(true);
+  }
 
   function handleLogout() {
     window.location.href = "/logout";
@@ -122,10 +126,15 @@ const AppBar = (props: Props) => {
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
             >
+              <MenuItem className={classes.menuItem} onClick={handleAddRoom}>
+                Add Room
+              </MenuItem>
               <MenuItem className={classes.menuItem} onClick={handleLogout}>
                 Logout
               </MenuItem>
             </Menu>
+
+            <RoomDialog open={dialogOpen} setOpen={setDialogOpen} />
           </Box>
         )}
       </Toolbar>

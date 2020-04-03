@@ -45,6 +45,7 @@ export class RoomsService {
       return false;
     }
 
+    logger.info(`creating room: ${JSON.stringify(room)}`);
     this.rooms = [...this.rooms, room];
     this.roomParticipants[room.id] = [];
 
