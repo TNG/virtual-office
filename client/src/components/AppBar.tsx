@@ -9,12 +9,10 @@ import {
   Button,
   fade,
   IconButton,
-  InputBase,
   Theme,
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
