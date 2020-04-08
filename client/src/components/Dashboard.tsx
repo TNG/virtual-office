@@ -87,11 +87,12 @@ const Dashboard = () => {
       setRooms((prevRooms) => prevRooms.map((room) => mapRoomEventToRoom(room, incomingMessage)));
     });
 
-    context.onRooms().subscribe((event) => setRooms(event));
+    const roomsSubscription = context.onRooms().subscribe((event) => setRooms(event));
 
     return () => {
       subscription.unsubscribe();
       context.disconnect();
+      roomsSubscription.unsubscribe();
     };
   }, [context]);
 
