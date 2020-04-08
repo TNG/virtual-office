@@ -3,13 +3,14 @@ import { Socket } from "socket.io";
 import { logger } from "../log";
 import { Server } from "http";
 import { RoomsService } from "../services/RoomsService";
-import { ExpressApp } from "./ExpressApp";
+import cookieParser from "cookie-parser";
+import { Config } from "../Config";
 
 @Service({ multiple: false })
 export class WebSocketController {
   private socket?: Socket = undefined;
 
-  constructor(private readonly roomsService: RoomsService, private readonly expressApp: ExpressApp) {}
+  constructor(private readonly roomsService: RoomsService, private readonly config: Config) {}
 
   init(server: Server) {
     this.socket = this.createSocket(server);
@@ -20,11 +21,19 @@ export class WebSocketController {
   }
 
   private createSocket(server: Server): Socket {
-    const socket = this.expressApp.updateWebsocket(server);
+    const io = require("socket.io");
+    const socket = io(server, {
+      path: "/api/updates",
+      pingInterval: 5000,
+      pingTimeout: 5000,
+      cookie: false,
+    });
+    const secureCookieParser = cookieParser(this.config.sessionSecret);
 
     socket.on("connection", (request: any) => {
-      const session = request.handshake.session;
-      if (!session.currentUser) {
+      secureCookieParser(request.handshake, {}, () => {});
+      const currentUser = request.handshake.signedCookies.currentUser;
+      if (!currentUser) {
         socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
       }

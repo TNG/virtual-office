@@ -63,7 +63,11 @@ export class AuthRoute implements ExpressRoute {
         }
 
         this.knownUsersService.add(profile);
-        (req as any).session.currentUser = profile;
+        res.cookie("currentUser", JSON.stringify(profile), {
+          signed: true,
+          maxAge: this.config.cookieMaxAgeMs,
+          httpOnly: true,
+        });
 
         return res.redirect("/");
       })(req, res, next);
