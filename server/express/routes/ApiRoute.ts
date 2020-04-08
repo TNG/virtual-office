@@ -3,7 +3,7 @@ import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { MonitoringRoute } from "./MonitoringRoute";
 import { RoomsService } from "../../services/RoomsService";
-import ensureLoggedIn from "../middleware/ensureLoggedIn";
+import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 
 @Service()
@@ -41,13 +41,8 @@ export class ApiRoute implements ExpressRoute {
       res.sendStatus(200);
     });
 
-    router.get("/me", (req, res) => {
-      const session = (req as any).session;
-      if (!session.currentUser) {
-        res.sendStatus(401);
-        return;
-      }
-      res.status(200).send(session.currentUser);
+    router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
+      res.status(200).send(req.currentUser);
     });
 
     router.use("/", this.zoomUsWebHookRoute.router());
