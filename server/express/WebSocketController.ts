@@ -36,6 +36,8 @@ export class WebSocketController {
       if (!currentUser) {
         socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
+      } else {
+        socket.to(request.id).emit("rooms", this.roomsService.getAllRooms());
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);
       socket.on("disconnect", () => {

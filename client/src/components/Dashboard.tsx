@@ -72,10 +72,7 @@ const Dashboard = () => {
   const classes = useStyles();
 
   useEffect(() => {
-    axios
-      .get("/api/rooms")
-      .then(({ data }) => setRooms(data))
-      .catch(() => history.push("/login"));
+    axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);
 
   const context = useContext(SocketContext);
@@ -89,6 +86,8 @@ const Dashboard = () => {
     const subscription = stateUpdate.subscribe((incomingMessage: RoomEvent) => {
       setRooms((prevRooms) => prevRooms.map((room) => mapRoomEventToRoom(room, incomingMessage)));
     });
+
+    context.onRooms().subscribe((event) => setRooms(event));
 
     return () => {
       subscription.unsubscribe();

@@ -41,11 +41,7 @@ export class ApiRoute implements ExpressRoute {
       res.sendStatus(200);
     });
 
-    router.get("/me", (req: AuthenticatedRequest, res) => {
-      if (!req.currentUser) {
-        res.sendStatus(401);
-        return;
-      }
+    router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
       res.status(200).send(req.currentUser);
     });
 
