@@ -74,7 +74,7 @@ export class AuthRoute implements ExpressRoute {
     });
 
     router.get("/logout", (req, res) => {
-      (req as any).session.destroy();
+      res.cookie("currentUser", {}, { maxAge: 0 });
       return res.redirect("/");
     });
 

@@ -35,6 +35,7 @@ export class ExpressApp {
 
     const rootDir = await findRootDir();
     app.use("/", serveStatic(`${rootDir}/client/build`));
+    app.use("/login", serveStatic(`${rootDir}/client/build`));
     app.use(exceptionHandler);
 
     return app;
