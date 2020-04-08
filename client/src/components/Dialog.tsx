@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React, { SyntheticEvent } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
@@ -76,8 +76,8 @@ const Dialog = (props: {
   title: string;
   variant: Variant;
   children?: any;
-  handleOk?: (event: MouseEvent) => void;
-  handleCancel?: (event: MouseEvent) => void;
+  handleOk?: <T extends SyntheticEvent>(event?: T) => void;
+  handleCancel?: <T extends SyntheticEvent>(event?: T) => void;
   handleSearch?: (searchText: string) => void;
 }) => {
   const classes = useStyles(props.variant)();

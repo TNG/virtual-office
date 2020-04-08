@@ -1,6 +1,8 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/styles";
+import * as Yup from "yup";
 
 import Dialog from "./Dialog";
 import theme from "../theme";
@@ -10,52 +12,73 @@ const useStyles = makeStyles<typeof theme>((_) => ({
   form: {
     maxWidth: 420,
   },
-  input: {
+  row: {
     marginTop: 12,
   },
 }));
 
+interface Values {
+  id: string;
+  name: string;
+  password: string;
+}
+
+const validationSchema = Yup.object().shape<Values>({
+  id: Yup.string()
+    .min(5, "Please select an id between 5 and 20 characters")
+    .max(20, "Please select an id between 5 and 20 characters")
+    .required("Required"),
+  name: Yup.string()
+    .min(5, "Please select a name between 5 and 20 characters")
+    .max(20, "Please select a name between 5 and 20 characters")
+    .required("Required"),
+  password: Yup.string(),
+});
+
 const RoomDialog = (props: { open: boolean; setOpen: (open: boolean) => void }) => {
   const classes = useStyles();
 
-  const [id, setId] = useState("");
-  const [idError, setIdError] = useState("");
-  function handleIdChange(event: ChangeEvent<HTMLInputElement>) {
-    setIdError("");
-    setId(event.target.value || "");
-  }
-  function validateId() {
-    const valid = name.length >= 5 && name.length <= 20;
-    setIdError(valid ? "" : "Please select an id between 5 and 20 characters");
-    return valid;
-  }
-
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState("");
-  function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
-    setNameError("");
-    setName(event.target.value || "");
-  }
-  function validateName() {
-    const valid = name.length >= 5 && name.length <= 20;
-    setNameError(valid ? "" : "Please select a name between 5 and 20 characters");
-    return valid;
-  }
-
   const [submitError, setSubmitError] = useState("");
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    if (![validateId, validateName].every((validator) => validator())) {
-      return;
-    }
-
+  function handleSubmit(values: Values) {
     setSubmitError("");
+
+    const joinUrl = `https://zoom.us/j/${values.id}${values.password ? `?pwd=${values.password}` : ""}`;
     axios
-      .post("/api/rooms", { id, name, joinUrl: `https://zoom.us/j/${id}`, temporary: true })
-      .then(() => {
-        props.setOpen(false);
+      .post("/api/rooms", {
+        id: values.id,
+        name: values.name,
+        joinUrl,
+        temporary: true,
       })
-      .catch(() => setSubmitError("Error during room creation"));
+      .then(() => props.setOpen(false))
+      .catch((error) => setSubmitError(`Error during room creation: ${error.message}`));
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      id: "",
+      name: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: handleSubmit,
+  });
+
+  function renderField(fieldName: keyof Values, fieldLabel: string) {
+    return (
+      <TextField
+        id={`room-${fieldName}`}
+        className={classes.row}
+        label={fieldLabel}
+        fullWidth={true}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        helperText={formik.errors[fieldName]}
+        error={!!formik.errors[fieldName]}
+        value={formik.values[fieldName]}
+        name={fieldName}
+      />
+    );
   }
 
   return (
@@ -64,38 +87,22 @@ const RoomDialog = (props: { open: boolean; setOpen: (open: boolean) => void }) 
       setOpen={props.setOpen}
       title="Add Room"
       variant="small"
-      handleOk={handleSubmit}
+      handleOk={formik.submitForm}
       handleCancel={() => props.setOpen(false)}
     >
-      {submitError && (
-        <Typography variant="body2" color="error">
-          {submitError}
-        </Typography>
-      )}
+      <Typography className={classes.row} variant="body2" color="secondary">
+        Please note that this room will be only temporary and it will be deleted once the meeting ends. Of course you
+        can also delete it at any time by clicking on the delete button on the room card.
+      </Typography>
 
-      <form className={classes.form} onSubmit={handleSubmit}>
-        <TextField
-          id="room-id"
-          className={classes.input}
-          label="Zoom Meeting ID"
-          fullWidth={true}
-          required={true}
-          helperText={idError}
-          error={!!idError}
-          onChange={handleIdChange}
-          onBlur={validateId}
-        />
-        <TextField
-          id="room-name"
-          className={classes.input}
-          label="Room Name"
-          fullWidth={true}
-          required={true}
-          helperText={nameError}
-          error={!!nameError}
-          onChange={handleNameChange}
-          onBlur={validateName}
-        />
+      <Typography className={classes.row} variant="body2" color="error">
+        {submitError}
+      </Typography>
+
+      <form className={classes.form} onSubmit={formik.submitForm}>
+        {renderField("name", "Room Name")}
+        {renderField("id", "Meeting ID")}
+        {renderField("password", "Meeting Password")}
       </form>
     </Dialog>
   );
