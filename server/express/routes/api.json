@@ -291,7 +291,7 @@
       },
       "roomCreation": {
         "type": "object",
-        "required": ["id", "name", "joinUrl"],
+        "required": ["id", "name"],
         "properties": {
           "id": {
             "type": "string",
