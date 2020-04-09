@@ -80,27 +80,27 @@ export class RoomsService {
       return;
     }
 
-    this.leave(toJoin);
+    this.leave(roomId, toJoin);
 
     this.roomParticipants[roomId].push(toJoin);
     this.notify(roomId, toJoin, "join");
   }
 
-  leave(toLeave: MeetingParticipant) {
+  leave(roomId: string, toLeave: MeetingParticipant) {
     logger.info(`leaveRoom - participant with id ${toLeave.id}`);
 
-    Object.entries(this.roomParticipants).forEach(([room, participants]) => {
-      const newParticipants = participants.filter((participant) => participant.id !== toLeave.id);
-      this.roomParticipants[room] = newParticipants;
+    const participants = this.roomParticipants[roomId];
+    if (!participants) {
+      logger.info(`cannot leave room, as room with id=${roomId} is unknown`);
+      return;
+    }
 
-      if (participants.length !== newParticipants.length) {
-        participants
-          .filter((participant) => !newParticipants.includes(participant))
-          .forEach((participant) => {
-            this.notify(room, participant, "leave");
-          });
-      }
-    });
+    const oldParticipants = this.roomParticipants[roomId];
+    const newParticipants = oldParticipants.filter((participant) => participant.id !== toLeave.id);
+    if (oldParticipants.length !== newParticipants.length) {
+      this.roomParticipants[roomId] = newParticipants;
+      this.notify(roomId, toLeave, "leave");
+    }
   }
 
   leaveRoom(roomId: string, userId: string) {

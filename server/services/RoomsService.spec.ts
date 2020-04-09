@@ -42,22 +42,9 @@ describe("RoomsService", () => {
       participants: [participant],
     });
 
-    roomsService.leave(participant);
+    roomsService.leave(existingRoom.id, participant);
 
     expect(roomsService.getRoomWithParticipants(existingRoom.id)).toEqual({ ...existingRoom, participants: [] });
-  });
-
-  it("should automatically leave any existing room when joining a new room", () => {
-    const participant = { id: "123", username: "bla" };
-
-    roomsService.joinRoom(existingRoom2.id, participant);
-    roomsService.joinRoom(existingRoom.id, participant);
-
-    expect(roomsService.getRoomWithParticipants(existingRoom.id)).toEqual({
-      ...existingRoom,
-      participants: [participant],
-    });
-    expect(roomsService.getRoomWithParticipants(existingRoom2.id)).toEqual({ ...existingRoom2, participants: [] });
   });
 
   it("can enrich a participant", () => {
@@ -77,7 +64,7 @@ describe("RoomsService", () => {
       participants: [{ ...participant, email: knownUser.email, imageUrl: knownUser.imageUrl }],
     });
 
-    roomsService.leave(participant);
+    roomsService.leave(existingRoom.id, participant);
 
     expect(roomsService.getRoomWithParticipants(existingRoom.id)).toEqual({ ...existingRoom, participants: [] });
   });
@@ -118,7 +105,7 @@ describe("RoomsService", () => {
     roomsService.joinRoom(existingRoom.id, participant);
     roomsService.listenRoomChange(listener);
 
-    roomsService.leave(participant);
+    roomsService.leave(existingRoom.id, participant);
 
     expect(listener).toHaveBeenCalledWith({
       type: "leave",
