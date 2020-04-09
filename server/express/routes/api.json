@@ -313,12 +313,6 @@
             "type": "boolean",
             "example": "true"
           },
-          "participants": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/participant"
-            }
-          },
           "links": {
             "type": "array",
             "items": {

@@ -163,7 +163,8 @@ export class RoomsService {
   }
 
   replaceRoomsWith(rooms: Room[]) {
+    rooms.forEach((room) => (this.roomParticipants[room.id] = this.roomParticipants[room.id] || []));
     this.rooms = rooms;
-    this.allRoomChangeListener.forEach((listener) => listener(rooms));
+    this.allRoomChangeListener.forEach((listener) => listener(this.getAllRooms()));
   }
 }
