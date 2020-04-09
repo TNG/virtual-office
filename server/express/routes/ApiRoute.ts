@@ -5,6 +5,7 @@ import { MonitoringRoute } from "./MonitoringRoute";
 import { RoomsService } from "../../services/RoomsService";
 import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
+import { logger } from "../../log";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
@@ -40,7 +41,13 @@ export class ApiRoute implements ExpressRoute {
       this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
       res.sendStatus(200);
     });
-    router.post("/admin/replaceAllRooms", ensureLoggedIn, (req, res) => {
+    router.post("/admin/replaceAllRooms", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
+      logger.info({
+        message: "replacing all rooms data",
+        user: req.currentUser.name,
+        email: req.currentUser.email,
+        data: req.body,
+      });
       this.roomsService.replaceRoomsWith(req.body);
       res
         .json({
