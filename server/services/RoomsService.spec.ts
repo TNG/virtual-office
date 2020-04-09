@@ -92,7 +92,7 @@ describe("RoomsService", () => {
 
   it("notifies on enter", () => {
     const participant = { id: "123", username: "bla" };
-    roomsService.listen(listener);
+    roomsService.listenRoomChange(listener);
 
     roomsService.joinRoom(existingRoom.id, participant);
 
@@ -107,7 +107,7 @@ describe("RoomsService", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
 
-    roomsService.listen(listener);
+    roomsService.listenRoomChange(listener);
     roomsService.joinRoom(existingRoom.id, participant);
 
     expect(listener).not.toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe("RoomsService", () => {
   it("notifies on leave", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listen(listener);
+    roomsService.listenRoomChange(listener);
 
     roomsService.leave(participant);
 
@@ -130,7 +130,7 @@ describe("RoomsService", () => {
   it("notifies leave for all participants on meeting end", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listen(listener);
+    roomsService.listenRoomChange(listener);
 
     roomsService.endRoom(existingRoom.id);
 
@@ -150,7 +150,7 @@ describe("RoomsService", () => {
     };
     const participant = { id: "123", username: user.name.toLowerCase() };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listen(listener);
+    roomsService.listenRoomChange(listener);
 
     roomsService.onUserUpdate(user);
 

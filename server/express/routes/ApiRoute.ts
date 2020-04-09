@@ -40,6 +40,15 @@ export class ApiRoute implements ExpressRoute {
       this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
       res.sendStatus(200);
     });
+    router.post("/admin/replaceAllRooms", ensureLoggedIn, (req, res) => {
+      this.roomsService.replaceRoomsWith(req.body);
+      res
+        .json({
+          message:
+            "Please make sure to also update your deployment. Your changes will only persist until the next restart.",
+        })
+        .status(200);
+    });
 
     router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
       res.status(200).send(req.currentUser);
