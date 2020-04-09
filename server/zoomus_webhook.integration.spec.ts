@@ -89,7 +89,7 @@ describe("Zoomus Webhooks", () => {
     const userId = "abc";
     await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room1, userId, undefined)).expect(200);
 
-    expect(await getParticipantIds(room1)).toEqual([`zoomus_${userId}`]);
+    expect(await getParticipantIds(room1)).toEqual([`zoomus_${room1.id}_${userId}`]);
   });
 
   it("should handle logged in joining users", async () => {
@@ -115,7 +115,7 @@ describe("Zoomus Webhooks", () => {
     await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room1, user2, undefined)).expect(200);
     await request(appInstance).post("/api/zoomus/webhook").send(leaveRoomEvent(room1, user1, undefined)).expect(200);
 
-    expect(await getParticipantIds(room1)).toEqual([`zoomus_${user2}`]);
+    expect(await getParticipantIds(room1)).toEqual([`zoomus_${room1.id}_${user2}`]);
   });
 
   it("should handle end meeting events", async () => {
