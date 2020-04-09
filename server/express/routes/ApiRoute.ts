@@ -3,8 +3,9 @@ import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { MonitoringRoute } from "./MonitoringRoute";
 import { RoomsService } from "../../services/RoomsService";
-import ensureLoggedIn from "../middleware/ensureLoggedIn";
+import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
+import { logger } from "../../log";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
@@ -40,14 +41,24 @@ export class ApiRoute implements ExpressRoute {
       this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
       res.sendStatus(200);
     });
+    router.post("/admin/replaceAllRooms", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
+      logger.info({
+        message: "replacing all rooms data",
+        user: req.currentUser.name,
+        email: req.currentUser.email,
+        data: req.body,
+      });
+      this.roomsService.replaceRoomsWith(req.body);
+      res
+        .json({
+          message:
+            "Please make sure to also update your deployment. Your changes will only persist until the next restart.",
+        })
+        .status(200);
+    });
 
-    router.get("/me", (req, res) => {
-      const session = (req as any).session;
-      if (!session.currentUser) {
-        res.sendStatus(401);
-        return;
-      }
-      res.status(200).send(session.currentUser);
+    router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
+      res.status(200).send(req.currentUser);
     });
 
     router.use("/", this.zoomUsWebHookRoute.router());

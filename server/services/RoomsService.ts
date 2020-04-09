@@ -10,12 +10,15 @@ import { User } from "../express/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 
+export type AllRoomChangeListener = (rooms: Room[]) => void;
+
 @Service({ multiple: false })
 export class RoomsService {
   private roomParticipants: {
     [roomId: string]: MeetingParticipant[];
   } = {};
-  private listeners: EventListener[] = [];
+  private roomChangeListeners: EventListener[] = [];
+  private allRoomChangeListener: AllRoomChangeListener[] = [];
   private rooms: Room[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
@@ -95,7 +98,7 @@ export class RoomsService {
         participants
           .filter((participant) => !newParticipants.includes(participant))
           .forEach((participant) => {
-            this.notify(room, toLeave, "leave");
+            this.notify(room, participant, "leave");
           });
       }
     });
@@ -144,11 +147,15 @@ export class RoomsService {
       type,
     };
 
-    this.listeners.forEach((listener) => listener(event));
+    this.roomChangeListeners.forEach((listener) => listener(event));
   }
 
-  listen(listener: (event: RoomEvent) => void) {
-    this.listeners.push(listener);
+  listenRoomChange(listener: (event: RoomEvent) => void) {
+    this.roomChangeListeners.push(listener);
+  }
+
+  listenAllRoomChanges(listener: (rooms: Room[]) => void) {
+    this.allRoomChangeListener.push(listener);
   }
 
   onUserUpdate(user: User) {
@@ -159,5 +166,10 @@ export class RoomsService {
         this.notify(room, enrichParticipant(found, user), "update");
       }
     });
+  }
+
+  replaceRoomsWith(rooms: Room[]) {
+    this.rooms = rooms;
+    this.allRoomChangeListener.forEach((listener) => listener(rooms));
   }
 }

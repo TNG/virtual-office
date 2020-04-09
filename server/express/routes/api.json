@@ -185,6 +185,29 @@
           }
         }
       }
+    },
+    "/api/admin/replaceAllRooms": {
+      "post": {
+        "summary": "Replace all rooms (until the next server restart)",
+        "tags": ["Admin"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/roomCreation"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -266,8 +289,9 @@
           }
         }
       },
-      "room": {
-        "required": ["id", "name", "joinUrl", "participants"],
+      "roomCreation": {
+        "type": "object",
+        "required": ["id", "name", "joinUrl"],
         "properties": {
           "id": {
             "type": "string",
@@ -304,6 +328,22 @@
           "icon": {
             "type": "string",
             "example": "http://example.com/myRoomIcon.png"
+          }
+        }
+      },
+      "room": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/roomCreation"
+          }
+        ],
+        "type": "object",
+        "properties": {
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/participant"
+            }
           }
         }
       },
