@@ -110,7 +110,8 @@ export class RoomsService {
   }
 
   endRoom(roomId: string) {
-    if (!this.roomParticipants[roomId]) {
+    const room = this.rooms.find((room) => room.id === roomId);
+    if (!room) {
       logger.info(`cannot end room, as room with id=${roomId} is unknown`);
       return;
     }
@@ -121,6 +122,10 @@ export class RoomsService {
       this.notify(roomId, participant, "leave");
     });
     this.roomParticipants[roomId] = [];
+
+    if (room.temporary) {
+      this.deleteRoom(roomId);
+    }
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {

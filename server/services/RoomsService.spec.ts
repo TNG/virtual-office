@@ -4,6 +4,7 @@ import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
 import { RoomEvent } from "../express/types/RoomEvent";
 import { User } from "../express/types/User";
+import { Room } from "../express/types/Room";
 
 describe("RoomsService", () => {
   let roomsService: RoomsService;
@@ -165,26 +166,16 @@ describe("RoomsService", () => {
     } as RoomEvent);
   });
 
-  it("can create and delete temporary rooms", () => {
-    const temporaryRoom = {
-      id: "3",
-      name: "Puppenkiste",
-      joinUrl: "http://kasperl.theater",
-      group: "fun",
-      icon: "http://my.image.com/urmel.png",
-    };
+  function expectRoom(expectedRoom: Room) {
+    expect(roomsService.getAllRooms().find((room) => room.id === expectedRoom.id)).toMatchObject(expectedRoom);
+  }
 
-    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toBeUndefined();
-
-    roomsService.createRoom(temporaryRoom);
-    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toMatchObject(temporaryRoom);
-
-    roomsService.deleteRoom(temporaryRoom.id);
-    expect(roomsService.getAllRooms().find((room) => room.id === temporaryRoom.id)).toBeUndefined();
-  });
+  function expectNoRoom(expectedRoomId: string) {
+    expect(roomsService.getAllRooms().find((room) => room.id === expectedRoomId)).toBeUndefined();
+  }
 
   it("can not overwrite existing rooms", () => {
-    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+    expectRoom(existingRoom);
 
     const success = roomsService.createRoom({
       ...existingRoom,
@@ -192,15 +183,52 @@ describe("RoomsService", () => {
     });
 
     expect(success).toBe(false);
-    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toMatchObject(existingRoom);
+    expectRoom(existingRoom);
   });
 
-  it("can not delete protected rooms", () => {
-    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+  it("can not delete permanent rooms", () => {
+    expectRoom(existingRoom);
 
     const success = roomsService.deleteRoom(existingRoom.id);
 
     expect(success).toBe(false);
-    expect(roomsService.getAllRooms().find((room) => room.id === existingRoom.id)).toBeDefined();
+    expectRoom(existingRoom);
+  });
+
+  it("can create and delete temporary rooms", () => {
+    const temporaryRoom = {
+      ...existingRoom,
+      id: "3",
+      temporary: true,
+    };
+
+    expectNoRoom(temporaryRoom.id);
+
+    roomsService.createRoom(temporaryRoom);
+    expectRoom(temporaryRoom);
+
+    roomsService.deleteRoom(temporaryRoom.id);
+    expectNoRoom(temporaryRoom.id);
+  });
+
+  it("deletes a temporary room on meeting end", () => {
+    const temporaryRoom = {
+      ...existingRoom,
+      id: "3",
+      temporary: true,
+    };
+
+    roomsService.createRoom(temporaryRoom);
+    expectRoom(temporaryRoom);
+
+    roomsService.endRoom(temporaryRoom.id);
+    expectNoRoom(temporaryRoom.id);
+  });
+
+  it("does not delete a protected room on meeting end", () => {
+    expectRoom(existingRoom);
+
+    roomsService.endRoom(existingRoom.id);
+    expectRoom(existingRoom);
   });
 });
