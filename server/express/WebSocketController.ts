@@ -5,12 +5,17 @@ import { Server } from "http";
 import { RoomsService } from "../services/RoomsService";
 import cookieParser from "cookie-parser";
 import { Config } from "../Config";
+import { KnownUsersService } from "../services/KnownUsersService";
 
 @Service({ multiple: false })
 export class WebSocketController {
   private socket?: Socket = undefined;
 
-  constructor(private readonly roomsService: RoomsService, private readonly config: Config) {}
+  constructor(
+    private readonly roomsService: RoomsService,
+    private readonly config: Config,
+    private readonly knownUsersService: KnownUsersService
+  ) {}
 
   init(server: Server) {
     this.socket = this.createSocket(server);
@@ -38,6 +43,7 @@ export class WebSocketController {
         request.disconnect(true);
       } else {
         socket.to(request.id).emit("rooms", this.roomsService.getAllRooms());
+        this.knownUsersService.add(JSON.parse(currentUser));
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);
       socket.on("disconnect", () => {

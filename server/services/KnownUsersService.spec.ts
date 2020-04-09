@@ -55,4 +55,13 @@ describe("KnownUsersService", () => {
 
     expect(listener).toHaveBeenCalledWith(user);
   });
+
+  it("won't notify a listener when the same user is added again", () => {
+    knownUsersService.add(user);
+    knownUsersService.listen(listener);
+
+    knownUsersService.add(user);
+
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
 });
