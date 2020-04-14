@@ -1,5 +1,5 @@
 import { KnownUsersService } from "./KnownUsersService";
-import { User } from "../express/types/User";
+import { User } from "../../client/src/types/User";
 
 describe("KnownUsersService", () => {
   let knownUsersService: KnownUsersService;

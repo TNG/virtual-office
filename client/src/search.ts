@@ -1,5 +1,5 @@
-import { RoomWithParticipants } from "../../server/express/types/RoomWithParticipants";
-import { Participant } from "../../server/express/types/Participant";
+import { RoomWithParticipants } from "./types/RoomWithParticipants";
+import { Participant } from "./types/Participant";
 
 export function participantMatches(search: string, participant: Participant): boolean {
   const email = participant.email || "";

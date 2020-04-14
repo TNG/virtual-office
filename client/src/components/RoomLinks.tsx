@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Link, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { RoomLink } from "../../../server/express/types/RoomLink";
+import { RoomLink } from "../types/RoomLink";
 import { sortBy } from "lodash";
 
 const useStyles = makeStyles({

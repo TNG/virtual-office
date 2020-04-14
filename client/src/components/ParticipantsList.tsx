@@ -3,7 +3,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import theme from "../theme";
 import ParticipantAvatar from "./ParticipantAvatar";
-import { Participant } from "../../../server/express/types/Participant";
+import { Participant } from "../types/Participant";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   root: {

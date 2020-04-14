@@ -1,5 +1,5 @@
 import { search } from "./search";
-import { RoomWithParticipants } from "../../server/express/types/RoomWithParticipants";
+import { RoomWithParticipants } from "./types/RoomWithParticipants";
 
 const room1: RoomWithParticipants = {
   id: "1",

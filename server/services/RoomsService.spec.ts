@@ -2,9 +2,9 @@ import { RoomsService } from "./RoomsService";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
-import { RoomEvent, RoomEventType, ParticipantEvent, ParticipantEventType } from "../express/types/RoomEvent";
-import { User } from "../express/types/User";
-import { Room } from "../express/types/Room";
+import { RoomEvent, RoomEventType, ParticipantEvent, ParticipantEventType } from "../../client/src/types/RoomEvent";
+import { User } from "../../client/src/types/User";
+import { Room } from "../../client/src/types/Room";
 
 describe("RoomsService", () => {
   let roomsService: RoomsService;

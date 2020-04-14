@@ -4,7 +4,7 @@ import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
 import { Strategy as SlackStrategy } from "passport-slack";
-import { User } from "../types/User";
+import { User } from "../../../client/src/types/User";
 import { KnownUsersService } from "../../services/KnownUsersService";
 
 passport.serializeUser(function (user, done) {

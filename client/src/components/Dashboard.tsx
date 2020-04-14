@@ -4,13 +4,8 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { groupBy, mapValues, sortBy } from "lodash";
 
-import {
-  RoomEvent,
-  RoomEventType,
-  ParticipantEvent,
-  ParticipantEventType,
-} from "../../../server/express/types/RoomEvent";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import { RoomEvent, RoomEventType, ParticipantEvent, ParticipantEventType } from "../types/RoomEvent";
+import { RoomWithParticipants } from "../types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
 import { search } from "../search";
 

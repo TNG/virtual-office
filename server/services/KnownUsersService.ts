@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
 
-import { User } from "../express/types/User";
+import { User } from "../../client/src/types/User";
 import { Service } from "typedi";
 import { comparableUsername } from "../express/utils/compareableUsername";
 

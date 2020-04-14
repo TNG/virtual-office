@@ -4,7 +4,7 @@ import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
 
-import { Participant } from "../../../server/express/types/Participant";
+import { Participant } from "../types/Participant";
 import ParticipantAvatar from "./ParticipantAvatar";
 import theme from "../theme";
 import ParticipantsList from "./ParticipantsList";

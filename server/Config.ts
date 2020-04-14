@@ -1,7 +1,7 @@
 import { Service } from "typedi";
-import { Room } from "./express/types/Room";
 import { findRootDir } from "./express/utils/findRootDir";
 import { v4 as uuid } from "uuid";
+import { Room } from "../client/src/types/Room";
 
 export interface SlackConfig {
   clientId: string;

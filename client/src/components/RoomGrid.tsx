@@ -3,7 +3,7 @@ import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import RoomCard from "./RoomCard";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import { RoomWithParticipants } from "../types/RoomWithParticipants";
 import theme from "../theme";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({

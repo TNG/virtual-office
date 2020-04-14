@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, Tooltip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { Participant } from "../../../server/express/types/Participant";
+import { Participant } from "../types/Participant";
 import theme from "../theme";
 
 const useStyles = makeStyles<typeof theme>({

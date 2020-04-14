@@ -1,7 +1,7 @@
 import { Service } from "typedi";
-import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
+import { RoomWithParticipants } from "../../client/src/types/RoomWithParticipants";
 import { Config } from "../Config";
-import { Participant } from "../express/types/Participant";
+import { Participant } from "../../client/src/types/Participant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
 import {
@@ -10,9 +10,9 @@ import {
   RoomEventType,
   ParticipantEvent,
   ParticipantEventType,
-} from "../express/types/RoomEvent";
-import { Room } from "../express/types/Room";
-import { User } from "../express/types/User";
+} from "../../client/src/types/RoomEvent";
+import { Room } from "../../client/src/types/Room";
+import { User } from "../../client/src/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 

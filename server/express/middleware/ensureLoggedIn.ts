@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Container } from "typedi";
 import { Config } from "../../Config";
-import { User } from "../types/User";
+import { User } from "../../../client/src/types/User";
 
 function getLoginUser(req: Request): User | undefined {
   const userValue = req.signedCookies.currentUser;

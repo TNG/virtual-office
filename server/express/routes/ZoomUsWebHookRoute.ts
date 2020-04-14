@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { RoomsService } from "../../services/RoomsService";
-import { Participant } from "../types/Participant";
+import { Participant } from "../../../client/src/types/Participant";
 import { logger } from "../../log";
 import { Config } from "../../Config";
 

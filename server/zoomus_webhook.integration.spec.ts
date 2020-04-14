@@ -4,8 +4,8 @@ import request from "supertest";
 import { Container } from "typedi";
 import { ExpressApp } from "./express/ExpressApp";
 import { Express } from "express";
-import { Room } from "./express/types/Room";
-import { RoomWithParticipants } from "./express/types/RoomWithParticipants";
+import { Room } from "../client/src/types/Room";
+import { RoomWithParticipants } from "../client/src/types/RoomWithParticipants";
 
 const room1 = {
   id: "1",

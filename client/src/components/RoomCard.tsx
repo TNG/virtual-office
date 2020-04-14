@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import { RoomWithParticipants } from "../types/RoomWithParticipants";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 

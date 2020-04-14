@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 
-import { User } from "../../../server/express/types/User";
+import { User } from "../types/User";
 import SearchInput from "./SearchInput";
 import RoomDialog from "./RoomDialog";
 
