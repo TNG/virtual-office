@@ -86,27 +86,27 @@ export class RoomsService {
       return;
     }
 
-    this.leave(toJoin);
+    this.leave(roomId, toJoin);
 
     this.roomParticipants[roomId].push(toJoin);
     this.notifyParticipantChange(roomId, toJoin, ParticipantEventType.Join);
   }
 
-  leave(toLeave: Participant) {
+  leave(roomId: string, toLeave: Participant) {
     logger.info(`leaveRoom - participant with id ${toLeave.id}`);
 
-    Object.entries(this.roomParticipants).forEach(([room, participants]) => {
-      const newParticipants = participants.filter((participant) => participant.id !== toLeave.id);
-      this.roomParticipants[room] = newParticipants;
+    const participants = this.roomParticipants[roomId];
+    if (!participants) {
+      logger.info(`cannot leave room, as room with id=${roomId} is unknown`);
+      return;
+    }
 
-      if (participants.length !== newParticipants.length) {
-        participants
-          .filter((participant) => !newParticipants.includes(participant))
-          .forEach((participant) => {
-            this.notifyParticipantChange(room, participant, ParticipantEventType.Leave);
-          });
-      }
-    });
+    const oldParticipants = this.roomParticipants[roomId];
+    const newParticipants = oldParticipants.filter((participant) => participant.id !== toLeave.id);
+    if (oldParticipants.length !== newParticipants.length) {
+      this.roomParticipants[roomId] = newParticipants;
+      this.notifyParticipantChange(roomId, toLeave, ParticipantEventType.Leave);
+    }
   }
 
   leaveRoom(roomId: string, userId: string) {
@@ -156,6 +156,7 @@ export class RoomsService {
   }
 
   replaceRoomsWith(rooms: Room[]) {
+    rooms.forEach((room) => (this.roomParticipants[room.id] = this.roomParticipants[room.id] || []));
     this.rooms = rooms;
 
     this.notifyRoomChange();

@@ -66,7 +66,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/room"
+                "$ref": "#/components/schemas/roomCreation"
               }
             }
           }
@@ -291,7 +291,7 @@
       },
       "roomCreation": {
         "type": "object",
-        "required": ["id", "name", "joinUrl"],
+        "required": ["id", "name"],
         "properties": {
           "id": {
             "type": "string",
@@ -312,12 +312,6 @@
           "temporary": {
             "type": "boolean",
             "example": "true"
-          },
-          "participants": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/participant"
-            }
           },
           "links": {
             "type": "array",

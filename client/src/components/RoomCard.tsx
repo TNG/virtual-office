@@ -30,6 +30,16 @@ const useStyles = makeStyles({
 const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   const classes = useStyles();
 
+  function renderJoinUrl() {
+    return (
+      room.joinUrl && (
+        <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
+          Join
+        </Button>
+      )
+    );
+  }
+
   return (
     <Card className={classes.root} key={room.id}>
       <CardHeader
@@ -43,11 +53,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
         <RoomLinks links={room.links} />
       </CardContent>
 
-      <CardActions className={classes.actions}>
-        <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
-          Join
-        </Button>
-      </CardActions>
+      <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
     </Card>
   );
 };

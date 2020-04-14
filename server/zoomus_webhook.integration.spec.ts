@@ -85,27 +85,11 @@ describe("Zoomus Webhooks", () => {
     return foundRoom.participants.map((participant) => participant.id);
   }
 
-  it("should handle anonymously joining users", async () => {
+  it("should handle joining users", async () => {
     const userId = "abc";
     await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room1, userId, undefined)).expect(200);
 
     expect(await getParticipantIds(room1)).toEqual([`zoomus_${room1.id}_${userId}`]);
-  });
-
-  it("should handle logged in joining users", async () => {
-    const id = "def";
-    await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room1, "abc", id)).expect(200);
-
-    expect(await getParticipantIds(room1)).toEqual([`zoomus_${id}`]);
-  });
-
-  it("should leave any room when joining a new room", async () => {
-    const id = "def";
-    await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room1, "abc", id)).expect(200);
-    await request(appInstance).post("/api/zoomus/webhook").send(joinRoomEvent(room2, "abc", id)).expect(200);
-
-    expect(await getParticipantIds(room1)).toHaveLength(0);
-    expect(await getParticipantIds(room2)).toHaveLength(1);
   });
 
   it("should handle leave room events", async () => {
