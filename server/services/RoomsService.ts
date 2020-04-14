@@ -1,24 +1,27 @@
 import { Service } from "typedi";
 import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { Config } from "../Config";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { Participant } from "../express/types/Participant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
-import { EventListener, EventType, RoomEvent } from "../express/types/RoomEvent";
+import {
+  RoomEventListener,
+  RoomEvent,
+  RoomEventType,
+  ParticipantEvent,
+  ParticipantEventType,
+} from "../express/types/RoomEvent";
 import { Room } from "../express/types/Room";
 import { User } from "../express/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 
-export type AllRoomChangeListener = (rooms: Room[]) => void;
-
 @Service({ multiple: false })
 export class RoomsService {
   private roomParticipants: {
-    [roomId: string]: MeetingParticipant[];
+    [roomId: string]: Participant[];
   } = {};
-  private roomChangeListeners: EventListener[] = [];
-  private allRoomChangeListener: AllRoomChangeListener[] = [];
+  private roomEventListeners: RoomEventListener[] = [];
   private rooms: Room[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
@@ -51,6 +54,7 @@ export class RoomsService {
     logger.info(`creating room: ${JSON.stringify(room)}`);
     this.rooms = [...this.rooms, room];
     this.roomParticipants[room.id] = [];
+    this.notifyRoomChange();
 
     return true;
   }
@@ -61,13 +65,14 @@ export class RoomsService {
       return false;
     }
 
-    this.rooms = this.rooms.filter((room) => roomId !== room.id);
+    this.rooms = this.rooms.filter((room) => room.id !== roomId);
     delete this.roomParticipants[roomId];
+    this.notifyRoomChange();
 
     return true;
   }
 
-  joinRoom(roomId: string, toJoin: MeetingParticipant) {
+  joinRoom(roomId: string, toJoin: Participant) {
     const participants = this.roomParticipants[roomId];
     if (!participants) {
       logger.info(`cannot join room, as room with id=${roomId} is unknown`);
@@ -84,10 +89,10 @@ export class RoomsService {
     this.leave(toJoin);
 
     this.roomParticipants[roomId].push(toJoin);
-    this.notify(roomId, toJoin, "join");
+    this.notifyParticipantChange(roomId, toJoin, ParticipantEventType.Join);
   }
 
-  leave(toLeave: MeetingParticipant) {
+  leave(toLeave: Participant) {
     logger.info(`leaveRoom - participant with id ${toLeave.id}`);
 
     Object.entries(this.roomParticipants).forEach(([room, participants]) => {
@@ -98,7 +103,7 @@ export class RoomsService {
         participants
           .filter((participant) => !newParticipants.includes(participant))
           .forEach((participant) => {
-            this.notify(room, participant, "leave");
+            this.notifyParticipantChange(room, participant, ParticipantEventType.Leave);
           });
       }
     });
@@ -108,7 +113,7 @@ export class RoomsService {
     if (this.roomParticipants[roomId]) {
       const toLeave = this.roomParticipants[roomId].filter((user) => user.id === userId);
       this.roomParticipants[roomId] = this.roomParticipants[roomId].filter((user) => !toLeave.includes(user));
-      toLeave.forEach((user) => this.notify(roomId, user, "leave"));
+      toLeave.forEach((user) => this.notifyParticipantChange(roomId, user, ParticipantEventType.Leave));
     }
   }
 
@@ -122,7 +127,7 @@ export class RoomsService {
     logger.info(`endRoom - all participants had to leave`);
 
     this.roomParticipants[roomId].forEach((participant) => {
-      this.notify(roomId, participant, "leave");
+      this.notifyParticipantChange(roomId, participant, ParticipantEventType.Leave);
     });
     this.roomParticipants[roomId] = [];
 
@@ -131,7 +136,7 @@ export class RoomsService {
     }
   }
 
-  private enrich(participant: MeetingParticipant): MeetingParticipant {
+  private enrich(participant: Participant): Participant {
     const user = this.knownUsersService.find(participant.username);
     if (!user) {
       return participant;
@@ -140,36 +145,44 @@ export class RoomsService {
     return enrichParticipant(participant, user);
   }
 
-  private notify(roomId: string, participant: MeetingParticipant, type: EventType) {
-    const event: RoomEvent = {
-      participant: this.enrich(participant),
-      roomId,
-      type,
-    };
-
-    this.roomChangeListeners.forEach((listener) => listener(event));
-  }
-
-  listenRoomChange(listener: (event: RoomEvent) => void) {
-    this.roomChangeListeners.push(listener);
-  }
-
-  listenAllRoomChanges(listener: (rooms: Room[]) => void) {
-    this.allRoomChangeListener.push(listener);
-  }
-
   onUserUpdate(user: User) {
     const username = comparableUsername(user.name);
     Object.entries(this.roomParticipants).map(([room, participants]) => {
       const found = participants.find((participant) => comparableUsername(participant.username) === username);
       if (found) {
-        this.notify(room, enrichParticipant(found, user), "update");
+        this.notifyParticipantChange(room, enrichParticipant(found, user), ParticipantEventType.Update);
       }
     });
   }
 
   replaceRoomsWith(rooms: Room[]) {
     this.rooms = rooms;
-    this.allRoomChangeListener.forEach((listener) => listener(rooms));
+
+    this.notifyRoomChange();
+  }
+
+  subscribe(listener: RoomEventListener) {
+    this.roomEventListeners.push(listener);
+  }
+
+  private notifyRoomChange() {
+    this.notify({
+      type: RoomEventType.Replace,
+      payload: this.getAllRooms(),
+    });
+  }
+
+  private notifyParticipantChange(roomId: string, participant: Participant, type: ParticipantEventType) {
+    this.notify({
+      type,
+      payload: {
+        roomId,
+        participant: this.enrich(participant),
+      },
+    });
+  }
+
+  private notify(event: ParticipantEvent | RoomEvent) {
+    this.roomEventListeners.forEach((listener) => listener(event));
   }
 }

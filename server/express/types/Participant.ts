@@ -1,4 +1,4 @@
-export interface MeetingParticipant {
+export interface Participant {
   id: string;
   username: string;
   email?: string;

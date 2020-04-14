@@ -2,7 +2,7 @@ import { RoomsService } from "./RoomsService";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
-import { RoomEvent } from "../express/types/RoomEvent";
+import { RoomEvent, RoomEventType, ParticipantEvent, ParticipantEventType } from "../express/types/RoomEvent";
 import { User } from "../express/types/User";
 import { Room } from "../express/types/Room";
 
@@ -19,6 +19,11 @@ describe("RoomsService", () => {
     id: "2",
     name: "Test2",
     joinUrl: "http://bla.blub",
+  };
+  const temporaryRoom = {
+    ...existingRoom,
+    id: "3",
+    temporary: true,
   };
 
   let listener: jest.Mock;
@@ -93,22 +98,24 @@ describe("RoomsService", () => {
 
   it("notifies on enter", () => {
     const participant = { id: "123", username: "bla" };
-    roomsService.listenRoomChange(listener);
+    roomsService.subscribe(listener);
 
     roomsService.joinRoom(existingRoom.id, participant);
 
     expect(listener).toHaveBeenCalledWith({
-      type: "join",
-      roomId: existingRoom.id,
-      participant,
-    } as RoomEvent);
+      type: ParticipantEventType.Join,
+      payload: {
+        roomId: existingRoom.id,
+        participant,
+      },
+    } as ParticipantEvent);
   });
 
   it("won't notify on enter when the user is already in the room", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
 
-    roomsService.listenRoomChange(listener);
+    roomsService.subscribe(listener);
     roomsService.joinRoom(existingRoom.id, participant);
 
     expect(listener).not.toHaveBeenCalled();
@@ -117,29 +124,33 @@ describe("RoomsService", () => {
   it("notifies on leave", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listenRoomChange(listener);
+    roomsService.subscribe(listener);
 
     roomsService.leave(participant);
 
     expect(listener).toHaveBeenCalledWith({
-      type: "leave",
-      roomId: existingRoom.id,
-      participant,
-    } as RoomEvent);
+      type: ParticipantEventType.Leave,
+      payload: {
+        roomId: existingRoom.id,
+        participant,
+      },
+    } as ParticipantEvent);
   });
 
   it("notifies leave for all participants on meeting end", () => {
     const participant = { id: "123", username: "bla" };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listenRoomChange(listener);
+    roomsService.subscribe(listener);
 
     roomsService.endRoom(existingRoom.id);
 
     expect(listener).toHaveBeenCalledWith({
-      type: "leave",
-      roomId: existingRoom.id,
-      participant,
-    } as RoomEvent);
+      type: ParticipantEventType.Leave,
+      payload: {
+        roomId: existingRoom.id,
+        participant,
+      },
+    } as ParticipantEvent);
   });
 
   it("can update a user", () => {
@@ -151,19 +162,21 @@ describe("RoomsService", () => {
     };
     const participant = { id: "123", username: user.name.toLowerCase() };
     roomsService.joinRoom(existingRoom.id, participant);
-    roomsService.listenRoomChange(listener);
+    roomsService.subscribe(listener);
 
     roomsService.onUserUpdate(user);
 
     expect(listener).toHaveBeenCalledWith({
-      participant: {
-        ...participant,
-        imageUrl: user.imageUrl,
-        email: user.email,
+      type: ParticipantEventType.Update,
+      payload: {
+        roomId: existingRoom.id,
+        participant: {
+          ...participant,
+          imageUrl: user.imageUrl,
+          email: user.email,
+        },
       },
-      roomId: existingRoom.id,
-      type: "update",
-    } as RoomEvent);
+    } as ParticipantEvent);
   });
 
   function expectRoom(expectedRoom: Room) {
@@ -196,12 +209,6 @@ describe("RoomsService", () => {
   });
 
   it("can create and delete temporary rooms", () => {
-    const temporaryRoom = {
-      ...existingRoom,
-      id: "3",
-      temporary: true,
-    };
-
     expectNoRoom(temporaryRoom.id);
 
     roomsService.createRoom(temporaryRoom);
@@ -212,12 +219,6 @@ describe("RoomsService", () => {
   });
 
   it("deletes a temporary room on meeting end", () => {
-    const temporaryRoom = {
-      ...existingRoom,
-      id: "3",
-      temporary: true,
-    };
-
     roomsService.createRoom(temporaryRoom);
     expectRoom(temporaryRoom);
 
@@ -230,5 +231,28 @@ describe("RoomsService", () => {
 
     roomsService.endRoom(existingRoom.id);
     expectRoom(existingRoom);
+  });
+
+  it("notifies on room creation and deletion", () => {
+    roomsService.subscribe(listener);
+
+    roomsService.createRoom(temporaryRoom);
+    expect(listener).toHaveBeenCalledWith({
+      type: RoomEventType.Replace,
+      payload: [
+        { ...existingRoom, participants: [] },
+        { ...existingRoom2, participants: [] },
+        { ...temporaryRoom, participants: [] },
+      ],
+    } as RoomEvent);
+
+    roomsService.deleteRoom(temporaryRoom.id);
+    expect(listener).toHaveBeenCalledWith({
+      type: RoomEventType.Replace,
+      payload: [
+        { ...existingRoom, participants: [] },
+        { ...existingRoom2, participants: [] },
+      ],
+    } as RoomEvent);
   });
 });

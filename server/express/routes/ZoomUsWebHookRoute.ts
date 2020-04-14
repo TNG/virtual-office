@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { RoomsService } from "../../services/RoomsService";
-import { MeetingParticipant } from "../types/MeetingParticipant";
+import { Participant } from "../types/Participant";
 import { logger } from "../../log";
 import { Config } from "../../Config";
 
@@ -81,7 +81,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
 const mapParticipant = (
   meetingId: string,
   participant: { id?: string; user_name: string; user_id: string }
-): MeetingParticipant => ({
+): Participant => ({
   username: participant.user_name,
   id: "zoomus_" + (participant.id || `${meetingId}_${participant.user_id}`), // id is permanent for logged in users, user_id is temporary per meeting
 });

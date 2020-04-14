@@ -1,6 +1,5 @@
 import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
@@ -17,10 +16,6 @@ export class SocketService {
   // link message event to rxjs data source
   public onNotify(): Observable<any> {
     return fromEvent(this.socket, "notify");
-  }
-
-  public onRooms(): Observable<RoomWithParticipants[]> {
-    return fromEvent(this.socket, "rooms");
   }
 
   public disconnect(): void {

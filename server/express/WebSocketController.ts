@@ -20,11 +20,8 @@ export class WebSocketController {
   init(server: Server) {
     this.socket = this.createSocket(server);
 
-    this.roomsService.listenRoomChange((event) => {
+    this.roomsService.subscribe((event) => {
       this.socket.emit("notify", event);
-    });
-    this.roomsService.listenAllRoomChanges((rooms) => {
-      this.socket.emit("rooms", rooms);
     });
   }
 

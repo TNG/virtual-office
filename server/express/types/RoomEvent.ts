@@ -1,11 +1,27 @@
-import { MeetingParticipant } from "./MeetingParticipant";
+import { Participant } from "./Participant";
+import { RoomWithParticipants } from "./RoomWithParticipants";
 
-export type EventType = "join" | "leave" | "update";
+export type RoomEventListener = (event: RoomEvent | ParticipantEvent) => void;
 
-export type EventListener = (event: RoomEvent) => void;
+export enum RoomEventType {
+  Replace = "room.replace",
+}
 
 export interface RoomEvent {
-  type: EventType;
-  participant: MeetingParticipant;
-  roomId: string;
+  type: RoomEventType;
+  payload: RoomWithParticipants[];
+}
+
+export enum ParticipantEventType {
+  Join = "participant.join",
+  Leave = "participant.leave",
+  Update = "participant.update",
+}
+
+export interface ParticipantEvent {
+  type: ParticipantEventType;
+  payload: {
+    roomId: string;
+    participant: Participant;
+  };
 }

@@ -4,7 +4,7 @@ import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
 
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { Participant } from "../../../server/express/types/Participant";
 import ParticipantAvatar from "./ParticipantAvatar";
 import theme from "../theme";
 import ParticipantsList from "./ParticipantsList";
@@ -21,7 +21,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomParticipants = (props: { name: string; participants: MeetingParticipant[] }) => {
+const RoomParticipants = (props: { name: string; participants: Participant[] }) => {
   const [open, setOpen] = React.useState(false);
   const [participantSearch, setParticipantSearch] = React.useState("");
 

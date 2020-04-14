@@ -4,7 +4,12 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { groupBy, mapValues, sortBy } from "lodash";
 
-import { RoomEvent } from "../../../server/express/types/RoomEvent";
+import {
+  RoomEvent,
+  RoomEventType,
+  ParticipantEvent,
+  ParticipantEventType,
+} from "../../../server/express/types/RoomEvent";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
 import { search } from "../search";
@@ -45,27 +50,46 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): RoomWithParticipants => {
-  if (room.id === roomEvent.roomId) {
-    switch (roomEvent.type) {
-      case "join":
-        return { ...room, participants: [...room.participants, roomEvent.participant] };
-      case "leave":
-        return {
-          ...room,
-          participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
-        };
-      case "update":
-        return {
-          ...room,
-          participants: room.participants
-            .filter(({ id }) => id !== roomEvent.participant.id)
-            .concat([roomEvent.participant]),
-        };
-    }
+function reduceParticipantEvent(room: RoomWithParticipants, event: ParticipantEvent) {
+  if (room.id !== event.payload.roomId) {
+    return room;
   }
-  return room;
-};
+
+  switch (event.type) {
+    case ParticipantEventType.Join:
+      return { ...room, participants: [...room.participants, event.payload.participant] };
+    case ParticipantEventType.Leave:
+      return {
+        ...room,
+        participants: room.participants.filter(({ id }) => id !== event.payload.participant.id),
+      };
+    case ParticipantEventType.Update:
+      return {
+        ...room,
+        participants: room.participants
+          .filter(({ id }) => id !== event.payload.participant.id)
+          .concat([event.payload.participant]),
+      };
+    default:
+      return room;
+  }
+}
+
+function reduceRoomOrParticipantEvent(
+  rooms: RoomWithParticipants[],
+  event: RoomEvent | ParticipantEvent
+): RoomWithParticipants[] {
+  switch (event.type) {
+    case RoomEventType.Replace:
+      return event.payload;
+    case ParticipantEventType.Join:
+    case ParticipantEventType.Leave:
+    case ParticipantEventType.Update:
+      return rooms.map((room) => reduceParticipantEvent(room, event));
+    default:
+      return rooms;
+  }
+}
 
 const Dashboard = () => {
   const history = useHistory();
@@ -83,16 +107,13 @@ const Dashboard = () => {
     context.init();
 
     const stateUpdate = context.onNotify();
-    const subscription = stateUpdate.subscribe((incomingMessage: RoomEvent) => {
-      setRooms((prevRooms) => prevRooms.map((room) => mapRoomEventToRoom(room, incomingMessage)));
+    const subscription = stateUpdate.subscribe((event: RoomEvent | ParticipantEvent) => {
+      setRooms((prevRooms) => reduceRoomOrParticipantEvent(prevRooms, event));
     });
-
-    const roomsSubscription = context.onRooms().subscribe((event) => setRooms(event));
 
     return () => {
       subscription.unsubscribe();
       context.disconnect();
-      roomsSubscription.unsubscribe();
     };
   }, [context]);
 

@@ -3,7 +3,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import theme from "../theme";
 import ParticipantAvatar from "./ParticipantAvatar";
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { Participant } from "../../../server/express/types/Participant";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   root: {
@@ -30,10 +30,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const ParticipantsList = ({ participants }: { participants: MeetingParticipant[] }) => {
+const ParticipantsList = ({ participants }: { participants: Participant[] }) => {
   const classes = useStyles();
 
-  function renderParticipant(participant: MeetingParticipant) {
+  function renderParticipant(participant: Participant) {
     return (
       <Box key={participant.id} className={classes.participant}>
         <Card>
