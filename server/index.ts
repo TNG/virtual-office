@@ -26,7 +26,7 @@ if (result.error) {
   Container.get(WebSocketController).init(server);
 
   if (config.slack.botOAuthAccessToken) {
-    Container.get(SlackBotService).init(config.slack);
+    Container.get(SlackBotService);
   }
 
   logger.info(`started on port ${config.port}`);

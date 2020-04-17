@@ -1,21 +1,19 @@
 import { Service } from "typedi";
 import { WebClient } from "@slack/web-api";
-import { SlackConfig } from "../Config";
+import { Config } from "../Config";
 import { RoomsService } from "./RoomsService";
 import { RoomEvent } from "../express/types/RoomEvent";
 import { logger } from "../log";
 
 @Service({ multiple: false })
 export class SlackBotService {
-  private slackClient;
+  private readonly slackClient;
 
   private lastNotificationTime: { [key: string]: number } = {};
 
-  constructor(private readonly roomsService: RoomsService) {}
-
-  init(config: SlackConfig) {
-    if (config.botOAuthAccessToken && !this.slackClient) {
-      this.slackClient = new WebClient(config.botOAuthAccessToken);
+  constructor(config: Config, private readonly roomsService: RoomsService) {
+    if (config.slack.botOAuthAccessToken) {
+      this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
       this.roomsService.listenRoomChange((event) => this.onRoomEvent(event));
     }
   }
@@ -41,6 +39,7 @@ export class SlackBotService {
 
   private shouldSendNotification(room) {
     return (
+      this.slackClient &&
       room.slackNotification &&
       room.participants.length === 1 &&
       (!this.lastNotificationTime[room.id] || this.lastNotificationTime[room.id] < Date.now() - 5 * 60 * 1000)
