@@ -111,7 +111,7 @@ describe("SlackBotService", () => {
     expect(mockPostMessage).not.toHaveBeenCalled();
 
     // when
-    mockDateNow.mockReturnValue(10 * 1000);
+    mockDateNow.mockReturnValue(30 * 1000);
     jest.advanceTimersByTime(30 * 1000);
 
     // then
@@ -122,8 +122,8 @@ describe("SlackBotService", () => {
     });
 
     // when
-    mockDateNow.mockReturnValue(20 * 1000);
-    jest.advanceTimersByTime(10 * 1000);
+    mockDateNow.mockReturnValue(30 * 1000 + 30 * 1000);
+    jest.advanceTimersByTime(30 * 1000);
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
@@ -135,7 +135,7 @@ describe("SlackBotService", () => {
         participants: [{ id: "123", username: "bla" }],
       },
     ]);
-    mockDateNow.mockReturnValue(5 * 60 * 1000 + 20 * 1000);
+    mockDateNow.mockReturnValue(5 * 60 * 1000 + 30 * 1000 + 30 * 1000);
     jest.advanceTimersByTime(5 * 60 * 1000);
 
     // then
