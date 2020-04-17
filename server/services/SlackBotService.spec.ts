@@ -112,7 +112,7 @@ describe("SlackBotService", () => {
 
     // when
     mockDateNow.mockReturnValue(10 * 1000);
-    jest.advanceTimersByTime(10 * 1000);
+    jest.advanceTimersByTime(30 * 1000);
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
