@@ -119,10 +119,12 @@ export class RoomsService {
 
     logger.info(`endRoom - all participants had to leave`);
 
-    this.roomParticipants[roomId].forEach((participant) => {
+    const remainingParticipants = this.roomParticipants[roomId];
+    this.roomParticipants[roomId] = [];
+
+    remainingParticipants.forEach((participant) => {
       this.notify(roomId, participant, "leave");
     });
-    this.roomParticipants[roomId] = [];
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {
