@@ -7,6 +7,7 @@ import { logger } from "./log";
 import { Config } from "./Config";
 import { ExpressApp } from "./express/ExpressApp";
 import { WebSocketController } from "./express/WebSocketController";
+import { SlackBotService } from "./services/SlackBotService";
 
 const result = dotenv.config();
 if (result.error) {
@@ -23,6 +24,10 @@ if (result.error) {
   const server = appInstance.listen(config.port);
 
   Container.get(WebSocketController).init(server);
+
+  if (config.slack.botOAuthAccessToken) {
+    Container.get(SlackBotService).init(config.slack);
+  }
 
   logger.info(`started on port ${config.port}`);
 })();

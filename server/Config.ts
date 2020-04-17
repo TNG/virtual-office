@@ -7,6 +7,7 @@ export interface SlackConfig {
   clientId: string;
   secret: string;
   callbackURL?: string;
+  botOAuthAccessToken?: string;
 }
 
 const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
@@ -27,6 +28,7 @@ export class Config {
     const secret = process.env.SLACK_SECRET;
     const clientId = process.env.SLACK_CLIENT_ID;
     const callbackURL = process.env.SLACK_CALLBACK_URL;
+    const botOAuthAccessToken = process.env.SLACK_BOT_OAUTH_ACCESS_TOKEN;
     if (!secret || !clientId) {
       throw new Error("Slack Config invalid: SLACK_SECRET and SLACK_CLIENT_ID must be set.");
     }
@@ -35,6 +37,7 @@ export class Config {
       clientId,
       secret,
       callbackURL,
+      botOAuthAccessToken,
     };
   }
 

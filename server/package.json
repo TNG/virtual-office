@@ -11,6 +11,7 @@
     "generateTestData": "ts-node ./generateTestData.ts"
   },
   "dependencies": {
+    "@slack/web-api": "^5.8.0",
     "axios": "^0.19.2",
     "body-parser": "^1.18.2",
     "bunyan": "^1.8.12",
