@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "test": "jest",
+    "test": "jest **/*.spec.ts",
     "format": "cd .. && npm run format",
     "start": "node build/server/index.js",
     "generateTestData": "ts-node ./generateTestData.ts"
