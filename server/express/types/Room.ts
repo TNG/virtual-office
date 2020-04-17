@@ -8,4 +8,7 @@ export interface Room {
   links?: RoomLink[];
   group?: string;
   icon?: string;
+  slackNotification?: {
+    channelId: string;
+  };
 }
