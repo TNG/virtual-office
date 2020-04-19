@@ -101,7 +101,8 @@ export class SlackBotService {
   private isLongEnoughSinceLastNotification(room: RoomWithParticipants) {
     return (
       !this.lastNotificationTime[room.id] ||
-      Date.now() - this.lastNotificationTime[room.id] > MINIMUM_NOTIFICATION_INTERVAL
+      Date.now() - this.lastNotificationTime[room.id] >
+        (room.slackNotification.notificationInterval ?? MINIMUM_NOTIFICATION_INTERVAL)
     );
   }
 }
