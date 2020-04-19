@@ -56,7 +56,27 @@ describe("SlackBotService", () => {
 
     onRoomEvent({ roomId: "1", type: "join", participant });
 
-    expect(mockPostMessage).toHaveBeenCalledWith({ channel: "slackChannel", text: "The room 'Test' is now occupied!" });
+    expect(mockPostMessage).toHaveBeenCalledWith({
+      channel: "slackChannel",
+      blocks: [
+        {
+          text: {
+            text: "*Test* is occupied - <http://bla.blub|Join>",
+            type: "mrkdwn",
+          },
+          type: "section",
+        },
+        {
+          elements: [
+            {
+              text: "1 participant",
+              type: "mrkdwn",
+            },
+          ],
+          type: "context",
+        },
+      ],
+    });
   });
 
   it("should send a message when the last participant leaves a room", () => {
@@ -74,7 +94,18 @@ describe("SlackBotService", () => {
 
     onRoomEvent({ roomId: "1", type: "leave", participant });
 
-    expect(mockPostMessage).toHaveBeenCalledWith({ channel: "slackChannel", text: "The room 'Test' is now empty." });
+    expect(mockPostMessage).toHaveBeenCalledWith({
+      channel: "slackChannel",
+      blocks: [
+        {
+          text: {
+            text: "*Test* is empty - <http://bla.blub|Join>",
+            type: "mrkdwn",
+          },
+          type: "section",
+        },
+      ],
+    });
   });
 
   it("should not send messages if slack notifications are not configured", () => {
@@ -124,7 +155,24 @@ describe("SlackBotService", () => {
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
     expect(mockPostMessage).toHaveBeenCalledWith({
       channel: "slackChannel",
-      text: "There are currently 2 people in the room 'Test'.",
+      blocks: [
+        {
+          text: {
+            text: "*Test* is occupied - <http://bla.blub|Join>",
+            type: "mrkdwn",
+          },
+          type: "section",
+        },
+        {
+          elements: [
+            {
+              text: "2 participants",
+              type: "mrkdwn",
+            },
+          ],
+          type: "context",
+        },
+      ],
     });
 
     // when
@@ -144,9 +192,21 @@ describe("SlackBotService", () => {
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(2);
-    expect(mockPostMessage).toHaveBeenCalledWith({
-      channel: "slackChannel",
-      text: "There are currently 1 people in the room 'Test'.",
-    });
+    expect(mockPostMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        channel: "slackChannel",
+        blocks: expect.arrayContaining([
+          {
+            elements: [
+              {
+                text: "1 participant",
+                type: "mrkdwn",
+              },
+            ],
+            type: "context",
+          },
+        ]),
+      })
+    );
   });
 });
