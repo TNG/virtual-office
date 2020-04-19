@@ -93,6 +93,13 @@ describe("SlackBotService", () => {
   });
 
   it("should send a message every 5 minutes and report the number of participants", async () => {
+    let clock = 0;
+    const advanceClock = (seconds) => {
+      clock += seconds * 1000;
+      mockDateNow.mockReturnValue(clock);
+      jest.advanceTimersByTime(seconds * 1000);
+    };
+
     // given
     const room = {
       id: "1",
@@ -111,8 +118,7 @@ describe("SlackBotService", () => {
     expect(mockPostMessage).not.toHaveBeenCalled();
 
     // when
-    mockDateNow.mockReturnValue(30 * 1000);
-    jest.advanceTimersByTime(30 * 1000);
+    advanceClock(30);
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
@@ -122,8 +128,7 @@ describe("SlackBotService", () => {
     });
 
     // when
-    mockDateNow.mockReturnValue(30 * 1000 + 30 * 1000);
-    jest.advanceTimersByTime(30 * 1000);
+    advanceClock(30);
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
@@ -135,8 +140,7 @@ describe("SlackBotService", () => {
         participants: [{ id: "123", username: "bla" }],
       },
     ]);
-    mockDateNow.mockReturnValue(5 * 60 * 1000 + 30 * 1000 + 30 * 1000);
-    jest.advanceTimersByTime(5 * 60 * 1000);
+    advanceClock(5 * 60);
 
     // then
     expect(mockPostMessage).toHaveBeenCalledTimes(2);
