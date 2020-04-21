@@ -123,7 +123,7 @@ describe("SlackBotService", () => {
     expect(mockPostMessage).not.toHaveBeenCalled();
   });
 
-  it("should send a message every 5 minutes and report the number of participants", async () => {
+  it("should send a message every `notificationInterval` and report the number of participants", async () => {
     let clock = 0;
     const advanceClock = (seconds) => {
       clock += seconds * 1000;
@@ -142,6 +142,7 @@ describe("SlackBotService", () => {
       ],
       slackNotification: {
         channelId: "slackChannel",
+        notificationInterval: 5,
       },
     };
     when(roomsService.getAllRooms()).thenReturn([room]);
@@ -208,5 +209,31 @@ describe("SlackBotService", () => {
         ]),
       })
     );
+  });
+
+  it("should not send a message if `notificationInterval` is not set", async () => {
+    // given
+    const room = {
+      id: "1",
+      name: "Test",
+      joinUrl: "http://bla.blub",
+      participants: [
+        { id: "123", username: "bla" },
+        { id: "124", username: "bla" },
+      ],
+      slackNotification: {
+        channelId: "slackChannel",
+      },
+    };
+    when(roomsService.getAllRooms()).thenReturn([room]);
+
+    expect(mockPostMessage).not.toHaveBeenCalled();
+
+    // when
+    mockDateNow.mockReturnValue(5 * 60 * 1000);
+    jest.advanceTimersByTime(5 * 60 * 1000);
+
+    // then
+    expect(mockPostMessage).not.toHaveBeenCalled();
   });
 });

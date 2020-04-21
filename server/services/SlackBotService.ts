@@ -8,7 +8,6 @@ import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { Block, KnownBlock } from "@slack/types";
 
 const LOOP_INTERVAL = 30 * 1000;
-const MINIMUM_NOTIFICATION_INTERVAL = 5 * 60 * 1000;
 
 @Service({ multiple: false })
 export class SlackBotService {
@@ -21,7 +20,7 @@ export class SlackBotService {
       this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
       this.roomsService.listenRoomChange((event) => this.onRoomEvent(event));
 
-      setInterval(() => this.reportNumberOfParticipants(), LOOP_INTERVAL);
+      setInterval(() => this.sendRecurringNotification(), LOOP_INTERVAL);
     }
   }
   private onRoomEvent(event: RoomEvent) {
@@ -46,10 +45,10 @@ export class SlackBotService {
     }
   }
 
-  private reportNumberOfParticipants() {
+  private sendRecurringNotification() {
     const rooms = this.roomsService.getAllRooms();
     rooms.forEach((room) => {
-      if (room.slackNotification && room.participants.length > 0 && this.isLongEnoughSinceLastNotification(room)) {
+      if (room.slackNotification && room.participants.length > 0 && this.shouldSendRecurringNotification(room)) {
         this.sendParticipantUpdate(room);
       }
     });
@@ -98,11 +97,11 @@ export class SlackBotService {
     })();
   }
 
-  private isLongEnoughSinceLastNotification(room: RoomWithParticipants) {
+  private shouldSendRecurringNotification(room: RoomWithParticipants) {
     return (
-      !this.lastNotificationTime[room.id] ||
-      Date.now() - this.lastNotificationTime[room.id] >
-        (room.slackNotification.notificationInterval ?? MINIMUM_NOTIFICATION_INTERVAL)
+      room.slackNotification.notificationInterval &&
+      (!this.lastNotificationTime[room.id] ||
+        Date.now() - this.lastNotificationTime[room.id] > room.slackNotification.notificationInterval * 60 * 1000)
     );
   }
 }
