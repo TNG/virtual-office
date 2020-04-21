@@ -66,15 +66,6 @@ describe("SlackBotService", () => {
           },
           type: "section",
         },
-        {
-          elements: [
-            {
-              text: "1 participant",
-              type: "mrkdwn",
-            },
-          ],
-          type: "context",
-        },
       ],
     });
   });

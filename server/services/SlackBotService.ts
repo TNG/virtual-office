@@ -27,7 +27,15 @@ export class SlackBotService {
     if (event.type === "join") {
       const room = this.roomsService.getRoomWithParticipants(event.roomId);
       if (room.slackNotification && room.participants.length === 1) {
-        this.sendParticipantUpdate(room);
+        this.sendMessageToRoom(room, [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*${room.name}* is occupied - <${room.joinUrl}|Join>`,
+            },
+          },
+        ]);
       }
     } else if (event.type === "leave") {
       const room = this.roomsService.getRoomWithParticipants(event.roomId);
