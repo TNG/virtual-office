@@ -39,9 +39,9 @@
         }
       }
     },
-    "/api/rooms": {
+    "/api/office": {
       "get": {
-        "summary": "Get all rooms incl. participants",
+        "summary": "Get the whole office incl. rooms with participants",
         "tags": ["API"],
         "responses": {
           "200": {
@@ -49,7 +49,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/rooms"
+                  "$ref": "#/components/schemas/office"
                 }
               }
             }
@@ -58,7 +58,9 @@
             "description": "Internal error"
           }
         }
-      },
+      }
+    },
+    "/api/rooms": {
       "post": {
         "summary": "Create a user-specific temporary room",
         "tags": ["API"],
@@ -286,6 +288,38 @@
           "icon": {
             "type": "string",
             "example": "http://example.com/bla.png"
+          }
+        }
+      },
+      "group": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Lord of the Rings"
+          }
+        }
+      },
+      "office": {
+        "type": "object",
+        "required": ["groups", "rooms"],
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/group"
+            }
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/room"
+            }
           }
         }
       },
