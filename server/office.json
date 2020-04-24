@@ -4,7 +4,8 @@
       "id": "star_wars",
       "name": "Star Wars",
       "groupJoin": {
-        "minimumParticipantCount": 3
+        "minimumParticipantCount": 3,
+        "description": "You can randomly join one of our coffee rooms. Try it out and meet interesting new people! :)"
       }
     },
     {
