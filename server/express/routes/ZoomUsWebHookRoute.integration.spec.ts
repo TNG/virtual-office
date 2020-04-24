@@ -2,10 +2,11 @@ import "reflect-metadata";
 
 import request from "supertest";
 import { Container } from "typedi";
-import { ExpressApp } from "./express/ExpressApp";
+import { ExpressApp } from "../ExpressApp";
 import { Express } from "express";
-import { Room } from "./express/types/Room";
-import { RoomWithParticipants } from "./express/types/RoomWithParticipants";
+import { Room } from "../types/Room";
+import { RoomWithParticipants } from "../types/RoomWithParticipants";
+import { ConfigOptions } from "../types/ConfigOptions";
 
 const room1 = {
   id: "1",
@@ -18,6 +19,10 @@ const room2 = {
   joinUrl: `https://zoom.us/j/2`,
 };
 const rooms = [room1, room2];
+const config: ConfigOptions = {
+  rooms,
+  groups: [],
+};
 
 function participantFor(userId: string, id?: string) {
   return {
@@ -67,7 +72,7 @@ describe("Zoomus Webhooks", () => {
     process.env.SLACK_CLIENT_ID = "abc";
     process.env.SLACK_CALLBACK_URL = "http://localhost";
     process.env.DISABLE_AUTH_ON_API = "true";
-    process.env.ROOM_CONFIG = JSON.stringify(rooms);
+    process.env.CONFIG = JSON.stringify(config);
 
     const expressApp = Container.get(ExpressApp);
     appInstance = await expressApp.create();
@@ -78,8 +83,8 @@ describe("Zoomus Webhooks", () => {
   });
 
   async function getParticipantIds(room: Room) {
-    const response = await request(appInstance).get("/api/rooms").expect(200);
-    const body = response.body as RoomWithParticipants[];
+    const response = await request(appInstance).get("/api/office").expect(200);
+    const body = response.body.rooms as RoomWithParticipants[];
     const foundRoom = body.find((foundRoom) => foundRoom.id === room.id)!!;
 
     return foundRoom.participants.map((participant) => participant.id);
