@@ -60,7 +60,6 @@ export class SlackBotService {
         ]);
       }
     }
-    logger.info("done handling room event");
   }
 
   private sendRecurringNotification() {
