@@ -43,14 +43,14 @@ export class ApiRoute implements ExpressRoute {
       this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
       res.sendStatus(200);
     });
-    router.post("/admin/replaceAllRooms", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
+    router.post("/admin/replaceOffice", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
       logger.info({
-        message: "replacing all rooms data",
+        message: "replacing office",
         user: req.currentUser.name,
         email: req.currentUser.email,
         data: req.body,
       });
-      this.roomsService.replaceRoomsWith(req.body);
+      this.officeService.replaceOfficeWith(req.body);
       res
         .json({
           message:
