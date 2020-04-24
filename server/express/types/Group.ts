@@ -1,5 +1,6 @@
 export type GroupJoinConfig = {
   minimumParticipantCount: number;
+  description: string;
 };
 
 export interface Group {
