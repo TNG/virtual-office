@@ -72,4 +72,26 @@ describe("GroupJoinService", () => {
 
     expect(room).toEqual(roomWithMinimum);
   });
+
+  it("should return undefined when no room is available", () => {
+    when(officeService.getOffice()).thenReturn({
+      rooms: [],
+      groups,
+    });
+
+    const room = groupJoinService.joinRoomFor(groupId);
+
+    expect(room).toBeUndefined();
+  });
+
+  it("should return undefined when the group cannot be found", () => {
+    when(officeService.getOffice()).thenReturn({
+      rooms: [roomWithMinimum],
+      groups,
+    });
+
+    const room = groupJoinService.joinRoomFor(groupId + "a");
+
+    expect(room).toBeUndefined();
+  });
 });
