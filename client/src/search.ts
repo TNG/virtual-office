@@ -27,7 +27,7 @@ function searchRooms(search: string, rooms: RoomWithParticipants[], groups: Grou
   function roomMatches(room: RoomWithParticipants): boolean {
     const nameMatches = room.name.toLowerCase().includes(search);
 
-    const groupId = room.group || "";
+    const groupId = room.groupId || "";
     const group = groups.find((group) => group.id === groupId);
     const groupMatches = !!group && group.name.toLowerCase().includes(search);
 
@@ -40,5 +40,5 @@ function searchRooms(search: string, rooms: RoomWithParticipants[], groups: Grou
 }
 
 function searchGroups(rooms: RoomWithParticipants[], groups: Group[]): Group[] {
-  return groups.filter((group) => rooms.some((room) => room.group === group.id));
+  return groups.filter((group) => rooms.some((room) => room.groupId === group.id));
 }

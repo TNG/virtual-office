@@ -116,7 +116,7 @@ const Dashboard = () => {
     return groups
       .map((group) => {
         const rooms = searchResult.rooms
-          .filter((room) => (room.group || undefinedGroup.id) === group.id)
+          .filter((room) => (room.groupId || undefinedGroup.id) === group.id)
           .sort((a, b) => a.name.localeCompare(b.name));
 
         return {

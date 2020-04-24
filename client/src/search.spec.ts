@@ -15,14 +15,14 @@ const groupStarWars: Group = {
 const roomMordor: RoomWithParticipants = {
   id: "1",
   name: "Mordor",
-  group: groupLordRings.id,
+  groupId: groupLordRings.id,
   joinUrl: "http://mordor.join",
   participants: [],
 };
 const roomBree: RoomWithParticipants = {
   id: "2",
   name: "Bree City",
-  group: groupLordRings.id,
+  groupId: groupLordRings.id,
   joinUrl: "http://bree.join",
   participants: [
     {
@@ -36,7 +36,7 @@ const roomBree: RoomWithParticipants = {
 const roomCloud: RoomWithParticipants = {
   id: "3",
   name: "Cloud City",
-  group: groupStarWars.id,
+  groupId: groupStarWars.id,
   joinUrl: "http://cloud.join",
   participants: [
     {
