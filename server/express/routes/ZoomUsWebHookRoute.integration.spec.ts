@@ -1,12 +1,12 @@
 import "reflect-metadata";
-
 import request from "supertest";
+
 import { Container } from "typedi";
-import { ExpressApp } from "../ExpressApp";
 import { Express } from "express";
 import { Room } from "../types/Room";
 import { RoomWithParticipants } from "../types/RoomWithParticipants";
 import { ConfigOptions } from "../types/ConfigOptions";
+import { startTestServerWithConfig } from "../../testUtils/startTestServerWithConfig";
 
 const room1 = {
   id: "1",
@@ -68,14 +68,7 @@ function endMeetingEvent(room: Room) {
 describe("Zoomus Webhooks", () => {
   let appInstance: Express;
   beforeEach(async () => {
-    process.env.SLACK_SECRET = "abc";
-    process.env.SLACK_CLIENT_ID = "abc";
-    process.env.SLACK_CALLBACK_URL = "http://localhost";
-    process.env.DISABLE_AUTH_ON_API = "true";
-    process.env.CONFIG = JSON.stringify(config);
-
-    const expressApp = Container.get(ExpressApp);
-    appInstance = await expressApp.create();
+    appInstance = await startTestServerWithConfig(config);
   });
 
   afterEach(() => {

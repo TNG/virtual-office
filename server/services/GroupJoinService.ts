@@ -22,8 +22,11 @@ export class GroupJoinService {
     }
 
     const groupRooms = office.rooms.filter((room) => room.group === groupId);
+    if (groupRooms.length === 0) {
+      return undefined;
+    }
     const notEmptyRooms = groupRooms.filter((room) => room.participants.length > 0);
-    const availableMinimumCount = minBy(notEmptyRooms, (room) => room.participants.length).participants.length;
+    const availableMinimumCount = minBy(notEmptyRooms, (room) => room.participants.length)?.participants?.length || 0;
     const roomsWithMinimumParticipantCount = this.roomsWithParticipants(groupRooms, availableMinimumCount);
 
     // First fill up rooms that are not empty, but have less participants than we configured
