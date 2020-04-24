@@ -10,6 +10,11 @@ export interface SlackConfig {
   botOAuthAccessToken?: string;
 }
 
+export interface Credentials {
+  username: string;
+  password: string;
+}
+
 const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
 
 @Service()
@@ -21,6 +26,7 @@ export class Config {
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
   public readonly disableAuthOnApi = !!process.env.DISABLE_AUTH_ON_API;
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
+  public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
 
   constructor() {}
 
@@ -46,5 +52,15 @@ export class Config {
       return JSON.parse(process.env.CONFIG);
     }
     return require(process.env.CONFIG_LOCATION || `${findRootDir()}/server/config.json`);
+  }
+
+  private static readAdminEndpointsCredentials(): Credentials | undefined {
+    if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
+      return {
+        username: process.env.ADMIN_USERNAME,
+        password: process.env.ADMIN_PASSWORD,
+      };
+    }
+    return undefined;
   }
 }

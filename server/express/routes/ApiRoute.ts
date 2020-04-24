@@ -5,8 +5,8 @@ import { MonitoringRoute } from "./MonitoringRoute";
 import { RoomsService } from "../../services/RoomsService";
 import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
-import { logger } from "../../log";
 import { OfficeService } from "../../services/OfficeService";
+import { AdminRoute } from "./AdminRoute";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
@@ -14,13 +14,15 @@ export class ApiRoute implements ExpressRoute {
     private readonly monitoringRoute: MonitoringRoute,
     private readonly roomsService: RoomsService,
     private readonly officeService: OfficeService,
-    private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute
+    private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute,
+    private readonly adminRoute: AdminRoute
   ) {}
 
   public router(): Router {
     const router = Router();
 
     router.use("/monitoring", this.monitoringRoute.router());
+    router.use("/admin", this.adminRoute.router());
 
     router.get("/office", ensureLoggedIn, (req, res) => {
       res.json(this.officeService.getOffice());
@@ -33,30 +35,6 @@ export class ApiRoute implements ExpressRoute {
     router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
       const success = this.roomsService.deleteRoom(req.params.roomId);
       res.sendStatus(success ? 204 : 405);
-    });
-
-    router.delete("/admin/rooms/:roomId", ensureLoggedIn, (req, res) => {
-      this.roomsService.endRoom(req.params.roomId);
-      res.sendStatus(200);
-    });
-    router.delete("/admin/rooms/:roomId/:userId", ensureLoggedIn, (req, res) => {
-      this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
-      res.sendStatus(200);
-    });
-    router.post("/admin/replaceOffice", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
-      logger.info({
-        message: "replacing office",
-        user: req.currentUser.name,
-        email: req.currentUser.email,
-        data: req.body,
-      });
-      this.officeService.replaceOfficeWith(req.body);
-      res
-        .json({
-          message:
-            "Please make sure to also update your deployment. Your changes will only persist until the next restart.",
-        })
-        .status(200);
     });
 
     router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
