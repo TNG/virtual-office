@@ -106,6 +106,20 @@
         }
       }
     },
+    "/api/groups/{groupId}/join": {
+      "get": {
+        "summary": "Joins a room within a group",
+        "tags": ["API"],
+        "responses": {
+          "302": {
+            "description": "Redirect to an Zoom.Us join URL"
+          },
+          "404": {
+            "description": "If no rooms are assigned to the group or the group could not be found."
+          }
+        }
+      }
+    },
     "/api/zoomus/webhook": {
       "post": {
         "summary": "Webhook for zoom.us calls",
