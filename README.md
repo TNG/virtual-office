@@ -102,7 +102,7 @@ An example looks like this:
           "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
         }
       ],
-      "group": "star_wars",
+      "groupId": "star_wars",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     }
   ]

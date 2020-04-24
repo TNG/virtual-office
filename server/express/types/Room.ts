@@ -6,7 +6,7 @@ export interface Room {
   joinUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];
-  group?: string;
+  groupId?: string;
   icon?: string;
   slackNotification?: {
     channelId: string;

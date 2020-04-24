@@ -21,7 +21,7 @@ export class GroupJoinService {
       return undefined;
     }
 
-    const groupRooms = office.rooms.filter((room) => room.group === groupId);
+    const groupRooms = office.rooms.filter((room) => room.groupId === groupId);
     if (groupRooms.length === 0) {
       return undefined;
     }
