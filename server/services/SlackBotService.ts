@@ -30,7 +30,9 @@ export class SlackBotService {
     logger.info(
       `Slack message roomEvent for room=${
         event.roomId
-      }, roomFound=${!!room}, slackNotification=${!!slackNotification}, participants=${participants}`
+      }, roomFound=${!!room}, slackNotification=${!!slackNotification}, participants=${participants}, eventType=${
+        event.type
+      }`
     );
 
     if (event.type === "join") {
@@ -58,6 +60,7 @@ export class SlackBotService {
         ]);
       }
     }
+    logger.info("done handling room event");
   }
 
   private sendRecurringNotification() {
