@@ -309,6 +309,17 @@
           }
         }
       },
+      "groupJoinConfig": {
+        "type": "object",
+        "required": ["minimumParticipantCount"],
+        "properties": {
+          "minimumParticipantCount": {
+            "type": "number",
+            "description": "Minimum number of participants in a room. When this count has been reached, the next one will be filled.",
+            "example": 3
+          }
+        }
+      },
       "group": {
         "type": "object",
         "required": ["id", "name"],
@@ -320,6 +331,9 @@
           "name": {
             "type": "string",
             "example": "Lord of the Rings"
+          },
+          "groupJoin": {
+            "$ref": "#/components/schemas/groupJoinConfig"
           }
         }
       },

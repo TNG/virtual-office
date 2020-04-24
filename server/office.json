@@ -2,7 +2,10 @@
   "groups": [
     {
       "id": "star_wars",
-      "name": "Star Wars"
+      "name": "Star Wars",
+      "groupJoin": {
+        "minimumParticipantCount": 3
+      }
     },
     {
       "id": "lord",
