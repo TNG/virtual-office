@@ -1,13 +1,13 @@
 import { Service } from "typedi";
-import { WebClient } from "@slack/web-api";
+import { ImageElement, WebClient } from "@slack/web-api";
 import { Config } from "../Config";
 import { RoomsService } from "./RoomsService";
 import { RoomEvent } from "../express/types/RoomEvent";
 import { logger } from "../log";
 import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
+import { Block, KnownBlock } from "@slack/types";
 
 const LOOP_INTERVAL = 30 * 1000;
-const MINIMUM_NOTIFICATION_INTERVAL = 5 * 60 * 1000;
 
 @Service({ multiple: false })
 export class SlackBotService {
@@ -20,41 +20,84 @@ export class SlackBotService {
       this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
       this.roomsService.listenRoomChange((event) => this.onRoomEvent(event));
 
-      setInterval(() => this.reportNumberOfParticipants(), LOOP_INTERVAL);
+      setInterval(() => this.sendRecurringNotification(), LOOP_INTERVAL);
     }
   }
-  private reportNumberOfParticipants() {
-    const rooms = this.roomsService.getAllRooms();
-    rooms.forEach((room) => {
-      if (room.slackNotification && room.participants.length > 0 && this.isLongEnoughSinceLastNotification(room)) {
-        this.sendMessageToRoom(
-          room,
-          `There are currently ${room.participants.length} people in the room '${room.name}'.`
-        );
-      }
-    });
-  }
-
   private onRoomEvent(event: RoomEvent) {
     if (event.type === "join") {
       const room = this.roomsService.getRoomWithParticipants(event.roomId);
       if (room.slackNotification && room.participants.length === 1) {
-        this.sendMessageToRoom(room, `The room '${room.name}' is now occupied!`);
+        this.sendMessageToRoom(room, [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*${room.name}* is occupied - <${room.joinUrl}|Join>`,
+            },
+          },
+        ]);
       }
     } else if (event.type === "leave") {
       const room = this.roomsService.getRoomWithParticipants(event.roomId);
       if (room.slackNotification && room.participants.length === 0) {
-        this.sendMessageToRoom(room, `The room '${room.name}' is now empty.`);
+        this.sendMessageToRoom(room, [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*${room.name}* is empty - <${room.joinUrl}|Join>`,
+            },
+          },
+        ]);
       }
     }
   }
-  private sendMessageToRoom(room: RoomWithParticipants, text) {
+
+  private sendRecurringNotification() {
+    const rooms = this.roomsService.getAllRooms();
+    rooms.forEach((room) => {
+      if (room.slackNotification && room.participants.length > 0 && this.shouldSendRecurringNotification(room)) {
+        this.sendParticipantUpdate(room);
+      }
+    });
+  }
+
+  private sendParticipantUpdate(room: RoomWithParticipants) {
+    const imageElements: ImageElement[] = room.participants
+      .filter((participant) => participant.imageUrl)
+      .map((participant) => ({
+        type: "image",
+        image_url: participant.imageUrl,
+        alt_text: participant.username,
+      }));
+
+    this.sendMessageToRoom(room, [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*${room.name}* is occupied - <${room.joinUrl}|Join>`,
+        },
+      },
+      {
+        type: "context",
+        elements: [
+          ...imageElements,
+          {
+            type: "mrkdwn",
+            text: `${room.participants.length} participant${room.participants.length > 1 ? "s" : ""}`,
+          },
+        ],
+      },
+    ]);
+  }
+  private sendMessageToRoom(room: RoomWithParticipants, blocks: (KnownBlock | Block)[]) {
     this.lastNotificationTime[room.id] = Date.now();
 
     (async () => {
       const res = await this.slackClient.chat.postMessage({
         channel: room.slackNotification.channelId,
-        text,
+        blocks,
       });
 
       // `res` contains information about the posted message
@@ -62,10 +105,11 @@ export class SlackBotService {
     })();
   }
 
-  private isLongEnoughSinceLastNotification(room: RoomWithParticipants) {
+  private shouldSendRecurringNotification(room: RoomWithParticipants) {
     return (
-      !this.lastNotificationTime[room.id] ||
-      Date.now() - this.lastNotificationTime[room.id] > MINIMUM_NOTIFICATION_INTERVAL
+      room.slackNotification.notificationInterval &&
+      (!this.lastNotificationTime[room.id] ||
+        Date.now() - this.lastNotificationTime[room.id] > room.slackNotification.notificationInterval * 60 * 1000)
     );
   }
 }

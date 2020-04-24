@@ -10,5 +10,6 @@ export interface Room {
   icon?: string;
   slackNotification?: {
     channelId: string;
+    notificationInterval?: number;
   };
 }
