@@ -24,9 +24,17 @@ export class SlackBotService {
     }
   }
   private onRoomEvent(event: RoomEvent) {
+    const room = this.roomsService.getRoomWithParticipants(event.roomId);
+    const slackNotification = room.slackNotification;
+    const participants = room.participants.length;
+    logger.info(
+      `Slack message roomEvent for room=${
+        event.roomId
+      }, roomFound=${!!room}, slackNotification=${!!slackNotification}, participants=${participants}`
+    );
+
     if (event.type === "join") {
-      const room = this.roomsService.getRoomWithParticipants(event.roomId);
-      if (room.slackNotification && room.participants.length === 1) {
+      if (slackNotification && participants === 1) {
         this.sendMessageToRoom(room, [
           {
             type: "section",
@@ -38,8 +46,7 @@ export class SlackBotService {
         ]);
       }
     } else if (event.type === "leave") {
-      const room = this.roomsService.getRoomWithParticipants(event.roomId);
-      if (room.slackNotification && room.participants.length === 0) {
+      if (slackNotification && participants === 0) {
         this.sendMessageToRoom(room, [
           {
             type: "section",
