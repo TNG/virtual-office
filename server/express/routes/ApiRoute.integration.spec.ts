@@ -29,6 +29,7 @@ const config: ConfigOptions = {
       name: "dummy",
       groupJoin: {
         minimumParticipantCount: 2,
+        description: "Take me somewhere funny",
       },
     },
   ],
