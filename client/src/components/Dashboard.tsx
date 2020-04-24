@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
-import { groupBy, mapValues, sortBy } from "lodash";
 
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
+import { Office } from "../../../server/express/types/Office";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
 import { search } from "../search";
@@ -14,6 +14,7 @@ import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 import theme from "../theme";
+import { Group } from "../../../server/express/types/Group";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -45,26 +46,35 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const mapRoomEventToRoom = (room: RoomWithParticipants, roomEvent: RoomEvent): RoomWithParticipants => {
-  if (room.id === roomEvent.roomId) {
-    switch (roomEvent.type) {
-      case "join":
-        return { ...room, participants: [...room.participants, roomEvent.participant] };
-      case "leave":
-        return {
-          ...room,
-          participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
-        };
-      case "update":
-        return {
-          ...room,
-          participants: room.participants
-            .filter(({ id }) => id !== roomEvent.participant.id)
-            .concat([roomEvent.participant]),
-        };
+const mapOfficeEventToOffice = (office: Office, roomEvent: RoomEvent): Office => {
+  function applyRoomEventTo(room: RoomWithParticipants): RoomWithParticipants {
+    if (room.id === roomEvent.roomId) {
+      switch (roomEvent.type) {
+        case "join":
+          return { ...room, participants: [...room.participants, roomEvent.participant] };
+        case "leave":
+          return {
+            ...room,
+            participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
+          };
+        case "update":
+          return {
+            ...room,
+            participants: room.participants
+              .filter(({ id }) => id !== roomEvent.participant.id)
+              .concat([roomEvent.participant]),
+          };
+      }
     }
+    return room;
   }
-  return room;
+
+  const newRooms = office.rooms.map((room) => (room.id === roomEvent.roomId ? applyRoomEventTo(room) : room));
+
+  return {
+    ...office,
+    rooms: newRooms,
+  };
 };
 
 const Dashboard = () => {
@@ -76,7 +86,7 @@ const Dashboard = () => {
   }, [history]);
 
   const context = useContext(SocketContext);
-  const [rooms, setRooms] = useState([] as RoomWithParticipants[]);
+  const [office, setOffice] = useState({ rooms: [], groups: [] } as Office);
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
@@ -84,22 +94,38 @@ const Dashboard = () => {
 
     const stateUpdate = context.onNotify();
     const subscription = stateUpdate.subscribe((incomingMessage: RoomEvent) => {
-      setRooms((prevRooms) => prevRooms.map((room) => mapRoomEventToRoom(room, incomingMessage)));
+      setOffice((prevOffice) => mapOfficeEventToOffice(prevOffice, incomingMessage));
     });
 
-    const roomsSubscription = context.onRooms().subscribe((event) => setRooms(event));
+    const officeSubscription = context.onOffice().subscribe((event) => setOffice(event));
 
     return () => {
       subscription.unsubscribe();
       context.disconnect();
-      roomsSubscription.unsubscribe();
+      officeSubscription.unsubscribe();
     };
   }, [context]);
 
-  const searchResult = search(searchText, rooms);
-  const groups = groupBy(searchResult, (room) => room.group || "");
-  const groupsWithSortedRooms = mapValues(groups, (rooms) => sortBy(rooms, (room) => room.name));
-  const sortedGroups = sortBy(Object.entries(groupsWithSortedRooms), ([group, _]) => group);
+  const searchResult = search(searchText, office);
+  const undefinedGroupId = "groupForRoomsWithoutGroup";
+  const groupForRoomsWithoutGroup: Group = {
+    name: "",
+    id: undefinedGroupId,
+  };
+
+  const allGroups = [groupForRoomsWithoutGroup, ...searchResult.groups];
+  const entriesToRender = allGroups
+    .map((group) => {
+      const rooms = office.rooms
+        .filter((room) => (room.group || undefinedGroupId) === group.id)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      return {
+        group,
+        rooms,
+      };
+    })
+    .filter((entry) => entry.rooms.length > 0)
+    .sort((a, b) => a.group.name.localeCompare(b.group.name));
 
   return (
     <Box>
@@ -108,8 +134,8 @@ const Dashboard = () => {
         <AppBar onSearchTextChange={setSearchText} />
 
         <Box className={classes.rooms}>
-          {sortedGroups.map(([group, rooms]) => (
-            <RoomGrid key={group} group={group} rooms={rooms} />
+          {entriesToRender.map(({ group, rooms }) => (
+            <RoomGrid key={group.id} group={group} rooms={rooms} />
           ))}
         </Box>
       </Box>

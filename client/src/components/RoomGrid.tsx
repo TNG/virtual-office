@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/styles";
 import RoomCard from "./RoomCard";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import theme from "../theme";
+import { Group } from "../../../server/express/types/Group";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   title: {
@@ -35,12 +36,12 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomGrid = ({ group, rooms }: { group: string | undefined; rooms: RoomWithParticipants[] }) => {
+const RoomGrid = ({ group, rooms }: { group: Group; rooms: RoomWithParticipants[] }) => {
   const classes = useStyles();
 
   return (
     <Box>
-      {group && <h2 className={classes.title}>{group}</h2>}
+      {group.name && <h2 className={classes.title}>{group.name}</h2>}
 
       <Box className={classes.grid}>
         {rooms.map((room) => (

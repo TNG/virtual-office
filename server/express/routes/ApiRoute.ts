@@ -6,12 +6,14 @@ import { RoomsService } from "../../services/RoomsService";
 import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 import { logger } from "../../log";
+import { OfficeService } from "../../services/OfficeService";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
   constructor(
     private readonly monitoringRoute: MonitoringRoute,
     private readonly roomsService: RoomsService,
+    private readonly officeService: OfficeService,
     private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute
   ) {}
 
@@ -20,8 +22,8 @@ export class ApiRoute implements ExpressRoute {
 
     router.use("/monitoring", this.monitoringRoute.router());
 
-    router.get("/rooms", ensureLoggedIn, (req, res) => {
-      res.json(this.roomsService.getAllRooms());
+    router.get("/office", ensureLoggedIn, (req, res) => {
+      res.json(this.officeService.getOffice());
     });
     router.post("/rooms", ensureLoggedIn, (req, res) => {
       // ToDo: Should we even restrict that on the backend API?

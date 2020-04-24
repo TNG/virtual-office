@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
+import { Office } from "../../../server/express/types/Office";
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
@@ -19,8 +19,8 @@ export class SocketService {
     return fromEvent(this.socket, "notify");
   }
 
-  public onRooms(): Observable<RoomWithParticipants[]> {
-    return fromEvent(this.socket, "rooms");
+  public onOffice(): Observable<Office> {
+    return fromEvent(this.socket, "office");
   }
 
   public disconnect(): void {

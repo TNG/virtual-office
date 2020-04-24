@@ -17,9 +17,9 @@ if (result.error) {
 }
 
 (async function () {
+  const config = Container.get(Config);
   const expressApp = Container.get(ExpressApp);
   const appInstance = await expressApp.create();
-  const config = Container.get(Config);
 
   const server = appInstance.listen(config.port);
 

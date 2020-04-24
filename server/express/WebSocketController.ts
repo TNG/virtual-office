@@ -6,12 +6,14 @@ import { RoomsService } from "../services/RoomsService";
 import cookieParser from "cookie-parser";
 import { Config } from "../Config";
 import { KnownUsersService } from "../services/KnownUsersService";
+import { OfficeService } from "../services/OfficeService";
 
 @Service({ multiple: false })
 export class WebSocketController {
   private socket?: Socket = undefined;
 
   constructor(
+    private readonly officeService: OfficeService,
     private readonly roomsService: RoomsService,
     private readonly config: Config,
     private readonly knownUsersService: KnownUsersService
@@ -45,7 +47,7 @@ export class WebSocketController {
         socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
       } else {
-        socket.to(request.id).emit("rooms", this.roomsService.getAllRooms());
+        socket.to(request.id).emit("office", this.officeService.getOffice());
         this.knownUsersService.add(JSON.parse(currentUser));
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);
