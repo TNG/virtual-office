@@ -29,7 +29,7 @@ describe("GroupJoinService", () => {
   function roomWithParticipants(count: number): RoomWithParticipants {
     const participants = Array.from(Array(count)).map(() => ({} as MeetingParticipant));
     return {
-      group: groupId,
+      groupId,
       participants,
       id: uuid(),
     } as RoomWithParticipants;

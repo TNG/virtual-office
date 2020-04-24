@@ -11,12 +11,12 @@ const groupId = "1";
 const room1 = {
   id: "1",
   name: "Lobby",
-  group: groupId,
+  groupId,
   joinUrl: `https://zoom.us/j/1`,
 };
 const room2 = {
   id: "2",
-  group: groupId,
+  groupId,
   name: "Lobby",
   joinUrl: `https://zoom.us/j/2`,
 };
