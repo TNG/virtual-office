@@ -188,9 +188,9 @@
         }
       }
     },
-    "/api/admin/replaceAllRooms": {
+    "/api/admin/replaceOffice": {
       "post": {
-        "summary": "Replace all rooms (until the next server restart)",
+        "summary": "Replace office (until the next server restart)",
         "tags": ["Admin"],
         "requestBody": {
           "content": {
@@ -198,7 +198,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/roomCreation"
+                  "$ref": "#/components/schemas/officeConfiguration"
                 }
               }
             }
@@ -379,6 +379,23 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/room"
+        }
+      },
+      "officeConfiguration": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/group"
+            }
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/room"
+            }
+          }
         }
       }
     }

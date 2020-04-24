@@ -25,8 +25,8 @@ export class WebSocketController {
     this.roomsService.listenRoomChange((event) => {
       this.socket.emit("notify", event);
     });
-    this.roomsService.listenAllRoomChanges((rooms) => {
-      this.socket.emit("rooms", rooms);
+    this.officeService.listenOfficeChanges((rooms) => {
+      this.socket.emit("office", rooms);
     });
   }
 

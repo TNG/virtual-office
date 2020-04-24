@@ -10,15 +10,12 @@ import { User } from "../express/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 
-export type AllRoomChangeListener = (rooms: Room[]) => void;
-
 @Service({ multiple: false })
 export class RoomsService {
   private roomParticipants: {
     [roomId: string]: MeetingParticipant[];
   } = {};
   private roomChangeListeners: EventListener[] = [];
-  private allRoomChangeListener: AllRoomChangeListener[] = [];
   private rooms: Room[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
@@ -150,10 +147,6 @@ export class RoomsService {
     this.roomChangeListeners.push(listener);
   }
 
-  listenAllRoomChanges(listener: (rooms: Room[]) => void) {
-    this.allRoomChangeListener.push(listener);
-  }
-
   onUserUpdate(user: User) {
     const username = comparableUsername(user.name);
     Object.entries(this.roomParticipants).map(([room, participants]) => {
@@ -167,6 +160,5 @@ export class RoomsService {
   replaceRoomsWith(rooms: Room[]) {
     rooms.forEach((room) => (this.roomParticipants[room.id] = this.roomParticipants[room.id] || []));
     this.rooms = rooms;
-    this.allRoomChangeListener.forEach((listener) => listener(this.getAllRooms()));
   }
 }
