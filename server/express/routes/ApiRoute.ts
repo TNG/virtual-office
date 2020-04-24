@@ -7,6 +7,7 @@ import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLogged
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 import { OfficeService } from "../../services/OfficeService";
 import { AdminRoute } from "./AdminRoute";
+import { GroupJoinService } from "../../services/GroupJoinService";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
@@ -15,6 +16,7 @@ export class ApiRoute implements ExpressRoute {
     private readonly roomsService: RoomsService,
     private readonly officeService: OfficeService,
     private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute,
+    private readonly groupJoinService: GroupJoinService,
     private readonly adminRoute: AdminRoute
   ) {}
 
@@ -27,14 +29,24 @@ export class ApiRoute implements ExpressRoute {
     router.get("/office", ensureLoggedIn, (req, res) => {
       res.json(this.officeService.getOffice());
     });
+
     router.post("/rooms", ensureLoggedIn, (req, res) => {
       // ToDo: Should we even restrict that on the backend API?
       const success = this.roomsService.createRoom({ ...req.body, temporary: true });
       res.sendStatus(success ? 204 : 409);
     });
+
     router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
       const success = this.roomsService.deleteRoom(req.params.roomId);
       res.sendStatus(success ? 204 : 405);
+    });
+
+    router.get("/groups/:groupId/join", ensureLoggedIn, (req, res) => {
+      const room = this.groupJoinService.joinRoomFor(req.params.groupId);
+      if (!room) {
+        res.sendStatus(404);
+      }
+      res.redirect(room.joinUrl);
     });
 
     router.get("/me", ensureLoggedIn, (req: AuthenticatedRequest, res) => {
