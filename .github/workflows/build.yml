@@ -20,3 +20,5 @@ jobs:
       run: npm run buildAll
     - name: test server
       run: cd server && npm run test
+    - name: test client
+      run: cd client && npm run test:ci
