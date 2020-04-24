@@ -43,7 +43,7 @@
           "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
         }
       ],
-      "group": "star_wars",
+      "groupId": "star_wars",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
@@ -51,7 +51,7 @@
       "name": "Jakku",
       "joinUrl": "https://zoom.us/j/3",
       "links": [],
-      "group": "star_wars",
+      "groupId": "star_wars",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
@@ -65,7 +65,7 @@
           "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
         }
       ],
-      "group": "lord",
+      "groupId": "lord",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
@@ -84,7 +84,7 @@
           "icon": "https://cdn.worldvectorlogo.com/logos/invision.svg"
         }
       ],
-      "group": "lord",
+      "groupId": "lord",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     }
   ]
