@@ -78,17 +78,15 @@ const mapOfficeEventToOffice = (office: Office, roomEvent: RoomEvent): Office =>
 };
 
 const Dashboard = () => {
-  const history = useHistory();
   const classes = useStyles();
 
+  const history = useHistory();
   useEffect(() => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);
 
   const context = useContext(SocketContext);
   const [office, setOffice] = useState({ rooms: [], groups: [] } as Office);
-  const [searchText, setSearchText] = useState("");
-
   useEffect(() => {
     context.init();
 
@@ -106,27 +104,31 @@ const Dashboard = () => {
     };
   }, [context]);
 
-  const searchResult = search(searchText, office);
-  const undefinedGroupId = "groupForRoomsWithoutGroup";
-  const groupForRoomsWithoutGroup: Group = {
-    name: "",
-    id: undefinedGroupId,
-  };
+  const [searchText, setSearchText] = useState("");
+  function selectGroupsWithRooms() {
+    const searchResult = search(searchText, office);
+    const undefinedGroup: Group = {
+      id: "",
+      name: "",
+    };
 
-  const allGroups = [groupForRoomsWithoutGroup, ...searchResult.groups];
-  const entriesToRender = allGroups
-    .map((group) => {
-      const rooms = office.rooms
-        .filter((room) => (room.group || undefinedGroupId) === group.id)
-        .sort((a, b) => a.name.localeCompare(b.name));
-      return {
-        group,
-        rooms,
-      };
-    })
-    .filter((entry) => entry.rooms.length > 0)
-    .sort((a, b) => a.group.name.localeCompare(b.group.name));
+    const groups = [undefinedGroup, ...searchResult.groups];
+    return groups
+      .map((group) => {
+        const rooms = searchResult.rooms
+          .filter((room) => (room.group || undefinedGroup.id) === group.id)
+          .sort((a, b) => a.name.localeCompare(b.name));
 
+        return {
+          group,
+          rooms,
+        };
+      })
+      .filter((entry) => entry.rooms.length > 0)
+      .sort((a, b) => a.group.name.localeCompare(b.group.name));
+  }
+
+  const groupsWithRooms = selectGroupsWithRooms();
   return (
     <Box>
       <Box className={classes.background} />
@@ -134,7 +136,7 @@ const Dashboard = () => {
         <AppBar onSearchTextChange={setSearchText} />
 
         <Box className={classes.rooms}>
-          {entriesToRender.map(({ group, rooms }) => (
+          {groupsWithRooms.map(({ group, rooms }) => (
             <RoomGrid key={group.id} group={group} rooms={rooms} />
           ))}
         </Box>

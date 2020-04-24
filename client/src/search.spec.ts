@@ -1,32 +1,66 @@
 import { search } from "./search";
 import { RoomWithParticipants } from "../../server/express/types/RoomWithParticipants";
 import { Office } from "../../server/express/types/Office";
+import { Group } from "../../server/express/types/Group";
 
-const room1: RoomWithParticipants = {
-  id: "1",
-  participants: [],
-  joinUrl: "http://bla.blub",
-  name: "my room name",
-  group: "grouP",
+const groupLordRings: Group = {
+  id: "a",
+  name: "Lord of the Rings",
 };
-const room2: RoomWithParticipants = {
+const groupStarWars: Group = {
+  id: "b",
+  name: "Star Wars",
+};
+
+const roomMordor: RoomWithParticipants = {
+  id: "1",
+  name: "Mordor",
+  group: groupLordRings.id,
+  joinUrl: "http://mordor.join",
+  participants: [],
+};
+const roomBree: RoomWithParticipants = {
   id: "2",
+  name: "Bree City",
+  group: groupLordRings.id,
+  joinUrl: "http://bree.join",
   participants: [
     {
-      id: "participant_1",
-      username: "max",
-      email: "max.mustermann@example.com",
-      imageUrl: "http://bla.com/image.png",
-    },
-    {
-      id: "participant_2_minimal",
-      username: "moritz",
+      id: "frodo",
+      username: "Bodo Freutlin",
+      email: "chosen1@hob.biz",
+      imageUrl: "http://hobbit.png",
     },
   ],
-  joinUrl: "http://bla.blub",
-  name: "my second room name",
 };
-const office: Office = { groups: [], rooms: [room1, room2] };
+const roomCloud: RoomWithParticipants = {
+  id: "3",
+  name: "Cloud City",
+  group: groupStarWars.id,
+  joinUrl: "http://cloud.join",
+  participants: [
+    {
+      id: "lando",
+      username: "Lando Calrissian",
+    },
+  ],
+};
+const roomOutback: RoomWithParticipants = {
+  id: "3",
+  name: "Outback",
+  joinUrl: "http://outback.join",
+  participants: [
+    {
+      id: "shady",
+      username: "Shady Guy",
+    },
+  ],
+};
+
+const office: Office = {
+  groups: [groupLordRings, groupStarWars],
+  rooms: [roomBree, roomMordor, roomCloud, roomOutback],
+};
 
 describe("search", () => {
   it("should do nothing when no search text was entered", () => {
@@ -37,47 +71,84 @@ describe("search", () => {
 
   describe("filter for room names", () => {
     it("should filter for parts of a room", () => {
-      expect(search("second", office).rooms).toEqual([room2]);
+      expect(search("Mor", office)).toEqual({
+        groups: [groupLordRings],
+        rooms: [roomMordor],
+      });
     });
 
     it("should filter for common words", () => {
-      expect(search("my", office).rooms).toEqual([room1, room2]);
+      expect(search("city", office)).toEqual({
+        groups: [groupLordRings, groupStarWars],
+        rooms: [roomBree, roomCloud],
+      });
     });
 
     it("should filter case insensitive", () => {
-      expect(search("SECOND", office).rooms).toEqual([room2]);
+      expect(search("BREE", office)).toEqual({
+        groups: [groupLordRings],
+        rooms: [roomBree],
+      });
+    });
+
+    it("should find rooms without groups", () => {
+      expect(search("outback", office)).toEqual({
+        groups: [],
+        rooms: [roomOutback],
+      });
     });
   });
 
   describe("filter for groups", () => {
     it("should filter for parts of a group", () => {
-      expect(search("group", office).rooms).toEqual([room1]);
+      expect(search("Lord", office)).toEqual({
+        groups: [groupLordRings],
+        rooms: [roomBree, roomMordor],
+      });
     });
 
     it("should filter case insensitive", () => {
-      expect(search("GROUP", office).rooms).toEqual([room1]);
+      expect(search("RING", office)).toEqual({
+        groups: [groupLordRings],
+        rooms: [roomBree, roomMordor],
+      });
     });
   });
 
   describe("filter for participants", () => {
     it("should filter for the name", () => {
-      expect(search("max", office).rooms).toEqual([room2]);
+      expect(search("Calrissian", office)).toEqual({
+        groups: [groupStarWars],
+        rooms: [roomCloud],
+      });
     });
 
     it("should filter for the email address", () => {
-      expect(search("example.com", office).rooms).toEqual([room2]);
+      expect(search("hob.biz", office)).toEqual({
+        groups: [groupLordRings],
+        rooms: [roomBree],
+      });
     });
 
-    it("should filter for the id", () => {
-      expect(search("participant_1", office).rooms).toEqual([room2]);
+    it("should find rooms without groups", () => {
+      expect(search("shady", office)).toEqual({
+        groups: [],
+        rooms: [roomOutback],
+      });
     });
 
-    it("should not filter for id parts", () => {
-      expect(search("_1", office).rooms).toEqual([]);
+    it("should not filter for the id", () => {
+      expect(search("frodo", office)).toEqual({
+        groups: [],
+        rooms: [],
+      });
     });
 
     it("should not filter for the image URL", () => {
-      expect(search("image.png", office).rooms).toEqual([]);
+      expect(search("hobbit.png", office)).toEqual({
+        groups: [],
+        rooms: [],
+      });
     });
   });
 });
