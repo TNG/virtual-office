@@ -22,7 +22,7 @@ export class RoomsService {
   private rooms: Room[] = [];
 
   constructor(private readonly config: Config, private readonly knownUsersService: KnownUsersService) {
-    config.rooms.map((room) => this.createRoom(room));
+    config.configOptions.rooms.map((room) => this.createRoom(room));
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
@@ -55,7 +55,7 @@ export class RoomsService {
   }
 
   deleteRoom(roomId: string): boolean {
-    if (this.config.rooms.some((protectedRoom) => protectedRoom.id === roomId)) {
+    if (this.config.configOptions.rooms.some((protectedRoom) => protectedRoom.id === roomId)) {
       logger.info(`cannot delete room, as room with id=${roomId} is protected`);
       return false;
     }

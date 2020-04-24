@@ -1,5 +1,6 @@
 import { RoomWithParticipants } from "../../server/express/types/RoomWithParticipants";
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
+import { Office } from "../../server/express/types/Office";
 
 export function participantMatches(search: string, participant: MeetingParticipant): boolean {
   const email = participant.email || "";
@@ -19,11 +20,19 @@ function roomMatches(search: string, room: RoomWithParticipants): boolean {
   );
 }
 
-export function search(searchText: string, rooms: RoomWithParticipants[]): RoomWithParticipants[] {
+function searchRooms(searchText: string, rooms: RoomWithParticipants[]): RoomWithParticipants[] {
   const searchString = searchText.toLowerCase().normalize();
   if (searchString.length === 0) {
     return rooms;
   }
 
   return rooms.filter((room) => roomMatches(searchString, room));
+}
+
+export function search(searchText: string, office: Office): Office {
+  const rooms = searchRooms(searchText, office.rooms);
+  return {
+    ...office,
+    rooms,
+  };
 }

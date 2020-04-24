@@ -27,7 +27,7 @@ describe("RoomsService", () => {
     knownUsersService = mock(KnownUsersService);
     listener = jest.fn();
 
-    when(config.rooms).thenReturn([existingRoom, existingRoom2]);
+    when(config.configOptions).thenReturn({ rooms: [existingRoom, existingRoom2], groups: [] });
 
     roomsService = new RoomsService(instance(config), instance(knownUsersService));
   });
