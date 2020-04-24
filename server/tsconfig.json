@@ -20,6 +20,6 @@
     "types": ["jest", "node"],
     "lib": ["esnext"]
   },
-  "include": ["**/*.ts", "types/*.ts"],
+  "include": ["**/*.ts", "types/*.ts", "*.json"],
   "exclude": ["node_modules"]
 }
