@@ -18,6 +18,8 @@ import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
 
+const TITLE = process.env.REACT_APP_TITLE || "Virtual Office";
+
 const useStyles = makeStyles((theme: Theme) => ({
   coffee: {
     margin: 0,
@@ -101,7 +103,7 @@ const AppBar = (props: Props) => {
           <LocalCafeIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          Virtual Office
+          {TITLE}
         </Typography>
         <SearchInput onSearchTextChange={props.onSearchTextChange} drawBorder={false} />
         {user && (
