@@ -116,9 +116,7 @@ const Dashboard = () => {
     return groups
       .filter((group) => !group.hideAfter || new Date(group.hideAfter) > new Date())
       .map((group) => {
-        const rooms = searchResult.rooms
-          .filter((room) => (room.groupId || undefinedGroup.id) === group.id)
-          .sort((a, b) => a.name.localeCompare(b.name));
+        const rooms = searchResult.rooms.filter((room) => (room.groupId || undefinedGroup.id) === group.id);
 
         return {
           group,
