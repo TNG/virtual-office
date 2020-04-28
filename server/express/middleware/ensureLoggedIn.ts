@@ -9,7 +9,7 @@ function getLoginUser(req: Request): User | undefined {
 }
 
 export default function ensureLoggedIn(req: Request, res: Response, next: NextFunction) {
-  const disableAuth = Container.get(Config).disableAuthOnApi;
+  const disableAuth = Container.get(Config).disableAuth;
   const loginUser = getLoginUser(req);
   if (!loginUser && !disableAuth) {
     res.status(401).end();
