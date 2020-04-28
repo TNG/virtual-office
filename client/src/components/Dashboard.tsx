@@ -114,6 +114,7 @@ const Dashboard = () => {
 
     const groups = [undefinedGroup, ...searchResult.groups];
     return groups
+      .filter((group) => !group.hideAfter || new Date(group.hideAfter) > new Date())
       .map((group) => {
         const rooms = searchResult.rooms
           .filter((room) => (room.groupId || undefinedGroup.id) === group.id)

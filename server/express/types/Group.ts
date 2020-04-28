@@ -6,5 +6,6 @@ export type GroupJoinConfig = {
 export interface Group {
   id: string;
   name: string;
+  hideAfter?: string;
   groupJoin?: GroupJoinConfig;
 }
