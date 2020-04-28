@@ -43,7 +43,7 @@ export class WebSocketController {
     socket.on("connection", (request: any) => {
       secureCookieParser(request.handshake, {}, () => {});
       const currentUser = request.handshake.signedCookies.currentUser;
-      if (!currentUser) {
+      if (!currentUser && !this.config.disableAuth) {
         socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
       } else {
@@ -51,8 +51,12 @@ export class WebSocketController {
           office: this.officeService.getOffice(),
           meetings: this.meetingsService.getAllMeetings(),
         });
-        this.knownUsersService.add(JSON.parse(currentUser));
+
+        if (currentUser) {
+          this.knownUsersService.add(JSON.parse(currentUser));
+        }
       }
+
       logger.trace(`createSocket - new client socket connection => sending current state`);
       request.on("disconnect", () => {
         logger.trace(`createSocket - client socket connection disconnected`);
