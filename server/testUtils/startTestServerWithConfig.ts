@@ -36,7 +36,7 @@ export async function startTestServerWithConfig(config: ConfigOptions): Promise<
   process.env.SLACK_SECRET = "abc";
   process.env.SLACK_CLIENT_ID = "abc";
   process.env.SLACK_CALLBACK_URL = "http://localhost";
-  process.env.DISABLE_AUTH_ON_API = "true";
+  process.env.DISABLE_AUTH = "true";
   process.env.CONFIG = JSON.stringify(config);
 
   const expressApp = Container.get(ExpressApp);
