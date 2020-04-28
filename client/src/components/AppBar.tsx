@@ -14,7 +14,7 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import LocalCafeIcon from "@material-ui/icons/LocalCafe";
+import BusinessIcon from "@material-ui/icons/Business";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
 
@@ -100,7 +100,7 @@ const AppBar = (props: Props) => {
     <MaterialAppBar position="fixed">
       <Toolbar>
         <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
-          <LocalCafeIcon />
+          <BusinessIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
           {TITLE}
