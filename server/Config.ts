@@ -27,6 +27,7 @@ export class Config {
   public readonly disableAuth = !!process.env.DISABLE_AUTH;
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
+  public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
 
   constructor() {}
 

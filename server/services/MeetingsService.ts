@@ -8,6 +8,7 @@ import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 import { Meeting } from "../express/types/Meeting";
 import { OfficeService } from "./OfficeService";
+import { Config } from "../Config";
 
 @Service({ multiple: false })
 export class MeetingsService {
@@ -16,7 +17,11 @@ export class MeetingsService {
   } = {};
   private roomChangeListeners: EventListener[] = [];
 
-  constructor(private readonly knownUsersService: KnownUsersService, private readonly officeService: OfficeService) {
+  constructor(
+    private readonly knownUsersService: KnownUsersService,
+    private readonly officeService: OfficeService,
+    private readonly config: Config
+  ) {
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
@@ -97,6 +102,13 @@ export class MeetingsService {
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {
+    if (this.config.anonymousParticipants) {
+      return {
+        id: participant.id,
+        username: "Anonymous",
+      };
+    }
+
     const user = this.knownUsersService.find(participant.username);
     if (!user) {
       return participant;
