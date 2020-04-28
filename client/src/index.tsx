@@ -10,6 +10,8 @@ import Dashboard from "./components/Dashboard";
 import "./index.css";
 import theme from "./theme";
 
+document.title = process.env.REACT_APP_TITLE || "Virtual Office";
+
 ReactDOM.render(
   <BrowserRouter>
     <ThemeProvider theme={theme}>
