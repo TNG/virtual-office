@@ -125,6 +125,13 @@ export class RoomsService {
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {
+    if (this.config.anonymousParticipants) {
+      return {
+        id: participant.id,
+        username: "Anonymous",
+      };
+    }
+
     const user = this.knownUsersService.find(participant.username);
     if (!user) {
       return participant;

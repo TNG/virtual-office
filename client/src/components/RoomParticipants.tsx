@@ -11,10 +11,14 @@ import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
 
+const ANONYMOUS_PARTICIPANTS = process.env.REACT_APP_ANONYMOUS_PARTICIPANTS === "true";
 const useStyles = makeStyles<typeof theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
     cursor: "pointer",
+  },
+  anonymousParticipantsText: {
+    fontWeight: 600,
   },
   emptyGroup: {
     color: theme.palette.grey.A200,
@@ -41,6 +45,16 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
       <Box height={44}>
         <Typography className={classes.emptyGroup} variant="body2">
           No one is here
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (ANONYMOUS_PARTICIPANTS) {
+    return (
+      <Box height={44}>
+        <Typography variant="body2" className={classes.anonymousParticipantsText}>
+          {props.participants.length} participant{props.participants.length > 1 ? "s" : ""}
         </Typography>
       </Box>
     );
