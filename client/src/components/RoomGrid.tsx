@@ -20,7 +20,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   grid: {
     display: "flex",
     flexWrap: "wrap",
-    alignItems: "flex-start",
+    alignItems: "stretch",
   },
   card: {
     width: "100%",
@@ -28,10 +28,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
       width: "50%",
     },
     [theme.breakpoints.up("md")]: {
-      width: "33%",
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: theme.breakpoints.width("lg") / 3,
+      width: "20%",
     },
     flex: "0 0 auto",
     padding: 8,
