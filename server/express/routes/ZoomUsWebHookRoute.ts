@@ -64,6 +64,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
           res.sendStatus(200);
           break;
         case "meeting.ended":
+        case "webinar.ended":
           this.roomsService.endRoom(id);
           res.sendStatus(200);
           break;
