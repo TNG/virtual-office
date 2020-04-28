@@ -10,15 +10,19 @@ const useStyles = makeStyles({
   root: {
     width: "100%",
     height: "100%",
-    minHeight: 220,
     display: "flex",
     flexDirection: "column",
   },
-  header: { height: 40 },
+  header: {
+    alignItems: "flex-start",
+    flexGrow: 1,
+  },
+  headerTitle: {
+    fontSize: 16,
+  },
   content: {
     paddingTop: 0,
     paddingBottom: 4,
-    flexGrow: 1,
   },
   avatarGroup: {
     marginLeft: 8,
@@ -45,16 +49,18 @@ const RoomCard = ({ room, participants }: { room: Room; participants: MeetingPar
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        className={classes.header}
+        classes={{ root: classes.header, title: classes.headerTitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
-        title={<Typography variant="h5">{room.name}</Typography>}
+        title={room.name}
       />
-
-      <CardContent className={classes.content}>
-        <RoomParticipants name={room.name} participants={participants} />
-        <RoomLinks links={room.links} />
-      </CardContent>
-
+      {room.joinUrl ? (
+        <CardContent className={classes.content}>
+          <RoomParticipants name={room.name} participants={participants} />
+          <RoomLinks links={room.links} />
+        </CardContent>
+      ) : (
+        ""
+      )}
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
     </Card>
   );
