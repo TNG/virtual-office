@@ -3,7 +3,6 @@ import React from "react";
 import { Box, Link, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
-import { sortBy } from "lodash";
 
 const useStyles = makeStyles({
   root: {
@@ -30,11 +29,9 @@ const RoomLinks = ({ links }: { links: RoomLink[] | undefined }) => {
     return null;
   }
 
-  const sortedLinks = sortBy(links, (link) => link.text);
-
   return (
     <Box className={classes.root}>
-      {sortedLinks.map((link) => (
+      {links.map((link) => (
         <Link key={link.text} className={classes.link} href={link.href} target="_blank">
           <img className={classes.icon} src={link.icon} alt={link.text} />
           <Typography variant="body2">{link.text}</Typography>
