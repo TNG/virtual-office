@@ -3,6 +3,7 @@ import { RoomLink } from "./RoomLink";
 interface RoomWithoutId {
   meetingId: string;
   name: string;
+  subtitle?: string;
   joinUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];
