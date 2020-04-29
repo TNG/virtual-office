@@ -3,6 +3,7 @@ import { RoomLink } from "./RoomLink";
 export interface Room {
   id: string;
   name: string;
+  subtitle?: string;
   joinUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];

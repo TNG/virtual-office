@@ -19,6 +19,9 @@ const useStyles = makeStyles({
   headerTitle: {
     fontSize: 16,
   },
+  headerSubtitle: {
+    fontSize: 14,
+  },
   content: {
     paddingTop: 0,
     paddingBottom: 4,
@@ -48,9 +51,10 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   return (
     <Card className={classes.root} key={room.id}>
       <CardHeader
-        classes={{ root: classes.header, title: classes.headerTitle }}
+        classes={{ root: classes.header, title: classes.headerTitle, subheader: classes.headerSubtitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
         title={room.name}
+        subheader={room.subtitle}
       />
       {room.joinUrl ? (
         <CardContent className={classes.content}>
