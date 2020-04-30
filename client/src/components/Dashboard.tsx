@@ -66,11 +66,6 @@ const mapOfficeEventToOffice = (office: Office, roomEvent: RoomEvent): Office =>
 const Dashboard = () => {
   const classes = useStyles();
 
-  const history = useHistory();
-  useEffect(() => {
-    axios.get("/api/me").catch(() => history.push("/login"));
-  }, [history]);
-
   const context = useContext(SocketContext);
   const [office, setOffice] = useState({ rooms: [], groups: [] } as Office);
   useEffect(() => {
