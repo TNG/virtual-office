@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import RoomParticipants from "./RoomParticipants";
@@ -56,14 +56,14 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
         title={room.name}
         subheader={room.subtitle}
       />
-      {room.joinUrl ? (
-        <CardContent className={classes.content}>
+      <CardContent className={classes.content}>
+        <RoomLinks links={room.links} />
+        <Typography variant="subtitle2">Participants</Typography>
+        <Box paddingLeft={1} paddingTop={1}>
           <RoomParticipants name={room.name} participants={room.participants} />
-          <RoomLinks links={room.links} />
-        </CardContent>
-      ) : (
-        ""
-      )}
+        </Box>
+      </CardContent>
+
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
     </Card>
   );
