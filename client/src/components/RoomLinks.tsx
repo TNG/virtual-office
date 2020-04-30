@@ -5,14 +5,16 @@ import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
 
 const useStyles = makeStyles({
-  root: {
-    marginTop: 20,
-  },
   link: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 8,
+  },
+  linkGroup: {
+    paddingTop:4,
+    paddingBottom: 12,
+    paddingLeft: 8
   },
   icon: {
     width: 24,
@@ -29,13 +31,27 @@ const RoomLinks = ({ links }: { links: RoomLink[] | undefined }) => {
     return null;
   }
 
+  const groupedLinks = links.reduce((acc, link) => {
+    const group = link.group || "";
+    acc[group] = [...(acc[group] || []), link];
+    return acc;
+  }, {} as { [group: string]: RoomLink[] });
+
   return (
-    <Box className={classes.root}>
-      {links.map((link) => (
-        <Link key={link.text} className={classes.link} href={link.href} target="_blank">
-          <img className={classes.icon} src={link.icon} alt={link.text} />
-          <Typography variant="body2">{link.text}</Typography>
-        </Link>
+    <Box>
+      {Object.entries(groupedLinks).map(([group, groupLinks]) => (
+        <Box key={group}>
+          <Typography variant="subtitle2">{group}</Typography>
+          <Box className={classes.linkGroup}>
+            {groupLinks.map((link) => (
+              <Link key={link.text} className={classes.link} href={link.href} target="_blank">
+                <img className={classes.icon} src={link.icon} alt={link.text} />
+                <Typography variant="body2">{link.text}</Typography>
+              </Link>
+            ))}
+          </Box>
+
+        </Box>
       ))}
     </Box>
   );
