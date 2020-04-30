@@ -1,6 +1,4 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 
 import { RoomEvent } from "../../../server/express/types/RoomEvent";
@@ -10,38 +8,26 @@ import { SocketContext } from "../socket/Context";
 import { search } from "../search";
 
 import Box from "@material-ui/core/Box/Box";
-import AppBar from "./AppBar";
-import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 import theme from "../theme";
 import { Group } from "../../../server/express/types/Group";
+import { Header } from "./Header";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
-    height: "100vh",
-    backgroundImage: `url(${Background})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    filter: "blur(8px)",
-    "-webkit-filter": "blur(8px)",
-    opacity: 0.8,
+    minHeight: "100vh",
+    backgroundColor: theme.palette.background.default,
   },
   content: {
-    position: "fixed",
-    height: "100vh",
-    width: "100vw",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    overflowY: "auto",
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   rooms: {
+    maxWidth: 1200,
+    width: "100%",
     marginTop: 12,
-    paddingTop: 56,
-    [theme.breakpoints.up("sm")]: {
-      paddingTop: 64,
-    },
     padding: 12,
   },
 }));
@@ -129,11 +115,9 @@ const Dashboard = () => {
 
   const groupsWithRooms = selectGroupsWithRooms();
   return (
-    <Box>
-      <Box className={classes.background} />
+    <Box className={classes.background}>
       <Box className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} />
-
+        <Header/>
         <Box className={classes.rooms}>
           {groupsWithRooms.map(({ group, rooms }) => (
             <RoomGrid key={group.id} group={group} rooms={rooms} />
