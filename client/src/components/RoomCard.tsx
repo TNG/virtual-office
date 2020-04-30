@@ -18,10 +18,12 @@ const useStyles = makeStyles({
     flexGrow: 1,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: 'bold'
   },
   headerSubtitle: {
     fontSize: 14,
+    paddingTop: 4
   },
   content: {
     paddingTop: 0,
