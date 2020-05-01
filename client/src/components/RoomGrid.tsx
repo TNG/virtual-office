@@ -36,7 +36,15 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomGrid = ({ group, rooms, meetings }: { group: Group; rooms: Room[]; meetings: MeetingsIndexed }) => {
+const RoomGrid = ({
+  group,
+  rooms,
+  meetings,
+}: {
+  group: Group;
+  rooms: (Room & { shouldFocus?: boolean })[];
+  meetings: MeetingsIndexed;
+}) => {
   const classes = useStyles();
 
   function renderGridCard(key: string, card: any) {
