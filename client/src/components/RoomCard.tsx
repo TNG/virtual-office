@@ -12,17 +12,20 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
+  border: {
+    border: "3px solid rgb(44, 106, 168)",
+  },
   header: {
     alignItems: "flex-start",
     flexGrow: 1,
   },
   headerTitle: {
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   headerSubtitle: {
     fontSize: 14,
-    paddingTop: 4
+    paddingTop: 4,
   },
   content: {
     paddingTop: 0,
@@ -37,7 +40,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
+const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boolean } }) => {
   const classes = useStyles();
 
   function renderJoinUrl() {
@@ -51,7 +54,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   }
 
   return (
-    <Card className={classes.root} key={room.id}>
+    <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id}>
       <CardHeader
         classes={{ root: classes.header, title: classes.headerTitle, subheader: classes.headerSubtitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}

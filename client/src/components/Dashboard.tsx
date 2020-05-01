@@ -63,7 +63,7 @@ const mapOfficeEventToOffice = (office: Office, roomEvent: RoomEvent): Office =>
   };
 };
 
-const Dashboard = () => {
+const Dashboard = ({ location }: any) => {
   const classes = useStyles();
 
   const context = useContext(SocketContext);
@@ -97,7 +97,9 @@ const Dashboard = () => {
     return groups
       .filter((group) => !group.hideAfter || new Date(group.hideAfter) > new Date())
       .map((group) => {
-        const rooms = searchResult.rooms.filter((room) => (room.groupId || undefinedGroup.id) === group.id);
+        const rooms = searchResult.rooms
+          .filter((room) => (room.groupId || undefinedGroup.id) === group.id)
+          .map(shouldFocus(location));
 
         return {
           group,
@@ -112,7 +114,7 @@ const Dashboard = () => {
   return (
     <Box className={classes.background}>
       <Box className={classes.content}>
-        <Header/>
+        <Header />
         <Box className={classes.rooms}>
           {groupsWithRooms.map(({ group, rooms }) => (
             <RoomGrid key={group.id} group={group} rooms={rooms} />
@@ -124,3 +126,14 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+const shouldFocus = (location: Location) => (
+  room: RoomWithParticipants
+): RoomWithParticipants & { shouldFocus?: boolean } => {
+  const params = new URLSearchParams(location.search);
+  const talkId = params.get("talk");
+  if (room.id === talkId) {
+    return { ...room, shouldFocus: true };
+  }
+  return room;
+};
