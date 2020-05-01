@@ -17,6 +17,7 @@ import { Group } from "../../../server/express/types/Group";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 import { MeetingsIndexed } from "./MeetingsIndexed";
+import { Room } from "../../../server/express/types/Room";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -72,7 +73,7 @@ const mapMeetingEventToMeetings = (meetings: Meeting[], event: MeetingEvent): Me
   return meetings.map((meeting) => (meeting.meetingId === event.meetingId ? applyEventTo(meeting) : meeting));
 };
 
-const Dashboard = () => {
+const Dashboard = ({ location }: any) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -120,7 +121,9 @@ const Dashboard = () => {
     return groups
       .filter((group) => !group.hideAfter || new Date(group.hideAfter) > new Date())
       .map((group) => {
-        const rooms = searchResult.rooms.filter((room) => (room.groupId || undefinedGroup.id) === group.id);
+        const rooms = searchResult.rooms
+          .filter((room) => (room.groupId || undefinedGroup.id) === group.id)
+          .map(shouldFocus(location));
 
         return {
           group,
@@ -150,3 +153,12 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+const shouldFocus = (location: Location) => (room: Room): Room & { shouldFocus?: boolean } => {
+  const params = new URLSearchParams(location.search);
+  const talkId = params.get("talk");
+  if (room.roomId === talkId) {
+    return { ...room, shouldFocus: true };
+  }
+  return room;
+};

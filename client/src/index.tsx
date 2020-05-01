@@ -16,9 +16,7 @@ ReactDOM.render(
   <BrowserRouter>
     <ThemeProvider theme={theme}>
       <Switch>
-        <Route exact path="/">
-          <Dashboard />
-        </Route>
+        <Route exact path="/" component={Dashboard} />
         <Route path="/login">
           <Login />
         </Route>

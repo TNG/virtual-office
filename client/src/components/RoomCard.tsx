@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
@@ -13,17 +13,20 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
+  border: {
+    border: "3px solid rgb(44, 106, 168)",
+  },
   header: {
     alignItems: "flex-start",
     flexGrow: 1,
   },
   headerTitle: {
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   headerSubtitle: {
     fontSize: 14,
-    paddingTop: 4
+    paddingTop: 4,
   },
   content: {
     paddingTop: 0,
@@ -38,8 +41,21 @@ const useStyles = makeStyles({
   },
 });
 
-const RoomCard = ({ room, participants }: { room: Room; participants: MeetingParticipant[] }) => {
+const RoomCard = ({
+  room,
+  participants,
+}: {
+  room: Room & { shouldFocus?: boolean };
+  participants: MeetingParticipant[];
+}) => {
   const classes = useStyles();
+
+  const scrollRef: any = useRef();
+  useEffect(() => {
+    if (room.shouldFocus) {
+      window.scrollTo({ behavior: "smooth", top: scrollRef.current.offsetTop });
+    }
+  }, [room]);
 
   function renderJoinUrl() {
     return (
@@ -52,7 +68,7 @@ const RoomCard = ({ room, participants }: { room: Room; participants: MeetingPar
   }
 
   return (
-    <Card className={classes.root} key={room.roomId}>
+    <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.roomId} ref={scrollRef}>
       <CardHeader
         classes={{ root: classes.header, title: classes.headerTitle, subheader: classes.headerSubtitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
