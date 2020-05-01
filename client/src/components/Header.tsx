@@ -23,7 +23,11 @@ export const Header = () => {
       <Box className={classes.container}>
         <Box padding={1} flex="1">
           <a target="_blank" href="https://bigtechday.com" rel="noopener noreferrer">
-            <img alt="TNG Logo" width="300" src="/images/tng.png" />
+            <picture>
+              <source srcSet="/images/tng.webp" type="image/webp" />
+              <source srcSet="/images/tng.png" type="image/jpeg" />
+              <img src="/images/tng.png" alt="TNG Logo" width={300} />
+            </picture>
           </a>
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center">
@@ -35,7 +39,11 @@ export const Header = () => {
         <Box flex="1" />
       </Box>
       <Box display="flex" justifyContent="center" marginTop={2}>
-        <img alt="Super Collider" width="100%" src="/images/BTD7_SuperCollider.jpg" />
+        <picture>
+          <source srcSet="/images/BTD7_SuperCollider.webp" type="image/webp" />
+          <source srcSet="/images/BTD7_SuperCollider.jpg" type="image/jpeg" />
+          <img src="/images/BTD7_SuperCollider.jpg" alt="Super Collider" width="100%" />
+        </picture>
       </Box>
     </Box>
   );
