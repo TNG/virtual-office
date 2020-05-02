@@ -13,6 +13,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
       flexDirection: "column",
     },
   },
+  logo: {
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 export const Header = () => {
@@ -22,7 +26,7 @@ export const Header = () => {
     <Box>
       <Box className={classes.container}>
         <Box padding={1} flex="1">
-          <a target="_blank" href="https://bigtechday.com" rel="noopener noreferrer">
+          <a className={classes.logo} target="_blank" href="https://bigtechday.com" rel="noopener noreferrer">
             <picture>
               <source srcSet="/images/tng.webp" type="image/webp" />
               <source srcSet="/images/tng.png" type="image/jpeg" />
