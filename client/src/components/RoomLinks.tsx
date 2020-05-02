@@ -12,9 +12,9 @@ const useStyles = makeStyles({
     marginTop: 8,
   },
   linkGroup: {
-    paddingTop:4,
+    paddingTop: 4,
     paddingBottom: 12,
-    paddingLeft: 8
+    paddingLeft: 8,
   },
   icon: {
     width: 24,
@@ -50,7 +50,6 @@ const RoomLinks = ({ links }: { links: RoomLink[] | undefined }) => {
               </Link>
             ))}
           </Box>
-
         </Box>
       ))}
     </Box>
