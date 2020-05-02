@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { partition } from "lodash";
@@ -37,13 +37,6 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants & { shouldFocus?: boolean })[] }) => {
   const classes = useStyles();
 
-  const ref: any = useRef();
-  useEffect(() => {
-    if (rooms.find(room => room.shouldFocus)) {
-      window.scrollTo({ behavior: 'smooth', top: ref.current.offsetTop });
-    }
-  }, [rooms]);
-
   function renderGridCard(key: string, card: any) {
     return (
       <Box key={key} className={classes.card}>
@@ -75,7 +68,7 @@ const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants
   }
 
   return (
-    <Box {...{ ref }}>
+    <Box>
       {renderGroupHeader()}
 
       <Box className={classes.grid}>

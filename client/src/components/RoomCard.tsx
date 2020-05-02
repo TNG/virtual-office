@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
@@ -43,6 +43,13 @@ const useStyles = makeStyles({
 const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boolean } }) => {
   const classes = useStyles();
 
+  const scrollRef: any = useRef();
+  useEffect(() => {
+    if (room.shouldFocus) {
+      window.scrollTo({ behavior: "smooth", top: scrollRef.current.offsetTop });
+    }
+  }, [room]);
+
   function renderJoinUrl() {
     return (
       room.joinUrl && (
@@ -54,7 +61,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
   }
 
   return (
-    <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id}>
+    <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id} ref={scrollRef}>
       <CardHeader
         classes={{ root: classes.header, title: classes.headerTitle, subheader: classes.headerSubtitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
