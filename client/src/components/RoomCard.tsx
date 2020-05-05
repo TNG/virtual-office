@@ -22,6 +22,10 @@ const useStyles = makeStyles({
   headerTitle: {
     fontSize: 15,
     fontWeight: "bold",
+    color: "black",
+  },
+  headerTitleLink: {
+    textDecoration: "none",
   },
   headerSubtitle: {
     fontSize: 14,
@@ -63,9 +67,15 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
   return (
     <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id} ref={scrollRef}>
       <CardHeader
-        classes={{ root: classes.header, title: classes.headerTitle, subheader: classes.headerSubtitle }}
+        classes={{ root: classes.header, subheader: classes.headerSubtitle }}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
-        title={room.name}
+        title={
+          <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
+            <Typography variant="h5" className={classes.headerTitle}>
+              {room.name}
+            </Typography>
+          </a>
+        }
         subheader={room.subtitle}
       />
       <CardContent className={classes.content}>

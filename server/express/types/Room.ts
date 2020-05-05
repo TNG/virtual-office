@@ -4,6 +4,7 @@ export interface Room {
   id: string;
   name: string;
   subtitle?: string;
+  titleLink?: string;
   joinUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];
