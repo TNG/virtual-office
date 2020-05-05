@@ -54,7 +54,7 @@ export class WebSocketController {
         this.knownUsersService.add(JSON.parse(currentUser));
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);
-      socket.on("disconnect", () => {
+      request.on("disconnect", () => {
         logger.trace(`createSocket - client socket connection disconnected`);
       });
     });
