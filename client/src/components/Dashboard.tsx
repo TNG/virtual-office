@@ -130,8 +130,7 @@ const Dashboard = ({ location }: any) => {
           rooms,
         };
       })
-      .filter((entry) => entry.rooms.length > 0)
-      .sort((a, b) => a.group.name.localeCompare(b.group.name));
+      .filter((entry) => entry.rooms.length > 0);
   }
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
