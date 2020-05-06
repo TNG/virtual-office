@@ -24,6 +24,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     color: theme.palette.grey.A200,
   },
   crowdContainer: {
+    paddingTop: 8,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
