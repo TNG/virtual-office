@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader } from "@material-ui/core";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
@@ -12,6 +12,9 @@ const useStyles = makeStyles({
     height: "100%",
     display: "flex",
     flexDirection: "column",
+  },
+  hidden: {
+    opacity: 0.4,
   },
   border: {
     border: "3px solid rgb(44, 106, 168)",
@@ -49,9 +52,11 @@ const useStyles = makeStyles({
 const RoomCard = ({
   room,
   participants,
+  isHidden,
 }: {
   room: Room & { shouldFocus?: boolean };
   participants: MeetingParticipant[];
+  isHidden: boolean;
 }) => {
   const classes = useStyles();
 
@@ -76,24 +81,20 @@ const RoomCard = ({
     <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.roomId} ref={scrollRef}>
       <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
         <CardHeader
-          classes={{ root: classes.header, subheader: classes.headerSubtitle }}
+          classes={{ root: classes.header, subheader: `${classes.headerSubtitle} ${isHidden ? classes.hidden : ""}` }}
           avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
           title={
-            <Typography variant="h5" className={classes.headerTitle}>
+            <Typography variant="h5" className={`${classes.headerTitle} ${isHidden ? classes.hidden : ""}`}>
               {room.name}
             </Typography>
           }
           subheader={room.subtitle}
         />
       </a>
-      {room.joinUrl ? (
-        <CardContent className={classes.content}>
-          <RoomParticipants name={room.name} participants={participants} />
-          <RoomLinks links={room.links} />
-        </CardContent>
-      ) : (
-        ""
-      )}
+      <CardContent className={classes.content}>
+        {isHidden ? "" : <RoomParticipants name={room.name} participants={participants} />}
+        <RoomLinks links={room.links} isHidden={isHidden} />
+      </CardContent>
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
     </Card>
   );
