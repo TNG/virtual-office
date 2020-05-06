@@ -10,6 +10,7 @@ export interface Room {
   links?: RoomLink[];
   groupId?: string;
   icon?: string;
+  hasNoZoomRoom?: boolean;
   slackNotification?: {
     channelId: string;
     notificationInterval?: number;

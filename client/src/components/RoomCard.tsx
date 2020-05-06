@@ -80,10 +80,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
       </a>
       <CardContent className={classes.content}>
         <RoomLinks links={room.links} />
-        <Typography variant="subtitle2">Participants</Typography>
-        <Box paddingLeft={1} paddingTop={1}>
-          <RoomParticipants name={room.name} participants={room.participants} />
-        </Box>
+        {room.hasNoZoomRoom ? "" : <RoomParticipants name={room.name} participants={room.participants} />}
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
