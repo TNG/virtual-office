@@ -16,7 +16,6 @@ const useStyles = makeStyles({
     border: "3px solid rgb(44, 106, 168)",
   },
   header: {
-    alignItems: "flex-start",
     flexGrow: 1,
   },
   headerTitle: {
@@ -25,7 +24,6 @@ const useStyles = makeStyles({
     color: "black",
   },
   headerTitleLink: {
-    flexGrow: 1,
     textDecoration: "none",
   },
   headerSubtitle: {
@@ -65,9 +63,15 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
     );
   }
 
+  const isDescriptionCard = room.hasNoZoomRoom && room.description;
   return (
     <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id} ref={scrollRef}>
-      <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
+      <a
+        className={`${classes.headerTitleLink} ${isDescriptionCard ? "" : classes.header}`}
+        href={room.titleLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <CardHeader
           classes={{ root: classes.header, subheader: classes.headerSubtitle }}
           avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
@@ -80,8 +84,18 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
         />
       </a>
       <CardContent className={classes.content}>
-        <RoomLinks links={room.links} />
-        {room.hasNoZoomRoom ? "" : <RoomParticipants name={room.name} participants={room.participants} />}
+        {room.description ? (
+          <Typography variant="subtitle2">
+            {room.description.split("\n").map((item, i) => (
+              <p key={i}>{item}</p>
+            ))}
+          </Typography>
+        ) : (
+          <Box>
+            <RoomLinks links={room.links} />
+            <RoomParticipants name={room.name} participants={room.participants} />
+          </Box>
+        )}
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
