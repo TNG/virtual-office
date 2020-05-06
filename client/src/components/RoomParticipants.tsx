@@ -23,6 +23,14 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   emptyGroup: {
     color: theme.palette.grey.A200,
   },
+  crowdContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  crowdImage: {
+    height: 56,
+  },
 }));
 
 const RoomParticipants = (props: { name: string; participants: MeetingParticipant[] }) => {
@@ -42,20 +50,43 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
 
   if (props.participants.length <= 0) {
     return (
-      <Box height={44}>
-        <Typography className={classes.emptyGroup} variant="body2">
-          No one is here
-        </Typography>
+      <Box>
+        <Box className={classes.crowdContainer}>
+          <img src="/images/crowd/crowd_0.png" className={classes.crowdImage} />
+          <Typography className={classes.emptyGroup} variant="subtitle2">
+            No one is here
+          </Typography>
+        </Box>
       </Box>
     );
   }
 
+  function renderCrowd(numberOfParticipants: number) {
+    if (numberOfParticipants <= 1) {
+      return <img src="/images/crowd/crowd_1.png" className={classes.crowdImage} />;
+    } else if (numberOfParticipants <= 2) {
+      return <img src="/images/crowd/crowd_2.png" className={classes.crowdImage} />;
+    } else if (numberOfParticipants <= 10) {
+      return <img src="/images/crowd/crowd_3.png" className={classes.crowdImage} />;
+    } else if (numberOfParticipants <= 50) {
+      return <img src="/images/crowd/crowd_5.png" className={classes.crowdImage} />;
+    } else if (numberOfParticipants <= 100) {
+      return <img src="/images/crowd/crowd_7.png" className={classes.crowdImage} />;
+    } else if (numberOfParticipants <= 200) {
+      return <img src="/images/crowd/crowd_9.png" className={classes.crowdImage} />;
+    }
+  }
+
   if (ANONYMOUS_PARTICIPANTS) {
+    const viewerCount = props.participants.length;
     return (
-      <Box height={44}>
-        <Typography variant="body2" className={classes.anonymousParticipantsText}>
-          {props.participants.length} participant{props.participants.length > 1 ? "s" : ""}
-        </Typography>
+      <Box>
+        <Box className={classes.crowdContainer}>
+          {renderCrowd(viewerCount)}
+          <Typography variant="subtitle2">
+            {viewerCount} viewer{viewerCount > 1 ? "s" : ""}
+          </Typography>
+        </Box>
       </Box>
     );
   }
