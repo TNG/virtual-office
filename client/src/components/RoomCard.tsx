@@ -66,18 +66,18 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
 
   return (
     <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.id} ref={scrollRef}>
-      <CardHeader
-        classes={{ root: classes.header, subheader: classes.headerSubtitle }}
-        avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
-        title={
-          <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
+      <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
+        <CardHeader
+          classes={{ root: classes.header, subheader: classes.headerSubtitle }}
+          avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
+          title={
             <Typography variant="h5" className={classes.headerTitle}>
               {room.name}
             </Typography>
-          </a>
-        }
-        subheader={room.subtitle}
-      />
+          }
+          subheader={room.subtitle}
+        />
+      </a>
       <CardContent className={classes.content}>
         <RoomLinks links={room.links} />
         <Typography variant="subtitle2">Participants</Typography>
