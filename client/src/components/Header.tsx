@@ -37,6 +37,9 @@ export const Header = () => {
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography variant="h3">Virtual Big Techday 13</Typography>
           <Box paddingTop={1}>
+            <Typography variant="h4">8. Mai 2020</Typography>
+          </Box>
+          <Box paddingTop={1}>
             <Typography variant="h4">Live-Programm</Typography>
           </Box>
         </Box>
