@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     color: "black",
   },
   headerTitleLink: {
+    flexGrow: 1,
     textDecoration: "none",
   },
   headerSubtitle: {
