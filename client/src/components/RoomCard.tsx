@@ -12,6 +12,9 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
+  hidden: {
+    opacity: 0.4,
+  },
   border: {
     border: "3px solid rgb(44, 106, 168)",
   },
@@ -43,7 +46,13 @@ const useStyles = makeStyles({
   },
 });
 
-const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boolean } }) => {
+const RoomCard = ({
+  room,
+  isHidden,
+}: {
+  room: RoomWithParticipants & { shouldFocus?: boolean };
+  isHidden: boolean;
+}) => {
   const classes = useStyles();
 
   const scrollRef: any = useRef();
@@ -73,10 +82,10 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
         rel="noopener noreferrer"
       >
         <CardHeader
-          classes={{ root: classes.header, subheader: classes.headerSubtitle }}
+          classes={{ root: classes.header, subheader: `${classes.headerSubtitle} ${isHidden ? classes.hidden : ""}` }}
           avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
           title={
-            <Typography variant="h5" className={classes.headerTitle}>
+            <Typography variant="h5" className={`${classes.headerTitle} ${isHidden ? classes.hidden : ""}`}>
               {room.name}
             </Typography>
           }
@@ -92,8 +101,8 @@ const RoomCard = ({ room }: { room: RoomWithParticipants & { shouldFocus?: boole
           </Typography>
         ) : (
           <Box>
-            <RoomLinks links={room.links} />
-            <RoomParticipants name={room.name} participants={room.participants} />
+            <RoomLinks links={room.links} isHidden={isHidden} />
+            {isHidden ? "" : <RoomParticipants name={room.name} participants={room.participants} />}
           </Box>
         )}
       </CardContent>

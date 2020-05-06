@@ -20,6 +20,9 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     flexWrap: "wrap",
     alignItems: "stretch",
   },
+  hidden: {
+    opacity: 0.4,
+  },
   card: {
     width: "100%",
     [theme.breakpoints.up("sm")]: {
@@ -36,6 +39,8 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 
 const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants & { shouldFocus?: boolean })[] }) => {
   const classes = useStyles();
+
+  const isHidden = !!group.hideAfter && new Date(group.hideAfter) <= new Date();
 
   function renderGridCard(key: string, card: any) {
     return (
@@ -56,7 +61,7 @@ const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants
 
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
-    return shownRooms.map((room) => renderGridCard(room.id, <RoomCard room={room} />));
+    return shownRooms.map((room) => renderGridCard(room.id, <RoomCard room={room} isHidden={isHidden} />));
   }
 
   function renderGroupJoinCard() {
@@ -64,7 +69,7 @@ const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants
   }
 
   function renderGroupHeader() {
-    return group.name && <h2 className={classes.title}>{group.name}</h2>;
+    return group.name && <h2 className={`${classes.title} ${isHidden ? classes.hidden : ""}`}>{group.name}</h2>;
   }
 
   return (
