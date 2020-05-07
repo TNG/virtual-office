@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { partition } from "lodash";
 
@@ -13,6 +13,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   title: {
     margin: 12,
     marginTop: 24,
+    padding: 0,
+  },
+  description: {
+    margin: 12,
     padding: 0,
   },
   grid: {
@@ -69,7 +73,24 @@ const RoomGrid = ({ group, rooms }: { group: Group; rooms: (RoomWithParticipants
   }
 
   function renderGroupHeader() {
-    return group.name && <h2 className={`${classes.title} ${isHidden ? classes.hidden : ""}`}>{group.name}</h2>;
+    return (
+      group.name && (
+        <Box>
+          <Typography variant="h5" className={`${classes.title} ${isHidden ? classes.hidden : ""}`}>
+            {group.name}
+          </Typography>
+          {group.description ? (
+            <Typography
+              variant="subtitle2"
+              className={`${classes.description} ${isHidden ? classes.hidden : ""}`}
+              dangerouslySetInnerHTML={{ __html: group.description }}
+            />
+          ) : (
+            ""
+          )}
+        </Box>
+      )
+    );
   }
 
   return (
