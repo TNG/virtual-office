@@ -28,6 +28,7 @@ const useStyles = makeStyles({
   },
   headerTitleLink: {
     textDecoration: "none",
+    color: "black",
   },
   headerSubtitle: {
     fontSize: 14,
@@ -94,11 +95,13 @@ const RoomCard = ({
       </a>
       <CardContent className={classes.content}>
         {room.description ? (
-          <Typography variant="subtitle2">
-            {room.description.split("\n").map((item, i) => (
-              <p key={i}>{item}</p>
-            ))}
-          </Typography>
+          <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
+            <Typography variant="subtitle2">
+              {room.description.split("\n").map((item, i) => (
+                <p key={i}>{item}</p>
+              ))}
+            </Typography>
+          </a>
         ) : (
           <Box>
             <RoomLinks links={room.links} isHidden={isHidden} />
