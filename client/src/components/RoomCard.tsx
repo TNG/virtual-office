@@ -38,6 +38,10 @@ const useStyles = makeStyles({
     paddingTop: 0,
     paddingBottom: 4,
   },
+  descriptionParagraph: {
+    paddingTop: 0,
+    paddingBottom: 4,
+  },
   avatarGroup: {
     marginLeft: 8,
   },
@@ -98,14 +102,20 @@ const RoomCard = ({
           <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
             <Typography variant="subtitle2">
               {room.description.split("\n").map((item, i) => (
-                <p key={i}>{item}</p>
+                <p className={classes.descriptionParagraph} key={i}>
+                  {item}
+                </p>
               ))}
             </Typography>
           </a>
         ) : (
           <Box>
             <RoomLinks links={room.links} isHidden={isHidden} />
-            {isHidden ? "" : <RoomParticipants name={room.name} participants={room.participants} />}
+            {isHidden || room.hasNoZoomRoom ? (
+              ""
+            ) : (
+              <RoomParticipants name={room.name} participants={room.participants} />
+            )}
           </Box>
         )}
       </CardContent>
