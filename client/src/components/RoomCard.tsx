@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
   headerTitleLink: {
     textDecoration: "none",
-    color: "black",
+    color: "inherit",
   },
   headerSubtitle: {
     fontSize: 14,
@@ -94,30 +94,35 @@ const RoomCard = ({
               {room.name}
             </Typography>
           }
-          subheader={room.subtitle}
+          subheader={
+            room.subtitleLink ? (
+              <a className={classes.headerTitleLink} href={room.subtitleLink} target="_blank" rel="noopener noreferrer">
+                {room.subtitle}
+              </a>
+            ) : (
+              room.subtitle
+            )
+          }
         />
       </a>
       <CardContent className={classes.content}>
-        {room.description ? (
-          <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
-            <Typography variant="subtitle2">
-              {room.description.split("\n").map((item, i) => (
-                <p className={classes.descriptionParagraph} key={i}>
-                  {item}
-                </p>
-              ))}
-            </Typography>
-          </a>
-        ) : (
-          <Box>
-            <RoomLinks links={room.links} isHidden={isHidden} />
-            {isHidden || room.hasNoZoomRoom ? (
-              ""
-            ) : (
-              <RoomParticipants name={room.name} participants={room.participants} />
-            )}
-          </Box>
-        )}
+        <Box>
+          {room.description ? (
+            <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
+              <Typography variant="subtitle2">
+                {room.description.split("\n").map((item, i) => (
+                  <p className={classes.descriptionParagraph} key={i}>
+                    {item}
+                  </p>
+                ))}
+              </Typography>
+            </a>
+          ) : (
+            ""
+          )}
+          <RoomLinks links={room.links} isHidden={isHidden} />
+          {isHidden || room.hasNoZoomRoom ? "" : <RoomParticipants name={room.name} participants={room.participants} />}
+        </Box>
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
