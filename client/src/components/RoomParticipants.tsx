@@ -73,7 +73,7 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
       return <img src="/images/crowd/crowd_5.png" className={classes.crowdImage} />;
     } else if (numberOfParticipants <= 100) {
       return <img src="/images/crowd/crowd_7.png" className={classes.crowdImage} />;
-    } else if (numberOfParticipants <= 200) {
+    } else {
       return <img src="/images/crowd/crowd_9.png" className={classes.crowdImage} />;
     }
   }
