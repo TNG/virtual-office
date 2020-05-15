@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { ImageElement, WebClient } from "@slack/web-api";
 import { Config } from "../Config";
-import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingsService } from "./MeetingsService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
 import { logger } from "../log";
 import { Block, KnownBlock } from "@slack/types";
@@ -19,12 +19,12 @@ export class SlackBotService {
 
   constructor(
     config: Config,
-    private readonly participantsService: MeetingParticipantsService,
+    private readonly meetingsService: MeetingsService,
     private readonly officeService: OfficeService
   ) {
     if (config.slack.botOAuthAccessToken) {
       this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
-      this.participantsService.listenParticipantsChange((event) => this.onRoomEvent(event));
+      this.meetingsService.listenParticipantsChange((event) => this.onRoomEvent(event));
 
       setInterval(() => this.sendRecurringNotification(), LOOP_INTERVAL);
     }
@@ -35,7 +35,7 @@ export class SlackBotService {
   }
 
   private handleMeetingEventForRoom(event: MeetingEvent, room: Room) {
-    const participants = this.participantsService.getParticipantsIn(room.meetingId).length;
+    const participants = this.meetingsService.getParticipantsIn(room.meetingId).length;
     const slackNotification = room.slackNotification;
     logger.info(
       `Slack message roomEvent for room=${
@@ -75,7 +75,7 @@ export class SlackBotService {
   private sendRecurringNotification() {
     const rooms = this.officeService.getOffice().rooms;
     rooms.forEach((room) => {
-      const participants = this.participantsService.getParticipantsIn(room.meetingId);
+      const participants = this.meetingsService.getParticipantsIn(room.meetingId);
       if (room.slackNotification && participants.length > 0 && this.shouldSendRecurringNotification(room)) {
         this.sendParticipantUpdate(room, participants);
       }

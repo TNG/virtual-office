@@ -7,14 +7,14 @@ import { GroupJoinService } from "./GroupJoinService";
 import { OfficeService } from "./OfficeService";
 import { Group } from "../express/types/Group";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingsService } from "./MeetingsService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
 import { Room } from "../express/types/Room";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;
   let officeService: OfficeService;
-  let participantsService: MeetingParticipantsService;
+  let participantsService: MeetingsService;
 
   const groupId = "groupId";
   const minimum = 2;
@@ -56,7 +56,7 @@ describe("GroupJoinService", () => {
   beforeEach(() => {
     clock = fakeTimers.install({ now: 1 });
     officeService = mock(OfficeService);
-    participantsService = mock(MeetingParticipantsService);
+    participantsService = mock(MeetingsService);
 
     when(participantsService.getParticipantsIn(emptyRoom.meetingId)).thenReturn([]);
     when(participantsService.getParticipantsIn(roomWithLessThanMinimum.meetingId)).thenReturn(

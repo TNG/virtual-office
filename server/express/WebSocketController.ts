@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { Socket } from "socket.io";
 import { logger } from "../log";
 import { Server } from "http";
-import { MeetingParticipantsService } from "../services/MeetingParticipantsService";
+import { MeetingsService } from "../services/MeetingsService";
 import cookieParser from "cookie-parser";
 import { Config } from "../Config";
 import { KnownUsersService } from "../services/KnownUsersService";
@@ -14,7 +14,7 @@ export class WebSocketController {
 
   constructor(
     private readonly officeService: OfficeService,
-    private readonly participantsService: MeetingParticipantsService,
+    private readonly meetingsService: MeetingsService,
     private readonly config: Config,
     private readonly knownUsersService: KnownUsersService
   ) {}
@@ -22,7 +22,7 @@ export class WebSocketController {
   init(server: Server) {
     this.socket = this.createSocket(server);
 
-    this.participantsService.listenParticipantsChange((event) => {
+    this.meetingsService.listenParticipantsChange((event) => {
       this.socket.emit("notify", event);
     });
     this.officeService.listenOfficeChanges((office) => {
@@ -49,7 +49,7 @@ export class WebSocketController {
       } else {
         socket.to(request.id).emit("init", {
           office: this.officeService.getOffice(),
-          meetings: this.participantsService.getAllMeetings(),
+          meetings: this.meetingsService.getAllMeetings(),
         });
         this.knownUsersService.add(JSON.parse(currentUser));
       }

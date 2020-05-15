@@ -1,11 +1,11 @@
-import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingsService } from "./MeetingsService";
 import { instance, mock, when } from "ts-mockito";
 import { KnownUsersService } from "./KnownUsersService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
 import { User } from "../express/types/User";
 
 describe("MeetingParticipantsService", () => {
-  let participantsService: MeetingParticipantsService;
+  let participantsService: MeetingsService;
   let knownUsersService: KnownUsersService;
 
   let listener: jest.Mock;
@@ -14,7 +14,7 @@ describe("MeetingParticipantsService", () => {
     knownUsersService = mock(KnownUsersService);
     listener = jest.fn();
 
-    participantsService = new MeetingParticipantsService(instance(knownUsersService));
+    participantsService = new MeetingsService(instance(knownUsersService));
   });
 
   it("should join and leave an existing room", () => {
