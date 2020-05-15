@@ -5,6 +5,8 @@ import { Room } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
 import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { RoomsService } from "./RoomsService";
+import { logger } from "../log";
+import { Group } from "../express/types/Group";
 
 function randomRoomIn(rooms: RoomWithParticipants[]): RoomWithParticipants | undefined {
   const entry = random(0, rooms.length - 1);
@@ -39,36 +41,61 @@ export class GroupJoinService {
     const office = this.officeService.getOffice();
     const group = office.groups.find((group) => group.id === groupId);
     if (!group || !group.groupJoin) {
+      logger.info(`joinRoomFor(groupId=${groupId}) - cannot find group`);
       return undefined;
     }
 
     const groupRooms = office.rooms.filter((room) => room.groupId === groupId);
     if (groupRooms.length === 0) {
+      logger.info(`joinRoomFor(groupId=${groupId}) - cannot find any rooms for the given group`);
       return undefined;
     }
+
+    const room = this.chooseRoom(group, groupRooms);
+    if (room) {
+      this.reserveSpaceIn(room.id);
+      logger.info(`joinRoomFor(groupId=${groupId}) - chosen room is ${room.id} - ${room.name}`);
+    } else {
+      logger.info(`joinRoomFor(groupId=${groupId}) - did not choose any room`);
+    }
+
+    return room;
+  }
+
+  private chooseRoom(group: Group, groupRooms: RoomWithParticipants[]): RoomWithParticipants | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
     const roomsWithMinimumParticipantCount = this.roomsWithParticipants(groupRooms, availableMinimumCount);
 
+    logger.info(
+      `chooseRoom(group=${group.id}) - ${JSON.stringify({
+        notEmptyRooms: notEmptyRooms.length,
+        roomWithMinimum: roomWithMinimum?.id,
+        availableMinimumCount,
+        roomsWithMinimumParticipantCount: roomsWithMinimumParticipantCount.map((room) => room.id),
+      })}`
+    );
+
     // First fill up rooms that are not empty, but have less participants than we configured
     if (availableMinimumCount > 0 && availableMinimumCount < group.groupJoin.minimumParticipantCount) {
+      logger.info(
+        `chooseRoom(group=${group.id}) - taking a room that is not empty and has less participants than ${group.groupJoin.minimumParticipantCount}`
+      );
       return randomRoomIn(roomsWithMinimumParticipantCount);
     }
 
     // Then start an empty room
     const emptyRooms = this.roomsWithParticipants(groupRooms, 0);
     if (emptyRooms.length > 0) {
+      logger.info(`chooseRoom(group=${group.id}) - choosing an empty room`);
       return randomRoomIn(emptyRooms);
     }
 
     // And when no empty rooms are available, but all rooms have participants above the threshold, take
     // a room with a minimum number of participants.
-    const chosenRoom = randomRoomIn(roomsWithMinimumParticipantCount);
-
-    this.reserveSpaceIn(chosenRoom.id);
-
-    return chosenRoom;
+    logger.info(`chooseRoom(group=${group.id}) - choosing a random room`);
+    return randomRoomIn(roomsWithMinimumParticipantCount);
   }
 
   reserveSpaceIn(roomId: string) {
