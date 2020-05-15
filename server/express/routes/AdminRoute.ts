@@ -30,8 +30,7 @@ export class AdminRoute implements ExpressRoute {
       res.sendStatus(200);
     });
     router.post("/replaceOffice", loginMiddleware, (req: IBasicAuthedRequest, res) => {
-      logger.info({
-        message: "replacing office",
+      logger.info("replacing office", {
         user: req.auth.user,
         data: req.body,
       });
