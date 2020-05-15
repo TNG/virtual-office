@@ -1,7 +1,7 @@
 import { RoomLink } from "./RoomLink";
 
-export interface Room {
-  id: string;
+interface RoomWithoutId {
+  meetingId: string;
   name: string;
   joinUrl?: string;
   temporary?: boolean;
@@ -12,4 +12,12 @@ export interface Room {
     channelId: string;
     notificationInterval?: number;
   };
+}
+
+export interface RoomConfig extends RoomWithoutId {
+  roomId?: string;
+}
+
+export interface Room extends RoomWithoutId {
+  roomId: string;
 }

@@ -1,6 +1,6 @@
-import { Room } from "./Room";
 import { MeetingParticipant } from "./MeetingParticipant";
 
-export interface RoomWithParticipants extends Room {
+export interface Meeting {
+  meetingId: string;
   participants: MeetingParticipant[];
 }

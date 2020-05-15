@@ -3,12 +3,11 @@ import { minBy, random } from "lodash";
 
 import { Room } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
-import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
-import { RoomsService } from "./RoomsService";
+import { MeetingParticipantsService } from "./MeetingParticipantsService";
 import { logger } from "../log";
 import { Group } from "../express/types/Group";
 
-function randomRoomIn(rooms: RoomWithParticipants[]): RoomWithParticipants | undefined {
+function randomRoomIn(rooms: Room[]): Room | undefined {
   const entry = random(0, rooms.length - 1);
   return rooms[entry];
 }
@@ -28,11 +27,14 @@ const cleanupReservationsInterval = 1000 * 30; // 30 seconds;
 export class GroupJoinService {
   private reservedSpaces: ReservedSpaces = {};
 
-  constructor(private readonly officeService: OfficeService, roomService: RoomsService) {
+  constructor(
+    private readonly officeService: OfficeService,
+    private readonly participantsService: MeetingParticipantsService
+  ) {
     setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
-    roomService.listenRoomChange((event) => {
+    participantsService.listenParticipantsChange((event) => {
       if (event.type === "join") {
-        this.removeReservedSpaceIn(event.roomId);
+        this.removeReservedSpaceIn(event.meetingId);
       }
     });
   }
@@ -53,8 +55,8 @@ export class GroupJoinService {
 
     const room = this.chooseRoom(group, groupRooms);
     if (room) {
-      this.reserveSpaceIn(room.id);
-      logger.info(`joinRoomFor(groupId=${groupId}) - chosen room is ${room.id} - ${room.name}`);
+      this.reserveSpaceIn(room.meetingId);
+      logger.info(`joinRoomFor(groupId=${groupId}) - chosen room is ${room.meetingId} - ${room.name}`);
     } else {
       logger.info(`joinRoomFor(groupId=${groupId}) - did not choose any room`);
     }
@@ -62,7 +64,7 @@ export class GroupJoinService {
     return room;
   }
 
-  private chooseRoom(group: Group, groupRooms: RoomWithParticipants[]): RoomWithParticipants | undefined {
+  private chooseRoom(group: Group, groupRooms: Room[]): Room | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
@@ -73,7 +75,7 @@ export class GroupJoinService {
         notEmptyRooms: notEmptyRooms.length,
         roomWithMinimum: roomWithMinimum?.id,
         availableMinimumCount,
-        roomsWithMinimumParticipantCount: roomsWithMinimumParticipantCount.map((room) => room.id),
+        roomsWithMinimumParticipantCount: roomsWithMinimumParticipantCount.map((room) => room.meetingId),
       })}`
     );
 
@@ -120,13 +122,13 @@ export class GroupJoinService {
     }
   }
 
-  participantsInRoom(room: RoomWithParticipants): number {
-    const reserved = this.reservedSpaces[room.id] || [];
-    const participants = room.participants.length;
+  participantsInRoom(room: Room): number {
+    const reserved = this.reservedSpaces[room.meetingId] || [];
+    const participants = this.participantsService.getParticipantsIn(room.meetingId).length;
     return participants + reserved.length;
   }
 
-  private roomsWithParticipants(rooms: RoomWithParticipants[], count: number): RoomWithParticipants[] {
+  private roomsWithParticipants(rooms: Room[], count: number): Room[] {
     return rooms.filter((room) => this.participantsInRoom(room) === count);
   }
 }

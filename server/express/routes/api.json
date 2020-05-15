@@ -41,7 +41,7 @@
     },
     "/api/office": {
       "get": {
-        "summary": "Get the whole office incl. rooms with participants",
+        "summary": "Get the whole office incl. rooms",
         "tags": ["API"],
         "responses": {
           "200": {
@@ -68,7 +68,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/roomCreation"
+                "$ref": "#/components/schemas/roomConfig"
               }
             }
           }
@@ -205,6 +205,40 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/meeting/{meetingId}/participants": {
+      "get": {
+        "summary": "Get participants for a meeting",
+        "tags": ["API"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "meetingId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/participant"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal error"
@@ -369,11 +403,15 @@
           }
         }
       },
-      "roomCreation": {
+      "roomConfig": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": ["meetingId", "name"],
         "properties": {
-          "id": {
+          "meetingId": {
+            "type": "string",
+            "example": "xxxxxxxx"
+          },
+          "roomId": {
             "type": "string",
             "example": "xxxxxxxx"
           },
@@ -406,20 +444,13 @@
         }
       },
       "room": {
+        "required": ["roomId"],
         "allOf": [
           {
-            "$ref": "#/components/schemas/roomCreation"
+            "$ref": "#/components/schemas/roomConfig"
           }
         ],
-        "type": "object",
-        "properties": {
-          "participants": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/participant"
-            }
-          }
-        }
+        "type": "object"
       },
       "rooms": {
         "type": "array",
@@ -439,7 +470,7 @@
           "rooms": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/roomCreation"
+              "$ref": "#/components/schemas/roomConfig"
             }
           }
         }

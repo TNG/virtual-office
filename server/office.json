@@ -15,7 +15,7 @@
   ],
   "rooms": [
     {
-      "id": "1",
+      "meetingId": "1",
       "name": "Lobby",
       "joinUrl": "https://zoom.us/j/1",
       "links": [
@@ -28,7 +28,7 @@
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
-      "id": "2",
+      "meetingId": "2",
       "name": "Alderaan",
       "joinUrl": "https://zoom.us/j/2",
       "links": [
@@ -47,7 +47,7 @@
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
-      "id": "3",
+      "meetingId": "3",
       "name": "Jakku",
       "joinUrl": "https://zoom.us/j/3",
       "links": [],
@@ -55,7 +55,7 @@
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
-      "id": "4",
+      "meetingId": "4",
       "name": "Mount Doom",
       "joinUrl": "https://zoom.us/j/4",
       "links": [
@@ -69,7 +69,7 @@
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
-      "id": "5",
+      "meetingId": "5",
       "name": "Prancing Pony",
       "joinUrl": "https://zoom.us/j/5",
       "links": [
