@@ -3,7 +3,7 @@ import { minBy, random } from "lodash";
 
 import { Room } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
-import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingsService } from "./MeetingsService";
 import { logger } from "../log";
 import { Group } from "../express/types/Group";
 
@@ -27,12 +27,9 @@ const cleanupReservationsInterval = 1000 * 30; // 30 seconds;
 export class GroupJoinService {
   private reservedSpaces: ReservedSpaces = {};
 
-  constructor(
-    private readonly officeService: OfficeService,
-    private readonly participantsService: MeetingParticipantsService
-  ) {
+  constructor(private readonly officeService: OfficeService, private readonly meetingsService: MeetingsService) {
     setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
-    participantsService.listenParticipantsChange((event) => {
+    meetingsService.listenParticipantsChange((event) => {
       if (event.type === "join") {
         this.removeReservedSpaceIn(event.meetingId);
       }
@@ -124,7 +121,7 @@ export class GroupJoinService {
 
   participantsInRoom(room: Room): number {
     const reserved = this.reservedSpaces[room.meetingId] || [];
-    const participants = this.participantsService.getParticipantsIn(room.meetingId).length;
+    const participants = this.meetingsService.getParticipantsIn(room.meetingId).length;
     return participants + reserved.length;
   }
 

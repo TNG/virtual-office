@@ -1,4 +1,4 @@
-import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingsService } from "./MeetingsService";
 import { Config } from "../Config";
 import { anything, instance, mock, when } from "ts-mockito";
 import { MeetingEvent } from "../express/types/MeetingEvent";
@@ -25,7 +25,7 @@ describe("SlackBotService", () => {
   // @ts-ignore
   let slackBotService: SlackBotService;
   let config: Config;
-  let participantsService: MeetingParticipantsService;
+  let participantsService: MeetingsService;
   let officeService: OfficeService;
 
   let onRoomEvent: (event: MeetingEvent) => void;
@@ -37,7 +37,7 @@ describe("SlackBotService", () => {
     config = mock(Config);
     when(config.slack).thenReturn({ clientId: "", secret: "", botOAuthAccessToken: "token" });
 
-    participantsService = mock(MeetingParticipantsService);
+    participantsService = mock(MeetingsService);
     officeService = mock(OfficeService);
     when(participantsService.listenParticipantsChange(anything())).thenCall((l) => (onRoomEvent = l));
 

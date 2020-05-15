@@ -9,7 +9,7 @@ import { enrichParticipant } from "../express/utils/enrichUser";
 import { Meeting } from "../express/types/Meeting";
 
 @Service({ multiple: false })
-export class MeetingParticipantsService {
+export class MeetingsService {
   private meetingParticipants: {
     [roomId: string]: MeetingParticipant[];
   } = {};

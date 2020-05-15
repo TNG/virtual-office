@@ -7,14 +7,14 @@ import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 import { OfficeService } from "../../services/OfficeService";
 import { AdminRoute } from "./AdminRoute";
 import { GroupJoinService } from "../../services/GroupJoinService";
-import { MeetingParticipantsService } from "../../services/MeetingParticipantsService";
+import { MeetingsService } from "../../services/MeetingsService";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
   constructor(
     private readonly monitoringRoute: MonitoringRoute,
     private readonly officeService: OfficeService,
-    private readonly participantsService: MeetingParticipantsService,
+    private readonly meetingsService: MeetingsService,
     private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute,
     private readonly groupJoinService: GroupJoinService,
     private readonly adminRoute: AdminRoute
@@ -30,7 +30,7 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.officeService.getOffice());
     });
     router.get("/meeting/:meetingId/participants", ensureLoggedIn, (req, res) => {
-      res.json(this.participantsService.getParticipantsIn(req.params.meetingId));
+      res.json(this.meetingsService.getParticipantsIn(req.params.meetingId));
     });
 
     router.post("/rooms", ensureLoggedIn, (req, res) => {
