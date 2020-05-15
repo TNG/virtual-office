@@ -74,7 +74,7 @@ An example looks like this:
   ],
   "rooms": [
     {
-      "id": "1",
+      "meetingId": "1",
       "name": "Lobby",
       "joinUrl": "https://zoom.us/j/1",
       "links": [
@@ -87,7 +87,7 @@ An example looks like this:
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
-      "id": "2",
+      "meetingId": "2",
       "name": "Alderaan",
       "joinUrl": "https://zoom.us/j/2",
       "links": [
