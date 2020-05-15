@@ -46,8 +46,7 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info({
-        message: "Received an zoom.us notification",
+      logger.info("Received an zoom.us notification", {
         event: event,
         meetingId: id,
         participant: loggableParticipant(participant, this.config.enableParticipantLogging),
