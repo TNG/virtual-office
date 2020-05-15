@@ -19,7 +19,7 @@ interface ZoomusParticipant {
   user_name: string;
 }
 
-interface ZoomUsEvent {
+export interface ZoomUsEvent {
   event: string;
   traceId;
   payload: {
