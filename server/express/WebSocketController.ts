@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { Socket } from "socket.io";
 import { logger } from "../log";
 import { Server } from "http";
-import { RoomsService } from "../services/RoomsService";
+import { MeetingParticipantsService } from "../services/MeetingParticipantsService";
 import cookieParser from "cookie-parser";
 import { Config } from "../Config";
 import { KnownUsersService } from "../services/KnownUsersService";
@@ -14,7 +14,7 @@ export class WebSocketController {
 
   constructor(
     private readonly officeService: OfficeService,
-    private readonly roomsService: RoomsService,
+    private readonly participantsService: MeetingParticipantsService,
     private readonly config: Config,
     private readonly knownUsersService: KnownUsersService
   ) {}
@@ -22,11 +22,11 @@ export class WebSocketController {
   init(server: Server) {
     this.socket = this.createSocket(server);
 
-    this.roomsService.listenRoomChange((event) => {
+    this.participantsService.listenParticipantsChange((event) => {
       this.socket.emit("notify", event);
     });
-    this.officeService.listenOfficeChanges((rooms) => {
-      this.socket.emit("office", rooms);
+    this.officeService.listenOfficeChanges((office) => {
+      this.socket.emit("office", office);
     });
   }
 
@@ -47,7 +47,10 @@ export class WebSocketController {
         socket.to(request.id).emit("unauthenticated");
         request.disconnect(true);
       } else {
-        socket.to(request.id).emit("office", this.officeService.getOffice());
+        socket.to(request.id).emit("init", {
+          office: this.officeService.getOffice(),
+          meetings: this.participantsService.getAllMeetings(),
+        });
         this.knownUsersService.add(JSON.parse(currentUser));
       }
       logger.trace(`createSocket - new client socket connection => sending current state`);

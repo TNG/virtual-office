@@ -4,10 +4,12 @@ import { makeStyles } from "@material-ui/styles";
 import { partition } from "lodash";
 
 import { Group } from "../../../server/express/types/Group";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import GroupJoinCard from "./GroupJoinCard";
 import RoomCard from "./RoomCard";
 import theme from "../theme";
+import { MeetingsIndexed } from "./MeetingsIndexed";
+import { Room } from "../../../server/express/types/Room";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   title: {
@@ -37,7 +39,7 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomGrid = ({ group, rooms }: { group: Group; rooms: RoomWithParticipants[] }) => {
+const RoomGrid = ({ group, rooms, meetings }: { group: Group; rooms: Room[]; meetings: MeetingsIndexed }) => {
   const classes = useStyles();
 
   function renderGridCard(key: string, card: any) {
@@ -48,18 +50,28 @@ const RoomGrid = ({ group, rooms }: { group: Group; rooms: RoomWithParticipants[
     );
   }
 
+  function participantsInMeeting(meetingId: string): MeetingParticipant[] {
+    if (meetings[meetingId]) {
+      return meetings[meetingId].participants;
+    }
+    return [];
+  }
+
   function selectShownRooms() {
     if (!group.groupJoin) {
       return rooms;
     }
 
-    const [emptyRooms, filledRooms] = partition(rooms, (room) => room.participants.length === 0);
+    const [emptyRooms, filledRooms] = partition(rooms, (room) => participantsInMeeting(room.meetingId).length === 0);
     return [...filledRooms, ...emptyRooms.slice(0, 1)];
   }
 
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
-    return shownRooms.map((room) => renderGridCard(room.id, <RoomCard room={room} />));
+    return shownRooms.map((room) => {
+      const participants = participantsInMeeting(room.meetingId);
+      return renderGridCard(room.roomId, <RoomCard room={room} participants={participants} />);
+    });
   }
 
   function renderGroupJoinCard() {

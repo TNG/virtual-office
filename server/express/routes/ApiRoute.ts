@@ -2,19 +2,19 @@ import { Service } from "typedi";
 import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { MonitoringRoute } from "./MonitoringRoute";
-import { RoomsService } from "../../services/RoomsService";
 import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
 import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
 import { OfficeService } from "../../services/OfficeService";
 import { AdminRoute } from "./AdminRoute";
 import { GroupJoinService } from "../../services/GroupJoinService";
+import { MeetingParticipantsService } from "../../services/MeetingParticipantsService";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
   constructor(
     private readonly monitoringRoute: MonitoringRoute,
-    private readonly roomsService: RoomsService,
     private readonly officeService: OfficeService,
+    private readonly participantsService: MeetingParticipantsService,
     private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute,
     private readonly groupJoinService: GroupJoinService,
     private readonly adminRoute: AdminRoute
@@ -29,15 +29,18 @@ export class ApiRoute implements ExpressRoute {
     router.get("/office", ensureLoggedIn, (req, res) => {
       res.json(this.officeService.getOffice());
     });
+    router.get("/meeting/:meetingId/participants", ensureLoggedIn, (req, res) => {
+      res.json(this.participantsService.getParticipantsIn(req.params.meetingId));
+    });
 
     router.post("/rooms", ensureLoggedIn, (req, res) => {
       // ToDo: Should we even restrict that on the backend API?
-      const success = this.roomsService.createRoom({ ...req.body, temporary: true });
+      const success = this.officeService.createRoom({ ...req.body, temporary: true });
       res.sendStatus(success ? 204 : 409);
     });
 
     router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
-      const success = this.roomsService.deleteRoom(req.params.roomId);
+      const success = this.officeService.deleteRoom(req.params.roomId);
       res.sendStatus(success ? 204 : 405);
     });
 

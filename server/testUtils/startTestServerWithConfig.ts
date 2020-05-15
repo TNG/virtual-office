@@ -3,18 +3,16 @@ import { Container } from "typedi";
 import { ExpressApp } from "../express/ExpressApp";
 import { Express } from "express";
 import request from "supertest";
-import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
+import { MeetingParticipant } from "../express/types/MeetingParticipant";
 
 export class TestServer {
   constructor(private readonly app: Express) {}
 
-  async getParticipantIds(roomId: string) {
-    const response = await request(this.app).get("/api/office").expect(200);
-    const body = response.body.rooms as RoomWithParticipants[];
-    const foundRoom = body.find((foundRoom) => foundRoom.id === roomId)!!;
-
-    return foundRoom.participants.map((participant) => participant.id);
+  async getParticipantIds(meetingId: string) {
+    const response = await request(this.app).get(`/api/meeting/${meetingId}/participants`).expect(200);
+    const body = response.body as MeetingParticipant[];
+    return body.map((participant) => participant.id);
   }
 
   async sendMeetingEvent(event: ZoomUsEvent) {

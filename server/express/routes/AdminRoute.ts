@@ -3,7 +3,7 @@ import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
 import { ExpressRoute } from "./ExpressRoute";
 import { RequestHandler, Router } from "express";
 import { logger } from "../../log";
-import { RoomsService } from "../../services/RoomsService";
+import { MeetingParticipantsService } from "../../services/MeetingParticipantsService";
 import { OfficeService } from "../../services/OfficeService";
 import { Config } from "../../Config";
 import { Service } from "typedi";
@@ -11,7 +11,7 @@ import { Service } from "typedi";
 @Service()
 export class AdminRoute implements ExpressRoute {
   constructor(
-    private readonly roomsService: RoomsService,
+    private readonly roomsService: MeetingParticipantsService,
     private readonly officeService: OfficeService,
     private config: Config
   ) {}

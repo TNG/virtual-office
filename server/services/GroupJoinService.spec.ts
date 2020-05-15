@@ -1,19 +1,20 @@
 import { capture, instance, mock, when } from "ts-mockito";
 import { v4 as uuid } from "uuid";
+import { range } from "lodash";
 import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
 
 import { GroupJoinService } from "./GroupJoinService";
 import { OfficeService } from "./OfficeService";
 import { Group } from "../express/types/Group";
-import { RoomWithParticipants } from "../express/types/RoomWithParticipants";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { RoomsService } from "./RoomsService";
-import { RoomEvent } from "../express/types/RoomEvent";
+import { MeetingParticipantsService } from "./MeetingParticipantsService";
+import { MeetingEvent } from "../express/types/MeetingEvent";
+import { Room } from "../express/types/Room";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;
   let officeService: OfficeService;
-  let roomsService: RoomsService;
+  let participantsService: MeetingParticipantsService;
 
   const groupId = "groupId";
   const minimum = 2;
@@ -29,18 +30,21 @@ describe("GroupJoinService", () => {
 
   const groups: Group[] = [group];
 
-  const emptyRoom = roomWithParticipants(0);
-  const roomWithLessThanMinimum = roomWithParticipants(minimum - 1);
-  const roomWithMinimum = roomWithParticipants(minimum);
-  const roomWithMoreThanMinimum = roomWithParticipants(minimum + 1);
+  const emptyRoom = randomRoom();
+  const roomWithLessThanMinimum = randomRoom();
+  const roomWithMinimum = randomRoom();
+  const roomWithMoreThanMinimum = randomRoom();
 
-  function roomWithParticipants(count: number): RoomWithParticipants {
-    const participants = Array.from(Array(count)).map(() => ({} as MeetingParticipant));
+  function randomRoom(): Room {
     return {
       groupId,
-      participants,
-      id: `${count}__${uuid()}`,
-    } as RoomWithParticipants;
+      roomId: `room__${uuid()}`,
+      meetingId: `meeting__${uuid()}`,
+    } as Room;
+  }
+
+  function generateParticipants(count: number): MeetingParticipant[] {
+    return range(count).map(() => ({} as MeetingParticipant));
   }
 
   let clock: InstalledClock<any>;
@@ -52,8 +56,18 @@ describe("GroupJoinService", () => {
   beforeEach(() => {
     clock = fakeTimers.install({ now: 1 });
     officeService = mock(OfficeService);
-    roomsService = mock(RoomsService);
-    groupJoinService = new GroupJoinService(instance(officeService), instance(roomsService));
+    participantsService = mock(MeetingParticipantsService);
+
+    when(participantsService.getParticipantsIn(emptyRoom.meetingId)).thenReturn([]);
+    when(participantsService.getParticipantsIn(roomWithLessThanMinimum.meetingId)).thenReturn(
+      generateParticipants(minimum - 1)
+    );
+    when(participantsService.getParticipantsIn(roomWithMinimum.meetingId)).thenReturn(generateParticipants(minimum));
+    when(participantsService.getParticipantsIn(roomWithMoreThanMinimum.meetingId)).thenReturn(
+      generateParticipants(minimum + 1)
+    );
+
+    groupJoinService = new GroupJoinService(instance(officeService), instance(participantsService));
   });
 
   it("should fill up rooms below the threshold first", () => {
@@ -113,16 +127,18 @@ describe("GroupJoinService", () => {
 
   describe("space reservations", () => {
     it("should consider room reservations when distributing new places", () => {
-      const roomA = roomWithParticipants(1);
-      const roomB = roomWithParticipants(2);
+      const roomA = randomRoom();
+      const roomB = randomRoom();
+      when(participantsService.getParticipantsIn(roomA.meetingId)).thenReturn(generateParticipants(1));
+      when(participantsService.getParticipantsIn(roomB.meetingId)).thenReturn(generateParticipants(2));
 
       when(officeService.getOffice()).thenReturn({
         rooms: [roomA, roomB],
         groups,
       });
 
-      groupJoinService.reserveSpaceIn(roomA.id);
-      groupJoinService.reserveSpaceIn(roomA.id);
+      groupJoinService.reserveSpaceIn(roomA.meetingId);
+      groupJoinService.reserveSpaceIn(roomA.meetingId);
 
       const room = groupJoinService.joinRoomFor(groupId);
 
@@ -130,56 +146,49 @@ describe("GroupJoinService", () => {
     });
 
     it("should remove reservations when a participant joins", () => {
-      const room = roomWithParticipants(1);
-      when(officeService.getOffice()).thenReturn({
-        rooms: [room],
-        groups,
-      });
+      const room = randomRoom();
+      when(participantsService.getParticipantsIn(room.meetingId)).thenReturn(generateParticipants(1));
 
-      groupJoinService.reserveSpaceIn(room.id);
+      groupJoinService.reserveSpaceIn(room.meetingId);
+
       expect(groupJoinService.participantsInRoom(room)).toEqual(2);
-
-      const listener = capture(roomsService.listenRoomChange).last()[0];
+      const listener = capture(participantsService.listenParticipantsChange).last()[0];
       (listener as any)({
-        roomId: room.id,
+        meetingId: room.meetingId,
         type: "join",
-      } as RoomEvent);
-
-      expect(groupJoinService.participantsInRoom(room)).toEqual(1);
+      } as MeetingEvent);
     });
 
     it("should ignore participant leave events", () => {
-      const room = roomWithParticipants(1);
-      when(officeService.getOffice()).thenReturn({
-        rooms: [room],
-        groups,
-      });
+      const room = randomRoom();
+      when(participantsService.getParticipantsIn(room.meetingId)).thenReturn(generateParticipants(1));
 
-      groupJoinService.reserveSpaceIn(room.id);
-      expect(groupJoinService.participantsInRoom(room)).toEqual(2);
+      groupJoinService.reserveSpaceIn(room.meetingId);
 
-      const listener = capture(roomsService.listenRoomChange).last()[0];
+      const listener = capture(participantsService.listenParticipantsChange).last()[0];
       (listener as any)({
-        roomId: room.id,
+        meetingId: room.meetingId,
         type: "leave",
-      } as RoomEvent);
+      } as MeetingEvent);
 
       expect(groupJoinService.participantsInRoom(room)).toEqual(2);
     });
 
     it("should remove outdated reservations in a given interval", () => {
-      const room = roomWithParticipants(0);
+      const room = randomRoom();
+      when(participantsService.getParticipantsIn(room.meetingId)).thenReturn([]);
+
       when(officeService.getOffice()).thenReturn({
         rooms: [room],
         groups,
       });
 
-      groupJoinService.reserveSpaceIn(room.id);
+      groupJoinService.reserveSpaceIn(room.meetingId);
       expect(groupJoinService.participantsInRoom(room)).toEqual(1);
 
       clock.tick(20000);
 
-      groupJoinService.reserveSpaceIn(room.id);
+      groupJoinService.reserveSpaceIn(room.meetingId);
       expect(groupJoinService.participantsInRoom(room)).toEqual(2);
 
       clock.tick(60000);

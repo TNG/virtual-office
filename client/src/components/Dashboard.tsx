@@ -3,9 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 
-import { RoomEvent } from "../../../server/express/types/RoomEvent";
+import { MeetingEvent } from "../../../server/express/types/MeetingEvent";
 import { Office } from "../../../server/express/types/Office";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import { SocketContext } from "../socket/Context";
 import { search } from "../search";
 
@@ -15,6 +14,9 @@ import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 import theme from "../theme";
 import { Group } from "../../../server/express/types/Group";
+import { Meeting } from "../../../server/express/types/Meeting";
+import { keyBy } from "lodash";
+import { MeetingsIndexed } from "./MeetingsIndexed";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -46,35 +48,28 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const mapOfficeEventToOffice = (office: Office, roomEvent: RoomEvent): Office => {
-  function applyRoomEventTo(room: RoomWithParticipants): RoomWithParticipants {
-    if (room.id === roomEvent.roomId) {
-      switch (roomEvent.type) {
-        case "join":
-          return { ...room, participants: [...room.participants, roomEvent.participant] };
-        case "leave":
-          return {
-            ...room,
-            participants: room.participants.filter(({ id }) => id !== roomEvent.participant.id),
-          };
-        case "update":
-          return {
-            ...room,
-            participants: room.participants
-              .filter(({ id }) => id !== roomEvent.participant.id)
-              .concat([roomEvent.participant]),
-          };
-      }
+const mapMeetingEventToMeetings = (meetings: Meeting[], event: MeetingEvent): Meeting[] => {
+  function applyEventTo(meeting: Meeting): Meeting {
+    switch (event.type) {
+      case "join":
+        return { ...meeting, participants: [...meeting.participants, event.participant] };
+      case "leave":
+        return {
+          ...meeting,
+          participants: meeting.participants.filter(({ id }) => id !== event.participant.id),
+        };
+      case "update":
+        return {
+          ...meeting,
+          participants: meeting.participants
+            .filter(({ id }) => id !== event.participant.id)
+            .concat([event.participant]),
+        };
     }
-    return room;
+    return meeting;
   }
 
-  const newRooms = office.rooms.map((room) => (room.id === roomEvent.roomId ? applyRoomEventTo(room) : room));
-
-  return {
-    ...office,
-    rooms: newRooms,
-  };
+  return meetings.map((meeting) => (meeting.meetingId === event.meetingId ? applyEventTo(meeting) : meeting));
 };
 
 const Dashboard = () => {
@@ -87,26 +82,35 @@ const Dashboard = () => {
 
   const context = useContext(SocketContext);
   const [office, setOffice] = useState({ rooms: [], groups: [] } as Office);
+  const [meetings, setMeetings] = useState([] as Meeting[]);
+
   useEffect(() => {
     context.init();
 
     const stateUpdate = context.onNotify();
-    const subscription = stateUpdate.subscribe((incomingMessage: RoomEvent) => {
-      setOffice((prevOffice) => mapOfficeEventToOffice(prevOffice, incomingMessage));
+    const stateSubscription = stateUpdate.subscribe((incomingMessage: MeetingEvent) => {
+      setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
     });
 
     const officeSubscription = context.onOffice().subscribe((event) => setOffice(event));
 
+    const initSubscription = context.onInit().subscribe((event) => {
+      setOffice(event.office);
+      setMeetings(event.meetings);
+    });
+
     return () => {
-      subscription.unsubscribe();
+      stateSubscription.unsubscribe();
+      initSubscription.unsubscribe();
       context.disconnect();
       officeSubscription.unsubscribe();
     };
   }, [context]);
 
   const [searchText, setSearchText] = useState("");
-  function selectGroupsWithRooms() {
-    const searchResult = search(searchText, office);
+
+  function selectGroupsWithRooms(meetings: MeetingsIndexed) {
+    const searchResult = search(searchText, office, meetings);
     const undefinedGroup: Group = {
       id: "",
       name: "",
@@ -128,7 +132,8 @@ const Dashboard = () => {
       .sort((a, b) => a.group.name.localeCompare(b.group.name));
   }
 
-  const groupsWithRooms = selectGroupsWithRooms();
+  const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
+  const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed);
   return (
     <Box>
       <Box className={classes.background} />
@@ -137,7 +142,7 @@ const Dashboard = () => {
 
         <Box className={classes.rooms}>
           {groupsWithRooms.map(({ group, rooms }) => (
-            <RoomGrid key={group.id} group={group} rooms={rooms} />
+            <RoomGrid key={group.id} group={group} rooms={rooms} meetings={meetingsIndexed} />
           ))}
         </Box>
       </Box>

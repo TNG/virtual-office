@@ -2,10 +2,10 @@ import { MeetingParticipant } from "./MeetingParticipant";
 
 export type EventType = "join" | "leave" | "update";
 
-export type EventListener = (event: RoomEvent) => void;
+export type EventListener = (event: MeetingEvent) => void;
 
-export interface RoomEvent {
+export interface MeetingEvent {
   type: EventType;
   participant: MeetingParticipant;
-  roomId: string;
+  meetingId: string;
 }

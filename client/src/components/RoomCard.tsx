@@ -1,9 +1,10 @@
 import React from "react";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { RoomWithParticipants } from "../../../server/express/types/RoomWithParticipants";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
+import { Room } from "../../../server/express/types/Room";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles({
   root: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
+const RoomCard = ({ room, participants }: { room: Room; participants: MeetingParticipant[] }) => {
   const classes = useStyles();
 
   function renderJoinUrl() {
@@ -42,7 +43,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
   }
 
   return (
-    <Card className={classes.root} key={room.id}>
+    <Card className={classes.root} key={room.roomId}>
       <CardHeader
         className={classes.header}
         avatar={room.icon ? <Avatar src={room.icon} /> : undefined}
@@ -50,7 +51,7 @@ const RoomCard = ({ room }: { room: RoomWithParticipants }) => {
       />
 
       <CardContent className={classes.content}>
-        <RoomParticipants name={room.name} participants={room.participants} />
+        <RoomParticipants name={room.name} participants={participants} />
         <RoomLinks links={room.links} />
       </CardContent>
 

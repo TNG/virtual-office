@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
-import { RoomsService } from "../../services/RoomsService";
+import { MeetingParticipantsService } from "../../services/MeetingParticipantsService";
 import { MeetingParticipant } from "../types/MeetingParticipant";
 import { logger } from "../../log";
 import { Config } from "../../Config";
@@ -32,7 +32,7 @@ export interface ZoomUsEvent {
 
 @Service()
 export class ZoomUsWebHookRoute implements ExpressRoute {
-  constructor(private readonly roomsService: RoomsService, private readonly config: Config) {}
+  constructor(private readonly roomsService: MeetingParticipantsService, private readonly config: Config) {}
 
   router(): Router {
     const router = Router();

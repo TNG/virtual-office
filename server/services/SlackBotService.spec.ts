@@ -1,8 +1,9 @@
-import { RoomsService } from "./RoomsService";
+import { MeetingParticipantsService } from "./MeetingParticipantsService";
 import { Config } from "../Config";
 import { anything, instance, mock, when } from "ts-mockito";
-import { RoomEvent } from "../express/types/RoomEvent";
+import { MeetingEvent } from "../express/types/MeetingEvent";
 import { SlackBotService } from "./SlackBotService";
+import { OfficeService } from "./OfficeService";
 
 const mockDateNow = jest.spyOn(Date, "now");
 // @ts-ignore
@@ -24,9 +25,10 @@ describe("SlackBotService", () => {
   // @ts-ignore
   let slackBotService: SlackBotService;
   let config: Config;
-  let roomsService: RoomsService;
+  let participantsService: MeetingParticipantsService;
+  let officeService: OfficeService;
 
-  let onRoomEvent: (event: RoomEvent) => void;
+  let onRoomEvent: (event: MeetingEvent) => void;
 
   beforeEach(() => {
     mockPostMessage.mockClear();
@@ -35,26 +37,30 @@ describe("SlackBotService", () => {
     config = mock(Config);
     when(config.slack).thenReturn({ clientId: "", secret: "", botOAuthAccessToken: "token" });
 
-    roomsService = mock(RoomsService);
-    when(roomsService.listenRoomChange(anything())).thenCall((l) => (onRoomEvent = l));
+    participantsService = mock(MeetingParticipantsService);
+    officeService = mock(OfficeService);
+    when(participantsService.listenParticipantsChange(anything())).thenCall((l) => (onRoomEvent = l));
 
-    slackBotService = new SlackBotService(instance(config), instance(roomsService));
+    slackBotService = new SlackBotService(instance(config), instance(participantsService), instance(officeService));
   });
 
   it("should send a message when the first participant enters a room", () => {
     const participant = { id: "123", username: "bla" };
 
-    when(roomsService.getRoomWithParticipants("1")).thenReturn({
-      id: "1",
-      name: "Test",
-      joinUrl: "http://bla.blub",
-      participants: [participant],
-      slackNotification: {
-        channelId: "slackChannel",
+    when(officeService.getRoomsForMeetingId("1")).thenReturn([
+      {
+        meetingId: "1",
+        roomId: "1",
+        name: "Test",
+        joinUrl: "http://bla.blub",
+        slackNotification: {
+          channelId: "slackChannel",
+        },
       },
-    });
+    ]);
+    when(participantsService.getParticipantsIn("1")).thenReturn([participant]);
 
-    onRoomEvent({ roomId: "1", type: "join", participant });
+    onRoomEvent({ meetingId: "1", type: "join", participant });
 
     expect(mockPostMessage).toHaveBeenCalledWith({
       channel: "slackChannel",
@@ -73,17 +79,20 @@ describe("SlackBotService", () => {
   it("should send a message when the last participant leaves a room", () => {
     const participant = { id: "123", username: "bla" };
 
-    when(roomsService.getRoomWithParticipants("1")).thenReturn({
-      id: "1",
-      name: "Test",
-      joinUrl: "http://bla.blub",
-      participants: [],
-      slackNotification: {
-        channelId: "slackChannel",
+    when(officeService.getRoomsForMeetingId("1")).thenReturn([
+      {
+        meetingId: "1",
+        roomId: "1",
+        name: "Test",
+        joinUrl: "http://bla.blub",
+        slackNotification: {
+          channelId: "slackChannel",
+        },
       },
-    });
+    ]);
+    when(participantsService.getParticipantsIn("1")).thenReturn([]);
 
-    onRoomEvent({ roomId: "1", type: "leave", participant });
+    onRoomEvent({ meetingId: "1", type: "leave", participant });
 
     expect(mockPostMessage).toHaveBeenCalledWith({
       channel: "slackChannel",
@@ -102,14 +111,17 @@ describe("SlackBotService", () => {
   it("should not send messages if slack notifications are not configured", () => {
     const participant = { id: "123", username: "bla" };
 
-    when(roomsService.getRoomWithParticipants("1")).thenReturn({
-      id: "1",
-      name: "Test",
-      joinUrl: "http://bla.blub",
-      participants: [participant],
-    });
+    when(officeService.getRoomsForMeetingId("1")).thenReturn([
+      {
+        meetingId: "1",
+        roomId: "1",
+        name: "Test",
+        joinUrl: "http://bla.blub",
+      },
+    ]);
+    when(participantsService.getParticipantsIn("1")).thenReturn([participant]);
 
-    onRoomEvent({ roomId: "1", type: "join", participant });
+    onRoomEvent({ meetingId: "1", type: "join", participant });
 
     expect(mockPostMessage).not.toHaveBeenCalled();
   });
@@ -123,20 +135,22 @@ describe("SlackBotService", () => {
     };
 
     // given
+    when(participantsService.getParticipantsIn("1")).thenReturn([
+      { id: "123", username: "bla" },
+      { id: "124", username: "bla" },
+    ]);
     const room = {
-      id: "1",
+      meetingId: "1",
+      roomId: "1",
       name: "Test",
       joinUrl: "http://bla.blub",
-      participants: [
-        { id: "123", username: "bla" },
-        { id: "124", username: "bla" },
-      ],
       slackNotification: {
         channelId: "slackChannel",
         notificationInterval: 5,
       },
     };
-    when(roomsService.getAllRooms()).thenReturn([room]);
+    when(officeService.getRoomsForMeetingId("1")).thenReturn([room]);
+    when(officeService.getOffice()).thenReturn({ rooms: [room], groups: [] });
 
     expect(mockPostMessage).not.toHaveBeenCalled();
 
@@ -174,12 +188,7 @@ describe("SlackBotService", () => {
     expect(mockPostMessage).toHaveBeenCalledTimes(1);
 
     // when
-    when(roomsService.getAllRooms()).thenReturn([
-      {
-        ...room,
-        participants: [{ id: "123", username: "bla" }],
-      },
-    ]);
+    when(participantsService.getParticipantsIn("1")).thenReturn([{ id: "123", username: "bla" }]);
     advanceClock(5 * 60);
 
     // then
@@ -205,18 +214,20 @@ describe("SlackBotService", () => {
   it("should not send a message if `notificationInterval` is not set", async () => {
     // given
     const room = {
-      id: "1",
+      meetingId: "1",
+      roomId: "1",
       name: "Test",
       joinUrl: "http://bla.blub",
-      participants: [
-        { id: "123", username: "bla" },
-        { id: "124", username: "bla" },
-      ],
       slackNotification: {
         channelId: "slackChannel",
       },
     };
-    when(roomsService.getAllRooms()).thenReturn([room]);
+    when(officeService.getOffice()).thenReturn({ rooms: [room], groups: [] });
+    when(officeService.getRoomsForMeetingId("1")).thenReturn([room]);
+    when(participantsService.getParticipantsIn("1")).thenReturn([
+      { id: "123", username: "bla" },
+      { id: "124", username: "bla" },
+    ]);
 
     expect(mockPostMessage).not.toHaveBeenCalled();
 

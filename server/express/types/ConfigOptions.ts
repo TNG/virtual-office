@@ -1,7 +1,7 @@
-import { Room } from "./Room";
+import { RoomConfig } from "./Room";
 import { Group } from "./Group";
 
 export interface ConfigOptions {
-  rooms: Room[];
+  rooms: RoomConfig[];
   groups: Group[];
 }
