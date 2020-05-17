@@ -7,26 +7,32 @@ import { User } from "../express/types/User";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
 import { Meeting } from "../express/types/Meeting";
+import { OfficeService } from "./OfficeService";
 
 @Service({ multiple: false })
 export class MeetingsService {
   private meetingParticipants: {
-    [roomId: string]: MeetingParticipant[];
+    [meetingId: string]: MeetingParticipant[];
   } = {};
   private roomChangeListeners: EventListener[] = [];
 
-  constructor(private readonly knownUsersService: KnownUsersService) {
+  constructor(private readonly knownUsersService: KnownUsersService, private readonly officeService: OfficeService) {
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
   getAllMeetings(): Meeting[] {
-    return Object.keys(this.meetingParticipants).map((meetingId) => ({
-      meetingId,
-      participants: this.getParticipantsIn(meetingId),
-    }));
+    return Object.keys(this.meetingParticipants)
+      .filter((meetingId) => this.officeService.hasMeetingIdConfigured(meetingId))
+      .map((meetingId) => ({
+        meetingId,
+        participants: this.getParticipantsIn(meetingId),
+      }));
   }
 
   getParticipantsIn(meetingId: string): MeetingParticipant[] {
+    if (!this.officeService.hasMeetingIdConfigured(meetingId)) {
+      return [];
+    }
     const participants = this.meetingParticipants[meetingId] ?? [];
     return participants.map((participant) => this.enrich(participant));
   }
@@ -99,10 +105,14 @@ export class MeetingsService {
     return enrichParticipant(participant, user);
   }
 
-  private notify(roomId: string, participant: MeetingParticipant, type: EventType) {
+  private notify(meetingId: string, participant: MeetingParticipant, type: EventType) {
+    if (!this.officeService.hasMeetingIdConfigured(meetingId)) {
+      return;
+    }
+
     const event: MeetingEvent = {
       participant: this.enrich(participant),
-      meetingId: roomId,
+      meetingId: meetingId,
       type,
     };
 

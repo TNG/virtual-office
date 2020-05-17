@@ -28,6 +28,10 @@ export class OfficeService {
     };
   }
 
+  hasMeetingIdConfigured(meetingId: string): boolean {
+    return this.rooms.some((room) => room.meetingId === meetingId);
+  }
+
   getRoomsForMeetingId(meetingId: string): Room[] {
     return this.rooms.filter((room) => room.meetingId === meetingId);
   }
