@@ -79,7 +79,7 @@ const RoomCard = ({
 
   return (
     <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.roomId} ref={scrollRef}>
-      <a className={classes.headerTitleLink} href={room.titleLink} target="_blank">
+      <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
         <CardHeader
           classes={{ root: classes.header, subheader: `${classes.headerSubtitle} ${isHidden ? classes.hidden : ""}` }}
           avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
