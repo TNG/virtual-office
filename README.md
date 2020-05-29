@@ -69,7 +69,9 @@ An example looks like this:
       "name": "Star Wars",
       "groupJoin": {
         "minimumParticipantCount": 3
-      }
+      },
+      "disableBefore": "2020-05-29T08:22:00.000Z",
+      "disableAfter": "2020-05-29T08:22:00.000Z"
     }
   ],
   "rooms": [
