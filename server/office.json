@@ -5,14 +5,13 @@
       "name": "Star Wars",
       "groupJoin": {
         "minimumParticipantCount": 3,
+        "title": "Coffee Cantina",
         "description": "You can randomly join one of our coffee rooms. Try it out and meet interesting new people! :)"
-      },
-      "disabledAfter": "2020-05-29T08:09:00.000Z"
+      }
     },
     {
       "id": "lord",
-      "name": "Lord of the Rings",
-      "disabledBefore": "2020-05-29T08:09:00.000Z"
+      "name": "Lord of the Rings"
     }
   ],
   "rooms": [
