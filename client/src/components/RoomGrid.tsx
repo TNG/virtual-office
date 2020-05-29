@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { partition } from "lodash";
+import { DateTime } from "luxon";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupJoinCard from "./GroupJoinCard";
@@ -13,7 +14,7 @@ import { MeetingParticipant } from "../../../server/express/types/MeetingPartici
 
 const useStyles = makeStyles<typeof theme, StyleProps>((theme) => ({
   root: (props) => ({
-    opacity: props.isDisabled ? "0.5" : "1",
+    opacity: props.isDisabled ? 0.6 : 1,
   }),
   title: {
     margin: 12,
@@ -25,16 +26,13 @@ const useStyles = makeStyles<typeof theme, StyleProps>((theme) => ({
     flexWrap: "wrap",
     alignItems: "stretch",
   },
-  hidden: {
-    opacity: 0.4,
-  },
   card: {
     width: "100%",
     [theme.breakpoints.up("sm")]: {
       width: "50%",
     },
     [theme.breakpoints.up("md")]: {
-      width: "20%",
+      width: "25%",
     },
     flex: "0 0 auto",
     padding: 8,
@@ -58,14 +56,14 @@ const RoomGrid = (props: Props) => {
   const [isDisabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    if (!group.disableAfter && !group.disableBefore) {
+    if (!group.disabledAfter && !group.disabledBefore) {
       return;
     }
 
     function calculateIsDisabled() {
-      const now = new Date();
-      const isDisabledAfter = group.disableAfter && new Date(group.disableAfter) <= now;
-      const isDisabledBefore = group.disableBefore && new Date(group.disableBefore) >= now;
+      const now = DateTime.local();
+      const isDisabledAfter = group.disabledAfter && DateTime.fromISO(group.disabledAfter) <= now;
+      const isDisabledBefore = group.disabledBefore && DateTime.fromISO(group.disabledBefore) >= now;
       return isDisabledBefore || isDisabledAfter || false;
     }
 
@@ -73,7 +71,7 @@ const RoomGrid = (props: Props) => {
     const handler = setInterval(() => setDisabled(calculateIsDisabled()), 10000);
 
     return () => clearInterval(handler);
-  }, [group.disableBefore, group.disableAfter]);
+  }, [group.disabledBefore, group.disabledAfter]);
 
   const classes = useStyles({ ...props, isDisabled });
 

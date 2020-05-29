@@ -368,6 +368,11 @@
           }
         }
       },
+      "date": {
+        "type": "string",
+        "description": "ISO 8601 string",
+        "example": "2016-05-25T09:08:34.123+06:00"
+      },
       "group": {
         "type": "object",
         "required": ["id", "name"],
@@ -380,13 +385,11 @@
             "type": "string",
             "example": "Lord of the Rings"
           },
-          "disableAfter": {
-            "type": "string",
-            "example": "2014-01-01T23:28:56.782Z"
+          "disabledAfter": {
+            "$ref": "#/components/schemas/date"
           },
-          "disableBefore": {
-            "type": "string",
-            "example": "2014-01-01T23:28:56.782Z"
+          "disabledBefore": {
+            "$ref": "#/components/schemas/date"
           },
           "groupJoin": {
             "$ref": "#/components/schemas/groupJoinConfig"

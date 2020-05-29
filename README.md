@@ -70,8 +70,8 @@ An example looks like this:
       "groupJoin": {
         "minimumParticipantCount": 3
       },
-      "disableBefore": "2020-05-29T08:22:00.000Z",
-      "disableAfter": "2020-05-29T08:22:00.000Z"
+      "disabledBefore": "2020-05-29T17:15:00.000+02:00",
+      "disabledAfter": "2020-05-29T19:00:00.000+02:00"
     }
   ],
   "rooms": [

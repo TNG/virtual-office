@@ -7,12 +7,12 @@
         "minimumParticipantCount": 3,
         "description": "You can randomly join one of our coffee rooms. Try it out and meet interesting new people! :)"
       },
-      "disableAfter": "2020-05-29T08:09:00.000Z"
+      "disabledAfter": "2020-05-29T08:09:00.000Z"
     },
     {
       "id": "lord",
       "name": "Lord of the Rings",
-      "disableBefore": "2020-05-29T08:09:00.000Z"
+      "disabledBefore": "2020-05-29T08:09:00.000Z"
     }
   ],
   "rooms": [
