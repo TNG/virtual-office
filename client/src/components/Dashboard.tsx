@@ -17,7 +17,6 @@ import { Group } from "../../../server/express/types/Group";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 import { MeetingsIndexed } from "./MeetingsIndexed";
-import { Room } from "../../../server/express/types/Room";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -73,7 +72,7 @@ const mapMeetingEventToMeetings = (meetings: Meeting[], event: MeetingEvent): Me
   return meetings.map((meeting) => (meeting.meetingId === event.meetingId ? applyEventTo(meeting) : meeting));
 };
 
-const Dashboard = ({ location }: any) => {
+const Dashboard = () => {
   const classes = useStyles();
 
   const history = useHistory();
