@@ -1,5 +1,7 @@
 export type GroupJoinConfig = {
   minimumParticipantCount: number;
+  title: string;
+  subtitle?: string;
   description: string;
 };
 

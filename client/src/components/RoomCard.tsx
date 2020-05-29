@@ -5,12 +5,13 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import RoomIcon from "@material-ui/icons/PersonalVideo";
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
     height: "100%",
-    minHeight: 200,
+    minHeight: 180,
     display: "flex",
     flexDirection: "column",
   },
@@ -18,23 +19,11 @@ const useStyles = makeStyles({
     border: "3px solid rgb(44, 106, 168)",
   },
   header: {
-    alignItems: "flex-start",
-    flexGrow: 1,
-  },
-  headerTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "black",
-  },
-  headerTitleLink: {
-    flexGrow: 1,
-    textDecoration: "none",
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    paddingTop: 4,
+    flex: "0 0 auto",
+    minHeight: 40,
   },
   content: {
+    flex: "1 1 auto",
     paddingTop: 0,
     paddingBottom: 4,
   },
@@ -42,6 +31,7 @@ const useStyles = makeStyles({
     marginLeft: 8,
   },
   actions: {
+    flex: "0 0 auto",
     display: "flex",
     flexDirection: "row-reverse",
   },
@@ -70,18 +60,12 @@ const RoomCard = (props: Props) => {
 
   return (
     <Card className={classes.root} key={room.roomId}>
-      <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
-        <CardHeader
-          classes={{ root: classes.header, subheader: `${classes.headerSubtitle}` }}
-          avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : undefined}
-          title={
-            <Typography variant="h5" className={`${classes.headerTitle}`}>
-              {room.name}
-            </Typography>
-          }
-          subheader={room.subtitle}
-        />
-      </a>
+      <CardHeader
+        className={classes.header}
+        avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
+        title={<Typography variant="h5">{room.name}</Typography>}
+        subheader={<Typography variant="body2">{room.subtitle}</Typography>}
+      />
       <CardContent className={classes.content}>
         {!isDisabled && <RoomParticipants name={room.name} participants={participants} />}
         <RoomLinks links={room.links} />

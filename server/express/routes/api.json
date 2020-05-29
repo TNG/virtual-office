@@ -359,12 +359,27 @@
       },
       "groupJoinConfig": {
         "type": "object",
-        "required": ["minimumParticipantCount"],
+        "required": ["minimumParticipantCount", "title", "description"],
         "properties": {
           "minimumParticipantCount": {
             "type": "number",
             "description": "Minimum number of participants in a room. When this count has been reached, the next one will be filled.",
             "example": 3
+          },
+          "title": {
+            "type": "string",
+            "description": "Title that is displayed as the header of the group join card.",
+            "example": "Coffee Rooms"
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "Subtitle that is displayed underneath the header of the group join card.",
+            "example": "Lunch"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description that explains the group join functionality to users.",
+            "example": "You can randomly join one of our coffee rooms."
           }
         }
       },

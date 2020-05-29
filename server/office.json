@@ -5,6 +5,7 @@
       "name": "Star Wars",
       "groupJoin": {
         "minimumParticipantCount": 3,
+        "title": "Coffee Cantina",
         "description": "You can randomly join one of our coffee rooms. Try it out and meet interesting new people! :)"
       }
     },

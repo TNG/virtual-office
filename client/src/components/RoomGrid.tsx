@@ -12,18 +12,17 @@ import { MeetingParticipant } from "../../../server/express/types/MeetingPartici
 import { partition } from "lodash";
 
 const useStyles = makeStyles<typeof theme, Props>((theme) => ({
-  root: (props) => ({
-    opacity: props.isDisabled ? 0.6 : 1,
-  }),
   title: {
     margin: 12,
     marginTop: 24,
     padding: 0,
+    opacity: (props) => (props.isDisabled ? 0.9 : 1),
   },
   grid: {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "stretch",
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   card: {
     width: "100%",
@@ -31,7 +30,13 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
       width: "50%",
     },
     [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
+    [theme.breakpoints.up("lg")]: {
       width: "25%",
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: "20%",
     },
     flex: "0 0 auto",
     padding: 8,

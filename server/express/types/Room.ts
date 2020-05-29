@@ -4,7 +4,6 @@ interface RoomWithoutId {
   meetingId: string;
   name: string;
   subtitle?: string;
-  titleLink?: string;
   joinUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];
