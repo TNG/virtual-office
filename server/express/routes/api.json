@@ -380,6 +380,14 @@
             "type": "string",
             "example": "Lord of the Rings"
           },
+          "disableAfter": {
+            "type": "string",
+            "example": "2014-01-01T23:28:56.782Z"
+          },
+          "disableBefore": {
+            "type": "string",
+            "example": "2014-01-01T23:28:56.782Z"
+          },
           "groupJoin": {
             "$ref": "#/components/schemas/groupJoinConfig"
           }
