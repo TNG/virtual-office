@@ -120,9 +120,7 @@ const Dashboard = ({ location }: any) => {
     const groups = [undefinedGroup, ...searchResult.groups];
     return groups
       .map((group) => {
-        const rooms = searchResult.rooms
-          .filter((room) => (room.groupId || undefinedGroup.id) === group.id)
-          .map(shouldFocus(location));
+        const rooms = searchResult.rooms.filter((room) => (room.groupId || undefinedGroup.id) === group.id);
 
         return {
           group,
@@ -151,12 +149,3 @@ const Dashboard = ({ location }: any) => {
 };
 
 export default Dashboard;
-
-const shouldFocus = (location: Location) => (room: Room): Room & { shouldFocus?: boolean } => {
-  const params = new URLSearchParams(location.search);
-  const talkId = params.get("talk");
-  if (room.roomId === talkId) {
-    return { ...room, shouldFocus: true };
-  }
-  return room;
-};

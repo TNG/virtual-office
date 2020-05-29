@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
+import React from "react";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  room: Room & { shouldFocus?: boolean };
+  room: Room;
   participants: MeetingParticipant[];
   isDisabled: boolean;
 }
@@ -55,13 +55,6 @@ interface Props {
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
   const { room, participants, isDisabled } = props;
-
-  const scrollRef: any = useRef();
-  useEffect(() => {
-    if (room.shouldFocus) {
-      window.scrollTo({ behavior: "smooth", top: scrollRef.current.offsetTop });
-    }
-  }, [room]);
 
   function renderJoinUrl() {
     return (
@@ -75,7 +68,7 @@ const RoomCard = (props: Props) => {
   }
 
   return (
-    <Card className={`${classes.root} ${room.shouldFocus ? classes.border : ""}`} key={room.roomId} ref={scrollRef}>
+    <Card className={classes.root} key={room.roomId}>
       <a className={classes.headerTitleLink} href={room.titleLink} target="_blank" rel="noopener noreferrer">
         <CardHeader
           classes={{ root: classes.header, subheader: `${classes.headerSubtitle}` }}
