@@ -44,7 +44,7 @@ const useStyles = makeStyles<typeof theme, StyleProps>((theme) => ({
 
 interface Props {
   group: Group;
-  rooms: (Room & { shouldFocus?: boolean })[];
+  rooms: Room[];
   meetings: MeetingsIndexed;
 }
 
