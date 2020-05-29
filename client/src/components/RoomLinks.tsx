@@ -22,12 +22,13 @@ const useStyles = makeStyles({
     marginRight: 12,
     borderRadius: 4,
   },
-  hidden: {
-    opacity: 0.4,
-  },
 });
 
-const RoomLinks = ({ links, isHidden }: { links: RoomLink[] | undefined; isHidden: boolean }) => {
+interface Props {
+  links: RoomLink[] | undefined;
+}
+
+const RoomLinks = ({ links }: Props) => {
   const classes = useStyles();
 
   if (!links || links.length <= 0) {
@@ -44,16 +45,12 @@ const RoomLinks = ({ links, isHidden }: { links: RoomLink[] | undefined; isHidde
     <Box>
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
         <Box key={group}>
-          <Typography variant="subtitle2" className={isHidden ? classes.hidden : ""}>
-            {group}
-          </Typography>
+          <Typography variant="subtitle2">{group}</Typography>
           <Box className={classes.linkGroup}>
             {groupLinks.map((link) => (
               <Link key={link.text} className={classes.link} href={link.href} target="_blank">
-                <img className={`${classes.icon} ${isHidden ? classes.hidden : ""}`} src={link.icon} alt={link.text} />
-                <Typography variant="body2" className={isHidden ? classes.hidden : ""}>
-                  {link.text}
-                </Typography>
+                <img className={classes.icon} src={link.icon} alt={link.text} />
+                <Typography variant="body2">{link.text}</Typography>
               </Link>
             ))}
           </Box>

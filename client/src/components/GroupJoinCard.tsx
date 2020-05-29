@@ -40,15 +40,29 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const GroupJoinCard = ({ group }: { group: Group }) => {
+interface Props {
+  group: Group;
+  isDisabled: boolean;
+}
+
+const GroupJoinCard = ({ group, isDisabled }: Props) => {
   const classes = useStyles();
 
   function renderJoinUrl() {
     const href = `/api/groups/${group.id}/join`;
     return (
-      <Button className={classes.button} size="small" color="secondary" variant="contained" href={href} target="_blank">
-        Let's go
-      </Button>
+      !isDisabled && (
+        <Button
+          className={classes.button}
+          size="small"
+          color="secondary"
+          variant="contained"
+          href={href}
+          target="_blank"
+        >
+          Let's go
+        </Button>
+      )
     );
   }
 

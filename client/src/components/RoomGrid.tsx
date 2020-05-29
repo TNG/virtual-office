@@ -11,7 +11,10 @@ import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<typeof theme, StyleProps>((theme) => ({
+  root: (props) => ({
+    opacity: props.isDisabled ? "0.5" : "1",
+  }),
   title: {
     margin: 12,
     marginTop: 24,
@@ -39,18 +42,25 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomGrid = ({
-  group,
-  rooms,
-  meetings,
-}: {
+interface Props {
   group: Group;
   rooms: (Room & { shouldFocus?: boolean })[];
   meetings: MeetingsIndexed;
-}) => {
-  const classes = useStyles();
+}
 
-  const isHidden = !!group.hideAfter && new Date(group.hideAfter) <= new Date();
+interface StyleProps extends Props {
+  isDisabled: boolean;
+}
+
+const RoomGrid = (props: Props) => {
+  const now = new Date();
+  const { group, rooms, meetings } = props;
+
+  const isDisabledAfter = group.disableAfter && new Date(group.disableAfter) <= now;
+  const isDisabledBefore = group.disableBefore && new Date(group.disableBefore) >= now;
+  const isDisabled = isDisabledBefore || isDisabledAfter || false;
+
+  const classes = useStyles({ ...props, isDisabled });
 
   function renderGridCard(key: string, card: any) {
     return (
@@ -80,20 +90,23 @@ const RoomGrid = ({
     const shownRooms = selectShownRooms();
     return shownRooms.map((room) => {
       const participants = participantsInMeeting(room.meetingId);
-      return renderGridCard(room.roomId, <RoomCard room={room} participants={participants} isHidden={isHidden} />);
+      return renderGridCard(room.roomId, <RoomCard room={room} participants={participants} isDisabled={isDisabled} />);
     });
   }
 
   function renderGroupJoinCard() {
-    return group.groupJoin && renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} />);
+    return (
+      group.groupJoin &&
+      renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} isDisabled={isDisabled} />)
+    );
   }
 
   function renderGroupHeader() {
-    return group.name && <h2 className={`${classes.title} ${isHidden ? classes.hidden : ""}`}>{group.name}</h2>;
+    return group.name && <h2 className={`${classes.title} ${isDisabled ? classes.hidden : ""}`}>{group.name}</h2>;
   }
 
   return (
-    <Box>
+    <Box className={classes.root}>
       {renderGroupHeader()}
 
       <Box className={classes.grid}>
