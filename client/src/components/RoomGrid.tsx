@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { partition } from "lodash";
-import { DateTime } from "luxon";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupJoinCard from "./GroupJoinCard";
@@ -11,8 +9,9 @@ import theme from "../theme";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { partition } from "lodash";
 
-const useStyles = makeStyles<typeof theme, StyleProps>((theme) => ({
+const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   root: (props) => ({
     opacity: props.isDisabled ? 0.6 : 1,
   }),
@@ -44,36 +43,12 @@ interface Props {
   group: Group;
   rooms: Room[];
   meetings: MeetingsIndexed;
-}
-
-interface StyleProps extends Props {
   isDisabled: boolean;
 }
 
 const RoomGrid = (props: Props) => {
-  const { group, rooms, meetings } = props;
-
-  const [isDisabled, setDisabled] = useState(false);
-
-  useEffect(() => {
-    if (!group.disabledAfter && !group.disabledBefore) {
-      return;
-    }
-
-    function calculateIsDisabled() {
-      const now = DateTime.local();
-      const isDisabledAfter = group.disabledAfter && DateTime.fromISO(group.disabledAfter) <= now;
-      const isDisabledBefore = group.disabledBefore && DateTime.fromISO(group.disabledBefore) >= now;
-      return isDisabledBefore || isDisabledAfter || false;
-    }
-
-    setDisabled(calculateIsDisabled());
-    const handler = setInterval(() => setDisabled(calculateIsDisabled()), 10000);
-
-    return () => clearInterval(handler);
-  }, [group.disabledBefore, group.disabledAfter]);
-
-  const classes = useStyles({ ...props, isDisabled });
+  const { group, rooms, meetings, isDisabled } = props;
+  const classes = useStyles(props);
 
   function renderGridCard(key: string, card: any) {
     return (
