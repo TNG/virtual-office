@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { partition } from "lodash";
@@ -53,12 +53,27 @@ interface StyleProps extends Props {
 }
 
 const RoomGrid = (props: Props) => {
-  const now = new Date();
   const { group, rooms, meetings } = props;
 
-  const isDisabledAfter = group.disableAfter && new Date(group.disableAfter) <= now;
-  const isDisabledBefore = group.disableBefore && new Date(group.disableBefore) >= now;
-  const isDisabled = isDisabledBefore || isDisabledAfter || false;
+  const [isDisabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if (!group.disableAfter && !group.disableBefore) {
+      return;
+    }
+
+    function calculateIsDisabled() {
+      const now = new Date();
+      const isDisabledAfter = group.disableAfter && new Date(group.disableAfter) <= now;
+      const isDisabledBefore = group.disableBefore && new Date(group.disableBefore) >= now;
+      return isDisabledBefore || isDisabledAfter || false;
+    }
+
+    setDisabled(calculateIsDisabled());
+    const handler = setInterval(() => setDisabled(calculateIsDisabled()), 10000);
+
+    return () => clearInterval(handler);
+  }, [group.disableBefore, group.disableAfter]);
 
   const classes = useStyles({ ...props, isDisabled });
 
