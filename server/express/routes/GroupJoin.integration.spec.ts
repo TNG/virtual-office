@@ -29,7 +29,8 @@ const config: ConfigOptions = {
       id: groupId,
       name: "someName",
       groupJoin: {
-        description: "",
+        title: "Humpty Dumpty",
+        description: "Let's have some fun!",
         minimumParticipantCount: 2,
       },
     },

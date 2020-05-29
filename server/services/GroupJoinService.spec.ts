@@ -22,6 +22,7 @@ describe("GroupJoinService", () => {
   const group = {
     groupJoin: {
       minimumParticipantCount: minimum,
+      title: "Humpty Dumpty",
       description: "Take me somewhere funny",
     },
     name: "bla",
