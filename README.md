@@ -76,6 +76,7 @@ An example looks like this:
     {
       "meetingId": "1",
       "name": "Lobby",
+      "subtitle": "This is whery everything starts.",
       "joinUrl": "https://zoom.us/j/1",
       "links": [
         {
