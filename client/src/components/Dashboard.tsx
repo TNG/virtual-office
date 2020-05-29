@@ -17,6 +17,7 @@ import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disab
 import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -38,13 +39,19 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     left: 0,
     overflowY: "auto",
   },
-  rooms: {
+  scroller: {
     marginTop: 12,
     paddingTop: 56,
     [theme.breakpoints.up("sm")]: {
       paddingTop: 64,
     },
     padding: 12,
+  },
+  toggleGroupsButton: {
+    textAlign: "center",
+  },
+  rooms: {
+    marginTop: 12,
   },
 }));
 
@@ -73,6 +80,7 @@ const Dashboard = () => {
   } as OfficeState);
   const [meetings, setMeetings] = useState([] as Meeting[]);
   const [searchText, setSearchText] = useState("");
+  const [showExpiredGroups, setShowExpiredGroups] = useState(false);
 
   useEffect(() => {
     context.init();
@@ -104,6 +112,7 @@ const Dashboard = () => {
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
   const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
+  const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
 
   return (
     <Box>
@@ -111,24 +120,39 @@ const Dashboard = () => {
       <Box className={classes.content}>
         <AppBar onSearchTextChange={setSearchText} />
 
-        <Box className={classes.rooms}>
-          {groupsWithRooms.map(({ group, rooms }) => {
-            const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
-              (disabledGroup) => disabledGroup.group === group
-            );
-            const isDisabled =
-              (potentiallyDisabledGroup &&
-                (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
-              false;
+        <Box className={classes.scroller}>
+          {hasExpiredGroups && (
+            <Box className={classes.toggleGroupsButton}>
+              <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
+                {showExpiredGroups ? "Hide expired" : "Show expired"}
+              </Button>
+            </Box>
+          )}
+          <Box className={classes.rooms}>
+            {groupsWithRooms.map(({ group, rooms }) => {
+              const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
+                (disabledGroup) => disabledGroup.group === group
+              );
+              const isDisabled =
+                (potentiallyDisabledGroup &&
+                  (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
+                false;
 
-            if (potentiallyDisabledGroup?.isExpired) {
-              return null;
-            }
+              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups) {
+                return null;
+              }
 
-            return (
-              <RoomGrid key={group.id} group={group} rooms={rooms} meetings={meetingsIndexed} isDisabled={isDisabled} />
-            );
-          })}
+              return (
+                <RoomGrid
+                  key={group.id}
+                  group={group}
+                  rooms={rooms}
+                  meetings={meetingsIndexed}
+                  isDisabled={isDisabled}
+                />
+              );
+            })}
+          </Box>
         </Box>
       </Box>
     </Box>
