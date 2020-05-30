@@ -113,6 +113,7 @@ const Dashboard = () => {
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
   const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
   const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
+  const hasNotExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => !group.isExpired);
 
   return (
     <Box>
@@ -121,7 +122,7 @@ const Dashboard = () => {
         <AppBar onSearchTextChange={setSearchText} />
 
         <Box className={classes.scroller}>
-          {hasExpiredGroups && (
+          {hasExpiredGroups && hasNotExpiredGroups && (
             <Box className={classes.toggleGroupsButton}>
               <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
                 {showExpiredGroups ? "Hide expired" : "Show expired"}
@@ -138,7 +139,7 @@ const Dashboard = () => {
                   (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
                 false;
 
-              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups) {
+              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
                 return null;
               }
 
