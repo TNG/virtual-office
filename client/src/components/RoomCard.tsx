@@ -46,13 +46,24 @@ interface Props {
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
   const { room, participants, isDisabled } = props;
-
+  const [participantsOpen, setParticipantsOpen] = React.useState(false);
   function renderJoinUrl() {
     return (
       room.joinUrl &&
       !isDisabled && (
         <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
           Join
+        </Button>
+      )
+    );
+  }
+
+  function renderDetails() {
+    return (
+      !isDisabled &&
+      participants.length > 0 && (
+        <Button size="small" color="secondary" variant="text" onClick={() => setParticipantsOpen(true)}>
+          Details
         </Button>
       )
     );
@@ -67,10 +78,20 @@ const RoomCard = (props: Props) => {
         subheader={<Typography variant="body2">{room.subtitle}</Typography>}
       />
       <CardContent className={classes.content}>
-        {!isDisabled && <RoomParticipants name={room.name} participants={participants} />}
+        {!isDisabled && (
+          <RoomParticipants
+            name={room.name}
+            participants={participants}
+            showParticipants={participantsOpen}
+            setShowParticipants={setParticipantsOpen}
+          />
+        )}
         <RoomLinks links={room.links} />
       </CardContent>
-      <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>
+      <CardActions className={classes.actions}>
+        {renderJoinUrl()}
+        {renderDetails()}
+      </CardActions>
     </Card>
   );
 };

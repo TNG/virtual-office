@@ -25,8 +25,14 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
 }));
 
-const RoomParticipants = (props: { name: string; participants: MeetingParticipant[] }) => {
-  const [open, setOpen] = React.useState(false);
+interface Props {
+  name: string;
+  participants: MeetingParticipant[];
+  showParticipants: boolean;
+  setShowParticipants: (open: boolean) => void;
+}
+
+const RoomParticipants = (props: Props) => {
   const [participantSearch, setParticipantSearch] = React.useState("");
 
   function handleSearch(searchText: string) {
@@ -35,7 +41,7 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
 
   function openDialog(open: boolean) {
     setParticipantSearch("");
-    setOpen(open);
+    props.setShowParticipants(open);
   }
 
   const classes = useStyles();
@@ -67,7 +73,7 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
 
   return (
     <Box>
-      <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => setOpen(true)}>
+      <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => props.setShowParticipants(true)}>
         {sortedParticipants.map((participant, index) => (
           <ParticipantAvatar
             key={participant.id}
@@ -78,11 +84,11 @@ const RoomParticipants = (props: { name: string; participants: MeetingParticipan
       </AvatarGroup>
 
       <Dialog
-        open={open}
+        open={props.showParticipants}
         setOpen={openDialog}
         title={props.name}
         variant="big"
-        handleOk={() => setOpen(false)}
+        handleOk={() => props.setShowParticipants(false)}
         handleSearch={debounce(handleSearch, 200)}
       >
         <ParticipantsList participants={filteredParticipants} />
