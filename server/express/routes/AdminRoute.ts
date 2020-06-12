@@ -1,12 +1,13 @@
-import basicAuth, { IBasicAuthedRequest } from "express-basic-auth";
+import { IBasicAuthedRequest } from "express-basic-auth";
 
 import { ExpressRoute } from "./ExpressRoute";
-import { RequestHandler, Router } from "express";
+import { Router } from "express";
 import { logger } from "../../log";
 import { MeetingsService } from "../../services/MeetingsService";
 import { OfficeService } from "../../services/OfficeService";
 import { Config } from "../../Config";
 import { Service } from "typedi";
+import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware";
 
 @Service()
 export class AdminRoute implements ExpressRoute {
@@ -19,7 +20,7 @@ export class AdminRoute implements ExpressRoute {
   router(): Router {
     const router = Router();
 
-    const loginMiddleware = this.getAdminLoggedInMiddleware();
+    const loginMiddleware = getAdminLoggedInMiddleware(this.config);
 
     router.delete("/rooms/:roomId", loginMiddleware, (req, res) => {
       this.roomsService.endRoom(req.params.roomId);
@@ -44,13 +45,5 @@ export class AdminRoute implements ExpressRoute {
     });
 
     return router;
-  }
-
-  private getAdminLoggedInMiddleware(): RequestHandler {
-    const credentials = this.config.adminEndpointsCredentials;
-    if (credentials) {
-      return basicAuth({ users: { [credentials.username]: credentials.password } });
-    }
-    return (req, res, next) => next();
   }
 }
