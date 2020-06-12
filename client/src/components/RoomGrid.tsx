@@ -94,10 +94,7 @@ const RoomGrid = (props: Props) => {
   function renderGroupJoinCard() {
     return (
       group.groupJoin &&
-      renderGridCard(
-        `group-join-${group.id}`,
-        <GroupJoinCard group={group} isJoinable={isJoinable} />
-      )
+      renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} isJoinable={isJoinable} />)
     );
   }
 

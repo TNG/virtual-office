@@ -12,7 +12,9 @@ function toPotentiallyDisabledGroup(group: Group): PotentiallyDisabledGroup {
   const now = DateTime.local();
   const isExpired = (group.disabledAfter && DateTime.fromISO(group.disabledAfter) <= now) || false;
   const isUpcoming = (group.disabledBefore && DateTime.fromISO(group.disabledBefore) >= now) || false;
-  const isJoinable = (group.joinableFrom) ? DateTime.fromISO(group.joinableFrom) <= now && !isExpired : !isUpcoming && !isExpired;
+  const isJoinable = group.joinableAfter
+    ? DateTime.fromISO(group.joinableAfter) <= now && !isExpired
+    : !isUpcoming && !isExpired;
 
   return { isUpcoming, isExpired, isJoinable, group };
 }

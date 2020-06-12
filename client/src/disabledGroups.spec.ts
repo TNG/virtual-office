@@ -19,7 +19,7 @@ describe("disabledRooms", () => {
   function groupFor(config: {
     disabledBefore?: number;
     disabledAfter?: number;
-    joinableFrom?: number;
+    joinableAfter?: number;
     name: string;
   }): Group {
     function toIsoString(millis?: number): string | undefined {
@@ -35,7 +35,7 @@ describe("disabledRooms", () => {
       name: config.name,
       disabledBefore: toIsoString(config.disabledBefore),
       disabledAfter: toIsoString(config.disabledAfter),
-      joinableFrom: toIsoString(config.joinableFrom),
+      joinableAfter: toIsoString(config.joinableAfter),
     };
   }
 
@@ -47,8 +47,12 @@ describe("disabledRooms", () => {
       disabledAfter: now - 1,
       name: "disabledBeforeAndAfter",
     });
-    const joinableFrom = groupFor({ joinableFrom: now - 1, name: "joinableFrom" });
-    const joinableFromAndDisabledAfter = groupFor({ disabledAfter: now -1, joinableFrom: now - 2, name: "joinableFrom" });
+    const joinableAfter = groupFor({ joinableAfter: now - 1, name: "joinableAfter" });
+    const joinableAfterAndDisabledAfter = groupFor({
+      disabledAfter: now - 1,
+      joinableAfter: now - 2,
+      name: "joinableAfterAndDisabledAfter",
+    });
     const notDisabledBefore = groupFor({ disabledBefore: now - 1, name: "notDisabledBefore" });
     const notDisabledAfter = groupFor({ disabledAfter: now + 1, name: "notDisabledAfter" });
     const notDisabledBeforeAndAfter = groupFor({
@@ -56,18 +60,18 @@ describe("disabledRooms", () => {
       disabledAfter: now + 1,
       name: "notDisabledBeforeAndAfter",
     });
-    const notJoinableFrom = groupFor({ joinableFrom: now + 1, name: "notJoinableFrom" });
+    const notJoinableAfter = groupFor({ joinableAfter: now + 1, name: "notJoinableAfter" });
 
     const groups = [
       disabledBefore,
       disabledAfter,
       disabledBeforeAndAfter,
-      joinableFrom,
-      joinableFromAndDisabledAfter,
+      joinableAfter,
+      joinableAfterAndDisabledAfter,
       notDisabledBefore,
       notDisabledAfter,
       notDisabledBeforeAndAfter,
-      notJoinableFrom,
+      notJoinableAfter,
     ];
 
     const result = mapPotentiallyDisabledGroups(groups);
@@ -76,12 +80,12 @@ describe("disabledRooms", () => {
       { group: disabledBefore, isUpcoming: true, isExpired: false, isJoinable: false },
       { group: disabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
       { group: disabledBeforeAndAfter, isUpcoming: true, isExpired: true, isJoinable: false },
-      { group: joinableFrom, isUpcoming: false, isExpired: false, isJoinable: true },
-      { group: joinableFromAndDisabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
+      { group: joinableAfter, isUpcoming: false, isExpired: false, isJoinable: true },
+      { group: joinableAfterAndDisabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
       { group: notDisabledBefore, isUpcoming: false, isExpired: false, isJoinable: true },
       { group: notDisabledAfter, isUpcoming: false, isExpired: false, isJoinable: true },
       { group: notDisabledBeforeAndAfter, isUpcoming: false, isExpired: false, isJoinable: true },
-      { group: notJoinableFrom, isUpcoming: false, isExpired: false, isJoinable: false },
+      { group: notJoinableAfter, isUpcoming: false, isExpired: false, isJoinable: false },
     ] as PotentiallyDisabledGroup[]);
   });
 });
