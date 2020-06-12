@@ -41,16 +41,17 @@ interface Props {
   room: Room;
   participants: MeetingParticipant[];
   isDisabled: boolean;
+  isJoinable: boolean;
 }
 
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { room, participants, isDisabled } = props;
+  const { room, participants, isDisabled, isJoinable } = props;
 
   function renderJoinUrl() {
     return (
       room.joinUrl &&
-      !isDisabled && (
+      isJoinable && (
         <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
           Join
         </Button>
@@ -67,7 +68,7 @@ const RoomCard = (props: Props) => {
         subheader={<Typography variant="body2">{room.subtitle}</Typography>}
       />
       <CardContent className={classes.content}>
-        {!isDisabled && <RoomParticipants name={room.name} participants={participants} />}
+        {(!isDisabled || isJoinable) && <RoomParticipants name={room.name} participants={participants} />}
         <RoomLinks links={room.links} />
       </CardContent>
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>

@@ -49,10 +49,11 @@ interface Props {
   rooms: Room[];
   meetings: MeetingsIndexed;
   isDisabled: boolean;
+  isJoinable: boolean;
 }
 
 const RoomGrid = (props: Props) => {
-  const { group, rooms, meetings, isDisabled } = props;
+  const { group, rooms, meetings, isDisabled, isJoinable } = props;
   const classes = useStyles(props);
 
   function renderGridCard(key: string, card: any) {
@@ -83,14 +84,20 @@ const RoomGrid = (props: Props) => {
     const shownRooms = selectShownRooms();
     return shownRooms.map((room) => {
       const participants = participantsInMeeting(room.meetingId);
-      return renderGridCard(room.roomId, <RoomCard room={room} participants={participants} isDisabled={isDisabled} />);
+      return renderGridCard(
+        room.roomId,
+        <RoomCard room={room} participants={participants} isDisabled={isDisabled} isJoinable={isJoinable} />
+      );
     });
   }
 
   function renderGroupJoinCard() {
     return (
       group.groupJoin &&
-      renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} isDisabled={isDisabled} />)
+      renderGridCard(
+        `group-join-${group.id}`,
+        <GroupJoinCard group={group} isJoinable={isJoinable} />
+      )
     );
   }
 

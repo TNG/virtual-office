@@ -406,6 +406,9 @@
           "disabledBefore": {
             "$ref": "#/components/schemas/date"
           },
+          "joinableFrom": {
+            "$ref": "#/components/schemas/date"
+          },
           "groupJoin": {
             "$ref": "#/components/schemas/groupJoinConfig"
           }

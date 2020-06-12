@@ -16,7 +16,12 @@ describe("disabledRooms", () => {
     clock = fakeTimers.install({ now: now });
   });
 
-  function groupFor(config: { disabledBefore?: number; disabledAfter?: number; name: string }): Group {
+  function groupFor(config: {
+    disabledBefore?: number;
+    disabledAfter?: number;
+    joinableFrom?: number;
+    name: string;
+  }): Group {
     function toIsoString(millis?: number): string | undefined {
       if (!millis) {
         return undefined;
@@ -30,6 +35,7 @@ describe("disabledRooms", () => {
       name: config.name,
       disabledBefore: toIsoString(config.disabledBefore),
       disabledAfter: toIsoString(config.disabledAfter),
+      joinableFrom: toIsoString(config.joinableFrom),
     };
   }
 
@@ -41,6 +47,8 @@ describe("disabledRooms", () => {
       disabledAfter: now - 1,
       name: "disabledBeforeAndAfter",
     });
+    const joinableFrom = groupFor({ joinableFrom: now - 1, name: "joinableFrom" });
+    const joinableFromAndDisabledAfter = groupFor({ disabledAfter: now -1, joinableFrom: now - 2, name: "joinableFrom" });
     const notDisabledBefore = groupFor({ disabledBefore: now - 1, name: "notDisabledBefore" });
     const notDisabledAfter = groupFor({ disabledAfter: now + 1, name: "notDisabledAfter" });
     const notDisabledBeforeAndAfter = groupFor({
@@ -48,25 +56,32 @@ describe("disabledRooms", () => {
       disabledAfter: now + 1,
       name: "notDisabledBeforeAndAfter",
     });
+    const notJoinableFrom = groupFor({ joinableFrom: now + 1, name: "notJoinableFrom" });
 
     const groups = [
       disabledBefore,
       disabledAfter,
       disabledBeforeAndAfter,
+      joinableFrom,
+      joinableFromAndDisabledAfter,
       notDisabledBefore,
       notDisabledAfter,
       notDisabledBeforeAndAfter,
+      notJoinableFrom,
     ];
 
     const result = mapPotentiallyDisabledGroups(groups);
 
     expect(result).toEqual([
-      { group: disabledBefore, isUpcoming: true, isExpired: false },
-      { group: disabledAfter, isUpcoming: false, isExpired: true },
-      { group: disabledBeforeAndAfter, isUpcoming: true, isExpired: true },
-      { group: notDisabledBefore, isUpcoming: false, isExpired: false },
-      { group: notDisabledAfter, isUpcoming: false, isExpired: false },
-      { group: notDisabledBeforeAndAfter, isUpcoming: false, isExpired: false },
+      { group: disabledBefore, isUpcoming: true, isExpired: false, isJoinable: false },
+      { group: disabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
+      { group: disabledBeforeAndAfter, isUpcoming: true, isExpired: true, isJoinable: false },
+      { group: joinableFrom, isUpcoming: false, isExpired: false, isJoinable: true },
+      { group: joinableFromAndDisabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
+      { group: notDisabledBefore, isUpcoming: false, isExpired: false, isJoinable: true },
+      { group: notDisabledAfter, isUpcoming: false, isExpired: false, isJoinable: true },
+      { group: notDisabledBeforeAndAfter, isUpcoming: false, isExpired: false, isJoinable: true },
+      { group: notJoinableFrom, isUpcoming: false, isExpired: false, isJoinable: false },
     ] as PotentiallyDisabledGroup[]);
   });
 });
