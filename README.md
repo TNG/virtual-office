@@ -17,7 +17,7 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 `git clone https://github.com/TNG/virtual-office`
 
 0. Install all dependencies and generate the runnable binary. \
-`npm installAll && npm buildAll`
+`npm run installAll && npm run buildAll`
 
 0. Create a new Slack App, as currently the only authentication option is Slack (https://api.slack.com/apps). You will need the OAuth Client ID and the OAuth Client Secret afterwards.
 
