@@ -41,10 +41,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 
 interface Props {
   group: Group;
-  isDisabled: boolean;
+  isJoinable: boolean;
 }
 
-const GroupJoinCard = ({ group, isDisabled }: Props) => {
+const GroupJoinCard = ({ group, isJoinable }: Props) => {
   const classes = useStyles();
 
   if (!group.groupJoin) {
@@ -54,7 +54,7 @@ const GroupJoinCard = ({ group, isDisabled }: Props) => {
   function renderJoinUrl() {
     const href = `/api/groups/${group.id}/join`;
     return (
-      !isDisabled && (
+      isJoinable && (
         <Button
           className={classes.button}
           size="small"

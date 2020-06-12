@@ -10,5 +10,6 @@ export interface Group {
   name: string;
   disabledAfter?: string;
   disabledBefore?: string;
+  joinableAfter?: string;
   groupJoin?: GroupJoinConfig;
 }

@@ -150,6 +150,7 @@ const Dashboard = () => {
                   rooms={rooms}
                   meetings={meetingsIndexed}
                   isDisabled={isDisabled}
+                  isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
                 />
               );
             })}
