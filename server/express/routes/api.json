@@ -93,6 +93,16 @@
       "delete": {
         "summary": "Delete a temporary room",
         "tags": ["API"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "roomId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "responses": {
           "204": {
             "description": "Success"
@@ -110,6 +120,16 @@
       "get": {
         "summary": "Joins a room within a group",
         "tags": ["API"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "responses": {
           "302": {
             "description": "Redirect to an Zoom.Us join URL"
