@@ -48,7 +48,7 @@ const RoomParticipants = (props: Props) => {
 
   if (props.participants.length <= 0) {
     return (
-      <Box height={44}>
+      <Box height={44} display="flex" alignItems="center">
         <Typography className={classes.emptyGroup} variant="body2">
           No one is here
         </Typography>

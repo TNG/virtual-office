@@ -13,6 +13,7 @@ import { partition } from "lodash";
 
 const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   title: {
+    color: "#fff",
     margin: 12,
     marginTop: 24,
     padding: 0,
@@ -26,18 +27,6 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   },
   card: {
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "50%",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "33%",
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: "25%",
-    },
-    [theme.breakpoints.up("xl")]: {
-      width: "20%",
-    },
     flex: "0 0 auto",
     padding: 8,
     boxSizing: "border-box",

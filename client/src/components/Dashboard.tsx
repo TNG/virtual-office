@@ -8,7 +8,7 @@ import { SocketContext } from "../socket/Context";
 
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
-import Background from "./LoginBackground.jpg";
+import Background from "./MandelbrotBackground.png";
 import RoomGrid from "./RoomGrid";
 import theme from "../theme";
 import { Meeting } from "../../../server/express/types/Meeting";
@@ -25,9 +25,8 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     backgroundImage: `url(${Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    filter: "blur(8px)",
-    "-webkit-filter": "blur(8px)",
-    opacity: 0.8,
+    filter: "blur(2px)",
+    "-webkit-filter": "blur(2px)",
   },
   content: {
     position: "fixed",
@@ -40,6 +39,9 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     overflowY: "auto",
   },
   scroller: {
+    maxWidth: 1200,
+    marginLeft: "auto",
+    marginRight: "auto",
     marginTop: 12,
     paddingTop: 56,
     [theme.breakpoints.up("sm")]: {
@@ -139,9 +141,9 @@ const Dashboard = () => {
                   (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
                 false;
 
-              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
-                return null;
-              }
+              // if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
+              //   return null;
+              // }
 
               return (
                 <RoomGrid
@@ -149,8 +151,8 @@ const Dashboard = () => {
                   group={group}
                   rooms={rooms}
                   meetings={meetingsIndexed}
-                  isDisabled={isDisabled}
-                  isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
+                  isDisabled={false}
+                  isJoinable={true}
                 />
               );
             })}

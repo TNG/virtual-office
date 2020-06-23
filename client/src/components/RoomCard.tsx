@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
@@ -9,23 +9,25 @@ import RoomIcon from "@material-ui/icons/PersonalVideo";
 
 const useStyles = makeStyles({
   root: {
-    width: "100%",
-    height: "100%",
-    minHeight: 180,
     display: "flex",
     flexDirection: "column",
+    padding: 8,
   },
   border: {
     border: "3px solid rgb(44, 106, 168)",
   },
   header: {
-    flex: "0 0 auto",
+    flex: "1 1 auto",
+    padding: 0,
     minHeight: 40,
   },
   content: {
-    flex: "1 1 auto",
-    paddingTop: 0,
-    paddingBottom: 4,
+    flex: "0 0 auto",
+    flexDirection: "row",
+    paddingTo: 0,
+  },
+  links: {
+    flex: "0 1 auto",
   },
   avatarGroup: {
     marginLeft: 8,
@@ -72,13 +74,21 @@ const RoomCard = (props: Props) => {
 
   return (
     <Card className={classes.root} key={room.roomId}>
-      <CardHeader
-        className={classes.header}
-        avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
-        title={<Typography variant="h5">{room.name}</Typography>}
-        subheader={<Typography variant="body2">{room.subtitle}</Typography>}
-      />
-      <CardContent className={classes.content}>
+      <Box display="flex">
+        <CardHeader
+          className={classes.header}
+          avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
+          title={<Typography variant="h5">{room.name}</Typography>}
+          subheader={<Typography variant="body2">{room.subtitle}</Typography>}
+        />
+
+        <CardActions className={classes.actions}>
+          {renderJoinUrl()}
+          {renderDetails()}
+        </CardActions>
+      </Box>
+      <Box display="flex">
+        <RoomLinks links={room.links} />
         {(!isDisabled || isJoinable) && (
           <RoomParticipants
             name={room.name}
@@ -87,12 +97,7 @@ const RoomCard = (props: Props) => {
             setShowParticipants={setParticipantsOpen}
           />
         )}
-        <RoomLinks links={room.links} />
-      </CardContent>
-      <CardActions className={classes.actions}>
-        {renderJoinUrl()}
-        {renderDetails()}
-      </CardActions>
+      </Box>
     </Card>
   );
 };

@@ -9,12 +9,13 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 8,
+    paddingRight: 12,
   },
   linkGroup: {
     paddingTop: 4,
-    paddingBottom: 12,
-    paddingLeft: 8,
+    paddingBottom: 4,
+    display: "flex",
+    alignItems: "center",
   },
   icon: {
     width: 24,
@@ -42,7 +43,7 @@ const RoomLinks = ({ links }: Props) => {
   }, {} as { [group: string]: RoomLink[] });
 
   return (
-    <Box>
+    <Box display="flex" alignItems="center">
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
         <Box key={group}>
           <Typography variant="subtitle2">{group}</Typography>

@@ -8,11 +8,8 @@ import theme from "../theme";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   root: {
-    width: "100%",
-    height: "100%",
-    minHeight: 180,
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     backgroundColor: theme.palette.secondary.light,
   },
   header: {
@@ -20,7 +17,9 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     minHeight: 40,
   },
   content: {
+    display: "flex",
     flex: "1 1 auto",
+    alignItems: "center",
     paddingTop: 0,
     paddingBottom: 4,
     flexGrow: 1,
