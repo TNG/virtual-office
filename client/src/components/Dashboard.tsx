@@ -25,8 +25,8 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     backgroundImage: `url(${Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    filter: "blur(2px)",
-    "-webkit-filter": "blur(2px)",
+    filter: "blur(8px)",
+    "-webkit-filter": "blur(8px)",
   },
   content: {
     position: "fixed",
