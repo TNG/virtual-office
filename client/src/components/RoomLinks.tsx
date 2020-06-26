@@ -3,6 +3,7 @@ import React from "react";
 import { Box, Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
+import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles<Theme, Props>({
   link: {
@@ -57,7 +58,11 @@ const RoomLinks = (props: Props) => {
           <Box className={classes.linkGroup}>
             {groupLinks.map((link) => (
               <Link key={link.text} className={classes.link} href={link.href} target="_blank">
-                {link.icon && <img className={classes.icon} src={link.icon} alt={link.text} />}
+                {link.icon ? (
+                  <img className={classes.icon} src={link.icon} alt={link.text} />
+                ) : (
+                  <LinkIcon className={classes.icon} />
+                )}
                 <Typography variant="body2">{link.text}</Typography>
               </Link>
             ))}
