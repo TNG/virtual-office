@@ -320,7 +320,7 @@
     "schemas": {
       "clientConfig": {
         "properties": {
-          "backgroundImage": {
+          "backgroundUrl": {
             "type": "string",
             "description": "URL to a background image, must be publicly accessible",
             "example": "http://bla.blub/example.png"

@@ -91,6 +91,7 @@
     }
   ],
   "clientConfig": {
-    "viewMode": "grid"
+    "viewMode": "grid",
+    "backgroundUrl": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/MandelbrotBackground.png"
   }
 }

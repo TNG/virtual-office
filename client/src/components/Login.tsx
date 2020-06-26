@@ -3,16 +3,18 @@ import { Box, Button, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Background from "./LoginBackground.jpg";
 import axios from "axios";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import theme from "../theme";
 
 const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
-const backgroundUrl = process.env.REACT_APP_BACKGROUND_URL;
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+interface StyleConfig {
+  backgroundUrl: string;
+}
+
+const useStyles = makeStyles<typeof theme, StyleConfig>((theme) => ({
   root: {
     backgroundColor: `${theme.palette.background.default}`,
-    backgroundImage: `url(${backgroundUrl || Background})`,
+    backgroundImage: (config) => `url(${config?.backgroundUrl || Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -26,8 +28,10 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 }));
 
 const Login = () => {
-  const classes = useStyles();
-  const [clientConfig, setClientConfig] = useState<ClientConfig>();
+  const [clientConfig, setClientConfig] = useState<StyleConfig>({
+    backgroundUrl: Background,
+  });
+  const classes = useStyles(clientConfig);
 
   const signInWithSlack = () => {
     window.location.href = "/auth/slack";

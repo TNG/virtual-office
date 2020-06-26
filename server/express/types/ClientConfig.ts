@@ -1,4 +1,4 @@
 export interface ClientConfig {
-  backgroundImage?: string;
+  backgroundUrl?: string;
   viewMode: "list" | "grid";
 }
