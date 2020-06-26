@@ -8,6 +8,7 @@ import { OfficeService } from "../../services/OfficeService";
 import { AdminRoute } from "./AdminRoute";
 import { GroupJoinService } from "../../services/GroupJoinService";
 import { MeetingsService } from "../../services/MeetingsService";
+import { ClientConfigService } from "../../services/ClientConfigService";
 
 @Service()
 export class ApiRoute implements ExpressRoute {
@@ -17,6 +18,7 @@ export class ApiRoute implements ExpressRoute {
     private readonly meetingsService: MeetingsService,
     private readonly zoomUsWebHookRoute: ZoomUsWebHookRoute,
     private readonly groupJoinService: GroupJoinService,
+    private readonly clientConfigService: ClientConfigService,
     private readonly adminRoute: AdminRoute
   ) {}
 
@@ -25,6 +27,10 @@ export class ApiRoute implements ExpressRoute {
 
     router.use("/monitoring", this.monitoringRoute.router());
     router.use("/admin", this.adminRoute.router());
+
+    router.get("/clientConfig", (req, res) => {
+      res.json(this.clientConfigService.getClientConfig());
+    });
 
     router.get("/office", ensureLoggedIn, (req, res) => {
       res.json(this.officeService.getOffice());

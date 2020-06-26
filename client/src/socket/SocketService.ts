@@ -2,10 +2,7 @@ import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
 import { Office } from "../../../server/express/types/Office";
 import { Meeting } from "../../../server/express/types/Meeting";
-
-export interface ClientConfig {
-  viewMode: "list" | "grid";
-}
+import { ClientConfig } from "../../../server/express/types/ClientConfig";
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;

@@ -140,6 +140,24 @@
         }
       }
     },
+    "/api/clientConfig": {
+      "get": {
+        "summary": "Config for client side rendering",
+        "tags": ["API"],
+        "responses": {
+          "200": {
+            "description": "Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clientConfig"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/zoomus/webhook": {
       "post": {
         "summary": "Webhook for zoom.us calls",
@@ -300,6 +318,19 @@
       }
     },
     "schemas": {
+      "clientConfig": {
+        "properties": {
+          "backgroundImage": {
+            "type": "string",
+            "description": "URL to a background image, must be publicly accessible",
+            "example": "http://bla.blub/example.png"
+          },
+          "viewMode": {
+            "type": "string",
+            "enum": ["list", "grid"]
+          }
+        }
+      },
       "zoomusEvent": {
         "properties": {
           "event": {

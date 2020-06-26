@@ -10,7 +10,6 @@ import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { partition } from "lodash";
-import { ClientConfig } from "../socket/SocketService";
 
 const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   title: {

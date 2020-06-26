@@ -28,7 +28,6 @@ export class Config {
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
-  public readonly viewMode = process.env.VIEW_MODE === "list" ? "list" : "grid";
 
   constructor() {}
 
