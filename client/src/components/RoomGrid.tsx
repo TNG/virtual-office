@@ -92,6 +92,7 @@ const RoomGrid = (props: Props) => {
     const shownRooms = selectShownRooms();
     return shownRooms.map((room) => {
       const participants = participantsInMeeting(room.meetingId);
+      const cardListMode = !group.groupJoin && isListMode;
       return renderGridCard(
         room.roomId,
         <RoomCard
@@ -99,9 +100,9 @@ const RoomGrid = (props: Props) => {
           participants={participants}
           isDisabled={isDisabled}
           isJoinable={isJoinable}
-          isListMode={!group.groupJoin && isListMode}
+          isListMode={cardListMode}
         />,
-        !!group.groupJoin
+        !cardListMode || !!group.groupJoin
       );
     });
   }
