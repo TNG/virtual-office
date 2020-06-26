@@ -93,7 +93,6 @@
   "clientConfig": {
     "viewMode": "list",
     "theme": "light",
-    "backgroundUrl": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/MandelbrotBackground.png",
-    "logoUrl": ""
+    "backgroundUrl": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/MandelbrotBackground.png"
   }
 }
