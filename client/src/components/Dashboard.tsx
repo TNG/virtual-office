@@ -150,9 +150,9 @@ const Dashboard = () => {
                   (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
                 false;
 
-              // if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
-              //   return null;
-              // }
+              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
+                return null;
+              }
 
               return (
                 <RoomGrid
@@ -160,8 +160,8 @@ const Dashboard = () => {
                   group={group}
                   rooms={rooms}
                   meetings={meetingsIndexed}
-                  isDisabled={false}
-                  isJoinable={true}
+                  isDisabled={isDisabled}
+                  isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
                   isListMode={config.viewMode === "list"}
                 />
               );
