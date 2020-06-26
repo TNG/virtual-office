@@ -31,6 +31,20 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
     padding: 8,
     boxSizing: "border-box",
   },
+  responsiveCard: {
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: "25%",
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: "20%",
+    },
+  },
 }));
 
 interface Props {
@@ -45,9 +59,9 @@ const RoomGrid = (props: Props) => {
   const { group, rooms, meetings, isDisabled, isJoinable } = props;
   const classes = useStyles(props);
 
-  function renderGridCard(key: string, card: any) {
+  function renderGridCard(key: string, card: any, responsive = false) {
     return (
-      <Box key={key} className={classes.card}>
+      <Box key={key} className={`${classes.card} ${responsive ? classes.responsiveCard : ""}`}>
         {card}
       </Box>
     );
@@ -65,6 +79,10 @@ const RoomGrid = (props: Props) => {
       return rooms;
     }
 
+    if (!isJoinable) {
+      return [];
+    }
+
     const [emptyRooms, filledRooms] = partition(rooms, (room) => participantsInMeeting(room.meetingId).length === 0);
     return [...filledRooms, ...emptyRooms.slice(0, 1)];
   }
@@ -75,7 +93,8 @@ const RoomGrid = (props: Props) => {
       const participants = participantsInMeeting(room.meetingId);
       return renderGridCard(
         room.roomId,
-        <RoomCard room={room} participants={participants} isDisabled={isDisabled} isJoinable={isJoinable} />
+        <RoomCard room={room} participants={participants} isDisabled={isDisabled} isJoinable={isJoinable} />,
+        !!group.groupJoin
       );
     });
   }

@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   root: {
     display: "flex",
     flexDirection: "column",
-    padding: 8,
+    padding: 12,
   },
   border: {
     border: "3px solid rgb(44, 106, 168)",
@@ -21,18 +21,34 @@ const useStyles = makeStyles({
     padding: 0,
     minHeight: 40,
   },
-  content: {
-    flex: "0 0 auto",
+  body: {
+    flex: "1 0 auto",
+    display: "flex",
     flexDirection: "row",
-    paddingTo: 0,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  content: {
+    flex: "0 1 100%",
+    padding: 0,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   links: {
-    flex: "0 1 auto",
+    flex: "1 1 auto",
+  },
+  participants: {
+    flex: "0 0 auto",
+    marginRight: 8,
   },
   avatarGroup: {
     marginLeft: 8,
   },
   actions: {
+    height: 44,
+    padding: 0,
     flex: "0 0 auto",
     display: "flex",
     flexDirection: "row-reverse",
@@ -74,29 +90,32 @@ const RoomCard = (props: Props) => {
 
   return (
     <Card className={classes.root} key={room.roomId}>
-      <Box display="flex">
-        <CardHeader
-          className={classes.header}
-          avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
-          title={<Typography variant="h5">{room.name}</Typography>}
-          subheader={<Typography variant="body2">{room.subtitle}</Typography>}
-        />
+      <CardHeader
+        className={classes.header}
+        avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
+        title={<Typography variant="h5">{room.name}</Typography>}
+        subheader={<Typography variant="body2">{room.subtitle}</Typography>}
+      />
+
+      <Box className={classes.body}>
+        <CardContent className={classes.content}>
+          <RoomLinks links={room.links} />
+          {(!isDisabled || isJoinable) && (
+            <Box className={classes.participants}>
+              <RoomParticipants
+                name={room.name}
+                participants={participants}
+                showParticipants={participantsOpen}
+                setShowParticipants={setParticipantsOpen}
+              />
+            </Box>
+          )}
+        </CardContent>
 
         <CardActions className={classes.actions}>
           {renderJoinUrl()}
           {renderDetails()}
         </CardActions>
-      </Box>
-      <Box display="flex">
-        <RoomLinks links={room.links} />
-        {(!isDisabled || isJoinable) && (
-          <RoomParticipants
-            name={room.name}
-            participants={participants}
-            showParticipants={participantsOpen}
-            setShowParticipants={setParticipantsOpen}
-          />
-        )}
       </Box>
     </Card>
   );

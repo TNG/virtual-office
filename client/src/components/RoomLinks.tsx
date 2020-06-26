@@ -6,6 +6,7 @@ import { RoomLink } from "../../../server/express/types/RoomLink";
 
 const useStyles = makeStyles({
   link: {
+    flex: "0 0 auto",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -16,6 +17,7 @@ const useStyles = makeStyles({
     paddingBottom: 4,
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   icon: {
     width: 24,
@@ -48,7 +50,7 @@ const RoomLinks = ({ links }: Props) => {
         <Box key={group}>
           <Typography variant="subtitle2">{group}</Typography>
           <Box className={classes.linkGroup}>
-            {groupLinks.map((link) => (
+            {[...groupLinks, ...groupLinks].map((link) => (
               <Link key={link.text} className={classes.link} href={link.href} target="_blank">
                 {link.icon && <img className={classes.icon} src={link.icon} alt={link.text} />}
                 <Typography variant="body2">{link.text}</Typography>
