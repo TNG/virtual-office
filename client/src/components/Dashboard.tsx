@@ -18,13 +18,13 @@ import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
 import { Button, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
+import { StyleConfig } from "../types";
 
-const backgroundUrl = process.env.REACT_APP_BACKGROUND_URL;
-const useStyles = makeStyles<Theme>((theme) => ({
+const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
     height: "100vh",
     backgroundColor: `${theme.palette.background.default}`,
-    backgroundImage: `url(${backgroundUrl || Background})`,
+    backgroundImage: (props) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     filter: "blur(8px)",
@@ -70,8 +70,6 @@ function officeStateFrom(office: Office): OfficeState {
 }
 
 const Dashboard = () => {
-  const classes = useStyles();
-
   const history = useHistory();
   useEffect(() => {
     axios.get("/api/me").catch(() => history.push("/login"));
@@ -87,6 +85,7 @@ const Dashboard = () => {
   const [showExpiredGroups, setShowExpiredGroups] = useState(false);
   const [config, setConfig] = useState<ClientConfig | undefined>();
 
+  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   useEffect(() => {
     context.init();
 
