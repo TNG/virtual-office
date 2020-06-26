@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Paper, Typography } from "@material-ui/core";
+import { Box, Button, Paper, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Background from "./LoginBackground.jpg";
 import axios from "axios";
-import theme from "../theme";
 
 const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
 
@@ -11,7 +10,7 @@ interface StyleConfig {
   backgroundUrl: string;
 }
 
-const useStyles = makeStyles<typeof theme, StyleConfig>((theme) => ({
+const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   root: {
     backgroundColor: `${theme.palette.background.default}`,
     backgroundImage: (config) => `url(${config?.backgroundUrl || Background})`,

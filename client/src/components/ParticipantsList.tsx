@@ -1,11 +1,10 @@
-import { Box, Card, CardHeader } from "@material-ui/core";
+import { Box, Card, CardHeader, Theme } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import theme from "../theme";
 import ParticipantAvatar from "./ParticipantAvatar";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   root: {
     position: "relative",
     width: "100%",

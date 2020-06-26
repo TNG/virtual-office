@@ -1,11 +1,10 @@
 import React from "react";
 
-import { Box, Link, Typography } from "@material-ui/core";
+import { Box, Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme, Props>({
+const useStyles = makeStyles<Theme, Props>({
   link: {
     flex: "0 0 auto",
     display: "flex",

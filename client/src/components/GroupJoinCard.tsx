@@ -1,12 +1,11 @@
 import React from "react";
-import { Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
+import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "row",

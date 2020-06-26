@@ -10,18 +10,17 @@ import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
 import Background from "./MandelbrotBackground.png";
 import RoomGrid from "./RoomGrid";
-import theme from "../theme";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disabledGroups";
 import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
-import { Button } from "@material-ui/core";
+import { Button, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 
 const backgroundUrl = process.env.REACT_APP_BACKGROUND_URL;
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   background: {
     height: "100vh",
     backgroundColor: `${theme.palette.background.default}`,

@@ -1,17 +1,16 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupJoinCard from "./GroupJoinCard";
 import RoomCard from "./RoomCard";
-import theme from "../theme";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { partition } from "lodash";
 
-const useStyles = makeStyles<typeof theme, Props>((theme) => ({
+const useStyles = makeStyles<Theme, Props>((theme) => ({
   title: {
     color: "#fff",
     margin: 12,

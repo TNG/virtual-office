@@ -1,14 +1,13 @@
 import React from "react";
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import RoomIcon from "@material-ui/icons/PersonalVideo";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme, Props>(() => ({
+const useStyles = makeStyles<Theme, Props>(() => ({
   root: {
     display: "flex",
     flexDirection: "column",

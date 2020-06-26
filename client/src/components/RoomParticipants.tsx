@@ -1,18 +1,17 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Theme, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
 
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import ParticipantAvatar from "./ParticipantAvatar";
-import theme from "../theme";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
 
 const ANONYMOUS_PARTICIPANTS = process.env.REACT_APP_ANONYMOUS_PARTICIPANTS === "true";
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
     cursor: "pointer",

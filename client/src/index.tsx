@@ -9,22 +9,25 @@ import Dashboard from "./components/Dashboard";
 
 import "./index.css";
 import theme from "./theme";
+import axios from "axios";
 
 document.title = process.env.REACT_APP_TITLE || "Virtual Office";
 
-ReactDOM.render(
-  <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <Switch>
-        <Route exact path="/" component={Dashboard} />
-        <Route path="/login">
-          <Login />
-        </Route>
-      </Switch>
-    </ThemeProvider>
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+axios.get("/api/clientConfig").then(({ data }) => {
+  ReactDOM.render(
+    <BrowserRouter>
+      <ThemeProvider theme={theme(data)}>
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/login">
+            <Login />
+          </Route>
+        </Switch>
+      </ThemeProvider>
+    </BrowserRouter>,
+    document.getElementById("root")
+  );
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
