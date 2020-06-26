@@ -11,7 +11,7 @@ export type ClientConfigListener = (config: ClientConfig) => void;
 
 @Service()
 export class ClientConfigService {
-  private clientConfig: ClientConfig;
+  private clientConfig: ClientConfig = defaultClientConfig;
   private listeners: ClientConfigListener[] = [];
 
   constructor(config: Config) {
@@ -24,7 +24,7 @@ export class ClientConfigService {
 
   updateClientConfig(clientConfig: Partial<ClientConfig> = {}) {
     this.clientConfig = {
-      ...defaultClientConfig,
+      ...this.clientConfig,
       ...clientConfig,
     };
     this.listeners.forEach((listener) => listener(this.clientConfig));
