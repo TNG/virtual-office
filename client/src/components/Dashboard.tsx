@@ -20,10 +20,12 @@ import { Office } from "../../../server/express/types/Office";
 import { Button } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 
+const backgroundUrl = process.env.REACT_APP_BACKGROUND_URL;
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
     height: "100vh",
-    backgroundImage: `url(${Background})`,
+    backgroundColor: `${theme.palette.background.default}`,
+    backgroundImage: `url(${backgroundUrl || Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     filter: "blur(8px)",

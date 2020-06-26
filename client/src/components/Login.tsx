@@ -2,10 +2,15 @@ import React from "react";
 import { Box, Button, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Background from "./LoginBackground.jpg";
+import theme from "../theme";
 
-const useStyles = makeStyles({
+const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
+const backgroundUrl = process.env.REACT_APP_BACKGROUND_URL;
+
+const useStyles = makeStyles<typeof theme>((theme) => ({
   root: {
-    backgroundImage: `url(${Background})`,
+    backgroundColor: `${theme.palette.background.default}`,
+    backgroundImage: `url(${backgroundUrl || Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -16,7 +21,7 @@ const useStyles = makeStyles({
   heading: {
     fontWeight: 300,
   },
-});
+}));
 
 const Login = () => {
   const classes = useStyles();
@@ -39,7 +44,7 @@ const Login = () => {
         <Paper className={classes.paper}>
           <Box p={4} textAlign={"center"}>
             <Typography className={classes.heading} variant={"h3"}>
-              Virtual Office
+              {appTitle}
             </Typography>
             <Box pt={3}>
               <Button onClick={() => signInWithSlack()}>
