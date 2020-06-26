@@ -18,6 +18,7 @@ import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
 import { Button } from "@material-ui/core";
+import { ClientConfig } from "../socket/SocketService";
 
 const useStyles = makeStyles<typeof theme>((theme) => ({
   background: {
@@ -83,6 +84,7 @@ const Dashboard = () => {
   const [meetings, setMeetings] = useState([] as Meeting[]);
   const [searchText, setSearchText] = useState("");
   const [showExpiredGroups, setShowExpiredGroups] = useState(false);
+  const [config, setConfig] = useState<ClientConfig>({ viewMode: "grid" });
 
   useEffect(() => {
     context.init();
@@ -97,6 +99,7 @@ const Dashboard = () => {
     const initSubscription = context.onInit().subscribe((event) => {
       setOfficeState(officeStateFrom(event.office));
       setMeetings(event.meetings);
+      setConfig(event.config);
     });
 
     return () => {
@@ -153,6 +156,7 @@ const Dashboard = () => {
                   meetings={meetingsIndexed}
                   isDisabled={false}
                   isJoinable={true}
+                  isListMode={config.viewMode === "list"}
                 />
               );
             })}

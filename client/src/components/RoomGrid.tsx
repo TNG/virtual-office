@@ -10,6 +10,7 @@ import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { partition } from "lodash";
+import { ClientConfig } from "../socket/SocketService";
 
 const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   title: {
@@ -39,10 +40,10 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
       width: "33%",
     },
     [theme.breakpoints.up("lg")]: {
-      width: "25%",
+      width: "33%",
     },
     [theme.breakpoints.up("xl")]: {
-      width: "20%",
+      width: "25%",
     },
   },
 }));
@@ -53,10 +54,11 @@ interface Props {
   meetings: MeetingsIndexed;
   isDisabled: boolean;
   isJoinable: boolean;
+  isListMode: boolean;
 }
 
 const RoomGrid = (props: Props) => {
-  const { group, rooms, meetings, isDisabled, isJoinable } = props;
+  const { group, rooms, meetings, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
   function renderGridCard(key: string, card: any, responsive = false) {
@@ -93,7 +95,13 @@ const RoomGrid = (props: Props) => {
       const participants = participantsInMeeting(room.meetingId);
       return renderGridCard(
         room.roomId,
-        <RoomCard room={room} participants={participants} isDisabled={isDisabled} isJoinable={isJoinable} />,
+        <RoomCard
+          room={room}
+          participants={participants}
+          isDisabled={isDisabled}
+          isJoinable={isJoinable}
+          isListMode={!group.groupJoin && isListMode}
+        />,
         !!group.groupJoin
       );
     });

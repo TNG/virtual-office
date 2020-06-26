@@ -20,8 +20,8 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     display: "flex",
     flex: "1 1 auto",
     alignItems: "center",
-    paddingTop: 0,
-    paddingBottom: 4,
+    paddingTop: 8,
+    paddingBottom: 8,
     flexGrow: 1,
   },
   actions: {

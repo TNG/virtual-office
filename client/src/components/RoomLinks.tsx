@@ -3,20 +3,24 @@ import React from "react";
 import { Box, Link, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
+import theme from "../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<typeof theme, Props>({
   link: {
     flex: "0 0 auto",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingRight: 12,
+    marginTop: 4,
+    marginBottom: 4,
   },
   linkGroup: {
     paddingTop: 4,
     paddingBottom: 4,
     display: "flex",
-    alignItems: "center",
+    flexDirection: (props) => (props.isListMode ? "row" : "column"),
+    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
     flexWrap: "wrap",
   },
   icon: {
@@ -29,10 +33,12 @@ const useStyles = makeStyles({
 
 interface Props {
   links: RoomLink[] | undefined;
+  isListMode: boolean;
 }
 
-const RoomLinks = ({ links }: Props) => {
-  const classes = useStyles();
+const RoomLinks = (props: Props) => {
+  const classes = useStyles(props);
+  const { links } = props;
 
   if (!links || links.length <= 0) {
     return null;

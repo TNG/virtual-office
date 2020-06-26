@@ -50,6 +50,9 @@ export class WebSocketController {
         socket.to(request.id).emit("init", {
           office: this.officeService.getOffice(),
           meetings: this.meetingsService.getAllMeetings(),
+          config: {
+            viewMode: this.config.viewMode,
+          },
         });
 
         if (currentUser) {

@@ -6,8 +6,9 @@ import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import RoomIcon from "@material-ui/icons/PersonalVideo";
+import theme from "../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<typeof theme, Props>(() => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -24,17 +25,18 @@ const useStyles = makeStyles({
   body: {
     flex: "1 0 auto",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: (props) => (props.isListMode ? "row" : "column"),
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
   },
   content: {
     flex: "0 1 100%",
-    padding: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
   },
   links: {
     flex: "1 1 auto",
@@ -53,18 +55,19 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row-reverse",
   },
-});
+}));
 
 interface Props {
   room: Room;
   participants: MeetingParticipant[];
   isDisabled: boolean;
   isJoinable: boolean;
+  isListMode: boolean;
 }
 
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { room, participants, isDisabled, isJoinable } = props;
+  const { room, participants, isDisabled, isJoinable, isListMode } = props;
   const [participantsOpen, setParticipantsOpen] = React.useState(false);
   function renderJoinUrl() {
     return (
@@ -99,7 +102,7 @@ const RoomCard = (props: Props) => {
 
       <Box className={classes.body}>
         <CardContent className={classes.content}>
-          <RoomLinks links={room.links} />
+          <RoomLinks links={room.links} isListMode={isListMode} />
           {(!isDisabled || isJoinable) && (
             <Box className={classes.participants}>
               <RoomParticipants
