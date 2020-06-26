@@ -13,6 +13,7 @@ import {
   Theme,
   Toolbar,
   Typography,
+  useTheme,
 } from "@material-ui/core";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
@@ -21,6 +22,9 @@ import SearchInput from "./SearchInput";
 const TITLE = process.env.REACT_APP_TITLE || "Virtual Office";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  appBar: {
+    background: `${theme.palette.background.default}`,
+  },
   coffee: {
     margin: 0,
   },
@@ -83,6 +87,7 @@ export interface Props {
 
 const AppBar = (props: Props) => {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [user, setUser] = useState<User | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -97,7 +102,7 @@ const AppBar = (props: Props) => {
   }
 
   return (
-    <MaterialAppBar position="fixed">
+    <MaterialAppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
           <LocalCafeIcon />

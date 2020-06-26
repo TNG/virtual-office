@@ -22,7 +22,13 @@ import { StyleConfig } from "../types";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
-    height: "100vh",
+    position: "fixed",
+    height: "calc(100vh + 16px)",
+    width: "calc(100vw + 16px)",
+    top: -8,
+    right: -8,
+    bottom: -8,
+    left: -8,
     backgroundColor: `${theme.palette.background.default}`,
     backgroundImage: (props) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
@@ -55,7 +61,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     textAlign: "center",
   },
   rooms: {
-    marginTop: 12,
+    marginTop: 24,
   },
 }));
 

@@ -30,21 +30,40 @@ const theme = (config: ClientConfig) =>
         fontWeight: 600,
       },
     },
-    palette: {
-      primary: {
-        main: "#323232",
-        light: "#ffe842",
-        contrastText: "#ffed3b",
-      },
-      secondary: {
-        main: "#2d8cff",
-        light: "#e5f1ff",
-        contrastText: "#ffffff",
-      },
-      background: {
-        default: "#ffffff",
-      },
-    },
+    palette: palettes[config.theme] || palettes.dark,
   });
+
+const palettes = {
+  light: {
+    primary: {
+      main: "#a4a9b1",
+      light: "#2d8acd",
+      contrastText: "#2c6aa8",
+    },
+    secondary: {
+      main: "#2d8cff",
+      light: "#e5f1ff",
+      contrastText: "#ffffff",
+    },
+    background: {
+      default: "#ffffff",
+    },
+  },
+  dark: {
+    primary: {
+      main: "#323232",
+      light: "#ffe842",
+      contrastText: "#ffed3b",
+    },
+    secondary: {
+      main: "#2d8cff",
+      light: "#e5f1ff",
+      contrastText: "#ffffff",
+    },
+    background: {
+      default: "#323232",
+    },
+  },
+};
 
 export default theme;

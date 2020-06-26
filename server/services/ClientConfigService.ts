@@ -4,7 +4,7 @@ import { ClientConfig } from "../express/types/ClientConfig";
 
 const defaultClientConfig: ClientConfig = {
   viewMode: "grid",
-  theme: "yellow",
+  theme: "dark",
 };
 
 export type ClientConfigListener = (config: ClientConfig) => void;
