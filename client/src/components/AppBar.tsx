@@ -13,7 +13,6 @@ import {
   Theme,
   Toolbar,
   Typography,
-  useTheme,
 } from "@material-ui/core";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
@@ -87,7 +86,6 @@ export interface Props {
 
 const AppBar = (props: Props) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [user, setUser] = useState<User | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
