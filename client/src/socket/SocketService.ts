@@ -25,6 +25,10 @@ export class SocketService {
     return fromEvent(this.socket, "office");
   }
 
+  public onClientConfig(): Observable<ClientConfig> {
+    return fromEvent(this.socket, "clientConfig");
+  }
+
   public onInit(): Observable<{ office: Office; meetings: Meeting[]; config: ClientConfig }> {
     return fromEvent(this.socket, "init");
   }

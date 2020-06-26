@@ -30,6 +30,9 @@ export class WebSocketController {
     this.officeService.listenOfficeChanges((office) => {
       this.socket.emit("office", office);
     });
+    this.clientConfigService.listenClientConfig((config) => {
+      this.socket.emit("clientConfig", config);
+    });
   }
 
   private createSocket(server: Server): Socket {

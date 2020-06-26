@@ -211,6 +211,34 @@
         }
       }
     },
+    "/api/admin/clientConfig": {
+      "patch": {
+        "summary": "Replace the client config",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clientConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
     "/api/admin/rooms/{roomId}/{userId}": {
       "delete": {
         "summary": "Delete a user in a room",
@@ -328,6 +356,10 @@
           "viewMode": {
             "type": "string",
             "enum": ["list", "grid"]
+          },
+          "theme": {
+            "type": "string",
+            "enum": ["blue", "yellow"]
           }
         }
       },
