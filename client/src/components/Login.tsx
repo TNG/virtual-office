@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Background from "./LoginBackground.jpg";
+import axios from "axios";
+import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import theme from "../theme";
 
 const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
@@ -25,10 +27,19 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
 
 const Login = () => {
   const classes = useStyles();
+  const [clientConfig, setClientConfig] = useState<ClientConfig>();
 
   const signInWithSlack = () => {
     window.location.href = "/auth/slack";
   };
+
+  useEffect(() => {
+    axios.get("/api/clientConfig").then(({ data }) => setClientConfig(data));
+  }, []);
+
+  if (!clientConfig) {
+    return null;
+  }
 
   return (
     <Box
