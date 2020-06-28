@@ -90,6 +90,35 @@ const RoomCard = (props: Props) => {
     );
   }
 
+  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
+  const participantsView = (!isDisabled || isJoinable) && (
+    <Box className={classes.participants}>
+      <RoomParticipants
+        name={room.name}
+        participants={participants}
+        showParticipants={participantsOpen}
+        setShowParticipants={setParticipantsOpen}
+      />
+    </Box>
+  );
+
+  const joinUrlView = renderJoinUrl();
+  const detailsView = renderDetails();
+
+  const bodyView = (roomLinksView || participantsView || joinUrlView || detailsView) && (
+    <Box className={classes.body}>
+      <CardContent className={classes.content}>
+        {roomLinksView}
+        {participantsView}
+      </CardContent>
+
+      <CardActions className={classes.actions}>
+        {joinUrlView}
+        {detailsView}
+      </CardActions>
+    </Box>
+  );
+
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
@@ -99,26 +128,7 @@ const RoomCard = (props: Props) => {
         subheader={<Typography variant="body2">{room.subtitle}</Typography>}
       />
 
-      <Box className={classes.body}>
-        <CardContent className={classes.content}>
-          <RoomLinks links={room.links} isListMode={isListMode} />
-          {(!isDisabled || isJoinable) && (
-            <Box className={classes.participants}>
-              <RoomParticipants
-                name={room.name}
-                participants={participants}
-                showParticipants={participantsOpen}
-                setShowParticipants={setParticipantsOpen}
-              />
-            </Box>
-          )}
-        </CardContent>
-
-        <CardActions className={classes.actions}>
-          {renderJoinUrl()}
-          {renderDetails()}
-        </CardActions>
-      </Box>
+      {bodyView}
     </Card>
   );
 };
