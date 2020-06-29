@@ -15,7 +15,7 @@ export class ClientConfigService {
   private listeners: ClientConfigListener[] = [];
 
   constructor(config: Config) {
-    this.updateClientConfig(config.configOptions.clientConfig);
+    this.updateClientConfig(config.clientConfig);
   }
 
   public getClientConfig(): ClientConfig {

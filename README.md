@@ -73,6 +73,9 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 | `SESSION_SECRET`      | Secret that is used to encrypt cookies that are stored on client side. If you omit this option, a new secret will be generated on each server start (meaning that users will have to re-login after each server restart!)
 | `ADMIN_USERNAME`      | Username for accessing admin endpoints
 | `ADMIN_PASSWORD`      | Password for accessing admin endpoints
+| `VIEW_MODE`           | Determines how the frontend will show the rooms, either `list` or `grid`
+| `THEME`               | Either `light` or `dark`
+| `BACKGROUND_URL`      | URL to a background image
 
 #### Office Configuration
 

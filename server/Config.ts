@@ -2,6 +2,7 @@ import { Service } from "typedi";
 import { findRootDir } from "./express/utils/findRootDir";
 import { v4 as uuid } from "uuid";
 import { ConfigOptions } from "./express/types/ConfigOptions";
+import { ClientConfig } from "./express/types/ClientConfig";
 
 export interface SlackConfig {
   clientId: string;
@@ -28,8 +29,17 @@ export class Config {
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
+  public readonly clientConfig: ClientConfig = Config.readClientConfig();
 
   constructor() {}
+
+  private static readClientConfig(): ClientConfig {
+    const backgroundUrl = process.env.BACKGROUND_URL;
+    const theme = process.env.THEME;
+    const viewMode = process.env.VIEW_MODE;
+
+    return { backgroundUrl, theme: theme as any, viewMode: viewMode as any };
+  }
 
   private static readSlackConfig(): SlackConfig {
     const secret = process.env.SLACK_SECRET;
