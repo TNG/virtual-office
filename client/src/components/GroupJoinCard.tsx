@@ -7,9 +7,12 @@ import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
+    flexDirection: "column",
     display: "flex",
-    flexDirection: "row",
     backgroundColor: theme.palette.secondary.light,
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: "row",
+    },
   },
   header: {
     flex: "0 0 auto",
