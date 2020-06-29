@@ -64,18 +64,19 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 
 #### Available Environment Variables
 
-| Variable name         | Usage
-| --------------------  |:----------------
-| `PORT`                | Port the app is running on, defaults to 8080
-| `SLACK_CLIENT_ID`     | The Client ID you got when creating the Slack application
-| `SLACK_SECRET`        | The Client Secret you got when creating the Slack application
-| `CONFIG` OR `CONFIG_LOCATION`        | A office config as JSON string `OR`<br>A file system location to the office configuration
-| `SESSION_SECRET`      | Secret that is used to encrypt cookies that are stored on client side. If you omit this option, a new secret will be generated on each server start (meaning that users will have to re-login after each server restart!)
-| `ADMIN_USERNAME`      | Username for accessing admin endpoints
-| `ADMIN_PASSWORD`      | Password for accessing admin endpoints
-| `VIEW_MODE`           | Determines how the frontend will show the rooms, either `list` or `grid`
-| `THEME`               | Either `light` or `dark`
-| `BACKGROUND_URL`      | URL to a background image
+| Variable name                              | Usage
+| --------------------                       |:----------------
+| `PORT`                                     | Port the app is running on, defaults to 8080
+| `SLACK_CLIENT_ID`                          | The Client ID you got when creating the Slack application
+| `SLACK_SECRET`                             | The Client Secret you got when creating the Slack application
+| `CONFIG` OR `CONFIG_LOCATION`              | A office config as JSON string `OR`<br>A file system location to the office configuration
+| `SESSION_SECRET`                           | Secret that is used to encrypt cookies that are stored on client side. If you omit this option, a new secret will be generated on each server start (meaning that users will have to re-login after each server restart!)
+| `ADMIN_USERNAME`                           | Username for accessing admin endpoints
+| `ADMIN_PASSWORD`                           | Password for accessing admin endpoints
+| `VIEW_MODE`                                | Determines how the frontend will show the rooms, either `list` or `grid`
+| `THEME`                                    | Either `light` or `dark`
+| `BACKGROUND_URL`                           | URL to a background image
+| `WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM`      | When replacing the office via the /admin API, write the changes to the filesstem. Will only be done when set to `true`
 
 #### Office Configuration
 

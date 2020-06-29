@@ -30,6 +30,7 @@ export class Config {
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
   public readonly clientConfig: ClientConfig = Config.readClientConfig();
+  public readonly writeOfficeUpdatesToFileSystem = process.env.WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM === "true";
 
   constructor() {}
 
@@ -58,11 +59,15 @@ export class Config {
     };
   }
 
+  public static getConfigFile(): string | undefined {
+    return process.env.CONFIG_LOCATION || `${findRootDir()}/server/config.json`;
+  }
+
   private static readConfigFromFile(): ConfigOptions {
     if (process.env.CONFIG) {
       return JSON.parse(process.env.CONFIG);
     }
-    return require(process.env.CONFIG_LOCATION || `${findRootDir()}/server/config.json`);
+    return require(Config.getConfigFile());
   }
 
   private static readAdminEndpointsCredentials(): Credentials | undefined {
