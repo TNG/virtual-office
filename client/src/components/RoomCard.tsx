@@ -7,7 +7,7 @@ import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import RoomIcon from "@material-ui/icons/PersonalVideo";
 
-const useStyles = makeStyles<Theme, Props>(() => ({
+const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -24,18 +24,28 @@ const useStyles = makeStyles<Theme, Props>(() => ({
   body: {
     flex: "1 0 auto",
     display: "flex",
-    flexDirection: (props) => (props.isListMode ? "row" : "column"),
     justifyContent: "space-between",
-    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+    alignItems: "stretch",
+    flexDirection: "column",
+
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: (props) => (props.isListMode ? "row" : "column"),
+      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+    },
   },
   content: {
     flex: "0 1 100%",
     paddingTop: 0,
     paddingBottom: 0,
     display: "flex",
-    flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
+    alignItems: "stretch",
+    flexDirection: "column-reverse",
     justifyContent: "space-between",
-    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+
+    [theme.breakpoints.up("sm")]: {
+      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+      flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
+    },
   },
   links: {
     flex: "1 1 auto",
