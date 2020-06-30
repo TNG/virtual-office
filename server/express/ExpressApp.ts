@@ -25,7 +25,7 @@ export class ExpressApp {
     const app = express();
     app.set("trust proxy", true);
     app.use(cors());
-    app.use(bodyParser.json());
+    app.use(bodyParser.json({ limit: "10mb" }));
     app.use(passport.initialize());
     app.use(cookieParser(this.config.sessionSecret));
 
