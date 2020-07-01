@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
@@ -6,6 +6,7 @@ import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import RoomIcon from "@material-ui/icons/PersonalVideo";
+import { ExpandMore, ExpandLess } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
@@ -20,6 +21,14 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     flex: "1 1 auto",
     padding: 0,
     minHeight: 40,
+  },
+  headerContent: {
+    overflow: "hidden",
+  },
+  collapsedSubtitle: {
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
   },
   body: {
     flex: "1 0 auto",
@@ -77,7 +86,20 @@ interface Props {
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
   const { room, participants, isDisabled, isJoinable, isListMode } = props;
+
+  const subtitleRef = useRef(null);
+
+  const [collapseSubtitle, setCollapseSubtitle] = React.useState(true);
+  const [expandable, setExpandable] = React.useState(false);
   const [participantsOpen, setParticipantsOpen] = React.useState(false);
+
+  useEffect((): any => {
+    if (!subtitleRef?.current) {
+      return;
+    }
+    setExpandable((subtitleRef.current as any).offsetWidth < (subtitleRef.current as any).scrollWidth);
+  }, [subtitleRef]);
+
   function renderJoinUrl() {
     return (
       room.joinUrl &&
@@ -132,10 +154,18 @@ const RoomCard = (props: Props) => {
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        className={classes.header}
+        classes={{ root: classes.header, content: classes.headerContent }}
         avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
         title={<Typography variant="h5">{room.name}</Typography>}
-        subheader={<Typography variant="body2">{room.subtitle}</Typography>}
+        onClick={() => setCollapseSubtitle(!collapseSubtitle)}
+        subheader={
+          <Box display="flex" alignItems="center">
+            <Typography variant="body2" className={collapseSubtitle ? classes.collapsedSubtitle : ""} ref={subtitleRef}>
+              {room.subtitle}
+            </Typography>
+            {expandable ? collapseSubtitle ? <ExpandMore /> : <ExpandLess /> : ""}
+          </Box>
+        }
       />
 
       {bodyView}
