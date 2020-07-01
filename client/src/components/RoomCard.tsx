@@ -30,6 +30,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     overflow: "hidden",
     whiteSpace: "nowrap",
   },
+  expandedSubtitle: {
+    whiteSpace: "pre-wrap",
+  },
   body: {
     flex: "1 0 auto",
     display: "flex",
@@ -160,7 +163,11 @@ const RoomCard = (props: Props) => {
         onClick={() => setCollapseSubtitle(!collapseSubtitle)}
         subheader={
           <Box display="flex" alignItems="center">
-            <Typography variant="body2" className={collapseSubtitle ? classes.collapsedSubtitle : ""} ref={subtitleRef}>
+            <Typography
+              variant="body2"
+              className={collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle}
+              ref={subtitleRef}
+            >
               {room.subtitle}
             </Typography>
             {expandable ? collapseSubtitle ? <ExpandMore /> : <ExpandLess /> : ""}
