@@ -8,7 +8,7 @@ import { SocketContext } from "../socket/Context";
 
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
-import Background from "./MandelbrotBackground.png";
+import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
@@ -24,18 +24,14 @@ import { DateTime } from "luxon";
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
     position: "fixed",
-    height: "calc(100vh + 16px)",
-    width: "calc(100vw + 16px)",
-    top: -8,
-    right: -8,
-    bottom: -8,
-    left: -8,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     backgroundColor: `${theme.palette.background.default}`,
     backgroundImage: (props) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    filter: "blur(8px)",
-    "-webkit-filter": "blur(8px)",
   },
   content: {
     position: "fixed",
