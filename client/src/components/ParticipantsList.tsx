@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, Theme } from "@material-ui/core";
+import { Card, CardHeader, Theme } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import ParticipantAvatar from "./ParticipantAvatar";
@@ -34,7 +34,7 @@ const ParticipantsList = ({ participants }: { participants: MeetingParticipant[]
 
   function renderParticipant(participant: MeetingParticipant) {
     return (
-      <Box key={participant.id} className={classes.participant}>
+      <div key={participant.id} className={classes.participant}>
         <Card>
           <CardHeader
             avatar={<ParticipantAvatar participant={participant} />}
@@ -42,11 +42,11 @@ const ParticipantsList = ({ participants }: { participants: MeetingParticipant[]
             subheader={participant.email}
           />
         </Card>
-      </Box>
+      </div>
     );
   }
 
-  return <Box className={classes.root}>{participants.map(renderParticipant)}</Box>;
+  return <div className={classes.root}>{participants.map(renderParticipant)}</div>;
 };
 
 export default ParticipantsList;

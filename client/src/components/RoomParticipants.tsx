@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Theme, Typography } from "@material-ui/core";
+import { Theme, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
@@ -21,6 +21,14 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
   emptyGroup: {
     color: theme.palette.grey.A200,
+  },
+  userParticipant: {
+    height: 44,
+    display: "flex",
+    alignItems: "center",
+  },
+  anonymousParticipant: {
+    height: 44,
   },
 }));
 
@@ -47,21 +55,21 @@ const RoomParticipants = (props: Props) => {
 
   if (props.participants.length <= 0) {
     return (
-      <Box height={44} display="flex" alignItems="center">
+      <div className={classes.userParticipant}>
         <Typography className={classes.emptyGroup} variant="body2">
           No one is here
         </Typography>
-      </Box>
+      </div>
     );
   }
 
   if (ANONYMOUS_PARTICIPANTS) {
     return (
-      <Box height={44}>
+      <div className={classes.anonymousParticipant}>
         <Typography variant="body2" className={classes.anonymousParticipantsText}>
           {props.participants.length} participant{props.participants.length > 1 ? "s" : ""}
         </Typography>
-      </Box>
+      </div>
     );
   }
 
@@ -71,7 +79,7 @@ const RoomParticipants = (props: Props) => {
   );
 
   return (
-    <Box>
+    <div>
       <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => props.setShowParticipants(true)}>
         {sortedParticipants.map((participant, index) => (
           <ParticipantAvatar
@@ -92,7 +100,7 @@ const RoomParticipants = (props: Props) => {
       >
         <ParticipantsList participants={filteredParticipants} />
       </Dialog>
-    </Box>
+    </div>
   );
 };
 

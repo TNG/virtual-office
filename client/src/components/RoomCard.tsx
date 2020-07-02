@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
@@ -24,6 +24,11 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   headerContent: {
     overflow: "hidden",
+    alignItems: "flex-start",
+  },
+  subtitle: {
+    display: "flex",
+    alignItems: "flex-start",
   },
   collapsedSubtitle: {
     textOverflow: "ellipsis",
@@ -127,21 +132,21 @@ const RoomCard = (props: Props) => {
 
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const participantsView = (!isDisabled || isJoinable) && (
-    <Box className={classes.participants}>
+    <div className={classes.participants}>
       <RoomParticipants
         name={room.name}
         participants={participants}
         showParticipants={participantsOpen}
         setShowParticipants={setParticipantsOpen}
       />
-    </Box>
+    </div>
   );
 
   const joinUrlView = renderJoinUrl();
   const detailsView = renderDetails();
 
   const bodyView = (roomLinksView || participantsView || joinUrlView || detailsView) && (
-    <Box className={classes.body}>
+    <div className={classes.body}>
       <CardContent className={classes.content}>
         {roomLinksView}
         {participantsView}
@@ -151,7 +156,7 @@ const RoomCard = (props: Props) => {
         {joinUrlView}
         {detailsView}
       </CardActions>
-    </Box>
+    </div>
   );
 
   return (
@@ -162,7 +167,7 @@ const RoomCard = (props: Props) => {
         title={<Typography variant="h5">{room.name}</Typography>}
         onClick={() => setCollapseSubtitle(!collapseSubtitle)}
         subheader={
-          <Box display="flex" alignItems="center">
+          <div className={classes.subtitle}>
             <Typography
               variant="body2"
               className={collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle}
@@ -171,7 +176,7 @@ const RoomCard = (props: Props) => {
               {room.subtitle}
             </Typography>
             {expandable ? collapseSubtitle ? <ExpandMore /> : <ExpandLess /> : ""}
-          </Box>
+          </div>
         }
       />
 

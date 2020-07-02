@@ -1,11 +1,15 @@
 import React from "react";
 
-import { Box, Link, Theme, Typography } from "@material-ui/core";
+import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
 import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles<Theme, Props>({
+  root: {
+    display: "flex",
+    alignItems: "center",
+  },
   link: {
     flex: "0 0 auto",
     display: "flex",
@@ -51,11 +55,11 @@ const RoomLinks = (props: Props) => {
   }, {} as { [group: string]: RoomLink[] });
 
   return (
-    <Box display="flex" alignItems="center">
+    <div>
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
-        <Box key={group}>
+        <div key={group}>
           <Typography variant="subtitle2">{group}</Typography>
-          <Box className={classes.linkGroup}>
+          <div className={classes.linkGroup}>
             {groupLinks.map((link, index) => (
               <Link key={link.text + index} className={classes.link} href={link.href} target="_blank">
                 {link.icon ? (
@@ -66,10 +70,10 @@ const RoomLinks = (props: Props) => {
                 <Typography variant="body2">{link.text}</Typography>
               </Link>
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 

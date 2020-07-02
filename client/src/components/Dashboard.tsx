@@ -98,7 +98,6 @@ const Dashboard = () => {
     });
 
     const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
-
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
 
     const initSubscription = context.onInit().subscribe((event) => {
@@ -145,12 +144,12 @@ const Dashboard = () => {
   }
 
   return (
-    <Box>
-      <Box className={classes.background} />
-      <Box className={classes.content}>
+    <div>
+      <div className={classes.background} />
+      <div className={classes.content}>
         <AppBar onSearchTextChange={setSearchText} />
 
-        <Box className={classes.scroller}>
+        <div className={classes.scroller}>
           {hasExpiredGroups && hasNotExpiredGroups && (
             <Box className={classes.toggleGroupsButton}>
               <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
@@ -158,7 +157,7 @@ const Dashboard = () => {
               </Button>
             </Box>
           )}
-          <Box className={classes.rooms}>
+          <div className={classes.rooms}>
             {groupsWithRooms.map(({ group, rooms }) => {
               const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
                 (disabledGroup) => disabledGroup.group === group
@@ -184,10 +183,10 @@ const Dashboard = () => {
                 />
               );
             })}
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

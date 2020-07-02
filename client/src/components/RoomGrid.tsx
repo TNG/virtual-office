@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Theme } from "@material-ui/core";
+import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
@@ -61,9 +61,9 @@ const RoomGrid = (props: Props) => {
 
   function renderGridCard(key: string, card: any, responsive = false) {
     return (
-      <Box key={key} className={`${classes.card} ${responsive ? classes.responsiveCard : ""}`}>
+      <div key={key} className={`${classes.card} ${responsive ? classes.responsiveCard : ""}`}>
         {card}
-      </Box>
+      </div>
     );
   }
 
@@ -118,14 +118,14 @@ const RoomGrid = (props: Props) => {
   }
 
   return (
-    <Box className={classes.root}>
+    <div className={classes.root}>
       {renderGroupHeader()}
 
-      <Box className={classes.grid}>
+      <div className={classes.grid}>
         {renderGroupJoinCard()}
         {renderRoomCards()}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
