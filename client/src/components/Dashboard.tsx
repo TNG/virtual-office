@@ -16,7 +16,7 @@ import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disab
 import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
-import { Button, CircularProgress, Theme } from "@material-ui/core";
+import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import { DateTime } from "luxon";
@@ -150,42 +150,44 @@ const Dashboard = () => {
 
   function renderRoomGrid(viewMode: string) {
     return (
-      <div>
-        {hasExpiredGroups && hasNotExpiredGroups && (
-          <Box className={classes.toggleGroupsButton}>
-            <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
-              {showExpiredGroups ? "Hide expired" : "Show expired"}
-            </Button>
-          </Box>
-        )}
-        <div className={classes.rooms}>
-          {groupsWithRooms.map(({ group, rooms }) => {
-            const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
-              (disabledGroup) => disabledGroup.group === group
-            );
-            const isDisabled =
-              (potentiallyDisabledGroup &&
-                (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
-              false;
+      <Fade in={initialLoadCompleted}>
+        <div>
+          {hasExpiredGroups && hasNotExpiredGroups && (
+            <Box className={classes.toggleGroupsButton}>
+              <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
+                {showExpiredGroups ? "Hide expired" : "Show expired"}
+              </Button>
+            </Box>
+          )}
+          <div className={classes.rooms}>
+            {groupsWithRooms.map(({ group, rooms }) => {
+              const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
+                (disabledGroup) => disabledGroup.group === group
+              );
+              const isDisabled =
+                (potentiallyDisabledGroup &&
+                  (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
+                false;
 
-            if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
-              return null;
-            }
+              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
+                return null;
+              }
 
-            return (
-              <RoomGrid
-                key={group.id}
-                group={group}
-                rooms={rooms}
-                meetings={meetingsIndexed}
-                isDisabled={isDisabled}
-                isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
-                isListMode={viewMode === "list"}
-              />
-            );
-          })}
+              return (
+                <RoomGrid
+                  key={group.id}
+                  group={group}
+                  rooms={rooms}
+                  meetings={meetingsIndexed}
+                  isDisabled={isDisabled}
+                  isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
+                  isListMode={viewMode === "list"}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </Fade>
     );
   }
 
