@@ -56,8 +56,8 @@ const RoomLinks = (props: Props) => {
         <Box key={group}>
           <Typography variant="subtitle2">{group}</Typography>
           <Box className={classes.linkGroup}>
-            {groupLinks.map((link) => (
-              <Link key={link.text} className={classes.link} href={link.href} target="_blank">
+            {groupLinks.map((link, index) => (
+              <Link key={link.text + index} className={classes.link} href={link.href} target="_blank">
                 {link.icon ? (
                   <img className={classes.icon} src={link.icon} alt={link.text} />
                 ) : (
