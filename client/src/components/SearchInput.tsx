@@ -2,6 +2,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import { fade, InputBase, Theme } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
+import { debounce } from "lodash";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SearchInput = (props: { onSearchTextChange: (text: string) => void; drawBorder: boolean }) => {
   const classes = useStyles();
+  const searchDebounced = debounce(props.onSearchTextChange, 300);
 
   return (
     <div className={classes.root}>
@@ -53,7 +55,7 @@ const SearchInput = (props: { onSearchTextChange: (text: string) => void; drawBo
 
       <InputBase
         placeholder="Search…"
-        onChange={(event) => props.onSearchTextChange(event.target.value)}
+        onChange={(event) => searchDebounced(event.target.value)}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
