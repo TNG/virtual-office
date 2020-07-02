@@ -24,7 +24,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     alignItems: "flex-start",
   },
   headerContent: {
-    overflow: "hidden"
+    overflow: "hidden",
   },
   subtitle: {
     display: "flex",
