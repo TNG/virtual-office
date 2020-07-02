@@ -19,6 +19,7 @@ import { Office } from "../../../server/express/types/Office";
 import { Button, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
+import { DateTime } from "luxon";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -120,8 +121,22 @@ const Dashboard = () => {
   }, [context]);
 
   useEffect(() => {
-    const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 10000);
-    return () => clearInterval(handler);
+    const nextTimestamp = officeState.office.groups
+      .flatMap((group) =>
+        [group.disabledAfter, group.disabledBefore, group.joinableAfter]
+          .filter((time): time is string => time !== undefined)
+          .map((time) => DateTime.fromISO(time))
+          .filter((time) => time > DateTime.local())
+          .sort()
+      )
+      .shift();
+
+    if (nextTimestamp) {
+      const handler = setTimeout(() => {
+        setOfficeState(officeStateFrom(officeState.office));
+      }, nextTimestamp.toMillis() + 1000);
+      return () => clearInterval(handler);
+    }
   }, [officeState]);
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
@@ -160,6 +175,8 @@ const Dashboard = () => {
               if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
                 return null;
               }
+
+              console.log("group");
 
               return (
                 <RoomGrid
