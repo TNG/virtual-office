@@ -108,11 +108,11 @@ const Dashboard = () => {
 
     const initSubscription = context.onInit().subscribe((event) => {
       setConfig(event.config);
-      setOfficeState(officeStateFrom(event.office));
-      setMeetings(event.meetings);
-      setImmediate(() => {
+      setTimeout(() => {
+        setOfficeState(officeStateFrom(event.office));
+        setMeetings(event.meetings);
         setInitialLoadCompleted(true);
-      });
+      }, 500);
     });
 
     return () => {
