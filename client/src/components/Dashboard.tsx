@@ -172,8 +172,6 @@ const Dashboard = () => {
                 return null;
               }
 
-              console.log("group");
-
               return (
                 <RoomGrid
                   key={group.id}
