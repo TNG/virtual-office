@@ -138,7 +138,7 @@ const Dashboard = () => {
     if (nextTimestamp) {
       const handler = setTimeout(() => {
         setOfficeState(officeStateFrom(officeState.office));
-      }, nextTimestamp.toMillis() + 1000);
+      }, nextTimestamp.diffNow().as("milliseconds") + 1000);
       return () => clearInterval(handler);
     }
   }, [officeState]);
