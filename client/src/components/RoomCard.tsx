@@ -21,10 +21,10 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     flex: "1 1 auto",
     padding: 0,
     minHeight: 40,
+    alignItems: "flex-start",
   },
   headerContent: {
-    overflow: "hidden",
-    alignItems: "flex-start",
+    overflow: "hidden"
   },
   subtitle: {
     display: "flex",
