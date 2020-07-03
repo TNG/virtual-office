@@ -21,10 +21,10 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 
 0. Create a new Slack App, as currently the only authentication option is Slack (https://api.slack.com/apps). You will need the OAuth Client ID and the OAuth Client Secret afterwards.
 
-0. Adapt the configuration. Here you have two options - either you configure the app via a .env file or you provide the configuration via environment variables.\
+0. Adapt the configuration. Here you have two options - either you configure the app via a `.env` file or you provide the configuration via environment variables.\
 You can find sample environment variables in `server/.env-example`.
 
-    * via .env file: Copy `server/.env-example` to `.server.env`, adapt the content. All entries will be available to the app as environment variables.
+    * via `.env` file: Copy `server/.env-example` to `.server.env`, adapt the content. All entries will be available to the app as environment variables.
     * set the environment variables manually, i.e. for using it via some deployment plan in a CI server.
 
 0. Configure the Zoom.us webhooks
@@ -78,7 +78,7 @@ An example looks like this:
     {
       "meetingId": "1",
       "name": "Lobby",
-      "subtitle": "This is whery everything starts.",
+      "subtitle": "This is where everything starts.",
       "joinUrl": "https://zoom.us/j/1",
       "links": [
         {
