@@ -125,22 +125,8 @@ const Dashboard = () => {
   }, [context]);
 
   useEffect(() => {
-    const nextTimestamp = officeState.office.groups
-      .flatMap((group) =>
-        [group.disabledAfter, group.disabledBefore, group.joinableAfter]
-          .filter((time): time is string => time !== undefined)
-          .map((time) => DateTime.fromISO(time))
-          .filter((time) => time > DateTime.local())
-          .sort()
-      )
-      .shift();
-
-    if (nextTimestamp) {
-      const handler = setTimeout(() => {
-        setOfficeState(officeStateFrom(officeState.office));
-      }, nextTimestamp.diffNow().as("milliseconds") + 1000);
-      return () => clearInterval(handler);
-    }
+    const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
+    return () => clearInterval(handler);
   }, [officeState]);
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
