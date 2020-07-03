@@ -5,6 +5,8 @@ Did you ever wonder where your colleague currently is? In what Zoom.us room she/
 
 Virtual Office tries to give you transparency on what Zoom.us rooms are occupied and who is currently there.
 
+![Virtual Office Screenshot](/screenshot.png?raw=true)
+
 ### Features
 
 * Web UI
