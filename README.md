@@ -9,24 +9,33 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 
 ### Features
 
-* Web UI
+* React Web UI
 * Uses [Zoom.us Webhooks](https://marketplace.zoom.us/docs/guides/tools-resources/webhooks) to give a real-time status update on who currently participates in what Zoom.us room
 * Login via Slack
 
 ### Installation
 
-0. Checkout the repository. \
-`git clone https://github.com/TNG/virtual-office`
+0. Checkout the repository.
+    ```
+    git clone https://github.com/TNG/virtual-office
+    ```
 
-0. Install all dependencies and generate the runnable binary. \
-`npm run installAll && npm run buildAll`
+0. Install all dependencies.
+    ```
+    npm run installAll
+    ```
 
-0. Create a new Slack App, as currently the only authentication option is Slack (https://api.slack.com/apps). You will need the OAuth Client ID and the OAuth Client Secret afterwards.
+0. Create a new Slack App, as currently the only authentication option is Slack (https://api.slack.com/apps).
 
-0. Adapt the configuration. Here you have two options - either you configure the app via a `.env` file or you provide the configuration via environment variables.\
-You can find sample environment variables in `server/.env-example`.
+    * Extract `Basic Information`
+      * You will need the `Client ID` and `Client Secret` in the server config
+    * Configure `OAuth & Permissions`
+      * Redirect URL: `${YOUR_BASE_URL_COMES_HERE}/api/slack/callback`
+      * User Token Scope: `identity.basic`, `identity.avatar`, `identity.email`
 
-    * via `.env` file: Copy `server/.env-example` to `.server.env`, adapt the content. All entries will be available to the app as environment variables.
+0. Adapt the Virtual Office configuration.
+
+    * via `.env` file: Copy `<client|server>/.env-example` to `<client|server>/.env` and adapt the content. All entries will be available to the app as environment variables.
     * set the environment variables manually, i.e. for using it via some deployment plan in a CI server.
 
 0. Configure the Zoom.us webhooks
@@ -41,18 +50,26 @@ You can find sample environment variables in `server/.env-example`.
         * Notification endpoint URL: \
             `${YOUR_BASE_URL_COMES_HERE}/api/zoomus/webhook`
 
+0. Compile and start the application in production mode
+    ```
+    npm run buildAll
+    cd server && npm start
+    ```
 
-0. Start the application using `cd server && npm start`
+0. (Alternative) Serve the application in development mode
+    ```
+    cd server && npm run dev
+    cd client && npm start
+    ```
 
 #### Available Environment Variables
 
 | Variable name         | Usage
 | --------------------  |:----------------
 | `PORT`                | Port the app is running on, defaults to 8080
-| `SLACK_CLIENT_ID`     | The OAuth client id you got when creating the Slack application
-| `SLACK_SECRET`        | The OAuth secret you got when creating the Slack application
-| `CONFIG`              | A office config
-| `CONFIG_LOCATION`     | A file system location to the office configuration, either absolute or relative to the application root directory
+| `SLACK_CLIENT_ID`     | The Client ID you got when creating the Slack application
+| `SLACK_SECRET`        | The Client Secret you got when creating the Slack application
+| `CONFIG` OR `CONFIG_LOCATION`        | A office config as JSON string `OR`<br>A file system location to the office configuration
 | `SESSION_SECRET`      | Secret that is used to encrypt cookies that are stored on client side. If you omit this option, a new secret will be generated on each server start (meaning that users will have to re-login after each server restart!)
 | `ADMIN_USERNAME`      | Username for accessing admin endpoints
 | `ADMIN_PASSWORD`      | Password for accessing admin endpoints
