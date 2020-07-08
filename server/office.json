@@ -93,10 +93,5 @@
       "groupId": "lord",
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     }
-  ],
-  "clientConfig": {
-    "viewMode": "list",
-    "theme": "light",
-    "backgroundUrl": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/MandelbrotBackground.png"
-  }
+  ]
 }
