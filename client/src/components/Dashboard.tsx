@@ -19,7 +19,6 @@ import { Office } from "../../../server/express/types/Office";
 import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
-import { DateTime } from "luxon";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
