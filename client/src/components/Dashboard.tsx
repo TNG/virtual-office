@@ -10,24 +10,27 @@ import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
-import theme from "../theme";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disabledGroups";
 import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
+import { ClientConfig } from "../../../server/express/types/ClientConfig";
+import { StyleConfig } from "../types";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
-    height: "100vh",
-    backgroundImage: `url(${Background})`,
+    position: "fixed",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: `${theme.palette.background.default}`,
+    backgroundImage: (props) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    filter: "blur(8px)",
-    "-webkit-filter": "blur(8px)",
-    opacity: 0.8,
   },
   content: {
     position: "fixed",
@@ -40,6 +43,9 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     overflowY: "auto",
   },
   scroller: {
+    maxWidth: 1200,
+    marginLeft: "auto",
+    marginRight: "auto",
     marginTop: 12,
     paddingTop: 56,
     [theme.breakpoints.up("sm")]: {
@@ -51,7 +57,12 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
     textAlign: "center",
   },
   rooms: {
-    marginTop: 12,
+    marginTop: 24,
+  },
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "10em",
   },
 }));
 
@@ -66,14 +77,13 @@ function officeStateFrom(office: Office): OfficeState {
 }
 
 const Dashboard = () => {
-  const classes = useStyles();
-
   const history = useHistory();
   useEffect(() => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);
 
   const context = useContext(SocketContext);
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [officeState, setOfficeState] = useState({
     office: { rooms: [], groups: [] },
     potentiallyDisabledGroups: [],
@@ -81,7 +91,9 @@ const Dashboard = () => {
   const [meetings, setMeetings] = useState([] as Meeting[]);
   const [searchText, setSearchText] = useState("");
   const [showExpiredGroups, setShowExpiredGroups] = useState(false);
+  const [config, setConfig] = useState<ClientConfig | undefined>();
 
+  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   useEffect(() => {
     context.init();
 
@@ -91,10 +103,15 @@ const Dashboard = () => {
     });
 
     const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
+    const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
 
     const initSubscription = context.onInit().subscribe((event) => {
-      setOfficeState(officeStateFrom(event.office));
-      setMeetings(event.meetings);
+      setConfig(event.config);
+      setTimeout(() => {
+        setOfficeState(officeStateFrom(event.office));
+        setMeetings(event.meetings);
+        setInitialLoadCompleted(true);
+      }, 500);
     });
 
     return () => {
@@ -102,11 +119,12 @@ const Dashboard = () => {
       initSubscription.unsubscribe();
       context.disconnect();
       officeSubscription.unsubscribe();
+      clientConfigSubscription.unsubscribe();
     };
   }, [context]);
 
   useEffect(() => {
-    const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 10000);
+    const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
     return () => clearInterval(handler);
   }, [officeState]);
 
@@ -115,13 +133,10 @@ const Dashboard = () => {
   const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
   const hasNotExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => !group.isExpired);
 
-  return (
-    <Box>
-      <Box className={classes.background} />
-      <Box className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} />
-
-        <Box className={classes.scroller}>
+  function renderRoomGrid(viewMode: string) {
+    return (
+      <Fade in={initialLoadCompleted}>
+        <div>
           {hasExpiredGroups && hasNotExpiredGroups && (
             <Box className={classes.toggleGroupsButton}>
               <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
@@ -129,7 +144,7 @@ const Dashboard = () => {
               </Button>
             </Box>
           )}
-          <Box className={classes.rooms}>
+          <div className={classes.rooms}>
             {groupsWithRooms.map(({ group, rooms }) => {
               const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
                 (disabledGroup) => disabledGroup.group === group
@@ -151,13 +166,36 @@ const Dashboard = () => {
                   meetings={meetingsIndexed}
                   isDisabled={isDisabled}
                   isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
+                  isListMode={viewMode === "list"}
                 />
               );
             })}
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </Fade>
+    );
+  }
+
+  if (!config) {
+    return null;
+  }
+
+  const content = initialLoadCompleted ? (
+    renderRoomGrid(config.viewMode)
+  ) : (
+    <Box className={classes.loading}>
+      <CircularProgress color="secondary" size="100px" />
     </Box>
+  );
+
+  return (
+    <div>
+      <div className={classes.background} />
+      <div className={classes.content}>
+        <AppBar onSearchTextChange={setSearchText} />
+        <div className={classes.scroller}>{content}</div>
+      </div>
+    </div>
   );
 };
 

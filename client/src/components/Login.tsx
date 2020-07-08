@@ -1,11 +1,16 @@
-import React from "react";
-import { Box, Button, Paper, Typography } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Paper, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Background from "./LoginBackground.jpg";
+import axios from "axios";
+import { StyleConfig } from "../types";
 
-const useStyles = makeStyles({
+const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
+
+const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   root: {
-    backgroundImage: `url(${Background})`,
+    backgroundColor: `${theme.palette.background.default}`,
+    backgroundImage: (config) => `url(${config?.backgroundUrl || Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -16,14 +21,25 @@ const useStyles = makeStyles({
   heading: {
     fontWeight: 300,
   },
-});
+}));
 
 const Login = () => {
-  const classes = useStyles();
+  const [clientConfig, setClientConfig] = useState<StyleConfig>({
+    backgroundUrl: Background,
+  });
+  const classes = useStyles(clientConfig);
 
   const signInWithSlack = () => {
     window.location.href = "/auth/slack";
   };
+
+  useEffect(() => {
+    axios.get("/api/clientConfig").then(({ data }) => setClientConfig(data));
+  }, []);
+
+  if (!clientConfig) {
+    return null;
+  }
 
   return (
     <Box
@@ -39,7 +55,7 @@ const Login = () => {
         <Paper className={classes.paper}>
           <Box p={4} textAlign={"center"}>
             <Typography className={classes.heading} variant={"h3"}>
-              Virtual Office
+              {appTitle}
             </Typography>
             <Box pt={3}>
               <Button onClick={() => signInWithSlack()}>

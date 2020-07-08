@@ -1,16 +1,15 @@
 import React, { MouseEvent } from "react";
 import { makeStyles } from "@material-ui/styles";
 
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Modal, Typography } from "@material-ui/core";
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Modal, Theme, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import SearchInput from "./SearchInput";
-import theme from "../theme";
 
 type Variant = "big" | "small";
 
 const useStyles = (variant: Variant) =>
-  makeStyles<typeof theme>((theme) => ({
+  makeStyles<Theme>((theme) => ({
     dialog: {
       display: "flex",
       flexDirection: "column",

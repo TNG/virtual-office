@@ -1,28 +1,29 @@
 import React from "react";
-import { Button, Card, CardActions, CardContent, CardHeader, Typography } from "@material-ui/core";
+import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   root: {
-    width: "100%",
-    height: "100%",
-    minHeight: 180,
-    display: "flex",
     flexDirection: "column",
+    display: "flex",
     backgroundColor: theme.palette.secondary.light,
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: "row",
+    },
   },
   header: {
     flex: "0 0 auto",
     minHeight: 40,
   },
   content: {
+    display: "flex",
     flex: "1 1 auto",
-    paddingTop: 0,
-    paddingBottom: 4,
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 8,
     flexGrow: 1,
   },
   actions: {

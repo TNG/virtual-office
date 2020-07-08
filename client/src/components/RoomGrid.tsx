@@ -1,18 +1,18 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupJoinCard from "./GroupJoinCard";
 import RoomCard from "./RoomCard";
-import theme from "../theme";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { partition } from "lodash";
 
-const useStyles = makeStyles<typeof theme, Props>((theme) => ({
+const useStyles = makeStyles<Theme, Props>((theme) => ({
   title: {
+    color: "#fff",
     margin: 12,
     marginTop: 24,
     padding: 0,
@@ -26,6 +26,11 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
   },
   card: {
     width: "100%",
+    flex: "0 0 auto",
+    padding: 8,
+    boxSizing: "border-box",
+  },
+  responsiveCard: {
     [theme.breakpoints.up("sm")]: {
       width: "50%",
     },
@@ -33,14 +38,11 @@ const useStyles = makeStyles<typeof theme, Props>((theme) => ({
       width: "33%",
     },
     [theme.breakpoints.up("lg")]: {
-      width: "25%",
+      width: "33%",
     },
     [theme.breakpoints.up("xl")]: {
-      width: "20%",
+      width: "25%",
     },
-    flex: "0 0 auto",
-    padding: 8,
-    boxSizing: "border-box",
   },
 }));
 
@@ -50,17 +52,18 @@ interface Props {
   meetings: MeetingsIndexed;
   isDisabled: boolean;
   isJoinable: boolean;
+  isListMode: boolean;
 }
 
 const RoomGrid = (props: Props) => {
-  const { group, rooms, meetings, isDisabled, isJoinable } = props;
+  const { group, rooms, meetings, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
-  function renderGridCard(key: string, card: any) {
+  function renderGridCard(key: string, card: any, responsive = false) {
     return (
-      <Box key={key} className={classes.card}>
+      <div key={key} className={`${classes.card} ${responsive ? classes.responsiveCard : ""}`}>
         {card}
-      </Box>
+      </div>
     );
   }
 
@@ -76,6 +79,10 @@ const RoomGrid = (props: Props) => {
       return rooms;
     }
 
+    if (!isJoinable) {
+      return [];
+    }
+
     const [emptyRooms, filledRooms] = partition(rooms, (room) => participantsInMeeting(room.meetingId).length === 0);
     return [...filledRooms, ...emptyRooms.slice(0, 1)];
   }
@@ -84,9 +91,17 @@ const RoomGrid = (props: Props) => {
     const shownRooms = selectShownRooms();
     return shownRooms.map((room) => {
       const participants = participantsInMeeting(room.meetingId);
+      const cardListMode = !group.groupJoin && isListMode;
       return renderGridCard(
         room.roomId,
-        <RoomCard room={room} participants={participants} isDisabled={isDisabled} isJoinable={isJoinable} />
+        <RoomCard
+          room={room}
+          participants={participants}
+          isDisabled={isDisabled}
+          isJoinable={isJoinable}
+          isListMode={cardListMode}
+        />,
+        !cardListMode || !!group.groupJoin
       );
     });
   }
@@ -103,14 +118,14 @@ const RoomGrid = (props: Props) => {
   }
 
   return (
-    <Box className={classes.root}>
+    <div className={classes.root}>
       {renderGroupHeader()}
 
-      <Box className={classes.grid}>
+      <div className={classes.grid}>
         {renderGroupJoinCard()}
         {renderRoomCards()}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

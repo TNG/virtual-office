@@ -8,12 +8,24 @@ import { OfficeService } from "../../services/OfficeService";
 import { Config } from "../../Config";
 import { Service } from "typedi";
 import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware";
+import { ClientConfigService } from "../../services/ClientConfigService";
+import { Response } from "express-serve-static-core";
+
+function sendNotPersistentResponse(res: Response) {
+  res
+    .json({
+      message:
+        "Please make sure to also update your deployment. Your changes will only persist until the next restart.",
+    })
+    .status(200);
+}
 
 @Service()
 export class AdminRoute implements ExpressRoute {
   constructor(
     private readonly roomsService: MeetingsService,
     private readonly officeService: OfficeService,
+    private readonly clientConfigService: ClientConfigService,
     private config: Config
   ) {}
 
@@ -36,12 +48,17 @@ export class AdminRoute implements ExpressRoute {
         data: req.body,
       });
       this.officeService.replaceOfficeWith(req.body);
-      res
-        .json({
-          message:
-            "Please make sure to also update your deployment. Your changes will only persist until the next restart.",
-        })
-        .status(200);
+
+      sendNotPersistentResponse(res);
+    });
+    router.patch("/clientConfig", loginMiddleware, (req: IBasicAuthedRequest, res) => {
+      logger.info("update clientConfig", {
+        user: req.auth.user,
+        data: req.body,
+      });
+
+      this.clientConfigService.updateClientConfig(req.body);
+      sendNotPersistentResponse(res);
     });
 
     return router;

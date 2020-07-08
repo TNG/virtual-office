@@ -1,11 +1,10 @@
 import React from "react";
-import { Avatar, Tooltip } from "@material-ui/core";
+import { Avatar, Theme, Tooltip, useTheme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import theme from "../theme";
 
-const useStyles = makeStyles<typeof theme>({
+const useStyles = makeStyles<Theme>({
   avatar: {
     flex: "0 0 auto",
     marginLeft: -8,
@@ -46,8 +45,10 @@ const ParticipantAvatar = ({ participant, zIndex }: { participant: MeetingPartic
 
   const initials = getInitialsFrom(participant.username);
   const backgroundColor = stringToColor(participant.username);
-  const textColor = theme.palette.getContrastText(backgroundColor);
   const classes = useStyles();
+  const theme = useTheme();
+  const textColor = theme.palette.getContrastText(backgroundColor);
+
   const avatarStyle = {
     zIndex: zIndex || 1,
     ...(participant.imageUrl ? {} : { color: textColor, backgroundColor }),

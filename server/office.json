@@ -65,6 +65,10 @@
           "href": "http://www.miro.com",
           "text": "Whiteboard",
           "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
+        },
+        {
+          "href": "http://www.google.com",
+          "text": "Random Link"
         }
       ],
       "groupId": "lord",

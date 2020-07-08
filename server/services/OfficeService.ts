@@ -7,6 +7,7 @@ import { Group } from "../express/types/Group";
 import { RoomConfig, Room } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
+import fs from "fs";
 
 export type OfficeChangeListener = (office: Office) => void;
 
@@ -16,7 +17,7 @@ export class OfficeService {
   private groups: Group[] = [];
   private rooms: Room[] = [];
 
-  public constructor(config: Config) {
+  public constructor(private readonly config: Config) {
     this.groups = config.configOptions.groups;
     this.updateRooms(config.configOptions.rooms);
   }
@@ -76,7 +77,17 @@ export class OfficeService {
     this.updateRooms(configOptions.rooms);
     this.groups = configOptions.groups;
 
+    this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();
+  }
+
+  private writeOfficeToFileSystem() {
+    const configFile = this.config.writeOfficeUpdatesToFileSystem && Config.getConfigFile();
+    if (!configFile) {
+      return;
+    }
+
+    fs.writeFileSync(configFile, JSON.stringify({ groups: this.groups, rooms: this.rooms }));
   }
 
   listenOfficeChanges(listener: OfficeChangeListener) {

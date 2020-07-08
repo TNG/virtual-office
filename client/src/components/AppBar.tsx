@@ -21,6 +21,9 @@ import SearchInput from "./SearchInput";
 const TITLE = process.env.REACT_APP_TITLE || "Virtual Office";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  appBar: {
+    background: `${theme.palette.background.default}`,
+  },
   coffee: {
     margin: 0,
   },
@@ -97,7 +100,7 @@ const AppBar = (props: Props) => {
   }
 
   return (
-    <MaterialAppBar position="fixed">
+    <MaterialAppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
           <LocalCafeIcon />

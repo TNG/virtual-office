@@ -140,6 +140,24 @@
         }
       }
     },
+    "/api/clientConfig": {
+      "get": {
+        "summary": "Config for client side rendering",
+        "tags": ["API"],
+        "responses": {
+          "200": {
+            "description": "Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clientConfig"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/zoomus/webhook": {
       "post": {
         "summary": "Webhook for zoom.us calls",
@@ -183,6 +201,34 @@
             "description": "id of the room that should be deleted"
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/api/admin/clientConfig": {
+      "patch": {
+        "summary": "Replace the client config",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clientConfig"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -300,6 +346,23 @@
       }
     },
     "schemas": {
+      "clientConfig": {
+        "properties": {
+          "backgroundUrl": {
+            "type": "string",
+            "description": "URL to a background image, must be publicly accessible",
+            "example": "http://bla.blub/example.png"
+          },
+          "viewMode": {
+            "type": "string",
+            "enum": ["list", "grid"]
+          },
+          "theme": {
+            "type": "string",
+            "enum": ["blue", "yellow"]
+          }
+        }
+      },
       "zoomusEvent": {
         "properties": {
           "event": {

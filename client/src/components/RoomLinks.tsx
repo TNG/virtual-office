@@ -1,20 +1,31 @@
 import React from "react";
 
-import { Box, Link, Typography } from "@material-ui/core";
+import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
+import LinkIcon from "@material-ui/icons/Link";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<Theme, Props>({
+  root: {
+    display: "flex",
+    alignItems: "center",
+  },
   link: {
+    flex: "0 0 auto",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 8,
+    paddingRight: 12,
+    marginTop: 4,
+    marginBottom: 4,
   },
   linkGroup: {
     paddingTop: 4,
-    paddingBottom: 12,
-    paddingLeft: 8,
+    paddingBottom: 4,
+    display: "flex",
+    flexDirection: (props) => (props.isListMode ? "row" : "column"),
+    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+    flexWrap: "wrap",
   },
   icon: {
     width: 24,
@@ -26,10 +37,12 @@ const useStyles = makeStyles({
 
 interface Props {
   links: RoomLink[] | undefined;
+  isListMode: boolean;
 }
 
-const RoomLinks = ({ links }: Props) => {
-  const classes = useStyles();
+const RoomLinks = (props: Props) => {
+  const classes = useStyles(props);
+  const { links } = props;
 
   if (!links || links.length <= 0) {
     return null;
@@ -42,21 +55,25 @@ const RoomLinks = ({ links }: Props) => {
   }, {} as { [group: string]: RoomLink[] });
 
   return (
-    <Box>
+    <div>
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
-        <Box key={group}>
+        <div key={group}>
           <Typography variant="subtitle2">{group}</Typography>
-          <Box className={classes.linkGroup}>
-            {groupLinks.map((link) => (
-              <Link key={link.text} className={classes.link} href={link.href} target="_blank">
-                {link.icon && <img className={classes.icon} src={link.icon} alt={link.text} />}
+          <div className={classes.linkGroup}>
+            {groupLinks.map((link, index) => (
+              <Link key={link.text + index} className={classes.link} href={link.href} target="_blank">
+                {link.icon ? (
+                  <img className={classes.icon} src={link.icon} alt={link.text} />
+                ) : (
+                  <LinkIcon className={classes.icon} />
+                )}
                 <Typography variant="body2">{link.text}</Typography>
               </Link>
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 

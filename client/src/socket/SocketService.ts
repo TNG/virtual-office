@@ -2,6 +2,7 @@ import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
 import { Office } from "../../../server/express/types/Office";
 import { Meeting } from "../../../server/express/types/Meeting";
+import { ClientConfig } from "../../../server/express/types/ClientConfig";
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
@@ -24,7 +25,11 @@ export class SocketService {
     return fromEvent(this.socket, "office");
   }
 
-  public onInit(): Observable<{ office: Office; meetings: Meeting[] }> {
+  public onClientConfig(): Observable<ClientConfig> {
+    return fromEvent(this.socket, "clientConfig");
+  }
+
+  public onInit(): Observable<{ office: Office; meetings: Meeting[]; config: ClientConfig }> {
     return fromEvent(this.socket, "init");
   }
 

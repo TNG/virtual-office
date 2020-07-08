@@ -1,18 +1,17 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Theme, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
 
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import ParticipantAvatar from "./ParticipantAvatar";
-import theme from "../theme";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
 
 const ANONYMOUS_PARTICIPANTS = process.env.REACT_APP_ANONYMOUS_PARTICIPANTS === "true";
-const useStyles = makeStyles<typeof theme>((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,
     cursor: "pointer",
@@ -22,6 +21,14 @@ const useStyles = makeStyles<typeof theme>((theme) => ({
   },
   emptyGroup: {
     color: theme.palette.grey.A200,
+  },
+  userParticipant: {
+    height: 44,
+    display: "flex",
+    alignItems: "center",
+  },
+  anonymousParticipant: {
+    height: 44,
   },
 }));
 
@@ -48,21 +55,21 @@ const RoomParticipants = (props: Props) => {
 
   if (props.participants.length <= 0) {
     return (
-      <Box height={44}>
+      <div className={classes.userParticipant}>
         <Typography className={classes.emptyGroup} variant="body2">
           No one is here
         </Typography>
-      </Box>
+      </div>
     );
   }
 
   if (ANONYMOUS_PARTICIPANTS) {
     return (
-      <Box height={44}>
+      <div className={classes.anonymousParticipant}>
         <Typography variant="body2" className={classes.anonymousParticipantsText}>
           {props.participants.length} participant{props.participants.length > 1 ? "s" : ""}
         </Typography>
-      </Box>
+      </div>
     );
   }
 
@@ -72,7 +79,7 @@ const RoomParticipants = (props: Props) => {
   );
 
   return (
-    <Box>
+    <div>
       <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => props.setShowParticipants(true)}>
         {sortedParticipants.map((participant, index) => (
           <ParticipantAvatar
@@ -93,7 +100,7 @@ const RoomParticipants = (props: Props) => {
       >
         <ParticipantsList participants={filteredParticipants} />
       </Dialog>
-    </Box>
+    </div>
   );
 };
 

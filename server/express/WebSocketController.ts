@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { Config } from "../Config";
 import { KnownUsersService } from "../services/KnownUsersService";
 import { OfficeService } from "../services/OfficeService";
+import { ClientConfigService } from "../services/ClientConfigService";
 
 @Service({ multiple: false })
 export class WebSocketController {
@@ -16,7 +17,8 @@ export class WebSocketController {
     private readonly officeService: OfficeService,
     private readonly meetingsService: MeetingsService,
     private readonly config: Config,
-    private readonly knownUsersService: KnownUsersService
+    private readonly knownUsersService: KnownUsersService,
+    private readonly clientConfigService: ClientConfigService
   ) {}
 
   init(server: Server) {
@@ -27,6 +29,9 @@ export class WebSocketController {
     });
     this.officeService.listenOfficeChanges((office) => {
       this.socket.emit("office", office);
+    });
+    this.clientConfigService.listenClientConfig((config) => {
+      this.socket.emit("clientConfig", config);
     });
   }
 
@@ -50,6 +55,7 @@ export class WebSocketController {
         socket.to(request.id).emit("init", {
           office: this.officeService.getOffice(),
           meetings: this.meetingsService.getAllMeetings(),
+          config: this.clientConfigService.getClientConfig(),
         });
 
         if (currentUser) {
