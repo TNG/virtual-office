@@ -2,8 +2,8 @@
   "name": "virtual-office",
   "version": "0.1.0",
   "devDependencies": {
-    "husky": "^4.2.3",
-    "prettier": "^2.0.2"
+    "husky": "^4.2.5",
+    "prettier": "^2.0.5"
   },
   "scripts": {
     "format": "prettier --write \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
