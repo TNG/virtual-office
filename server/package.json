@@ -29,7 +29,7 @@
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.0.7",
     "typedi": "^0.8.0",
-    "uuid": "^7.0.3"
+    "uuid": "^8.2.0"
   },
   "engines": {
     "node": "10.x",
