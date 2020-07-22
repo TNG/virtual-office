@@ -13,6 +13,13 @@ Virtual Office tries to give you transparency on what Zoom.us rooms are occupied
 * Uses [Zoom.us Webhooks](https://marketplace.zoom.us/docs/guides/tools-resources/webhooks) to give a real-time status update on who currently participates in what Zoom.us room
 * Login via Slack
 
+At TNG we've also hosted a big company internal event with 450 participants using Virtual Office. If you're interested,
+you can find our experiences in two articles (German only):
+
+* [Strategische Firmenevents zu Zeiten von Corona – Virtueller Sommerretreat 2020 bei TNG](https://www.linkedin.com/pulse/strategische-firmenevents-zu-zeiten-von-corona-2020-bei-mueller)
+* [Strategische Firmenevents auch remote technisch richtig gestalten – Virtueller Sommerretreat 2020 bei TNG](https://www.linkedin.com/pulse/strategische-firmenevents-auch-remote-technisch-richtig-mueller)
+
+
 ### Installation
 
 0. Checkout the repository.
