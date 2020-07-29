@@ -1,17 +1,17 @@
 {
   "groups": [
     {
-      "id": "star_wars",
-      "name": "Star Wars",
+      "id": "coffee_rooms",
+      "name": "Coffee Break",
       "groupJoin": {
         "minimumParticipantCount": 3,
-        "title": "Coffee Cantina",
+        "title": "Coffee Rooms",
         "description": "You can randomly join one of our coffee rooms. Try it out and meet interesting new people! :)"
       }
     },
     {
-      "id": "lord",
-      "name": "Lord of the Rings"
+      "id": "workshops",
+      "name": "Workshops"
     }
   ],
   "rooms": [
@@ -23,75 +23,53 @@
       "links": [
         {
           "href": "http://www.google.de",
-          "text": "Google",
-          "icon": "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+          "text": "Chat",
+          "icon": "https://www.clipartmax.com/png/small/199-1998476_slack-icon-slack-logo.png"
         }
       ],
       "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
     },
     {
       "meetingId": "2",
-      "name": "Alderaan",
+      "name": "Coffee Table (1)",
       "joinUrl": "https://zoom.us/j/2",
-      "links": [
-        {
-          "href": "https://www.atlassian.com",
-          "text": "Issue Tracker",
-          "icon": "https://pbs.twimg.com/profile_images/1026572523230515200/Qifq4jpS_400x400.jpg"
-        },
-        {
-          "href": "http://www.miro.com",
-          "text": "Whiteboard",
-          "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
-        }
-      ],
-      "groupId": "star_wars",
-      "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+      "groupId": "coffee_rooms",
+      "icon": "https://icon-library.com/images/coffee-icon/coffee-icon-4.jpg"
     },
     {
       "meetingId": "3",
-      "name": "Jakku",
+      "name": "Coffee Table (2)",
       "joinUrl": "https://zoom.us/j/3",
-      "links": [],
-      "groupId": "star_wars",
-      "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+      "groupId": "coffee_rooms",
+      "icon": "https://icon-library.com/images/coffee-icon/coffee-icon-4.jpg"
     },
     {
       "meetingId": "4",
-      "name": "Mount Doom",
+      "name": "Introduction to React",
       "joinUrl": "https://zoom.us/j/4",
       "links": [
         {
           "href": "http://www.miro.com",
           "text": "Whiteboard",
           "icon": "https://avatars.slack-edge.com/2019-03-07/570928183895_30458630978ac1eccde9_512.png"
-        },
-        {
-          "href": "http://www.google.com",
-          "text": "Random Link"
         }
       ],
-      "groupId": "lord",
-      "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+      "groupId": "workshops",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png"
     },
     {
       "meetingId": "5",
-      "name": "Prancing Pony",
+      "name": "Node.js Deep Dive",
       "joinUrl": "https://zoom.us/j/5",
       "links": [
         {
-          "href": "https://www.atlassian.com",
-          "text": "Issue Tracker",
-          "icon": "https://pbs.twimg.com/profile_images/1026572523230515200/Qifq4jpS_400x400.jpg"
-        },
-        {
           "href": "https://www.invisionapp.com",
-          "text": "Wireframes",
-          "icon": "https://cdn.worldvectorlogo.com/logos/invision.svg"
+          "text": "#nodejs-channel",
+          "icon": "https://www.clipartmax.com/png/small/199-1998476_slack-icon-slack-logo.png"
         }
       ],
-      "groupId": "lord",
-      "icon": "https://cdn.pixabay.com/photo/2015/11/03/09/03/meeting-1019995_960_720.jpg"
+      "groupId": "workshops",
+      "icon": "https://firebearstudio.com/blog/wp-content/uploads/2015/10/Node-e1443953851722.png"
     }
   ]
 }
