@@ -1,5 +1,5 @@
 module.exports = {
-  projects: ["src"],
+  projects: ["<rootDir>"],
   reporters: ["default", "jest-junit"],
   coverageDirectory: "coverage",
   coveragePathIgnorePatterns: ["/node_modules/", "/build/"],
