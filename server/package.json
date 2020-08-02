@@ -45,7 +45,7 @@
     "@types/socket.io": "2.1.10",
     "@types/supertest": "2.0.10",
     "diff": "4.0.2",
-    "jest": "26.1.0",
+    "jest": "26.2.1",
     "jest-junit": "11.1.0",
     "nodemon": "2.0.4",
     "supertest": "4.0.2",
