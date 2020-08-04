@@ -54,12 +54,14 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   content: {
     flex: "0 1 100%",
-    paddingTop: 0,
-    paddingBottom: 0,
+    padding: "0 8px",
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
     justifyContent: "space-between",
+    "&:last-child": {
+      padding: "0 8px",
+    },
 
     [theme.breakpoints.up("sm")]: {
       alignItems: (props) => (props.isListMode ? "center" : "stretch"),
@@ -140,7 +142,7 @@ const RoomCard = (props: Props) => {
         {participantsView}
       </CardContent>
 
-      {joinUrlView ? <CardActions className={classes.actions}>{joinUrlView}</CardActions> : ""}
+      <CardActions className={classes.actions}>{joinUrlView}</CardActions>
     </div>
   );
 
