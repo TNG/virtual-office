@@ -66,9 +66,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
     },
   },
-  links: {
-    flex: "1 1 auto",
-  },
   participants: {
     flex: "0 0 auto",
     marginRight: 8,
@@ -122,17 +119,6 @@ const RoomCard = (props: Props) => {
     );
   }
 
-  function renderDetails() {
-    return (
-      !isDisabled &&
-      participants.length > 0 && (
-        <Button size="small" color="secondary" variant="text" onClick={() => setParticipantsOpen(true)}>
-          Details
-        </Button>
-      )
-    );
-  }
-
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const participantsView = (!isDisabled || isJoinable) && (
     <div className={classes.participants}>
@@ -146,23 +132,15 @@ const RoomCard = (props: Props) => {
   );
 
   const joinUrlView = renderJoinUrl();
-  const detailsView = renderDetails();
 
-  const bodyView = (roomLinksView || participantsView || joinUrlView || detailsView) && (
+  const bodyView = (roomLinksView || participantsView || joinUrlView) && (
     <div className={classes.body}>
       <CardContent className={classes.content}>
         {roomLinksView}
         {participantsView}
       </CardContent>
 
-      {joinUrlView || detailsView ? (
-        <CardActions className={classes.actions}>
-          {joinUrlView}
-          {detailsView}
-        </CardActions>
-      ) : (
-        ""
-      )}
+      {joinUrlView ? <CardActions className={classes.actions}>{joinUrlView}</CardActions> : ""}
     </div>
   );
 
