@@ -22,7 +22,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     alignItems: "stretch",
-    opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   card: {
     width: "100%",

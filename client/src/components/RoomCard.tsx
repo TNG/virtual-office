@@ -13,6 +13,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: 12,
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   border: {
     border: "3px solid rgb(44, 106, 168)",
