@@ -3,7 +3,7 @@
     "target": "es2017",
     "jsx": "preserve",
     "allowJs": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
@@ -19,8 +19,7 @@
     "rootDir": "..",
     "types": ["jest", "node"],
     "lib": ["esnext"],
-    "strict": true,
-    "noEmit": true
+    "strict": true
   },
   "include": ["**/*.ts", "types/*.ts", "*.json"],
   "exclude": ["node_modules"]
