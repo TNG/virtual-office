@@ -13,6 +13,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: 12,
+    height: (props) => (props.fillHeight ? "100%" : undefined),
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   border: {
@@ -90,6 +91,7 @@ interface Props {
   isDisabled: boolean;
   isJoinable: boolean;
   isListMode: boolean;
+  fillHeight?: boolean;
 }
 
 const RoomCard = (props: Props) => {
@@ -153,10 +155,14 @@ const RoomCard = (props: Props) => {
         {participantsView}
       </CardContent>
 
-      <CardActions className={classes.actions}>
-        {joinUrlView}
-        {detailsView}
-      </CardActions>
+      {joinUrlView || detailsView ? (
+        <CardActions className={classes.actions}>
+          {joinUrlView}
+          {detailsView}
+        </CardActions>
+      ) : (
+        ""
+      )}
     </div>
   );
 

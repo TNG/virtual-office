@@ -19,6 +19,9 @@ import { Office } from "../../../server/express/types/Office";
 import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
+import ScheduleGrid from "./ScheduleGrid";
+import { Schedule } from "../../../server/express/types/Schedule";
+import { search } from "../search";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -85,7 +88,7 @@ const Dashboard = () => {
   const context = useContext(SocketContext);
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [officeState, setOfficeState] = useState({
-    office: { rooms: [], groups: [] },
+    office: { rooms: [], groups: [], schedule: undefined },
     potentiallyDisabledGroups: [],
   } as OfficeState);
   const [meetings, setMeetings] = useState([] as Meeting[]);
@@ -129,11 +132,19 @@ const Dashboard = () => {
   }, [officeState]);
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
-  const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
-  const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
-  const hasNotExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => !group.isExpired);
+
+  function renderSchedule(schedule: Schedule) {
+    const { rooms } = search(searchText, officeState.office, meetingsIndexed);
+    const roomsIndexed = keyBy(rooms, (room) => room.roomId);
+
+    return <ScheduleGrid meetings={meetingsIndexed} rooms={roomsIndexed} schedule={schedule} />;
+  }
 
   function renderRoomGrid(viewMode: string) {
+    const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
+    const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
+    const hasNotExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => !group.isExpired);
+
     return (
       <Fade in={initialLoadCompleted}>
         <div>
@@ -181,7 +192,11 @@ const Dashboard = () => {
   }
 
   const content = initialLoadCompleted ? (
-    renderRoomGrid(config.viewMode)
+    officeState.office.schedule ? (
+      renderSchedule(officeState.office.schedule)
+    ) : (
+      renderRoomGrid(config.viewMode)
+    )
   ) : (
     <Box className={classes.loading}>
       <CircularProgress color="secondary" size="100px" />
