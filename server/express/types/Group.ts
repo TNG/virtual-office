@@ -13,3 +13,9 @@ export interface Group {
   joinableAfter?: string;
   groupJoin?: GroupJoinConfig;
 }
+
+export interface GroupWithGroupJoin extends Group {
+  groupJoin: GroupJoinConfig;
+}
+
+export const hasGroupJoin = (group: Group): group is GroupWithGroupJoin => !!group.groupJoin;

@@ -54,7 +54,7 @@ export class ApiRoute implements ExpressRoute {
       const room = this.groupJoinService.joinRoomFor(req.params.groupId);
       if (!room) {
         res.json({ error: "could not find a room to join for the group" }).status(404);
-      } else {
+      } else if (room.joinUrl) {
         res.redirect(room.joinUrl);
       }
     });

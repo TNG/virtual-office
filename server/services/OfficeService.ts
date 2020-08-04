@@ -37,7 +37,7 @@ export class OfficeService {
     return this.rooms.filter((room) => room.meetingId === meetingId);
   }
 
-  getRoom(roomId: string): Room {
+  getRoom(roomId: string): Room | undefined {
     return this.rooms.find((room) => room.roomId === roomId);
   }
 

@@ -21,7 +21,7 @@ interface ZoomusParticipant {
 
 export interface ZoomUsEvent {
   event: string;
-  traceId;
+  traceId: string;
   payload: {
     object: {
       id: string;

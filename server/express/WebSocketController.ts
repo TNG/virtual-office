@@ -25,13 +25,13 @@ export class WebSocketController {
     this.socket = this.createSocket(server);
 
     this.meetingsService.listenParticipantsChange((event) => {
-      this.socket.emit("notify", event);
+      this.socket && this.socket.emit("notify", event);
     });
     this.officeService.listenOfficeChanges((office) => {
-      this.socket.emit("office", office);
+      this.socket && this.socket.emit("office", office);
     });
     this.clientConfigService.listenClientConfig((config) => {
-      this.socket.emit("clientConfig", config);
+      this.socket && this.socket.emit("clientConfig", config);
     });
   }
 
@@ -46,7 +46,7 @@ export class WebSocketController {
     const secureCookieParser = cookieParser(this.config.sessionSecret);
 
     socket.on("connection", (request: any) => {
-      secureCookieParser(request.handshake, {}, () => {});
+      secureCookieParser(request.handshake, {} as any, () => {});
       const currentUser = request.handshake.signedCookies.currentUser;
       if (!currentUser && !this.config.disableAuth) {
         socket.to(request.id).emit("unauthenticated");

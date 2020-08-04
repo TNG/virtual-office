@@ -48,7 +48,7 @@ describe("GroupJoinService", () => {
     return range(count).map(() => ({} as MeetingParticipant));
   }
 
-  let clock: InstalledClock<any>;
+  let clock: InstalledClock;
 
   afterEach(() => {
     clock.uninstall();

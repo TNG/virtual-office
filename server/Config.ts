@@ -59,7 +59,7 @@ export class Config {
     };
   }
 
-  public static getConfigFile(): string | undefined {
+  public static getConfigFile(): string {
     return process.env.CONFIG_LOCATION || `${findRootDir()}/server/config.json`;
   }
 

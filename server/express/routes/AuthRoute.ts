@@ -42,7 +42,7 @@ export class AuthRoute implements ExpressRoute {
           callbackURL: slackConfig.callbackURL,
           scope: ["identity.basic", "identity.email", "identity.avatar"],
         },
-        (accessToken, refreshToken, profile, cb) => {
+        (accessToken: string, refreshToken: string, profile: any, cb: any) => {
           const user = adaptSlackUser(profile);
           return cb(undefined, user);
         }

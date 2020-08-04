@@ -16,10 +16,12 @@ export default function ensureLoggedIn(req: Request, res: Response, next: NextFu
     next("router");
     return;
   }
-  (req as AuthenticatedRequest).currentUser = loginUser;
+  if (loginUser) {
+    (req as AuthenticatedRequest).currentUser = loginUser;
+  }
   next();
 }
 
 export interface AuthenticatedRequest extends Request {
-  currentUser: User;
+  currentUser?: User;
 }

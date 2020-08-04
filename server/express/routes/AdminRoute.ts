@@ -1,5 +1,3 @@
-import { IBasicAuthedRequest } from "express-basic-auth";
-
 import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import { logger } from "../../log";
@@ -42,7 +40,7 @@ export class AdminRoute implements ExpressRoute {
       this.roomsService.leaveRoom(req.params.roomId, req.params.userId);
       res.sendStatus(200);
     });
-    router.post("/replaceOffice", loginMiddleware, (req: IBasicAuthedRequest, res) => {
+    router.post("/replaceOffice", loginMiddleware, (req: any, res) => {
       logger.info("replacing office", {
         user: req.auth.user,
         data: req.body,
@@ -51,7 +49,7 @@ export class AdminRoute implements ExpressRoute {
 
       sendNotPersistentResponse(res);
     });
-    router.patch("/clientConfig", loginMiddleware, (req: IBasicAuthedRequest, res) => {
+    router.patch("/clientConfig", loginMiddleware, (req: any, res) => {
       logger.info("update clientConfig", {
         user: req.auth.user,
         data: req.body,

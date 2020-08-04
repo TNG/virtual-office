@@ -5,7 +5,7 @@ import { Room } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 import { logger } from "../log";
-import { Group } from "../express/types/Group";
+import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/Group";
 
 function randomRoomIn(rooms: Room[]): Room | undefined {
   const entry = random(0, rooms.length - 1);
@@ -39,7 +39,7 @@ export class GroupJoinService {
   joinRoomFor(groupId: string): Room | undefined {
     const office = this.officeService.getOffice();
     const group = office.groups.find((group) => group.id === groupId);
-    if (!group || !group.groupJoin) {
+    if (!group || !hasGroupJoin(group)) {
       logger.info(`joinRoomFor(groupId=${groupId}) - cannot find group`);
       return undefined;
     }
@@ -61,7 +61,7 @@ export class GroupJoinService {
     return room;
   }
 
-  private chooseRoom(group: Group, groupRooms: Room[]): Room | undefined {
+  private chooseRoom(group: GroupWithGroupJoin, groupRooms: Room[]): Room | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
@@ -70,7 +70,7 @@ export class GroupJoinService {
     logger.info(
       `chooseRoom(group=${group.id}) - ${JSON.stringify({
         notEmptyRooms: notEmptyRooms.length,
-        roomWithMinimum: roomWithMinimum?.id,
+        roomWithMinimum: roomWithMinimum?.roomId,
         availableMinimumCount,
         roomsWithMinimumParticipantCount: roomsWithMinimumParticipantCount.map((room) => room.meetingId),
       })}`

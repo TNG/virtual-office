@@ -6,14 +6,15 @@ import { MeetingEvent } from "../express/types/MeetingEvent";
 import { logger } from "../log";
 import { Block, KnownBlock } from "@slack/types";
 import { OfficeService } from "./OfficeService";
-import { Room } from "../express/types/Room";
+import { hasSlackNotifications, Room } from "../express/types/Room";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { MarkRequired } from "ts-essentials";
 
 const LOOP_INTERVAL = 30 * 1000;
 
 @Service({ multiple: false })
 export class SlackBotService {
-  private readonly slackClient;
+  private readonly slackClient: WebClient | undefined;
 
   private lastNotificationTime: { [roomId: string]: number } = {};
 
@@ -76,7 +77,7 @@ export class SlackBotService {
     const rooms = this.officeService.getOffice().rooms;
     rooms.forEach((room) => {
       const participants = this.meetingsService.getParticipantsIn(room.meetingId);
-      if (room.slackNotification && participants.length > 0 && this.shouldSendRecurringNotification(room)) {
+      if (hasSlackNotifications(room) && participants.length > 0 && this.shouldSendRecurringNotification(room)) {
         this.sendParticipantUpdate(room, participants);
       }
     });
@@ -87,7 +88,7 @@ export class SlackBotService {
       .filter((participant) => participant.imageUrl)
       .map((participant) => ({
         type: "image",
-        image_url: participant.imageUrl,
+        image_url: participant.imageUrl || "",
         alt_text: participant.username,
       }));
 
@@ -116,8 +117,13 @@ export class SlackBotService {
     this.lastNotificationTime[room.meetingId] = Date.now();
 
     (async () => {
+      if (!this.slackClient || !room.slackNotification) {
+        return;
+      }
+
       const res = await this.slackClient.chat.postMessage({
         channel: room.slackNotification.channelId,
+        text: "",
         blocks,
       });
 
@@ -126,7 +132,7 @@ export class SlackBotService {
     })();
   }
 
-  private shouldSendRecurringNotification(room: Room) {
+  private shouldSendRecurringNotification(room: MarkRequired<Room, "slackNotification">) {
     return (
       room.slackNotification.notificationInterval &&
       (!this.lastNotificationTime[room.meetingId] ||

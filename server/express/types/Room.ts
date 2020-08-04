@@ -1,4 +1,5 @@
 import { RoomLink } from "./RoomLink";
+import { MarkRequired } from "ts-essentials";
 
 interface RoomWithoutId {
   meetingId: string;
@@ -22,3 +23,6 @@ export interface RoomConfig extends RoomWithoutId {
 export interface Room extends RoomWithoutId {
   roomId: string;
 }
+
+export const hasSlackNotifications = (room: Room): room is MarkRequired<Room, "slackNotification"> =>
+  !!room.slackNotification;
