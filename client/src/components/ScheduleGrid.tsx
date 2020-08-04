@@ -83,10 +83,11 @@ interface Props {
   schedule: Schedule;
   rooms: RoomsIndexed;
   meetings: MeetingsIndexed;
+  isListMode: boolean;
 }
 
 const ScheduleGrid = (props: Props) => {
-  const { schedule, rooms, meetings } = props;
+  const { schedule, rooms, meetings, isListMode } = props;
   const classes = useStyles(schedule);
 
   function renderTrackHeader() {
@@ -151,7 +152,7 @@ const ScheduleGrid = (props: Props) => {
           participants={participants}
           isDisabled={startTime > now || endTime < now}
           isJoinable={startTime < now && endTime > now}
-          isListMode={false}
+          isListMode={isListMode}
           fillHeight={true}
         />
       );

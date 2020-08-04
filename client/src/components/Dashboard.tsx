@@ -133,11 +133,18 @@ const Dashboard = () => {
 
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
 
-  function renderSchedule(schedule: Schedule) {
+  function renderSchedule(schedule: Schedule, viewMode: string) {
     const { rooms } = search(searchText, officeState.office, meetingsIndexed);
     const roomsIndexed = keyBy(rooms, (room) => room.roomId);
 
-    return <ScheduleGrid meetings={meetingsIndexed} rooms={roomsIndexed} schedule={schedule} />;
+    return (
+      <ScheduleGrid
+        meetings={meetingsIndexed}
+        rooms={roomsIndexed}
+        schedule={schedule}
+        isListMode={viewMode === "list"}
+      />
+    );
   }
 
   function renderRoomGrid(viewMode: string) {
@@ -193,7 +200,7 @@ const Dashboard = () => {
 
   const content = initialLoadCompleted ? (
     officeState.office.schedule ? (
-      renderSchedule(officeState.office.schedule)
+      renderSchedule(officeState.office.schedule, config.viewMode)
     ) : (
       renderRoomGrid(config.viewMode)
     )

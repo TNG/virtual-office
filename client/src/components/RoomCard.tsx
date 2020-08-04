@@ -20,7 +20,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     border: "3px solid rgb(44, 106, 168)",
   },
   header: {
-    flex: "1 1 auto",
+    flex: "0 0 auto",
     padding: 0,
     minHeight: 40,
     alignItems: "flex-start",
@@ -49,7 +49,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 
     [theme.breakpoints.up("sm")]: {
       flexDirection: (props) => (props.isListMode ? "row" : "column"),
-      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+      alignItems: (props) => (props.isListMode ? "flex-end" : "stretch"),
     },
   },
   content: {
@@ -58,7 +58,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
-    justifyContent: "space-between",
+    justifyContent: (props) => (props.isListMode ? "space-between" : "flex-end"),
     "&:last-child": {
       padding: "0 8px",
     },
