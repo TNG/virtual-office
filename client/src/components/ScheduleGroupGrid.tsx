@@ -1,5 +1,5 @@
 import React from "react";
-import { Theme } from "@material-ui/core";
+import { Card, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
@@ -11,8 +11,13 @@ import { MeetingParticipant } from "../../../server/express/types/MeetingPartici
 import { partition } from "lodash";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
+  root: {
+    marginLeft: -8,
+    marginRight: -8,
+    padding: 4,
+  },
   title: {
-    color: "#fff",
+    color: "#000",
     margin: 12,
     marginTop: 24,
     padding: 0,
@@ -26,7 +31,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   card: {
     width: "100%",
     flex: "0 0 auto",
-    padding: 8,
+    padding: 4,
     boxSizing: "border-box",
   },
   responsiveCard: {
@@ -43,6 +48,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       width: "25%",
     },
   },
+  groupHeaderCard: {
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
+  },
 }));
 
 interface Props {
@@ -54,7 +62,7 @@ interface Props {
   isListMode: boolean;
 }
 
-const RoomGrid = (props: Props) => {
+const ScheduleGroupGrid = (props: Props) => {
   const { group, rooms, meetings, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
@@ -99,7 +107,7 @@ const RoomGrid = (props: Props) => {
           isJoinable={isJoinable}
           isListMode={isListMode}
         />,
-        !isListMode || !!group.groupJoin
+        true
       );
     });
   }
@@ -107,18 +115,28 @@ const RoomGrid = (props: Props) => {
   function renderGroupJoinCard() {
     return (
       group.groupJoin &&
-      renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} isJoinable={isJoinable} />)
+      renderGridCard(
+        `group-join-${group.id}`,
+        <GroupJoinCard group={group} isJoinable={isJoinable} isDisabled={isDisabled} />
+      )
     );
   }
 
   function renderGroupHeader() {
-    return group.name && <h2 className={`${classes.title} ${isDisabled ? classes.hidden : ""}`}>{group.name}</h2>;
+    return (
+      group.name && (
+        <div className={`${classes.card} ${classes.responsiveCard}`}>
+          <Card className={`${classes.groupHeaderCard}`}>
+            <CardHeader title={<Typography variant="h5">{group.name}</Typography>} />
+          </Card>
+        </div>
+      )
+    );
   }
 
   return (
     <div className={classes.root}>
       {renderGroupHeader()}
-
       <div className={classes.grid}>
         {renderGroupJoinCard()}
         {renderRoomCards()}
@@ -127,4 +145,4 @@ const RoomGrid = (props: Props) => {
   );
 };
 
-export default RoomGrid;
+export default ScheduleGroupGrid;

@@ -13,7 +13,7 @@ import RoomGrid from "./RoomGrid";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disabledGroups";
-import { selectGroupsWithRooms } from "../selectGroupsWithRooms";
+import { GroupWithRooms, selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
 import { Office } from "../../../server/express/types/Office";
 import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
@@ -137,10 +137,14 @@ const Dashboard = () => {
     const { rooms } = search(searchText, officeState.office, meetingsIndexed);
     const roomsIndexed = keyBy(rooms, (room) => room.roomId);
 
+    const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
+    const groupsWithRoomsIndexed = keyBy<GroupWithRooms>(groupsWithRooms, ({ group }) => group.id);
+
     return (
       <ScheduleGrid
         meetings={meetingsIndexed}
         rooms={roomsIndexed}
+        groupsWithRooms={groupsWithRoomsIndexed}
         schedule={schedule}
         isListMode={viewMode === "list"}
       />

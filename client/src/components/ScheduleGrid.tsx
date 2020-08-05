@@ -5,8 +5,10 @@ import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { Track, Schedule } from "../../../server/express/types/Schedule";
+import { Schedule, Track } from "../../../server/express/types/Schedule";
 import { DateTime } from "luxon";
+import { GroupWithRooms } from "../selectGroupsWithRooms";
+import ScheduleGroupGrid from "./ScheduleGroupGrid";
 
 const calculateGridTemplateRows = ({ sessions }: Schedule) => {
   const earliestStart = sessions
@@ -70,7 +72,7 @@ const useStyles = makeStyles<Theme, Schedule>((theme) => ({
     fontSize: 20,
   },
   card: {
-    padding: 8,
+    padding: 4,
     boxSizing: "border-box",
   },
 }));
@@ -79,15 +81,20 @@ export interface RoomsIndexed {
   [roomId: string]: Room;
 }
 
+export interface GroupsWithRoomsIndexed {
+  [groupId: string]: GroupWithRooms;
+}
+
 interface Props {
   schedule: Schedule;
   rooms: RoomsIndexed;
   meetings: MeetingsIndexed;
+  groupsWithRooms: GroupsWithRoomsIndexed;
   isListMode: boolean;
 }
 
 const ScheduleGrid = (props: Props) => {
-  const { schedule, rooms, meetings, isListMode } = props;
+  const { schedule, rooms, groupsWithRooms, meetings, isListMode } = props;
   const classes = useStyles(schedule);
 
   function renderTrackHeader() {
@@ -133,29 +140,58 @@ const ScheduleGrid = (props: Props) => {
   }
 
   function renderSchedule() {
-    const sessionsWithRooms = schedule.sessions.filter(({ roomId }) => rooms[roomId]);
-    return sessionsWithRooms.map(({ roomId, start, end, trackId }) => {
-      const room = rooms[roomId];
-      const participants = participantsInMeeting(room.meetingId);
-
+    const sessionsWithRoomsOrGroups = schedule.sessions.filter(
+      ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
+    );
+    return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId }) => {
       const startTime = DateTime.fromFormat(start, "HH:mm");
       const endTime = DateTime.fromFormat(end, "HH:mm");
       const now = DateTime.local();
 
-      return renderGridCard(
-        room.roomId,
-        start,
-        end,
-        trackId ? [trackId] : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id],
-        <RoomCard
-          room={{ ...room, subtitle: `(${start} - ${end}) ${room.subtitle || ""}` }}
-          participants={participants}
-          isDisabled={startTime > now || endTime < now}
-          isJoinable={startTime < now && endTime > now}
-          isListMode={isListMode}
-          fillHeight={true}
-        />
-      );
+      const tracks: [string, string?] = trackId
+        ? [trackId]
+        : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id];
+
+      const isDisabled = startTime > now || endTime < now;
+      const isJoinable = startTime < now && endTime > now;
+      if (roomId) {
+        const room = rooms[roomId];
+        const participants = participantsInMeeting(room.meetingId);
+
+        return renderGridCard(
+          roomId,
+          start,
+          end,
+          tracks,
+          <RoomCard
+            room={{ ...room, subtitle: `(${start} - ${end}) ${room.subtitle || ""}` }}
+            participants={participants}
+            isDisabled={isDisabled}
+            isJoinable={isJoinable}
+            isListMode={isListMode}
+            fillHeight={true}
+          />
+        );
+      } else if (groupId) {
+        const { group, rooms } = groupsWithRooms[groupId];
+
+        return renderGridCard(
+          groupId,
+          start,
+          end,
+          tracks,
+          <ScheduleGroupGrid
+            key={groupId}
+            group={group}
+            rooms={rooms}
+            meetings={meetings}
+            isDisabled={isDisabled}
+            isJoinable={isJoinable}
+            isListMode={isListMode}
+          />
+        );
+      }
+      return "";
     });
   }
 

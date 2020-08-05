@@ -6,7 +6,7 @@ import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import RoomIcon from "@material-ui/icons/PersonalVideo";
-import { ExpandMore, ExpandLess } from "@material-ui/icons";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {

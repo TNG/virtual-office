@@ -9,8 +9,9 @@ export interface Track {
 }
 
 export interface Session {
-  roomId: string;
-  trackId: string;
+  roomId?: string;
+  groupId?: string;
+  trackId?: string;
   start: string;
   end: string;
 }

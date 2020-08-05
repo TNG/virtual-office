@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
-const useStyles = makeStyles<Theme>((theme) => ({
+const useStyles = makeStyles<Theme, { isDisabled?: boolean }>((theme) => ({
   root: {
     flexDirection: "column",
     display: "flex",
@@ -13,6 +13,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
     [theme.breakpoints.up("sm")]: {
       flexDirection: "row",
     },
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   header: {
     flex: "0 0 auto",
@@ -43,10 +44,11 @@ const useStyles = makeStyles<Theme>((theme) => ({
 interface Props {
   group: Group;
   isJoinable: boolean;
+  isDisabled?: boolean;
 }
 
-const GroupJoinCard = ({ group, isJoinable }: Props) => {
-  const classes = useStyles();
+const GroupJoinCard = ({ group, isJoinable, isDisabled }: Props) => {
+  const classes = useStyles({ isDisabled });
 
   if (!group.groupJoin) {
     return null;
