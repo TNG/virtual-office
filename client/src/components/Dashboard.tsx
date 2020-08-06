@@ -55,6 +55,9 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
       paddingTop: 64,
     },
     padding: 12,
+    [theme.breakpoints.up("xl")]: {
+      maxWidth: 1500,
+    },
   },
   toggleGroupsButton: {
     textAlign: "center",
