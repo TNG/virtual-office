@@ -143,7 +143,7 @@ const ScheduleGrid = (props: Props) => {
     const sessionsWithRoomsOrGroups = schedule.sessions.filter(
       ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
     );
-    return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId }) => {
+    return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId, alwaysActive }) => {
       const startTime = DateTime.fromFormat(start, "HH:mm").minus({ minute: 5 });
       const endTime = DateTime.fromFormat(end, "HH:mm");
       const now = DateTime.local();
@@ -152,8 +152,9 @@ const ScheduleGrid = (props: Props) => {
         ? [trackId]
         : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id];
 
-      const isDisabled = startTime > now || endTime < now;
-      const isJoinable = startTime < now && endTime > now;
+      const isDisabled = !alwaysActive && (startTime > now || endTime < now);
+      const isJoinable = alwaysActive || (startTime < now && endTime > now);
+
       if (roomId) {
         const room = rooms[roomId];
         const participants = participantsInMeeting(room.meetingId);

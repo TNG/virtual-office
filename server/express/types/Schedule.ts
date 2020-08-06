@@ -14,4 +14,5 @@ export interface Session {
   trackId?: string;
   start: string;
   end: string;
+  alwaysActive?: boolean;
 }
