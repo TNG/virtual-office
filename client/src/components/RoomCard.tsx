@@ -5,7 +5,7 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import RoomIcon from "@material-ui/icons/PersonalVideo";
+import RoomIcon from "@material-ui/icons/People";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -54,7 +54,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   content: {
     flex: "0 1 100%",
-    padding: "0 8px",
+    padding: "4px 8px 0 8px",
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
@@ -74,6 +74,13 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   avatarGroup: {
     marginLeft: 8,
+  },
+  headerAvatar: {
+    height: 40,
+  },
+  roomIcon: {
+    height: 40,
+    width: 40,
   },
   actions: {
     height: 44,
@@ -149,8 +156,14 @@ const RoomCard = (props: Props) => {
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        classes={{ root: classes.header, content: classes.headerContent }}
-        avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
+        classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
+        avatar={
+          room.icon ? (
+            <Avatar variant="square" src={room.icon} />
+          ) : (
+            <RoomIcon className={classes.roomIcon} color="action" />
+          )
+        }
         title={<Typography variant="h5">{room.name}</Typography>}
         onClick={() => setCollapseSubtitle(!collapseSubtitle)}
         subheader={
