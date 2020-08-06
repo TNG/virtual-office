@@ -125,7 +125,7 @@ const ScheduleGroupGrid = (props: Props) => {
   function renderGroupHeader() {
     return (
       group.name && (
-        <div className={`${classes.card} ${classes.responsiveCard}`}>
+        <div className={`${classes.card}`}>
           <Card className={`${classes.groupHeaderCard}`}>
             <CardHeader title={<Typography variant="h5">{group.name}</Typography>} />
           </Card>
