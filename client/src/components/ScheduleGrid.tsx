@@ -144,7 +144,7 @@ const ScheduleGrid = (props: Props) => {
       ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
     );
     return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId }) => {
-      const startTime = DateTime.fromFormat(start, "HH:mm");
+      const startTime = DateTime.fromFormat(start, "HH:mm").minus({ minute: 5 });
       const endTime = DateTime.fromFormat(end, "HH:mm");
       const now = DateTime.local();
 
