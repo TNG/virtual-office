@@ -8,6 +8,7 @@ import { RoomConfig, Room } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
+import { Schedule } from "../express/types/Schedule";
 
 export type OfficeChangeListener = (office: Office) => void;
 
@@ -16,16 +17,19 @@ export class OfficeService {
   private officeChangeListeners: OfficeChangeListener[] = [];
   private groups: Group[] = [];
   private rooms: Room[] = [];
+  private schedule: Schedule | undefined = undefined;
 
   public constructor(private readonly config: Config) {
     this.groups = config.configOptions.groups;
     this.updateRooms(config.configOptions.rooms);
+    this.schedule = config.configOptions.schedule;
   }
 
   getOffice(): Office {
     return {
       groups: this.groups,
       rooms: this.rooms,
+      schedule: this.schedule,
     };
   }
 
@@ -76,6 +80,7 @@ export class OfficeService {
   replaceOfficeWith(configOptions: ConfigOptions) {
     this.updateRooms(configOptions.rooms);
     this.groups = configOptions.groups;
+    this.schedule = configOptions.schedule;
 
     this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();

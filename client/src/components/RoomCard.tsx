@@ -5,20 +5,22 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import RoomIcon from "@material-ui/icons/PersonalVideo";
-import { ExpandMore, ExpandLess } from "@material-ui/icons";
+import RoomIcon from "@material-ui/icons/People";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     padding: 12,
+    height: (props) => (props.fillHeight ? "100%" : undefined),
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
   border: {
     border: "3px solid rgb(44, 106, 168)",
   },
   header: {
-    flex: "1 1 auto",
+    flex: "0 0 auto",
     padding: 0,
     minHeight: 40,
     alignItems: "flex-start",
@@ -47,25 +49,24 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 
     [theme.breakpoints.up("sm")]: {
       flexDirection: (props) => (props.isListMode ? "row" : "column"),
-      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+      alignItems: (props) => (props.isListMode ? "flex-end" : "stretch"),
     },
   },
   content: {
     flex: "0 1 100%",
-    paddingTop: 0,
-    paddingBottom: 0,
+    padding: "4px 8px 0 8px",
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
-    justifyContent: "space-between",
+    justifyContent: (props) => (props.isListMode ? "space-between" : "flex-end"),
+    "&:last-child": {
+      padding: "0 8px",
+    },
 
     [theme.breakpoints.up("sm")]: {
       alignItems: (props) => (props.isListMode ? "center" : "stretch"),
       flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
     },
-  },
-  links: {
-    flex: "1 1 auto",
   },
   participants: {
     flex: "0 0 auto",
@@ -73,6 +74,13 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   avatarGroup: {
     marginLeft: 8,
+  },
+  headerAvatar: {
+    height: 40,
+  },
+  roomIcon: {
+    height: 40,
+    width: 40,
   },
   actions: {
     height: 44,
@@ -89,6 +97,7 @@ interface Props {
   isDisabled: boolean;
   isJoinable: boolean;
   isListMode: boolean;
+  fillHeight?: boolean;
 }
 
 const RoomCard = (props: Props) => {
@@ -119,17 +128,6 @@ const RoomCard = (props: Props) => {
     );
   }
 
-  function renderDetails() {
-    return (
-      !isDisabled &&
-      participants.length > 0 && (
-        <Button size="small" color="secondary" variant="text" onClick={() => setParticipantsOpen(true)}>
-          Details
-        </Button>
-      )
-    );
-  }
-
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const participantsView = (!isDisabled || isJoinable) && (
     <div className={classes.participants}>
@@ -143,27 +141,29 @@ const RoomCard = (props: Props) => {
   );
 
   const joinUrlView = renderJoinUrl();
-  const detailsView = renderDetails();
 
-  const bodyView = (roomLinksView || participantsView || joinUrlView || detailsView) && (
+  const bodyView = (roomLinksView || participantsView || joinUrlView) && (
     <div className={classes.body}>
       <CardContent className={classes.content}>
         {roomLinksView}
         {participantsView}
       </CardContent>
 
-      <CardActions className={classes.actions}>
-        {joinUrlView}
-        {detailsView}
-      </CardActions>
+      <CardActions className={classes.actions}>{joinUrlView}</CardActions>
     </div>
   );
 
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        classes={{ root: classes.header, content: classes.headerContent }}
-        avatar={room.icon ? <Avatar variant="square" src={room.icon} /> : <RoomIcon color="action" />}
+        classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
+        avatar={
+          room.icon ? (
+            <Avatar variant="square" src={room.icon} />
+          ) : (
+            <RoomIcon className={classes.roomIcon} color="action" />
+          )
+        }
         title={<Typography variant="h5">{room.name}</Typography>}
         onClick={() => setCollapseSubtitle(!collapseSubtitle)}
         subheader={
