@@ -60,7 +60,7 @@ export class Config {
   }
 
   public static getConfigFile(): string {
-    return process.env.CONFIG_LOCATION || `${findRootDir()}/server/config.json`;
+    return process.env.CONFIG_LOCATION || `${findRootDir()}/server/office.json`;
   }
 
   private static readConfigFromFile(): ConfigOptions {
