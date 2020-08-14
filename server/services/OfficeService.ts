@@ -92,7 +92,7 @@ export class OfficeService {
       return;
     }
 
-    fs.writeFileSync(configFile, JSON.stringify({ groups: this.groups, rooms: this.rooms }));
+    fs.writeFileSync(configFile, JSON.stringify({ groups: this.groups, rooms: this.rooms, schedule: this.schedule }));
   }
 
   listenOfficeChanges(listener: OfficeChangeListener) {
