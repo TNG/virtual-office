@@ -1,5 +1,10 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":automergeMinor",
+    "schedule:nonOfficeHours",
+    "group:definitelyTyped",
+    ":timezoneEurope/Berlin"
+  ],
+  "supportPolicy": ["lts_latest"]
 }
