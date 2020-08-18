@@ -1,9 +1,6 @@
 {
   "extends": [
-    "config:base",
-    "schedule:nonOfficeHours",
-    "group:definitelyTyped",
-    ":timezoneEurope/Berlin"
+    "config:base"
   ],
   "supportPolicy": ["lts_latest"]
 }
