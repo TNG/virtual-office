@@ -13,6 +13,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: 12,
+    boxSizing: "border-box",
     height: (props) => (props.fillHeight ? "100%" : undefined),
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
   },
