@@ -130,7 +130,7 @@ const RoomCard = (props: Props) => {
   }
 
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
-  const participantsView = (!isDisabled || isJoinable) && (
+  const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
         name={room.name}
