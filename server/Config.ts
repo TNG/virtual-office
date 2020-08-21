@@ -31,6 +31,7 @@ export class Config {
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
   public readonly clientConfig: ClientConfig = Config.readClientConfig();
   public readonly writeOfficeUpdatesToFileSystem = process.env.WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM === "true";
+  public readonly eventWebhook = process.env.EVENT_WEBHOOK;
 
   constructor() {}
 

@@ -5,7 +5,7 @@ import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { Schedule, Track } from "../../../server/express/types/Schedule";
+import { Schedule, Session, Track } from "../../../server/express/types/Schedule";
 import { DateTime } from "luxon";
 import { GroupWithRooms } from "../selectGroupsWithRooms";
 import ScheduleGroupGrid from "./ScheduleGroupGrid";
@@ -144,16 +144,11 @@ const ScheduleGrid = (props: Props) => {
       ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
     );
     return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId, alwaysActive }) => {
-      const startTime = DateTime.fromFormat(start, "HH:mm").minus({ minute: 10 });
-      const endTime = DateTime.fromFormat(end, "HH:mm");
-      const now = DateTime.local();
-
       const tracks: [string, string?] = trackId
         ? [trackId]
         : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id];
 
-      const isDisabled = !alwaysActive && (startTime > now || endTime < now);
-      const isJoinable = alwaysActive || (startTime < now && endTime > now);
+      const isActive = sessionIsActive({ start, end, alwaysActive });
 
       if (roomId) {
         const room = rooms[roomId];
@@ -167,8 +162,8 @@ const ScheduleGrid = (props: Props) => {
           <RoomCard
             room={{ ...room, subtitle: `(${start} - ${end}) ${room.subtitle || ""}` }}
             participants={participants}
-            isDisabled={isDisabled}
-            isJoinable={isJoinable}
+            isDisabled={!isActive}
+            isJoinable={isActive}
             isListMode={isListMode}
             fillHeight={true}
           />
@@ -186,8 +181,8 @@ const ScheduleGrid = (props: Props) => {
             group={group}
             rooms={rooms}
             meetings={meetings}
-            isDisabled={isDisabled}
-            isJoinable={isJoinable}
+            isDisabled={!isActive}
+            isJoinable={isActive}
             isListMode={isListMode}
           />
         );
@@ -207,3 +202,11 @@ const ScheduleGrid = (props: Props) => {
 };
 
 export default ScheduleGrid;
+
+export const sessionIsActive = ({ start, end, alwaysActive }: Session) => {
+  const startTime = DateTime.fromFormat(start, "HH:mm").minus({ minute: 10 });
+  const endTime = DateTime.fromFormat(end, "HH:mm");
+  const now = DateTime.local();
+
+  return alwaysActive || (startTime < now && endTime > now);
+};

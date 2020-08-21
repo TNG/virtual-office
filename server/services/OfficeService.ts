@@ -1,16 +1,19 @@
 import { Service } from "typedi";
-
 import { Office } from "../express/types/Office";
 import { Config } from "../Config";
 import { ConfigOptions } from "../express/types/ConfigOptions";
 import { Group } from "../express/types/Group";
-import { RoomConfig, Room } from "../express/types/Room";
+import { Room, RoomConfig } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
-import { Schedule } from "../express/types/Schedule";
+import { Schedule, Session } from "../express/types/Schedule";
+import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;
+
+const sortSessionsByDiffToNow = (a: Session, b: Session): number =>
+  getStartDateTime(b.start).diffNow().valueOf() - getStartDateTime(a.start).diffNow().valueOf();
 
 @Service()
 export class OfficeService {
@@ -43,6 +46,24 @@ export class OfficeService {
 
   getRoom(roomId: string): Room | undefined {
     return this.rooms.find((room) => room.roomId === roomId);
+  }
+
+  getActiveRoom(meetingId: string): Room | undefined {
+    const activeRooms: Room[] = this.getRoomsForMeetingId(meetingId)
+      .map((room) => ({
+        room,
+        closestSession: this.schedule
+          ? this.schedule.sessions
+              .filter(sessionIsActive)
+              .filter(sessionBelongsToRoom(room))
+              .sort(sortSessionsByDiffToNow)[0] || undefined
+          : undefined,
+      }))
+      .filter((data): data is { closestSession: Session; room: Room } => !!data.closestSession)
+      .sort(({ closestSession: a }, { closestSession: b }) => sortSessionsByDiffToNow(a, b))
+      .map(({ room }) => room);
+
+    return activeRooms[0];
   }
 
   createRoom(room: RoomConfig): boolean {
@@ -104,3 +125,17 @@ export class OfficeService {
     this.officeChangeListeners.forEach((listener) => listener(office));
   }
 }
+
+export const sessionIsActive = ({ start, end, alwaysActive }: Session) => {
+  const startTime = getStartDateTime(start);
+  const endTime = DateTime.fromFormat(end, "HH:mm");
+  const now = DateTime.local();
+
+  return alwaysActive || (startTime < now && endTime > now);
+};
+
+const sessionBelongsToRoom = (room: Room) => (session: Session) => {
+  return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
+};
+
+const getStartDateTime = (start: string) => DateTime.fromFormat(start, "HH:mm").minus({ minute: 10 });

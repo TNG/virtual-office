@@ -5,10 +5,12 @@ import { MeetingEvent } from "../express/types/MeetingEvent";
 import { User } from "../express/types/User";
 import { OfficeService } from "./OfficeService";
 import { Config } from "../Config";
+import { EventService } from "./EventService";
 
 describe("MeetingParticipantsService", () => {
   let participantsService: MeetingsService;
   let knownUsersService: KnownUsersService;
+  let eventService: EventService;
   let officeService: OfficeService;
   let config: Config;
 
@@ -17,11 +19,17 @@ describe("MeetingParticipantsService", () => {
   beforeEach(() => {
     knownUsersService = mock(KnownUsersService);
     officeService = mock(OfficeService);
+    eventService = mock(EventService);
     config = mock(Config);
 
     listener = jest.fn();
 
-    participantsService = new MeetingsService(instance(knownUsersService), instance(officeService), instance(config));
+    participantsService = new MeetingsService(
+      instance(knownUsersService),
+      instance(officeService),
+      instance(eventService),
+      instance(config)
+    );
   });
 
   describe("with named participants", () => {
@@ -104,7 +112,12 @@ describe("MeetingParticipantsService", () => {
     beforeEach(() => {
       when(config.anonymousParticipants).thenReturn(true);
 
-      participantsService = new MeetingsService(instance(knownUsersService), instance(officeService), instance(config));
+      participantsService = new MeetingsService(
+        instance(knownUsersService),
+        instance(officeService),
+        instance(eventService),
+        instance(config)
+      );
     });
 
     it("should anonymize a participant if config option is set", () => {

@@ -9,6 +9,7 @@ import { enrichParticipant } from "../express/utils/enrichUser";
 import { Meeting } from "../express/types/Meeting";
 import { OfficeService } from "./OfficeService";
 import { Config } from "../Config";
+import { EventService } from "./EventService";
 
 @Service({ multiple: false })
 export class MeetingsService {
@@ -20,6 +21,7 @@ export class MeetingsService {
   constructor(
     private readonly knownUsersService: KnownUsersService,
     private readonly officeService: OfficeService,
+    private readonly eventService: EventService,
     private readonly config: Config
   ) {
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
@@ -58,6 +60,8 @@ export class MeetingsService {
 
     this.meetingParticipants[meetingId].push(toJoin);
     this.notify(meetingId, toJoin, "join");
+
+    this.eventService.trackJoinEvent(meetingId, toJoin);
   }
 
   leave(meetingId: string, toLeave: MeetingParticipant) {
