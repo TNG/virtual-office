@@ -21,7 +21,7 @@
     "express-async-handler": "1.1.4",
     "express-basic-auth": "1.2.0",
     "lodash": "4.17.20",
-    "luxon": "1.24.1",
+    "luxon": "1.25.0",
     "passport": "0.4.1",
     "passport-oauth2": "1.5.0",
     "passport-slack": "0.0.7",

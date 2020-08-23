@@ -9,7 +9,7 @@
     "axios": "0.19.2",
     "http-proxy-middleware": "1.0.5",
     "lodash": "4.17.20",
-    "luxon": "1.24.1",
+    "luxon": "1.25.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-router-dom": "5.2.0",
