@@ -33,6 +33,10 @@ const Login = () => {
     window.location.href = "/auth/slack";
   };
 
+  const signInWithZoom = () => {
+    window.location.href = "/auth/zoom";
+  };
+
   useEffect(() => {
     axios.get("/api/clientConfig").then(({ data }) => setClientConfig(data));
   }, []);
@@ -51,7 +55,7 @@ const Login = () => {
       alignItems={"center"}
       justifyContent={"center"}
     >
-      <Box maxWidth={600} width={"20%"} minWidth={400} height={200}>
+      <Box maxWidth={600} width={"20%"} minWidth={400} minHeight={200}>
         <Paper className={classes.paper}>
           <Box p={4} textAlign={"center"}>
             <Typography className={classes.heading} variant={"h3"}>
@@ -64,6 +68,11 @@ const Login = () => {
                   src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
                   srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
                 />
+              </Button>
+            </Box>
+            <Box pt={1}>
+              <Button variant="outlined" onClick={() => signInWithZoom()}>
+                Sign in with Zoom
               </Button>
             </Box>
           </Box>
