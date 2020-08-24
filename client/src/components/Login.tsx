@@ -21,6 +21,19 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   heading: {
     fontWeight: 300,
   },
+  zoomButton: {
+    backgroundColor: "#0e71eb",
+    borderColor: "#0e71eb",
+    color: "#fff",
+    fontSize: 16,
+    lineHeight: "28px",
+    borderRadius: 8,
+    padding: "5px 16px",
+    boxSizing: "border-box",
+    border: "1px solid transparent",
+    display: "inline-block",
+    textDecoration: "none",
+  },
 }));
 
 const Login = () => {
@@ -71,9 +84,10 @@ const Login = () => {
               </Button>
             </Box>
             <Box pt={1}>
-              <Button variant="outlined" onClick={() => signInWithZoom()}>
+              {/*eslint-disable-next-line*/}
+              <a className={classes.zoomButton} href="javascript:;" role="button" onClick={() => signInWithZoom()}>
                 Sign in with Zoom
-              </Button>
+              </a>
             </Box>
           </Box>
         </Paper>
