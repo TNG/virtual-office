@@ -3,5 +3,8 @@
     "config:base",
     ":automergeMinor",
     ":gitSignOff"
+  ],
+  "ignoreDeps": [
+    "prettier"
   ]
 }
