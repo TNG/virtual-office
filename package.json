@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "husky": "4.2.5",
-    "prettier": "2.0.5"
+    "prettier": "2.1.0"
   },
   "scripts": {
     "format": "prettier --write \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
