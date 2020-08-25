@@ -2,7 +2,8 @@
   "extends": [
     "config:base",
     ":automergeMinor",
-    ":gitSignOff"
+    ":gitSignOff",
+    "schedule:earlyMondays"
   ],
   "ignoreDeps": [
     "prettier"
