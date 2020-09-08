@@ -90,6 +90,14 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexDirection: "row-reverse",
   },
+  titleLink: {
+    color: theme.palette.common.black,
+    textDecoration: "none",
+
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
 }));
 
 interface Props {
@@ -129,6 +137,19 @@ const RoomCard = (props: Props) => {
     );
   }
 
+  function renderTitle() {
+    const titleName = <Typography variant="h5">{room.name}</Typography>;
+    if (!room.titleUrl) {
+      return titleName;
+    }
+
+    return (
+      <a className={classes.titleLink} href={room.titleUrl}>
+        {titleName}
+      </a>
+    );
+  }
+
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
     <div className={classes.participants}>
@@ -165,8 +186,7 @@ const RoomCard = (props: Props) => {
             <RoomIcon className={classes.roomIcon} color="action" />
           )
         }
-        title={<Typography variant="h5">{room.name}</Typography>}
-        onClick={() => setCollapseSubtitle(!collapseSubtitle)}
+        title={renderTitle()}
         subheader={
           <div className={classes.subtitle}>
             <Typography

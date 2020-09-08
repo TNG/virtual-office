@@ -46,6 +46,7 @@
     {
       "meetingId": "4",
       "name": "Introduction to React",
+      "titleUrl": "https://reactjs.org",
       "joinUrl": "https://zoom.us/j/4",
       "links": [
         {
@@ -60,6 +61,7 @@
     {
       "meetingId": "5",
       "name": "Node.js Deep Dive",
+      "titleUrl": "https://nodejs.org",
       "joinUrl": "https://zoom.us/j/5",
       "links": [
         {

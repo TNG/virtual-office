@@ -6,6 +6,7 @@ interface RoomWithoutId {
   name: string;
   subtitle?: string;
   joinUrl?: string;
+  titleUrl?: string;
   temporary?: boolean;
   links?: RoomLink[];
   groupId?: string;
