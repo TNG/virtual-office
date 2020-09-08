@@ -129,7 +129,7 @@ const Dashboard = () => {
       officeSubscription.unsubscribe();
       clientConfigSubscription.unsubscribe();
     };
-  }, [context, config]);
+  }, [context]);
 
   useEffect(() => {
     const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
