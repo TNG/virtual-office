@@ -1,6 +1,7 @@
 import React from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
@@ -10,13 +11,18 @@ import { DateTime } from "luxon";
 import { GroupWithRooms } from "../selectGroupsWithRooms";
 import ScheduleGroupGrid from "./ScheduleGroupGrid";
 
-const calculateGridTemplateRows = ({ sessions }: Schedule) => {
+interface StyleProps {
+  schedule: Schedule;
+  clientConfig?: ClientConfig;
+}
+
+const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: StyleProps) => {
   const earliestStart = sessions
-    .map(({ start }) => DateTime.fromFormat(start, "HH:mm"))
+    .map(({ start }) => DateTime.fromFormat(start, "HH:mm", { zone: clientConfig?.timezone }))
     .sort()
     .shift();
   const latestEnd = sessions
-    .map(({ end }) => DateTime.fromFormat(end, "HH:mm"))
+    .map(({ end }) => DateTime.fromFormat(end, "HH:mm", { zone: clientConfig?.timezone }))
     .sort()
     .pop();
   let result = `[trackHeader] auto `;
@@ -29,7 +35,7 @@ const calculateGridTemplateRows = ({ sessions }: Schedule) => {
   return result;
 };
 
-const calculateGridTemplateColumns = ({ tracks }: Schedule) => {
+const calculateGridTemplateColumns = ({ schedule: { tracks } }: StyleProps) => {
   const result = tracks.reduce(
     ({ value, prevTrack }, val) => ({
       value: value + `[${prevTrack ? `track-${prevTrack.id}-end ` : ""}track-${val.id}-start] 1fr `,
@@ -41,7 +47,7 @@ const calculateGridTemplateColumns = ({ tracks }: Schedule) => {
   return result.value + `[track-${lastTrack.id}-end]`;
 };
 
-const useStyles = makeStyles<Theme, Schedule>((theme) => ({
+const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   title: {
     color: "#fff",
     margin: 12,
@@ -91,11 +97,12 @@ interface Props {
   meetings: MeetingsIndexed;
   groupsWithRooms: GroupsWithRoomsIndexed;
   isListMode: boolean;
+  clientConfig?: ClientConfig;
 }
 
 const ScheduleGrid = (props: Props) => {
-  const { schedule, rooms, groupsWithRooms, meetings, isListMode } = props;
-  const classes = useStyles(schedule);
+  const { schedule, rooms, groupsWithRooms, meetings, isListMode, clientConfig } = props;
+  const classes = useStyles({ schedule, clientConfig });
 
   function renderTrackHeader() {
     return (
@@ -137,6 +144,15 @@ const ScheduleGrid = (props: Props) => {
         {card}
       </div>
     );
+  }
+
+  function sessionIsActive({ start, end, alwaysActive }: Session) {
+    const zone = props.clientConfig?.timezone;
+    const startTime = DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: 10 });
+    const endTime = DateTime.fromFormat(end, "HH:mm", { zone });
+    const now = DateTime.local();
+
+    return alwaysActive || (startTime < now && endTime > now);
   }
 
   function renderSchedule() {
@@ -202,11 +218,3 @@ const ScheduleGrid = (props: Props) => {
 };
 
 export default ScheduleGrid;
-
-export const sessionIsActive = ({ start, end, alwaysActive }: Session) => {
-  const startTime = DateTime.fromFormat(start, "HH:mm").minus({ minute: 10 });
-  const endTime = DateTime.fromFormat(end, "HH:mm");
-  const now = DateTime.local();
-
-  return alwaysActive || (startTime < now && endTime > now);
-};

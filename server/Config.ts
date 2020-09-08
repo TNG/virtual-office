@@ -39,8 +39,9 @@ export class Config {
     const backgroundUrl = process.env.BACKGROUND_URL;
     const theme = process.env.THEME;
     const viewMode = process.env.VIEW_MODE;
+    const timezone = process.env.TIMEZONE;
 
-    return { backgroundUrl, theme: theme as any, viewMode: viewMode as any };
+    return { backgroundUrl, theme: theme as any, viewMode: viewMode as any, timezone };
   }
 
   private static readSlackConfig(): SlackConfig {

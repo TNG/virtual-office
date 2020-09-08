@@ -12,8 +12,8 @@ import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;
 
-const sortSessionsByDiffToNow = (a: Session, b: Session): number =>
-  getStartDateTime(b.start).diffNow().valueOf() - getStartDateTime(a.start).diffNow().valueOf();
+const sortSessionsByDiffToNow = (zone?: string) => (a: Session, b: Session): number =>
+  getStartDateTime(b.start, zone).diffNow().valueOf() - getStartDateTime(a.start, zone).diffNow().valueOf();
 
 @Service()
 export class OfficeService {
@@ -49,18 +49,19 @@ export class OfficeService {
   }
 
   getActiveRoom(meetingId: string): Room | undefined {
+    const timezone = this.config.clientConfig?.timezone;
     const activeRooms: Room[] = this.getRoomsForMeetingId(meetingId)
       .map((room) => ({
         room,
         closestSession: this.schedule
           ? this.schedule.sessions
-              .filter(sessionIsActive)
+              .filter((session) => this.sessionIsActive(session))
               .filter(sessionBelongsToRoom(room))
-              .sort(sortSessionsByDiffToNow)[0] || undefined
+              .sort(sortSessionsByDiffToNow(timezone))[0] || undefined
           : undefined,
       }))
       .filter((data): data is { closestSession: Session; room: Room } => !!data.closestSession)
-      .sort(({ closestSession: a }, { closestSession: b }) => sortSessionsByDiffToNow(a, b))
+      .sort(({ closestSession: a }, { closestSession: b }) => sortSessionsByDiffToNow(timezone)(a, b))
       .map(({ room }) => room);
 
     return activeRooms[0];
@@ -124,18 +125,20 @@ export class OfficeService {
     const office = this.getOffice();
     this.officeChangeListeners.forEach((listener) => listener(office));
   }
+
+  private sessionIsActive({ start, end, alwaysActive }: Session): boolean {
+    const zone = this.config.clientConfig.timezone;
+    const startTime = getStartDateTime(start, zone);
+    const endTime = DateTime.fromFormat(end, "HH:mm", { zone });
+    const now = DateTime.local();
+
+    return alwaysActive || (startTime < now && endTime > now);
+  }
 }
-
-export const sessionIsActive = ({ start, end, alwaysActive }: Session) => {
-  const startTime = getStartDateTime(start);
-  const endTime = DateTime.fromFormat(end, "HH:mm");
-  const now = DateTime.local();
-
-  return alwaysActive || (startTime < now && endTime > now);
-};
 
 const sessionBelongsToRoom = (room: Room) => (session: Session) => {
   return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
 };
 
-const getStartDateTime = (start: string) => DateTime.fromFormat(start, "HH:mm").minus({ minute: 10 });
+const getStartDateTime = (start: string, zone?: string) =>
+  DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: 10 });

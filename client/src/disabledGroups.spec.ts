@@ -74,7 +74,7 @@ describe("disabledRooms", () => {
       notJoinableAfter,
     ];
 
-    const result = mapPotentiallyDisabledGroups(groups);
+    const result = mapPotentiallyDisabledGroups(groups, undefined);
 
     expect(result).toEqual([
       { group: disabledBefore, isUpcoming: true, isExpired: false, isJoinable: false },

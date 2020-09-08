@@ -84,6 +84,7 @@ you can find our experiences in two articles (German only):
 | `THEME`                                    | Either `light` or `dark`
 | `BACKGROUND_URL`                           | URL to a background image
 | `WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM`      | When replacing the office via the /admin API, write the changes to the filesstem. Will only be done when set to `true`
+| `TIMEZONE`                                 | Timezone determining the start and end dates of sessions. If unset, the server will use the server timezone and the clients will use the client timezone
 
 #### Office Configuration
 

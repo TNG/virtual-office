@@ -55,6 +55,7 @@ describe("EventService", () => {
   beforeEach(() => {
     config = mock(Config);
     when(config.configOptions).thenReturn(office);
+    when(config.clientConfig).thenReturn({ theme: "dark", viewMode: "list" });
     when(config.eventWebhook).thenReturn(
       "https://my_event_backend.com/track.php?e_c=EVENT_CATEGORY&e_a=EVENT_ACTION&e_n=EVENT_NAME&uid=USER_ID"
     );
