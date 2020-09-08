@@ -188,7 +188,7 @@ const RoomCard = (props: Props) => {
         }
         title={renderTitle()}
         subheader={
-          <div className={classes.subtitle}>
+          <div className={classes.subtitle} onClick={() => setCollapseSubtitle(!collapseSubtitle)}>
             <Typography
               variant="body2"
               className={collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle}
