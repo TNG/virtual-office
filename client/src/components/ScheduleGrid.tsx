@@ -2,6 +2,7 @@ import React from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
+import { parseTime, printHoursMinutes } from "../time";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
@@ -148,8 +149,8 @@ const ScheduleGrid = (props: Props) => {
 
   function sessionIsActive({ start, end, alwaysActive }: Session) {
     const zone = props.clientConfig?.timezone;
-    const startTime = DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: 10 });
-    const endTime = DateTime.fromFormat(end, "HH:mm", { zone });
+    const startTime = parseTime(start, zone).minus({ minute: 10 });
+    const endTime = parseTime(end, zone);
     const now = DateTime.local();
 
     return alwaysActive || (startTime < now && endTime > now);
@@ -160,6 +161,9 @@ const ScheduleGrid = (props: Props) => {
       ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
     );
     return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId, alwaysActive }) => {
+      const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
+      const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
+
       const tracks: [string, string?] = trackId
         ? [trackId]
         : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id];
@@ -176,7 +180,7 @@ const ScheduleGrid = (props: Props) => {
           end,
           tracks,
           <RoomCard
-            room={{ ...room, subtitle: `(${start} - ${end}) ${room.subtitle || ""}` }}
+            room={{ ...room, subtitle: `(${formattedStart} - ${formattedEnd}) ${room.subtitle || ""}` }}
             participants={participants}
             isDisabled={!isActive}
             isJoinable={isActive}
