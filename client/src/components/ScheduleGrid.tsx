@@ -161,9 +161,6 @@ const ScheduleGrid = (props: Props) => {
       ({ roomId, groupId }) => (roomId && rooms[roomId]) || (groupId && groupsWithRooms[groupId])
     );
     return sessionsWithRoomsOrGroups.map(({ roomId, groupId, start, end, trackId, alwaysActive }) => {
-      const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
-      const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
-
       const tracks: [string, string?] = trackId
         ? [trackId]
         : [schedule.tracks[0].id, schedule.tracks[schedule.tracks.length - 1].id];
@@ -172,6 +169,9 @@ const ScheduleGrid = (props: Props) => {
 
       if (roomId) {
         const room = rooms[roomId];
+        const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
+        const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
+        const roomWithTime = { ...room, subtitle: `(${formattedStart}-${formattedEnd}) ${room.subtitle || ""}` };
         const participants = participantsInMeeting(room.meetingId);
 
         return renderGridCard(
@@ -180,7 +180,7 @@ const ScheduleGrid = (props: Props) => {
           end,
           tracks,
           <RoomCard
-            room={{ ...room, subtitle: `(${formattedStart} - ${formattedEnd}) ${room.subtitle || ""}` }}
+            room={roomWithTime}
             participants={participants}
             isDisabled={!isActive}
             isJoinable={isActive}

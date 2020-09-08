@@ -15,7 +15,8 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "socket.io-client": "2.3.0",
-    "typescript": "3.9.7"
+    "typescript": "3.9.7",
+    "use-deep-compare-effect": "^1.4.0"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "6.0.1",

@@ -22,6 +22,7 @@ import { StyleConfig } from "../types";
 import ScheduleGrid from "./ScheduleGrid";
 import { Schedule } from "../../../server/express/types/Schedule";
 import { search } from "../search";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -88,7 +89,6 @@ const Dashboard = () => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);
 
-  const context = useContext(SocketContext);
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [officeState, setOfficeState] = useState({
     office: { rooms: [], groups: [], schedule: undefined },
@@ -99,7 +99,8 @@ const Dashboard = () => {
   const [showExpiredGroups, setShowExpiredGroups] = useState(false);
   const [config, setConfig] = useState<ClientConfig | undefined>();
 
-  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
+  const timezone = config?.timezone;
+  const context = useContext(SocketContext);
   useEffect(() => {
     context.init();
 
@@ -110,7 +111,7 @@ const Dashboard = () => {
 
     const officeSubscription = context
       .onOffice()
-      .subscribe((event) => setOfficeState(officeStateFrom(event, config?.timezone)));
+      .subscribe((event) => setOfficeState(officeStateFrom(event, timezone)));
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
 
     const initSubscription = context.onInit().subscribe((event) => {
@@ -129,13 +130,14 @@ const Dashboard = () => {
       officeSubscription.unsubscribe();
       clientConfigSubscription.unsubscribe();
     };
-  }, [context]);
+  }, [timezone, context]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
     return () => clearInterval(handler);
   }, [officeState]);
 
+  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
 
   function renderSchedule(schedule: Schedule, viewMode: string) {
