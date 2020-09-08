@@ -8,6 +8,7 @@ export type GroupJoinConfig = {
 export interface Group {
   id: string;
   name?: string;
+  description?: string;
   disabledAfter?: string;
   disabledBefore?: string;
   joinableAfter?: string;
