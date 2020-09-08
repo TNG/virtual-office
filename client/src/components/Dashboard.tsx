@@ -226,7 +226,7 @@ const Dashboard = () => {
     <div>
       <div className={classes.background} />
       <div className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} />
+        <AppBar onSearchTextChange={setSearchText} title={config.title} />
         <div className={classes.scroller}>{content}</div>
       </div>
     </div>

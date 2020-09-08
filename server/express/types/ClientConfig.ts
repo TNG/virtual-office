@@ -3,4 +3,5 @@ export interface ClientConfig {
   viewMode: "list" | "grid";
   theme: "dark" | "light";
   timezone?: string;
+  title?: string;
 }

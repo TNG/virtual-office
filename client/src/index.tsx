@@ -11,9 +11,8 @@ import "./index.css";
 import theme from "./theme";
 import axios from "axios";
 
-document.title = process.env.REACT_APP_TITLE || "Virtual Office";
-
 axios.get("/api/clientConfig").then(({ data }) => {
+  document.title = data.title ?? "Virtual Office";
   ReactDOM.render(
     <BrowserRouter>
       <ThemeProvider theme={theme(data)}>
