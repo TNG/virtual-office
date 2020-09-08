@@ -5,7 +5,6 @@ function applyEventTo(meeting: Meeting, event: MeetingEvent): Meeting {
   switch (event.type) {
     case "join":
       const newPart = [...meeting.participants, event.participant];
-      console.log(newPart);
       return { ...meeting, participants: newPart };
     case "leave":
       return {

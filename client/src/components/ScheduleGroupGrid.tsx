@@ -131,7 +131,6 @@ const ScheduleGroupGrid = (props: Props) => {
     const description = group.description && (
       <CardContent className={`${classes.groupHeaderCardContent}`}>{group.description}</CardContent>
     );
-    console.log(JSON.stringify(group));
     return (
       group.name && (
         <div className={`${classes.card}`}>
