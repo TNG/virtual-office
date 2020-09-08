@@ -1,6 +1,11 @@
+import { Settings } from "luxon";
 import { parseTime, printHoursMinutes } from "./time";
 
 describe("time", () => {
+  beforeEach(() => {
+    Settings.defaultZoneName = "Europe/Berlin";
+  });
+
   describe("parseTime", () => {
     it("should parse HH:mm", () => {
       const dateTime = parseTime("15:16");
