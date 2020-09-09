@@ -42,12 +42,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     whiteSpace: "pre-wrap",
   },
   body: {
-    flex: "1 0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "stretch",
-    flexDirection: "column",
-
     [theme.breakpoints.up("sm")]: {
       flexDirection: (props) => (props.isListMode ? "row" : "column"),
       alignItems: (props) => (props.isListMode ? "flex-end" : "stretch"),
@@ -71,7 +65,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   participants: {
     flex: "0 0 auto",
-    marginRight: 8,
+    margin: "0 8px",
   },
   avatarGroup: {
     marginLeft: 8,
@@ -88,7 +82,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     padding: 0,
     flex: "0 0 auto",
     display: "flex",
-    flexDirection: "row-reverse",
+    justifyContent: "space-between",
   },
   titleLink: {
     color: theme.palette.common.black,
@@ -97,6 +91,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     "&:hover": {
       textDecoration: "underline",
     },
+  },
+  expandButton: {
+    cursor: "pointer",
   },
 }));
 
@@ -144,7 +141,7 @@ const RoomCard = (props: Props) => {
     }
 
     return (
-      <a className={classes.titleLink} href={room.titleUrl} target="_blank">
+      <a className={classes.titleLink} href={room.titleUrl} target="_blank" rel="noopener noreferrer">
         {titleName}
       </a>
     );
@@ -163,17 +160,28 @@ const RoomCard = (props: Props) => {
   );
 
   const joinUrlView = renderJoinUrl();
+  const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
+  const actionsView = joinUrlView && participantsView && (
+    <CardActions className={classes.actions}>
+      {participantsView}
+      {joinUrlView}
+    </CardActions>
+  );
 
   const bodyView = (roomLinksView || participantsView || joinUrlView) && (
     <div className={classes.body}>
-      <CardContent className={classes.content}>
-        {roomLinksView}
-        {participantsView}
-      </CardContent>
-
-      <CardActions className={classes.actions}>{joinUrlView}</CardActions>
+      {contentView}
+      {actionsView}
     </div>
   );
+
+  function renderExpandButton() {
+    if (!expandable) {
+      return null;
+    }
+
+    return <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>;
+  }
 
   return (
     <Card className={classes.root} key={room.roomId}>
@@ -196,7 +204,7 @@ const RoomCard = (props: Props) => {
             >
               {room.subtitle}
             </Typography>
-            {expandable ? collapseSubtitle ? <ExpandMore /> : <ExpandLess /> : ""}
+            {renderExpandButton()}
           </div>
         }
       />
