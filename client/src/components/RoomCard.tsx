@@ -42,12 +42,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     whiteSpace: "pre-wrap",
   },
   body: {
-    flex: "1 0 auto",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "stretch",
-    flexDirection: "column",
-
     [theme.breakpoints.up("sm")]: {
       flexDirection: (props) => (props.isListMode ? "row" : "column"),
       alignItems: (props) => (props.isListMode ? "flex-end" : "stretch"),
@@ -88,7 +82,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     padding: 0,
     flex: "0 0 auto",
     display: "flex",
-    flexDirection: "row-reverse",
+    justifyContent: "flex-end",
   },
   titleLink: {
     color: theme.palette.common.black,
@@ -163,15 +157,18 @@ const RoomCard = (props: Props) => {
   );
 
   const joinUrlView = renderJoinUrl();
+  const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
+  const actionsView = joinUrlView && participantsView && (
+    <CardActions className={classes.actions}>
+      {participantsView}
+      {joinUrlView}
+    </CardActions>
+  );
 
   const bodyView = (roomLinksView || participantsView || joinUrlView) && (
     <div className={classes.body}>
-      <CardContent className={classes.content}>
-        {roomLinksView}
-        {participantsView}
-      </CardContent>
-
-      <CardActions className={classes.actions}>{joinUrlView}</CardActions>
+      {contentView}
+      {actionsView}
     </div>
   );
 

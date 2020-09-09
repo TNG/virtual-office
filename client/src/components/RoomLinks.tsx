@@ -11,13 +11,16 @@ const useStyles = makeStyles<Theme, Props>({
     alignItems: "center",
   },
   link: {
-    flex: "0 0 auto",
+    flex: "0 1 auto",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingRight: 12,
     marginTop: 4,
     marginBottom: 4,
+    textOverflow: "ellipsis",
+    whitespace: "no-wrap",
+    overflow: "hidden",
   },
   linkGroup: {
     paddingTop: 4,
