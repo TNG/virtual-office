@@ -144,7 +144,7 @@ const RoomCard = (props: Props) => {
     }
 
     return (
-      <a className={classes.titleLink} href={room.titleUrl}>
+      <a className={classes.titleLink} href={room.titleUrl} target="_blank">
         {titleName}
       </a>
     );
