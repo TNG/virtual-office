@@ -50,11 +50,15 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   groupHeaderCard: {
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
-    display: "flex",
+    [theme.breakpoints.up("sm")]: {
+      display: "flex",
+    },
   },
   groupHeaderCardContent: {
-    padding: "12px 0 12px !important",
-    alignSelf: "center",
+    [theme.breakpoints.up("sm")]: {
+      padding: "12px 12px 12px !important",
+      alignSelf: "center",
+    },
   },
 }));
 
