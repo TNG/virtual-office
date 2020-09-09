@@ -86,6 +86,7 @@ you can find our experiences in two articles (German only):
 | `WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM`      | When replacing the office via the /admin API, write the changes to the filesstem. Will only be done when set to `true`
 | `TIMEZONE`                                 | Timezone determining the start and end dates of sessions. If unset, the server will use the server timezone and the clients will use the client timezone. Timezone is in format "Europe/Berlin", a list can be found [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 | `TITLE`                                    | Title of the app
+| `DISABLE_AUTH`                             | When hosting public events that do not require a login, set this to `true`
 
 #### Office Configuration
 

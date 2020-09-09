@@ -7,8 +7,10 @@ import LinkIcon from "@material-ui/icons/Link";
 
 const useStyles = makeStyles<Theme, Props>({
   root: {
-    display: "flex",
-    alignItems: "center",
+    width: "100%",
+  },
+  group: {
+    width: "100%",
   },
   link: {
     flex: "0 1 auto",
@@ -62,9 +64,9 @@ const RoomLinks = (props: Props) => {
   }, {} as { [group: string]: RoomLink[] });
 
   return (
-    <div>
+    <div className={classes.root}>
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
-        <div key={group}>
+        <div className={classes.group} key={group}>
           <Typography variant="subtitle2">{group}</Typography>
           <div className={classes.linkGroup}>
             {groupLinks.map((link, index) => (
