@@ -12,23 +12,27 @@ const useStyles = makeStyles<Theme, Props>({
   },
   link: {
     flex: "0 1 auto",
+    maxWidth: "100%",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingRight: 12,
     marginTop: 4,
     marginBottom: 4,
-    textOverflow: "ellipsis",
-    whitespace: "no-wrap",
-    overflow: "hidden",
   },
   linkGroup: {
+    position: "relative",
     paddingTop: 4,
     paddingBottom: 4,
     display: "flex",
     flexDirection: (props) => (props.isListMode ? "row" : "column"),
     alignItems: (props) => (props.isListMode ? "center" : "stretch"),
     flexWrap: "wrap",
+  },
+  linkText: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   icon: {
     width: 24,
@@ -70,7 +74,9 @@ const RoomLinks = (props: Props) => {
                 ) : (
                   <LinkIcon className={classes.icon} />
                 )}
-                <Typography variant="body2">{link.text}</Typography>
+                <Typography className={classes.linkText} variant="body2">
+                  {link.text}
+                </Typography>
               </Link>
             ))}
           </div>

@@ -36,13 +36,18 @@ const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: Sty
   return result;
 };
 
+interface GridColumnDefinition {
+  value: string;
+  prevTrack: Track | undefined;
+}
+
 const calculateGridTemplateColumns = ({ schedule: { tracks } }: StyleProps) => {
-  const result = tracks.reduce(
+  const result = tracks.reduce<GridColumnDefinition>(
     ({ value, prevTrack }, val) => ({
-      value: value + `[${prevTrack ? `track-${prevTrack.id}-end ` : ""}track-${val.id}-start] 1fr `,
+      value: value + `[${prevTrack ? `track-${prevTrack.id}-end ` : ""}track-${val.id}-start] minmax(0, 1fr) `,
       prevTrack: val,
     }),
-    { value: "[times] 4em ", prevTrack: undefined as Track | undefined }
+    { value: "", prevTrack: undefined }
   );
   const lastTrack = tracks[tracks.length - 1];
   return result.value + `[track-${lastTrack.id}-end]`;

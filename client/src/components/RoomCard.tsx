@@ -65,7 +65,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   participants: {
     flex: "0 0 auto",
-    marginRight: 8,
+    margin: "0 8px",
   },
   avatarGroup: {
     marginLeft: 8,
@@ -82,7 +82,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     padding: 0,
     flex: "0 0 auto",
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
   },
   titleLink: {
     color: theme.palette.common.black,
@@ -91,6 +91,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     "&:hover": {
       textDecoration: "underline",
     },
+  },
+  expandButton: {
+    cursor: "pointer",
   },
 }));
 
@@ -172,6 +175,14 @@ const RoomCard = (props: Props) => {
     </div>
   );
 
+  function renderExpandButton() {
+    if (!expandable) {
+      return null;
+    }
+
+    return <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>;
+  }
+
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
@@ -193,7 +204,7 @@ const RoomCard = (props: Props) => {
             >
               {room.subtitle}
             </Typography>
-            {expandable ? collapseSubtitle ? <ExpandMore /> : <ExpandLess /> : ""}
+            {renderExpandButton()}
           </div>
         }
       />

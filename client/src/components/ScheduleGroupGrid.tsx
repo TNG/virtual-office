@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
+import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
@@ -49,16 +49,24 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     },
   },
   groupHeaderCard: {
-    opacity: (props) => (props.isDisabled ? 0.65 : 1),
+    flexDirection: "column",
+    display: "flex",
     [theme.breakpoints.up("sm")]: {
-      display: "flex",
+      flexDirection: "row",
     },
+    opacity: (props) => (props.isDisabled ? 0.65 : 1),
+  },
+  groupHeaderCardHeader: {
+    flex: "0 0 auto",
+    minHeight: 40,
   },
   groupHeaderCardContent: {
-    [theme.breakpoints.up("sm")]: {
-      padding: "12px 12px 12px !important",
-      alignSelf: "center",
-    },
+    display: "flex",
+    flex: "1 1 auto",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 8,
+    flexGrow: 1,
   },
 }));
 
@@ -133,14 +141,21 @@ const ScheduleGroupGrid = (props: Props) => {
 
   function renderGroupHeader() {
     const description = group.description && (
-      <CardContent className={`${classes.groupHeaderCardContent}`}>{group.description}</CardContent>
+      <CardContent className={classes.groupHeaderCardContent}>
+        <Typography variant="body2">{group.description}</Typography>
+      </CardContent>
     );
+
     return (
       group.name && (
         <div className={`${classes.card}`}>
-          <Card className={`${classes.groupHeaderCard}`}>
-            <CardHeader title={<Typography variant="h5">{group.name}</Typography>} />
+          <Card className={classes.groupHeaderCard}>
+            <CardHeader
+              className={classes.groupHeaderCardHeader}
+              title={<Typography variant="h5">{group.name}</Typography>}
+            />
             {description}
+            <CardActions />
           </Card>
         </div>
       )
