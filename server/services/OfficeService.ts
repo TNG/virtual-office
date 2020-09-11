@@ -12,8 +12,12 @@ import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;
 
-const sortSessionsByDiffToNow = (zone?: string) => (a: Session, b: Session): number =>
-  getStartDateTime(b.start, zone).diffNow().valueOf() - getStartDateTime(a.start, zone).diffNow().valueOf();
+const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
+  a: Session,
+  b: Session
+): number =>
+  getStartDateTime(b.start, zone, sessionStartMinutesOffset).diffNow().valueOf() -
+  getStartDateTime(a.start, zone, sessionStartMinutesOffset).diffNow().valueOf();
 
 @Service()
 export class OfficeService {
@@ -49,7 +53,7 @@ export class OfficeService {
   }
 
   getActiveRoom(meetingId: string): Room | undefined {
-    const timezone = this.config.clientConfig?.timezone;
+    const { timezone, sessionStartMinutesOffset } = this.config.clientConfig ?? {};
     const activeRooms: Room[] = this.getRoomsForMeetingId(meetingId)
       .map((room) => ({
         room,
@@ -57,11 +61,13 @@ export class OfficeService {
           ? this.schedule.sessions
               .filter((session) => this.sessionIsActive(session))
               .filter(sessionBelongsToRoom(room))
-              .sort(sortSessionsByDiffToNow(timezone))[0] || undefined
+              .sort(sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset))[0] || undefined
           : undefined,
       }))
       .filter((data): data is { closestSession: Session; room: Room } => !!data.closestSession)
-      .sort(({ closestSession: a }, { closestSession: b }) => sortSessionsByDiffToNow(timezone)(a, b))
+      .sort(({ closestSession: a }, { closestSession: b }) =>
+        sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset)(a, b)
+      )
       .map(({ room }) => room);
 
     return activeRooms[0];
@@ -127,8 +133,8 @@ export class OfficeService {
   }
 
   private sessionIsActive({ start, end, alwaysActive }: Session): boolean {
-    const zone = this.config.clientConfig.timezone;
-    const startTime = getStartDateTime(start, zone);
+    const { timezone: zone, sessionStartMinutesOffset } = this.config.clientConfig;
+    const startTime = getStartDateTime(start, zone, sessionStartMinutesOffset);
     const endTime = DateTime.fromFormat(end, "HH:mm", { zone });
     const now = DateTime.local();
 
@@ -140,5 +146,5 @@ const sessionBelongsToRoom = (room: Room) => (session: Session) => {
   return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
 };
 
-const getStartDateTime = (start: string, zone?: string) =>
-  DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: 10 });
+const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
+  DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: sessionStartMinutesOffset });

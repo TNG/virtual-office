@@ -5,6 +5,7 @@ import { ClientConfig } from "../express/types/ClientConfig";
 const defaultClientConfig: ClientConfig = {
   viewMode: "grid",
   theme: "dark",
+  sessionStartMinutesOffset: 10,
 };
 
 export type ClientConfigListener = (config: ClientConfig) => void;

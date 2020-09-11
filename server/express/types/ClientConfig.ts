@@ -3,5 +3,6 @@ export interface ClientConfig {
   viewMode: "list" | "grid";
   theme: "dark" | "light";
   timezone?: string;
+  sessionStartMinutesOffset: number;
   title?: string;
 }

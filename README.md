@@ -87,6 +87,7 @@ you can find our experiences in two articles (German only):
 | `TIMEZONE`                                 | Timezone determining the start and end dates of sessions. If unset, the server will use the server timezone and the clients will use the client timezone. Timezone is in format "Europe/Berlin", a list can be found [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 | `TITLE`                                    | Title of the app
 | `DISABLE_AUTH`                             | When hosting public events that do not require a login, set this to `true`
+| `SESSION_START_MINUTES_OFFSET`             | Number of minutes the session is considered active (so events will be sent to the client, people can join)
 
 #### Office Configuration
 

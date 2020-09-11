@@ -41,8 +41,16 @@ export class Config {
     const viewMode = process.env.VIEW_MODE;
     const timezone = process.env.TIMEZONE;
     const title = process.env.TITLE;
+    const sessionStartMinutesOffset = parseInt(process.env.SESSION_START_MINUTES_OFFSET ?? "10", 10);
 
-    return { backgroundUrl, theme: theme as any, viewMode: viewMode as any, timezone, title };
+    return {
+      backgroundUrl,
+      theme: theme as any,
+      viewMode: viewMode as any,
+      timezone,
+      title,
+      sessionStartMinutesOffset,
+    };
   }
 
   private static readSlackConfig(): SlackConfig {
