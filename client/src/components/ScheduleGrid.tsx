@@ -154,7 +154,7 @@ const ScheduleGrid = (props: Props) => {
 
   function sessionIsActive({ start, end, alwaysActive }: Session) {
     const zone = props.clientConfig?.timezone;
-    const startTime = parseTime(start, zone).minus({ minute: 10 });
+    const startTime = parseTime(start, zone).minus({ minute: 15 });
     const endTime = parseTime(end, zone);
     const now = DateTime.local();
 
