@@ -4,7 +4,7 @@ Contributions are very welcome. The following will provide some helpful guidelin
 
 ## Follow the Code of Conduct
 
-Contributors must follow the [CODE-OF-CONDUCT.md](Code of Conduct).
+Contributors must follow the [Code of Conduct](CODE-OF-CONDUCT.md).
 
 ## How to contribute
 
