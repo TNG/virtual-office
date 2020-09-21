@@ -26,7 +26,7 @@
     "@types/jest": "26.0.14",
     "@types/lodash": "4.14.161",
     "@types/luxon": "1.25.0",
-    "@types/node": "14.10.1",
+    "@types/node": "14.11.1",
     "@types/react": "16.9.49",
     "@types/react-dom": "16.9.8",
     "@types/react-router-dom": "5.1.5",
