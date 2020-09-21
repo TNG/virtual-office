@@ -45,7 +45,7 @@
     "@types/express": "4.17.8",
     "@types/jest": "26.0.13",
     "@types/lodash": "4.14.161",
-    "@types/luxon": "1.24.4",
+    "@types/luxon": "1.25.0",
     "@types/node": "14.10.1",
     "@types/passport": "1.0.4",
     "@types/pino": "6.3.0",
