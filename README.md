@@ -146,7 +146,7 @@ An example looks like this:
 }
 ```
 **Important:**
-For the Zoom.us webhooks to work, the room id has to be the zoom.us meeting ID, as this id acts as correlation id for webhook events from zoom.
+For the Zoom.us webhooks to work, the meetingId has to be the zoom.us meeting ID, as this id acts as correlation id for webhook events from zoom.
 
 `groupJoin` within the `groups` property is optional and defines whether existing rooms will be filled up by a separate
 join button on the group.
