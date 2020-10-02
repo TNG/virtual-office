@@ -13,7 +13,8 @@ const result = dotenv.config();
 if (result.error) {
   logger.warn(`Ignored dotenv config: ${result.error.message}`);
 } else {
-  logger.info(`Loaded dotenv config: ${JSON.stringify(result.parsed)}`);
+  logger.info("Loaded dotenv config");
+  logger.debug("Current config", result.parsed);
 }
 
 (async function () {
