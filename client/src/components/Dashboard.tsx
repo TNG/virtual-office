@@ -26,24 +26,14 @@ import useDeepCompareEffect from "use-deep-compare-effect";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+    height: "100%",
     backgroundColor: `${theme.palette.background.default}`,
     backgroundImage: (props) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
   content: {
-    position: "fixed",
-    height: "100vh",
-    width: "100vw",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+    height: "100%",
     overflowY: "auto",
   },
   scroller: {
@@ -223,8 +213,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div>
-      <div className={classes.background} />
+    <div className={classes.background}>
       <div className={classes.content}>
         <AppBar onSearchTextChange={setSearchText} title={config.title} />
         <div className={classes.scroller}>{content}</div>
