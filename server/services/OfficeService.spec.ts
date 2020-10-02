@@ -22,9 +22,44 @@ describe("OfficeService", () => {
 
   beforeEach(() => {
     config = mock(Config);
+    when(config.clientConfig).thenReturn({ timezone: undefined, sessionStartMinutesOffset: 10 } as any);
     when(config.configOptions).thenReturn({ rooms: [existingRoom, existingRoom2], groups: [] });
 
     officeService = new OfficeService(instance(config));
+  });
+
+  describe("should sort the schedule by start time", () => {
+    const configOptions = {
+      rooms: [existingRoom, existingRoom2],
+      groups: [],
+      schedule: {
+        sessions: [
+          { start: "14:00", end: "14:30", roomId: existingRoom2.roomId },
+          { start: "11:00", end: "11:30", roomId: existingRoom.roomId },
+        ],
+        tracks: [],
+      },
+    };
+
+    it("on initial load", () => {
+      when(config.configOptions).thenReturn(configOptions);
+
+      officeService = new OfficeService(instance(config));
+
+      expect(officeService.getOffice().schedule?.sessions).toEqual([
+        { start: "11:00", end: "11:30", roomId: existingRoom.roomId },
+        { start: "14:00", end: "14:30", roomId: existingRoom2.roomId },
+      ]);
+    });
+
+    it("on replaceConfig", () => {
+      officeService.replaceOfficeWith(configOptions);
+
+      expect(officeService.getOffice().schedule?.sessions).toEqual([
+        { start: "11:00", end: "11:30", roomId: existingRoom.roomId },
+        { start: "14:00", end: "14:30", roomId: existingRoom2.roomId },
+      ]);
+    });
   });
 
   it("can create and delete temporary rooms", () => {

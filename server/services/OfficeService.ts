@@ -12,6 +12,13 @@ import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;
 
+const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
+  a: Session,
+  b: Session
+): number =>
+  getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
+  getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
+
 const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
   a: Session,
   b: Session
@@ -29,7 +36,7 @@ export class OfficeService {
   public constructor(private readonly config: Config) {
     this.groups = config.configOptions.groups;
     this.updateRooms(config.configOptions.rooms);
-    this.schedule = config.configOptions.schedule;
+    this.updateSchedule(config.configOptions.schedule);
   }
 
   getOffice(): Office {
@@ -98,6 +105,15 @@ export class OfficeService {
     this.rooms = update.map((room) => OfficeService.roomConfigToRoom(room));
   }
 
+  private updateSchedule(schedule: Schedule | undefined) {
+    const { timezone: zone, sessionStartMinutesOffset } = this.config.clientConfig;
+
+    if (schedule) {
+      this.schedule = schedule;
+      this.schedule.sessions = this.schedule.sessions.sort(sortSessionsByStartTime(zone, sessionStartMinutesOffset));
+    }
+  }
+
   private static roomConfigToRoom(config: RoomConfig): Room {
     return {
       ...config,
@@ -108,7 +124,7 @@ export class OfficeService {
   replaceOfficeWith(configOptions: ConfigOptions) {
     this.updateRooms(configOptions.rooms);
     this.groups = configOptions.groups;
-    this.schedule = configOptions.schedule;
+    this.updateSchedule(configOptions.schedule);
 
     this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();
