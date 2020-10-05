@@ -31,7 +31,7 @@
     "@types/react-dom": "16.9.8",
     "@types/react-router-dom": "5.1.5",
     "@types/sinonjs__fake-timers": "6.0.2",
-    "@types/socket.io-client": "1.4.33",
+    "@types/socket.io-client": "1.4.34",
     "@types/uuid": "8.3.0",
     "uuid": "8.3.0"
   },
