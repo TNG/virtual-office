@@ -8,6 +8,7 @@ import { Config } from "./Config";
 import { ExpressApp } from "./express/ExpressApp";
 import { WebSocketController } from "./express/WebSocketController";
 import { SlackBotService } from "./services/SlackBotService";
+import { ZoomWebhookService } from "./services/ZoomWebhookService";
 
 const result = dotenv.config();
 if (result.error) {
@@ -28,6 +29,10 @@ if (result.error) {
 
   if (config.slack.botOAuthAccessToken) {
     Container.get(SlackBotService);
+  }
+
+  if (config.zoomWebhookApi) {
+    Container.get(ZoomWebhookService);
   }
 
   logger.info(`started on port ${config.port}`);

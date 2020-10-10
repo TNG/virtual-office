@@ -20,6 +20,7 @@ const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
 
 @Service()
 export class Config {
+  public readonly baseUrl = process.env.BASE_URL;
   public readonly port = process.env.PORT || 8080;
   public readonly slack = Config.readSlackConfig();
   public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
@@ -32,6 +33,7 @@ export class Config {
   public readonly clientConfig: ClientConfig = Config.readClientConfig();
   public readonly writeOfficeUpdatesToFileSystem = process.env.WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM === "true";
   public readonly eventWebhook = process.env.EVENT_WEBHOOK;
+  public readonly zoomWebhookApi = process.env.ZOOM_WEBHOOK_API;
 
   constructor() {}
 
