@@ -37,7 +37,7 @@ you can find our experiences in two articles (German only):
     * Extract `Basic Information`
       * You will need the `Client ID` and `Client Secret` in the server config
     * Configure `OAuth & Permissions`
-      * Redirect URL: `${YOUR_BASE_URL_COMES_HERE}/api/slack/callback`
+      * Redirect URL: `${YOUR_BASE_URL_COMES_HERE}/auth/slack/callback`
       * User Token Scope: `identity.basic`, `identity.avatar`, `identity.email`
 
 0. Adapt the Virtual Office configuration.
