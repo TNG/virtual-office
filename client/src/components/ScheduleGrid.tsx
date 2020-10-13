@@ -2,7 +2,7 @@ import React from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
-import { parseTime, printHoursMinutes } from "../time";
+import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
@@ -176,7 +176,11 @@ const ScheduleGrid = (props: Props) => {
         const room = rooms[roomId];
         const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
         const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
-        const roomWithTime = { ...room, subtitle: `(${formattedStart}-${formattedEnd}) ${room.subtitle || ""}` };
+        const timezone = browserTimeZone();
+        const roomWithTime = {
+          ...room,
+          subtitle: `(${formattedStart}-${formattedEnd} ${timezone}) ${room.subtitle || ""}`,
+        };
         const participants = participantsInMeeting(room.meetingId);
 
         return renderGridCard(
