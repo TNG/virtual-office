@@ -7,3 +7,7 @@ export function parseTime(time: string, zone?: string): DateTime {
 export function printHoursMinutes(dateTime: DateTime): string {
   return dateTime.toLocal().toFormat("HH:mm");
 }
+
+export function browserTimeZone(): string {
+  return DateTime.local().toFormat("ZZZZ");
+}
