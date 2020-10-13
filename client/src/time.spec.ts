@@ -23,12 +23,12 @@ describe("time", () => {
   describe("printHoursMinutes", () => {
     it("should print a time zone", () => {
       const dateTime = parseTime("15:16");
-      expect(printHoursMinutes(dateTime)).toEqual("15:16");
+      expect(printHoursMinutes(dateTime)).toEqual("3:16 PM");
     });
 
     it("should consider the timezone", () => {
       const dateTime = parseTime("15:16", "Asia/Samarkand");
-      expect(printHoursMinutes(dateTime)).toEqual("12:16");
+      expect(printHoursMinutes(dateTime)).toEqual("12:16 PM");
     });
   });
 });

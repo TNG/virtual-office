@@ -11,7 +11,3 @@ export function printHoursMinutes(dateTime: DateTime): string {
 export function browserTimeZone(): string {
   return DateTime.local().toFormat("ZZZZ");
 }
-
-export function browserTimeZone(): string {
-  return DateTime.local().toFormat("ZZZZ");
-}
