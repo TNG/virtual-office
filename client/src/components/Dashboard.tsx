@@ -23,6 +23,7 @@ import ScheduleGrid from "./ScheduleGrid";
 import { Schedule } from "../../../server/express/types/Schedule";
 import { search } from "../search";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { Footer } from "./Footer";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -217,6 +218,7 @@ const Dashboard = () => {
       <div className={classes.content}>
         <AppBar onSearchTextChange={setSearchText} title={config.title} />
         <div className={classes.scroller}>{content}</div>
+        {initialLoadCompleted ? <Footer /> : ""}
       </div>
     </div>
   );
