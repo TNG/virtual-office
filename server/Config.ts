@@ -3,6 +3,8 @@ import { findRootDir } from "./express/utils/findRootDir";
 import { v4 as uuid } from "uuid";
 import { ConfigOptions } from "./express/types/ConfigOptions";
 import { ClientConfig } from "./express/types/ClientConfig";
+import * as fs from "fs";
+import { logger } from "./log";
 
 export interface SlackConfig {
   clientId: string;
@@ -80,7 +82,16 @@ export class Config {
     if (process.env.CONFIG) {
       return JSON.parse(process.env.CONFIG);
     }
-    return require(Config.getConfigFile());
+
+    const configFile = Config.getConfigFile();
+    if (fs.existsSync(configFile)) {
+      return require(configFile);
+    } else {
+      logger.warn(`Config file '${configFile}' does not exist, creating default config`);
+      const emptyConfig: ConfigOptions = { rooms: [], groups: [] };
+      fs.writeFileSync(configFile, JSON.stringify(emptyConfig));
+      return emptyConfig;
+    }
   }
 
   private static readAdminEndpointsCredentials(): Credentials | undefined {
