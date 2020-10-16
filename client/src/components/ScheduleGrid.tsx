@@ -177,9 +177,10 @@ const ScheduleGrid = (props: Props) => {
         const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
         const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
         const timezone = browserTimeZone();
+        const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
         const roomWithTime = {
           ...room,
-          subtitle: `(${formattedStart}-${formattedEnd} ${timezone}) ${room.subtitle || ""}`,
+          subtitle: `(${timeString}) ${room.subtitle || ""}`,
         };
         const participants = participantsInMeeting(room.meetingId);
 
