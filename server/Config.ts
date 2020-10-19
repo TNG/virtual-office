@@ -23,7 +23,7 @@ const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
 @Service()
 export class Config {
   public readonly baseUrl = process.env.BASE_URL;
-  public readonly port = process.env.PORT || 8080;
+  public readonly port = process.env.PORT || 9000;
   public readonly slack = Config.readSlackConfig();
   public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
