@@ -22,6 +22,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
     background: `${theme.palette.background.default}`,
   },
+  logoContainer: {
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    paddingRight: 8,
+  },
+  logo: {
+    height: 44,
+  },
   coffee: {
     margin: 0,
   },
@@ -81,6 +90,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export interface Props {
   onSearchTextChange: (searchText: string) => void;
   title?: string;
+  logoUrl?: string;
 }
 
 const AppBar = (props: Props) => {
@@ -101,9 +111,15 @@ const AppBar = (props: Props) => {
   return (
     <MaterialAppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
-          <LocalCafeIcon />
-        </IconButton>
+        {props.logoUrl ? (
+          <div className={classes.logoContainer}>
+            <img className={classes.logo} src={props.logoUrl} alt="logo" />
+          </div>
+        ) : (
+          <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
+            <LocalCafeIcon />
+          </IconButton>
+        )}
         <Typography variant="h6" className={classes.title}>
           {props.title ?? "Virtual Office"}
         </Typography>

@@ -73,7 +73,7 @@ you can find our experiences in two articles (German only):
 
 | Variable name                              | Usage
 | --------------------                       |:----------------
-| `PORT`                                     | Port the app is running on, defaults to 8080
+| `PORT`                                     | Port the app is running on, defaults to 9000
 | `SLACK_CLIENT_ID`                          | The Client ID you got when creating the Slack application
 | `SLACK_SECRET`                             | The Client Secret you got when creating the Slack application
 | `CONFIG` OR `CONFIG_LOCATION`              | A office config as JSON string `OR`<br>A file system location to the office configuration
@@ -83,6 +83,7 @@ you can find our experiences in two articles (German only):
 | `VIEW_MODE`                                | Determines how the frontend will show the rooms, either `list` or `grid`
 | `THEME`                                    | Either `light` or `dark`
 | `BACKGROUND_URL`                           | URL to a background image
+| `LOGO_URL`                                 | URL to a logo image to be included in the header
 | `WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM`      | When replacing the office via the /admin API, write the changes to the filesstem. Will only be done when set to `true`
 | `TIMEZONE`                                 | Timezone determining the start and end dates of sessions. If unset, the server will use the server timezone and the clients will use the client timezone. Timezone is in format "Europe/Berlin", a list can be found [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 | `TITLE`                                    | Title of the app

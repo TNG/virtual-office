@@ -216,7 +216,7 @@ const Dashboard = () => {
   return (
     <div className={classes.background}>
       <div className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} title={config.title} />
+        <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
         <div className={classes.scroller}>{content}</div>
         {initialLoadCompleted ? <Footer /> : ""}
       </div>

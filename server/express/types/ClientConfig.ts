@@ -5,4 +5,5 @@ export interface ClientConfig {
   timezone?: string;
   sessionStartMinutesOffset: number;
   title?: string;
+  logoUrl?: string;
 }

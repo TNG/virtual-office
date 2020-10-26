@@ -45,6 +45,7 @@ export class Config {
     const viewMode = process.env.VIEW_MODE;
     const timezone = process.env.TIMEZONE;
     const title = process.env.TITLE;
+    const logoUrl = process.env.LOGO_URL;
     const sessionStartMinutesOffset = parseInt(process.env.SESSION_START_MINUTES_OFFSET ?? "10", 10);
 
     return {
@@ -53,6 +54,7 @@ export class Config {
       viewMode: viewMode as any,
       timezone,
       title,
+      logoUrl,
       sessionStartMinutesOffset,
     };
   }
