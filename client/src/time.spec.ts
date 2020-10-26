@@ -3,7 +3,7 @@ import { parseTime, printHoursMinutes } from "./time";
 
 describe("time", () => {
   beforeEach(() => {
-    Settings.defaultZoneName = "Europe/Berlin";
+    Settings.defaultZoneName = "UTC";
   });
 
   describe("parseTime", () => {
@@ -15,7 +15,7 @@ describe("time", () => {
 
     it("should consider the timezone", () => {
       const dateTime = parseTime("15:16", "Asia/Samarkand");
-      expect(dateTime.hour).toEqual(12);
+      expect(dateTime.hour).toEqual(10);
       expect(dateTime.minute).toEqual(16);
     });
   });
@@ -28,7 +28,7 @@ describe("time", () => {
 
     it("should consider the timezone", () => {
       const dateTime = parseTime("15:16", "Asia/Samarkand");
-      expect(printHoursMinutes(dateTime)).toEqual("12:16 PM");
+      expect(printHoursMinutes(dateTime)).toEqual("10:16 AM");
     });
   });
 });
