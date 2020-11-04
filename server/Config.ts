@@ -46,6 +46,7 @@ export class Config {
     const timezone = process.env.TIMEZONE;
     const title = process.env.TITLE;
     const logoUrl = process.env.LOGO_URL;
+    const faviconUrl = process.env.FAVICON_URL;
     const sessionStartMinutesOffset = parseInt(process.env.SESSION_START_MINUTES_OFFSET ?? "10", 10);
 
     return {
@@ -55,6 +56,7 @@ export class Config {
       timezone,
       title,
       logoUrl,
+      faviconUrl,
       sessionStartMinutesOffset,
     };
   }

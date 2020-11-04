@@ -6,4 +6,5 @@ export interface ClientConfig {
   sessionStartMinutesOffset: number;
   title?: string;
   logoUrl?: string;
+  faviconUrl?: string;
 }

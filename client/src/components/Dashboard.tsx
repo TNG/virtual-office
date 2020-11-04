@@ -131,6 +131,15 @@ const Dashboard = () => {
   const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
 
+  if (config?.faviconUrl) {
+    const favicon = document.getElementById("favicon") as HTMLLinkElement;
+    const appleTouchIcon = document.getElementById("apple-touch-icon") as HTMLLinkElement;
+    if (favicon && appleTouchIcon) {
+      favicon.href = config.faviconUrl;
+      appleTouchIcon.href = config.faviconUrl;
+    }
+  }
+
   function renderSchedule(schedule: Schedule, viewMode: string) {
     const { rooms } = search(searchText, officeState.office, meetingsIndexed);
     const roomsIndexed = keyBy(rooms, (room) => room.roomId);
