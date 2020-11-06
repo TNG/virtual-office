@@ -28,7 +28,7 @@ export class Config {
   public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
-  public readonly disableAuth = !!process.env.DISABLE_AUTH;
+  public readonly disableAuth = process.env.DISABLE_AUTH === "true";
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
