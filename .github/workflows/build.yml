@@ -22,3 +22,7 @@ jobs:
       run: cd server && npm run test
     - name: test client
       run: cd client && npm run test:ci
+    - name: Run cypress tests
+      uses: cypress-io/github-action@v2
+      with:
+        start: cd server && npm start:e2e
