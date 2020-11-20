@@ -2,7 +2,7 @@ describe("Rooms", () => {
   it("shows an empty office", () => {
     cy.replaceOffice({ rooms: [], groups: [] });
 
-    cy.visit("http://localhost:8080");
+    cy.visit("/");
 
     cy.contains("Virtual Office for Cypress");
   });
@@ -10,7 +10,7 @@ describe("Rooms", () => {
   it("shows an office with a room", () => {
     cy.replaceOffice({ rooms: [{ roomId: "1", name: "A room", meetingId: "123", joinUrl: "join-url" }], groups: [] });
 
-    cy.visit("http://localhost:8080");
+    cy.visit("/");
 
     cy.get(".MuiCard-root").as("card");
     cy.get("@card").contains("A room");
@@ -27,7 +27,7 @@ describe("Rooms", () => {
       groups: [],
     });
 
-    cy.visit("http://localhost:8080");
+    cy.visit("/");
 
     cy.get(".MuiCard-root").first().as("firstCard");
     cy.get("@firstCard").contains("A room");

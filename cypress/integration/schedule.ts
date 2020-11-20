@@ -15,7 +15,7 @@ describe("Schedule", () => {
       },
     });
 
-    cy.visit("http://localhost:8080");
+    cy.visit("/");
     cy.get(".MuiCircularProgress-root");
     cy.tick(500);
 
@@ -35,7 +35,7 @@ describe("Schedule", () => {
       },
     });
 
-    cy.visit("http://localhost:8080");
+    cy.visit("/");
     cy.get(".MuiCircularProgress-root");
     cy.tick(500);
 

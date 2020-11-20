@@ -13,6 +13,8 @@
     "installAll": "npm install && (cd client && npm install) && (cd server && npm install)",
     "buildAll": "(cd client && npm run build) && (cd server && npm run build)",
     "testAll": "(cd server && npm run test) && (cd client && npm run test:ci)",
+    "cypress": "cypress run",
+    "cypress:dev": "CYPRESS_BASE_URL=http://localhost:8080 cypress open",
     "start": "cd server && npm run start"
   },
   "husky": {
