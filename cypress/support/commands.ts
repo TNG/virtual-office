@@ -25,6 +25,8 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import { Office } from "../../server/express/types/Office";
 
+import "@testing-library/cypress/add-commands";
+
 //@ts-ignore-next-line
 declare global {
   namespace Cypress {
