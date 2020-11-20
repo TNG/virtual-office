@@ -111,6 +111,8 @@ export class OfficeService {
     if (schedule) {
       this.schedule = schedule;
       this.schedule.sessions = this.schedule.sessions.sort(sortSessionsByStartTime(zone, sessionStartMinutesOffset));
+    } else {
+      this.schedule = undefined;
     }
   }
 
