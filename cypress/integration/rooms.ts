@@ -13,9 +13,7 @@ describe("Rooms", () => {
     cy.visit("/");
 
     cy.get(".MuiCard-root").as("card");
-    cy.get("@card").contains("A room");
-    cy.get("@card").contains("No one is here");
-    cy.get("@card").contains("Join");
+    cy.assertCard({ alias: "@card", title: "A room", isJoinable: true });
   });
 
   it("shows an office with two rooms", () => {
@@ -30,14 +28,9 @@ describe("Rooms", () => {
     cy.visit("/");
 
     cy.get(".MuiCard-root").first().as("firstCard");
-    cy.get("@firstCard").contains("A room");
-    cy.get("@firstCard").contains("No one is here");
-    cy.get("@firstCard").contains("Join");
+    cy.assertCard({ alias: "@firstCard", title: "A room", isJoinable: true });
 
     cy.get(".MuiCard-root").last().as("secondCard");
-    cy.get("@secondCard").contains("A second room");
-    cy.get("@secondCard").contains("A subtitle");
-    cy.get("@secondCard").contains("No one is here");
-    cy.get("@secondCard").contains("Join");
+    cy.assertCard({ alias: "@secondCard", title: "A second room", subtitle: "A subtitle", isJoinable: true });
   });
 });

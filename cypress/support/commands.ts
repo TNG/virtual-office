@@ -32,6 +32,13 @@ declare global {
   namespace Cypress {
     interface Chainable<Subject> {
       replaceOffice(office: Office): void;
+      assertCard(options: {
+        alias: string;
+        title: string;
+        subtitle?: string;
+        isJoinable: boolean;
+        isDisabled?: boolean;
+      }): void;
     }
   }
 }
@@ -44,5 +51,32 @@ Cypress.Commands.add("replaceOffice", (office: Office) => {
     auth: { username: "admin", password: "Testp4ssw0rd" },
   });
 });
+
+Cypress.Commands.add(
+  "assertCard",
+  ({
+    alias,
+    title,
+    subtitle,
+    isJoinable,
+    isDisabled,
+  }: {
+    alias: string;
+    title: string;
+    subtitle?: string;
+    isJoinable: boolean;
+    isDisabled?: boolean;
+  }) => {
+    if (isDisabled === undefined) {
+      isDisabled = !isJoinable;
+    }
+    cy.get(alias)
+      .should("contain", title)
+      .and("contain", subtitle || "")
+      .and("have.css", "opacity", isDisabled ? "0.65" : "1")
+      .and(`${isJoinable ? "" : "not."}contain`, "No one is here")
+      .and(`${isJoinable ? "" : "not."}contain`, "Join");
+  }
+);
 
 export {};
