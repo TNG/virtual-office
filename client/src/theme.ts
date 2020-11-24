@@ -52,13 +52,13 @@ const palettes = {
   dark: {
     primary: {
       main: "#323232",
-      light: "#ffe842",
-      contrastText: "#ffed3b",
+      light: "#2d8cff",
+      contrastText: "#5ea7ff",
     },
     secondary: {
       main: "#2d8cff",
       light: "#e5f1ff",
-      contrastText: "#ffffff",
+      contrastText: "#fbfbfe",
     },
     background: {
       default: "#323232",
