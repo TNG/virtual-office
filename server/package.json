@@ -8,6 +8,8 @@
     "test": "jest",
     "format": "cd .. && npm run format",
     "start": "node build/server/index.js",
+    "serve:e2e": "nodemon --exec 'ts-node -r dotenv/config --files ./index.ts dotenv_config_path=../cypress/.env.test'",
+    "start:e2e": "node -r dotenv/config build/server/index.js dotenv_config_path=../cypress/.env.test",
     "generateTestData": "ts-node ./generateTestData.ts"
   },
   "dependencies": {
