@@ -535,6 +535,14 @@
             "type": "string",
             "example": "Coffee Kitchen"
           },
+          "subtitle": {
+            "type": "string",
+            "example": "@Cozy Corner"
+          },
+          "description": {
+            "type": "string",
+            "example": "Come in and chill out"
+          },
           "joinUrl": {
             "type": "string",
             "example": "https://zoom.us/j/xxxxxxxx"

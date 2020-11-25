@@ -61,6 +61,8 @@
     {
       "meetingId": "5",
       "name": "Node.js Deep Dive",
+      "subtitle": "@NodeFanboy",
+      "description": "Node rocks.",
       "titleUrl": "https://nodejs.org",
       "joinUrl": "https://zoom.us/j/5",
       "links": [

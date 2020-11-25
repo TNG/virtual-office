@@ -5,50 +5,65 @@ import { makeStyles } from "@material-ui/styles";
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
-const useStyles = makeStyles<Theme, { isDisabled?: boolean }>((theme) => ({
+const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
-    flexDirection: "column",
     display: "flex",
-    backgroundColor: theme.palette.secondary.light,
-    [theme.breakpoints.up("sm")]: {
-      flexDirection: "row",
-    },
+    flexDirection: "column",
+    padding: 12,
+    boxSizing: "border-box",
+    height: (props) => (props.fillHeight ? "100%" : undefined),
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
+    backgroundColor: theme.palette.secondary.light,
   },
   header: {
     flex: "0 0 auto",
+    padding: 0,
     minHeight: 40,
+    alignItems: "flex-start",
   },
   content: {
+    flex: "0 1 100%",
+    padding: "4px 8px 0 8px",
     display: "flex",
-    flex: "1 1 auto",
-    alignItems: "center",
-    paddingTop: 8,
-    paddingBottom: 8,
-    flexGrow: 1,
+    alignItems: "stretch",
+    flexDirection: "column-reverse",
+    justifyContent: (props) => (props.isListMode ? "space-between" : "flex-end"),
+    "&:last-child": {
+      padding: "0 8px",
+    },
+
+    [theme.breakpoints.up("sm")]: {
+      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+      flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
+    },
   },
   actions: {
+    height: 44,
+    padding: 0,
     flex: "0 0 auto",
     display: "flex",
-    flexDirection: "row-reverse",
     justifyContent: "space-between",
+    flexDirection: "row-reverse",
   },
   avatarGroup: {
     marginLeft: 8,
   },
   button: {
-    margin: 4,
+    margin: "12px 4px 0",
   },
 }));
 
 interface Props {
   group: Group;
   isJoinable: boolean;
+  isListMode: boolean;
   isDisabled?: boolean;
+  fillHeight?: boolean;
 }
 
-const GroupJoinCard = ({ group, isJoinable, isDisabled }: Props) => {
-  const classes = useStyles({ isDisabled });
+const GroupJoinCard = (props: Props) => {
+  const { group, isJoinable, isListMode, isDisabled } = props;
+  const classes = useStyles(props);
 
   if (!group.groupJoin) {
     return null;
@@ -66,7 +81,7 @@ const GroupJoinCard = ({ group, isJoinable, isDisabled }: Props) => {
           href={href}
           target="_blank"
         >
-          Join
+          Join Random
         </Button>
       )
     );
@@ -76,7 +91,7 @@ const GroupJoinCard = ({ group, isJoinable, isDisabled }: Props) => {
     <Card className={classes.root} key={group.id}>
       <CardHeader
         className={classes.header}
-        avatar={<GroupIcon color="action" />}
+        avatar={<GroupIcon color="action" fontSize="large" />}
         title={<Typography variant="h5">{group.groupJoin.title}</Typography>}
         subheader={<Typography variant="body2">{group.groupJoin.subtitle}</Typography>}
       />
