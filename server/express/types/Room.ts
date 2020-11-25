@@ -5,6 +5,7 @@ interface RoomWithoutId {
   meetingId: string;
   name: string;
   subtitle?: string;
+  description?: string;
   joinUrl?: string;
   titleUrl?: string;
   temporary?: boolean;

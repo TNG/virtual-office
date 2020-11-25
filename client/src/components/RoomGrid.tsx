@@ -28,8 +28,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     flex: "0 0 auto",
     padding: 8,
     boxSizing: "border-box",
-  },
-  responsiveCard: {
     [theme.breakpoints.up("sm")]: {
       width: "50%",
     },
@@ -58,9 +56,9 @@ const RoomGrid = (props: Props) => {
   const { group, rooms, meetings, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
-  function renderGridCard(key: string, card: any, responsive = false) {
+  function renderGridCard(key: string, card: any) {
     return (
-      <div key={key} className={`${classes.card} ${responsive ? classes.responsiveCard : ""}`}>
+      <div key={key} className={classes.card}>
         {card}
       </div>
     );
@@ -98,16 +96,20 @@ const RoomGrid = (props: Props) => {
           isDisabled={isDisabled}
           isJoinable={isJoinable}
           isListMode={isListMode}
-        />,
-        !isListMode || !!group.groupJoin
+          fillHeight={true}
+        />
       );
     });
   }
 
   function renderGroupJoinCard() {
-    return (
-      group.groupJoin &&
-      renderGridCard(`group-join-${group.id}`, <GroupJoinCard group={group} isJoinable={isJoinable} />)
+    if (!group.groupJoin) {
+      return;
+    }
+
+    return renderGridCard(
+      `group-join-${group.id}`,
+      <GroupJoinCard group={group} isJoinable={isJoinable} isListMode={isListMode} fillHeight={true} />
     );
   }
 

@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from "react";
+import { compact } from "lodash";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import RoomIcon from "@material-ui/icons/People";
+
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import RoomIcon from "@material-ui/icons/People";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
@@ -60,7 +62,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 
     [theme.breakpoints.up("sm")]: {
       alignItems: (props) => (props.isListMode ? "center" : "stretch"),
-      flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
+      flexDirection: (props) => (props.isListMode ? "column" : "column-reverse"),
     },
   },
   participants: {
@@ -148,6 +150,9 @@ const RoomCard = (props: Props) => {
   }
 
   const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
+  const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
+
+  const joinUrlView = renderJoinUrl();
   const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
@@ -158,9 +163,6 @@ const RoomCard = (props: Props) => {
       />
     </div>
   );
-
-  const joinUrlView = renderJoinUrl();
-  const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
   const actionsView = joinUrlView && participantsView && (
     <CardActions className={classes.actions}>
       {participantsView}
@@ -168,19 +170,28 @@ const RoomCard = (props: Props) => {
     </CardActions>
   );
 
-  const bodyView = (roomLinksView || participantsView || joinUrlView) && (
+  const bodyView = (contentView || actionsView) && (
     <div className={classes.body}>
       {contentView}
       {actionsView}
     </div>
   );
 
-  function renderExpandButton() {
-    if (!expandable) {
-      return null;
-    }
+  function renderSubheader() {
+    const subtitle = compact([room.subtitle, room.description]).join(" - ");
+    const subtitleClass = collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle;
+    const expandButton = expandable && (
+      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>
+    );
 
-    return <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>;
+    return (
+      <div className={classes.subtitle} onClick={() => setCollapseSubtitle(!collapseSubtitle)}>
+        <Typography variant="body2" className={subtitleClass} ref={subtitleRef}>
+          {subtitle}
+        </Typography>
+        {expandButton}
+      </div>
+    );
   }
 
   return (
@@ -195,18 +206,7 @@ const RoomCard = (props: Props) => {
           )
         }
         title={renderTitle()}
-        subheader={
-          <div className={classes.subtitle} onClick={() => setCollapseSubtitle(!collapseSubtitle)}>
-            <Typography
-              variant="body2"
-              className={collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle}
-              ref={subtitleRef}
-            >
-              {room.subtitle}
-            </Typography>
-            {renderExpandButton()}
-          </div>
-        }
+        subheader={renderSubheader()}
       />
 
       {bodyView}

@@ -17,6 +17,7 @@ describe("OfficeService", () => {
     roomId: "2",
     meetingId: "meeting-2",
     name: "Test2",
+    description: "Come in and chill out",
     joinUrl: "http://bla.blub",
   };
 
