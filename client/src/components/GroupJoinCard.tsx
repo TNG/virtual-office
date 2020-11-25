@@ -62,7 +62,7 @@ interface Props {
 }
 
 const GroupJoinCard = (props: Props) => {
-  const { group, isJoinable, isListMode, isDisabled } = props;
+  const { group, isJoinable } = props;
   const classes = useStyles(props);
 
   if (!group.groupJoin) {
