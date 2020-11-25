@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 import * as serviceWorker from "./serviceWorker";
 import Login from "./components/Login";
@@ -16,6 +17,7 @@ axios.get("/api/clientConfig").then(({ data }) => {
   ReactDOM.render(
     <BrowserRouter>
       <ThemeProvider theme={theme(data)}>
+        <CssBaseline />
         <Switch>
           <Route exact path="/" component={Dashboard} />
           <Route path="/login">
