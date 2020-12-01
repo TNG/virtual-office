@@ -34,20 +34,22 @@ function adaptSlackUser(profile: any): User {
 export class AuthRoute implements ExpressRoute {
   constructor(readonly config: Config, readonly knownUsersService: KnownUsersService) {
     const slackConfig = config.slack;
-    passport.use(
-      new SlackStrategy(
-        {
-          clientID: slackConfig.clientId,
-          clientSecret: slackConfig.secret,
-          callbackURL: slackConfig.callbackURL,
-          scope: ["identity.basic", "identity.email", "identity.avatar"],
-        },
-        (accessToken: string, refreshToken: string, profile: any, cb: any) => {
-          const user = adaptSlackUser(profile);
-          return cb(undefined, user);
-        }
-      )
-    );
+    if (slackConfig) {
+      passport.use(
+        new SlackStrategy(
+          {
+            clientID: slackConfig.clientId,
+            clientSecret: slackConfig.secret,
+            callbackURL: slackConfig.callbackURL,
+            scope: ["identity.basic", "identity.email", "identity.avatar"],
+          },
+          (accessToken: string, refreshToken: string, profile: any, cb: any) => {
+            const user = adaptSlackUser(profile);
+            return cb(undefined, user);
+          }
+        )
+      );
+    }
   }
 
   router(): Router {

@@ -27,7 +27,7 @@ if (result.error) {
 
   Container.get(WebSocketController).init(server);
 
-  if (config.slack.botOAuthAccessToken) {
+  if (config.slack?.botOAuthAccessToken) {
     Container.get(SlackBotService);
   }
 

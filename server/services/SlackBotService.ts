@@ -23,7 +23,7 @@ export class SlackBotService {
     private readonly meetingsService: MeetingsService,
     private readonly officeService: OfficeService
   ) {
-    if (config.slack.botOAuthAccessToken) {
+    if (config.slack && config.slack.botOAuthAccessToken) {
       this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
       this.meetingsService.listenParticipantsChange((event) => this.onRoomEvent(event));
 

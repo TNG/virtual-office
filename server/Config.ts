@@ -24,11 +24,11 @@ const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
 export class Config {
   public readonly baseUrl = process.env.BASE_URL;
   public readonly port = process.env.PORT || 9000;
-  public readonly slack = Config.readSlackConfig();
+  public readonly disableAuth = process.env.DISABLE_AUTH === "true";
+  public readonly slack = Config.readSlackConfig(this.disableAuth);
   public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
-  public readonly disableAuth = process.env.DISABLE_AUTH === "true";
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
@@ -61,7 +61,11 @@ export class Config {
     };
   }
 
-  private static readSlackConfig(): SlackConfig {
+  private static readSlackConfig(disableAuth: boolean): SlackConfig | undefined {
+    if (disableAuth) {
+      return undefined;
+    }
+
     const secret = process.env.SLACK_SECRET;
     const clientId = process.env.SLACK_CLIENT_ID;
     const callbackURL = process.env.SLACK_CALLBACK_URL;
