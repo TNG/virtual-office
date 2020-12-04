@@ -35,7 +35,7 @@ function searchRooms(search: string, rooms: Room[], groups: Group[], meetings: M
       ((group.name && group.name.toLowerCase().includes(search)) ||
         (group.groupJoin && group.groupJoin.title.toLowerCase().includes(search)));
 
-    const participants = (meetings[room.meetingId] && meetings[room.meetingId].participants) || [];
+    const participants = (room.meetingId && meetings[room.meetingId] && meetings[room.meetingId].participants) || [];
     const someParticipantMatches = participants.some((participant) => participantMatches(search, participant));
 
     return nameMatches || groupMatches || someParticipantMatches;

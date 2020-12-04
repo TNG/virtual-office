@@ -27,17 +27,32 @@ import { Office } from "../../server/express/types/Office";
 
 import "@testing-library/cypress/add-commands";
 
+type WebhookEvent =
+  | "meeting.participant_joined"
+  | "meeting.participant_left"
+  | "webinar.participant_joined"
+  | "webinar.participant_left";
+
+type WebhookParticipant = {
+  user_id: string;
+  user_name: string;
+  id: string;
+};
+
 //@ts-ignore-next-line
 declare global {
   namespace Cypress {
     interface Chainable<Subject> {
+      webhook(event: WebhookEvent, meetingId: string, participant: WebhookParticipant): void;
       replaceOffice(office: Office): void;
+      clearAllParticipants(): void;
       assertCard(options: {
         alias: string;
         title: string;
         subtitle?: string;
         isJoinable: boolean;
         isDisabled?: boolean;
+        hasNoParticipantsView?: boolean;
       }): void;
     }
   }
@@ -51,6 +66,20 @@ Cypress.Commands.add("replaceOffice", (office: Office) => {
     auth: { username: "admin", password: "Testp4ssw0rd" },
   });
 });
+Cypress.Commands.add("clearAllParticipants", () => {
+  cy.request({
+    method: "POST",
+    url: "http://localhost:9000/api/admin/clearAllParticipants",
+    auth: { username: "admin", password: "Testp4ssw0rd" },
+  });
+});
+Cypress.Commands.add("webhook", (event: WebhookEvent, meetingId: string, participant: WebhookParticipant) => {
+  cy.request({
+    method: "POST",
+    url: "http://localhost:9000/api/zoomus/webhook",
+    body: { event, payload: { object: { id: meetingId, participant } } },
+  });
+});
 
 Cypress.Commands.add(
   "assertCard",
@@ -60,12 +89,14 @@ Cypress.Commands.add(
     subtitle,
     isJoinable,
     isDisabled,
+    hasNoParticipantsView,
   }: {
     alias: string;
     title: string;
     subtitle?: string;
     isJoinable: boolean;
     isDisabled?: boolean;
+    hasNoParticipantsView?: boolean;
   }) => {
     if (isDisabled === undefined) {
       isDisabled = !isJoinable;
@@ -74,7 +105,7 @@ Cypress.Commands.add(
       .should("contain", title)
       .and("contain", subtitle || "")
       .and("have.css", "opacity", isDisabled ? "0.65" : "1")
-      .and(`${isJoinable ? "" : "not."}contain`, "No one is here")
+      .and(`${isJoinable && !hasNoParticipantsView ? "" : "not."}contain`, "No one is here")
       .and(`${isJoinable ? "" : "not."}contain`, "Join");
   }
 );

@@ -36,11 +36,11 @@ export class SlackBotService {
   }
 
   private handleMeetingEventForRoom(event: MeetingEvent, room: Room) {
-    const participants = this.meetingsService.getParticipantsIn(room.meetingId).length;
+    const participants = this.meetingsService.getParticipantsIn(room.roomId).length;
     const slackNotification = room.slackNotification;
     logger.info(
       `Slack message roomEvent for room=${
-        room.meetingId
+        room.roomId
       }, roomFound=${!!room}, slackNotification=${!!slackNotification}, participants=${participants}, eventType=${
         event.type
       }`
@@ -76,7 +76,7 @@ export class SlackBotService {
   private sendRecurringNotification() {
     const rooms = this.officeService.getOffice().rooms;
     rooms.forEach((room) => {
-      const participants = this.meetingsService.getParticipantsIn(room.meetingId);
+      const participants = this.meetingsService.getParticipantsIn(room.roomId);
       if (hasSlackNotifications(room) && participants.length > 0 && this.shouldSendRecurringNotification(room)) {
         this.sendParticipantUpdate(room, participants);
       }
@@ -114,7 +114,7 @@ export class SlackBotService {
   }
 
   private sendMessageToRoom(room: Room, blocks: (KnownBlock | Block)[]) {
-    this.lastNotificationTime[room.meetingId] = Date.now();
+    this.lastNotificationTime[room.roomId] = Date.now();
 
     (async () => {
       if (!this.slackClient || !room.slackNotification) {
@@ -135,9 +135,8 @@ export class SlackBotService {
   private shouldSendRecurringNotification(room: MarkRequired<Room, "slackNotification">) {
     return (
       room.slackNotification.notificationInterval &&
-      (!this.lastNotificationTime[room.meetingId] ||
-        Date.now() - this.lastNotificationTime[room.meetingId] >
-          room.slackNotification.notificationInterval * 60 * 1000)
+      (!this.lastNotificationTime[room.roomId] ||
+        Date.now() - this.lastNotificationTime[room.roomId] > room.slackNotification.notificationInterval * 60 * 1000)
     );
   }
 }

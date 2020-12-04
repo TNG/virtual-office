@@ -128,8 +128,8 @@ const ScheduleGrid = (props: Props) => {
     );
   }
 
-  function participantsInMeeting(meetingId: string): MeetingParticipant[] {
-    if (meetings[meetingId]) {
+  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+    if (meetingId && meetings[meetingId]) {
       return meetings[meetingId].participants;
     }
     return [];

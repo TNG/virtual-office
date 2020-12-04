@@ -9,7 +9,7 @@ import { Group } from "../express/types/Group";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { MeetingsService } from "./MeetingsService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
-import { Room } from "../express/types/Room";
+import { RoomWithMeetingId } from "../express/types/Room";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;
@@ -36,12 +36,12 @@ describe("GroupJoinService", () => {
   const roomWithMinimum = randomRoom();
   const roomWithMoreThanMinimum = randomRoom();
 
-  function randomRoom(): Room {
+  function randomRoom(): RoomWithMeetingId {
     return {
       groupId,
       roomId: `room__${uuid()}`,
       meetingId: `meeting__${uuid()}`,
-    } as Room;
+    } as RoomWithMeetingId;
   }
 
   function generateParticipants(count: number): MeetingParticipant[] {

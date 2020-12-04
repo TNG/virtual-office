@@ -59,6 +59,7 @@ export class MeetingsService {
     this.leave(meetingId, toJoin);
 
     this.meetingParticipants[meetingId].push(toJoin);
+    logger.debug("joinRoom - sending join event to client");
     this.notify(meetingId, toJoin, "join");
 
     this.eventService.trackJoinEvent(meetingId, toJoin);
@@ -77,6 +78,7 @@ export class MeetingsService {
     const newParticipants = oldParticipants.filter((participant) => participant.id !== toLeave.id);
     if (oldParticipants.length !== newParticipants.length) {
       this.meetingParticipants[meetingId] = newParticipants;
+      logger.debug("leaveRoom - sending leave event to client");
       this.notify(meetingId, toLeave, "leave");
     }
   }
@@ -103,6 +105,12 @@ export class MeetingsService {
     remainingParticipants.forEach((participant) => {
       this.notify(roomId, participant, "leave");
     });
+  }
+
+  clearAllParticipants() {
+    logger.info(`clearAllParticipants - all participants had to leave`);
+
+    this.meetingParticipants = {};
   }
 
   private enrich(participant: MeetingParticipant): MeetingParticipant {

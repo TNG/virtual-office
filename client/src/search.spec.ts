@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { search } from "./search";
-import { Room } from "../../server/express/types/Room";
+import { Room, RoomWithMeetingId } from "../../server/express/types/Room";
 import { Office } from "../../server/express/types/Office";
 import { Group } from "../../server/express/types/Group";
 import { Meeting } from "../../server/express/types/Meeting";
@@ -15,28 +15,28 @@ const groupStarWars: Group = {
   name: "Star Wars",
 };
 
-const roomMordor: Room = {
+const roomMordor: RoomWithMeetingId = {
   meetingId: "1",
   roomId: "room1",
   name: "Mordor",
   groupId: groupLordRings.id,
   joinUrl: "http://mordor.join",
 };
-const roomBree: Room = {
+const roomBree: RoomWithMeetingId = {
   meetingId: "2",
   roomId: "room2",
   name: "Bree City",
   groupId: groupLordRings.id,
   joinUrl: "http://bree.join",
 };
-const roomCloud: Room = {
+const roomCloud: RoomWithMeetingId = {
   meetingId: "3",
   roomId: "room3",
   name: "Cloud City",
   groupId: groupStarWars.id,
   joinUrl: "http://cloud.join",
 };
-const roomOutback: Room = {
+const roomOutback: RoomWithMeetingId = {
   meetingId: "4",
   roomId: "room4",
   name: "Outback",

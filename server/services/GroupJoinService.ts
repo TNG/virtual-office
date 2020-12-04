@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { minBy, random } from "lodash";
 
-import { Room } from "../express/types/Room";
+import { Room, RoomWithMeetingId } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 import { logger } from "../log";
@@ -44,14 +44,16 @@ export class GroupJoinService {
       return undefined;
     }
 
-    const groupRooms = office.rooms.filter((room) => room.groupId === groupId);
+    const groupRooms = office.rooms
+      .filter((room) => room.groupId === groupId)
+      .filter((room): room is RoomWithMeetingId => !!room.meetingId);
     if (groupRooms.length === 0) {
       logger.info(`joinRoomFor(groupId=${groupId}) - cannot find any rooms for the given group`);
       return undefined;
     }
 
     const room = this.chooseRoom(group, groupRooms);
-    if (room) {
+    if (room && room.meetingId) {
       this.reserveSpaceIn(room.meetingId);
       logger.info(`joinRoomFor(groupId=${groupId}) - chosen room is ${room.meetingId} - ${room.name}`);
     } else {
@@ -61,7 +63,7 @@ export class GroupJoinService {
     return room;
   }
 
-  private chooseRoom(group: GroupWithGroupJoin, groupRooms: Room[]): Room | undefined {
+  private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): Room | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
@@ -119,13 +121,13 @@ export class GroupJoinService {
     }
   }
 
-  participantsInRoom(room: Room): number {
+  participantsInRoom(room: RoomWithMeetingId): number {
     const reserved = this.reservedSpaces[room.meetingId] || [];
     const participants = this.meetingsService.getParticipantsIn(room.meetingId).length;
     return participants + reserved.length;
   }
 
-  private roomsWithParticipants(rooms: Room[], count: number): Room[] {
+  private roomsWithParticipants(rooms: RoomWithMeetingId[], count: number): RoomWithMeetingId[] {
     return rooms.filter((room) => this.participantsInRoom(room) === count);
   }
 }

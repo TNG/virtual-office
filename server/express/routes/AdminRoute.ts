@@ -58,6 +58,11 @@ export class AdminRoute implements ExpressRoute {
       this.clientConfigService.updateClientConfig(req.body);
       sendNotPersistentResponse(res);
     });
+    router.post("/clearAllParticipants", loginMiddleware, (req: any, res) => {
+      logger.info("clearing all participants");
+      this.roomsService.clearAllParticipants();
+      res.sendStatus(200);
+    });
 
     return router;
   }
