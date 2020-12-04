@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
 import { Group } from "../../server/express/types/Group";
 import { v4 as uuid } from "uuid";
@@ -76,7 +77,7 @@ describe("disabledRooms", () => {
 
     const result = mapPotentiallyDisabledGroups(groups, undefined);
 
-    expect(result).toEqual([
+    expect(result).to.deep.equal([
       { group: disabledBefore, isUpcoming: true, isExpired: false, isJoinable: false },
       { group: disabledAfter, isUpcoming: false, isExpired: true, isJoinable: false },
       { group: disabledBeforeAndAfter, isUpcoming: true, isExpired: true, isJoinable: false },

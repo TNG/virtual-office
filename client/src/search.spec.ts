@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { search } from "./search";
 import { Room } from "../../server/express/types/Room";
 import { Office } from "../../server/express/types/Office";
@@ -88,33 +89,33 @@ describe("search", () => {
   it("should do nothing when no search text was entered", () => {
     const result = search("", office, meetingsIndexed);
 
-    expect(result).toEqual(office);
+    expect(result).to.deep.equal(office);
   });
 
   describe("filter for room names", () => {
     it("should filter for parts of a room", () => {
-      expect(search("Mor", office, meetingsIndexed)).toEqual({
+      expect(search("Mor", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings],
         rooms: [roomMordor],
       });
     });
 
     it("should filter for common words", () => {
-      expect(search("city", office, meetingsIndexed)).toEqual({
+      expect(search("city", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings, groupStarWars],
         rooms: [roomBree, roomCloud],
       });
     });
 
     it("should filter case insensitive", () => {
-      expect(search("BREE", office, meetingsIndexed)).toEqual({
+      expect(search("BREE", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings],
         rooms: [roomBree],
       });
     });
 
     it("should find rooms without groups", () => {
-      expect(search("outback", office, meetingsIndexed)).toEqual({
+      expect(search("outback", office, meetingsIndexed)).to.deep.equal({
         groups: [],
         rooms: [roomOutback],
       });
@@ -123,14 +124,14 @@ describe("search", () => {
 
   describe("filter for groups", () => {
     it("should filter for parts of a group", () => {
-      expect(search("Lord", office, meetingsIndexed)).toEqual({
+      expect(search("Lord", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings],
         rooms: [roomBree, roomMordor],
       });
     });
 
     it("should filter case insensitive", () => {
-      expect(search("RING", office, meetingsIndexed)).toEqual({
+      expect(search("RING", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings],
         rooms: [roomBree, roomMordor],
       });
@@ -139,35 +140,35 @@ describe("search", () => {
 
   describe("filter for participants", () => {
     it("should filter for the name", () => {
-      expect(search("Calrissian", office, meetingsIndexed)).toEqual({
+      expect(search("Calrissian", office, meetingsIndexed)).to.deep.equal({
         groups: [groupStarWars],
         rooms: [roomCloud],
       });
     });
 
     it("should filter for the email address", () => {
-      expect(search("hob.biz", office, meetingsIndexed)).toEqual({
+      expect(search("hob.biz", office, meetingsIndexed)).to.deep.equal({
         groups: [groupLordRings],
         rooms: [roomBree],
       });
     });
 
     it("should find rooms without groups", () => {
-      expect(search("shady", office, meetingsIndexed)).toEqual({
+      expect(search("shady", office, meetingsIndexed)).to.deep.equal({
         groups: [],
         rooms: [roomOutback],
       });
     });
 
     it("should not filter for the id", () => {
-      expect(search("frodo", office, meetingsIndexed)).toEqual({
+      expect(search("frodo", office, meetingsIndexed)).to.deep.equal({
         groups: [],
         rooms: [],
       });
     });
 
     it("should not filter for the image URL", () => {
-      expect(search("hobbit.png", office, meetingsIndexed)).toEqual({
+      expect(search("hobbit.png", office, meetingsIndexed)).to.deep.equal({
         groups: [],
         rooms: [],
       });
