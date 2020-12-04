@@ -69,11 +69,6 @@ interface OfficeState {
   potentiallyDisabledGroups: PotentiallyDisabledGroup[];
 }
 
-function officeStateFrom(office: Office, timezone?: string): OfficeState {
-  const groupsToRender = mapPotentiallyDisabledGroups(office.groups, timezone);
-  return { office, potentiallyDisabledGroups: groupsToRender };
-}
-
 const Dashboard = () => {
   const history = useHistory();
   useEffect(() => {
@@ -92,6 +87,12 @@ const Dashboard = () => {
 
   const timezone = config?.timezone;
   const context = useContext(SocketContext);
+
+  const officeStateFrom = (office: Office): OfficeState => {
+    const groupsToRender = mapPotentiallyDisabledGroups(office.groups, timezone);
+    return { office, potentiallyDisabledGroups: groupsToRender };
+  };
+
   useEffect(() => {
     context.init();
 
@@ -100,9 +101,7 @@ const Dashboard = () => {
       setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
     });
 
-    const officeSubscription = context
-      .onOffice()
-      .subscribe((event) => setOfficeState(officeStateFrom(event, timezone)));
+    const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
 
     const initSubscription = context.onInit().subscribe((event) => {
@@ -121,7 +120,7 @@ const Dashboard = () => {
       officeSubscription.unsubscribe();
       clientConfigSubscription.unsubscribe();
     };
-  }, [timezone, context]);
+  }, [context]);
 
   useDeepCompareEffect(() => {
     const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
