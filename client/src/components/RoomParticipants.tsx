@@ -10,7 +10,7 @@ import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
 
-const ANONYMOUS_PARTICIPANTS = process.env.REACT_APP_ANONYMOUS_PARTICIPANTS === "true";
+const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";
 const useStyles = makeStyles<Theme>((theme) => ({
   avatarGroup: {
     marginLeft: 8,

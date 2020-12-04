@@ -5,8 +5,6 @@ import Background from "./LoginBackground.jpg";
 import axios from "axios";
 import { StyleConfig } from "../types";
 
-const appTitle = process.env.REACT_APP_TITLE || "Virtual Office";
-
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   root: {
     backgroundColor: `${theme.palette.background.default}`,
@@ -55,7 +53,7 @@ const Login = () => {
         <Paper className={classes.paper}>
           <Box p={4} textAlign={"center"}>
             <Typography className={classes.heading} variant={"h3"}>
-              {appTitle}
+              Virtual Office
             </Typography>
             <Box pt={3}>
               <Button onClick={() => signInWithSlack()}>
@@ -72,5 +70,4 @@ const Login = () => {
     </Box>
   );
 };
-
 export default Login;

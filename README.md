@@ -158,7 +158,7 @@ You can view all available endpoints at `/api-docs`.
 
 ### Development
 
-You have to provide configuration parameters to both client & server by environment variables.
-As a convenient alternative you can provide them via `.env` files (see `.env-example`) that will be loaded by [dotenv](https://www.npmjs.com/package/dotenv).
+You have to provide configuration parameters to the server by environment variables.
+As a convenient alternative you can provide it via an `.env` file (see `.env-example`) that will be loaded by [dotenv](https://www.npmjs.com/package/dotenv).
 
 See [Contributing](CONTRIBUTING.md) for details.
