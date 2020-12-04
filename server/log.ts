@@ -11,6 +11,7 @@ export interface Logger {
 
 const instance = pino({
   prettyPrint: true,
+  level: process.env.LOG_LEVEL || "info",
 });
 
 function buildLogFn(level: string) {
