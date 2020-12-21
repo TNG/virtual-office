@@ -52,7 +52,7 @@
     "@types/passport": "1.0.4",
     "@types/pino": "6.3.4",
     "@types/sinonjs__fake-timers": "6.0.2",
-    "@types/socket.io": "2.1.11",
+    "@types/socket.io": "2.1.12",
     "@types/supertest": "2.0.10",
     "@types/swagger-ui-express": "4.1.2",
     "@types/uuid": "8.3.0",
