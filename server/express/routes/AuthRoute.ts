@@ -12,7 +12,7 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (user, done) {
-  done(null, user);
+  done(null, user as User);
 });
 
 function adaptSlackUser(profile: any): User {
