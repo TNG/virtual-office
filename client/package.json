@@ -39,7 +39,7 @@
     "@types/socket.io-client": "1.4.35",
     "@types/uuid": "8.3.0",
     "@web/test-runner": "0.12.14",
-    "chai": "4.2.0",
+    "chai": "4.3.0",
     "snowpack": "2.18.0",
     "uuid": "8.3.0"
   },
