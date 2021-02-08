@@ -3,7 +3,7 @@ import { Office } from "../express/types/Office";
 import { Config } from "../Config";
 import { ConfigOptions } from "../express/types/ConfigOptions";
 import { Group } from "../express/types/Group";
-import { Room, RoomConfig } from "../express/types/Room";
+import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
@@ -51,8 +51,8 @@ export class OfficeService {
     return this.rooms.some((room) => room.meetingId === meetingId);
   }
 
-  getRoomsForMeetingId(meetingId: string): Room[] {
-    return this.rooms.filter((room) => room.meetingId === meetingId);
+  getRoomsForMeetingId(meetingId: string): RoomWithMeetingId[] {
+    return this.rooms.filter((room): room is RoomWithMeetingId => room.meetingId === meetingId);
   }
 
   getRoom(roomId: string): Room | undefined {
@@ -71,7 +71,7 @@ export class OfficeService {
               .sort(sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset))[0] || undefined
           : undefined,
       }))
-      .filter((data): data is { closestSession: Session; room: Room } => !!data.closestSession)
+      .filter((data): data is { closestSession: Session; room: RoomWithMeetingId } => !!data.closestSession)
       .sort(({ closestSession: a }, { closestSession: b }) =>
         sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset)(a, b)
       )

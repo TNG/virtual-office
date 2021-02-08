@@ -49,7 +49,7 @@ export class MeetingsService {
       this.meetingParticipants[meetingId] = [];
     }
 
-    logger.info(`joinRoom - participant with id ${toJoin.id}`);
+    logger.info(`joinRoom - meetingId ${meetingId} - participant with id ${toJoin.id}`);
 
     if (this.meetingParticipants[meetingId].find((participant) => participant.id === toJoin.id)) {
       logger.info(`joinRoom - participant with id ${toJoin.id} is already in the room, ignoring this call.`);

@@ -30,5 +30,6 @@ export interface RoomWithMeetingId extends Room {
   meetingId: string;
 }
 
-export const hasSlackNotifications = (room: Room): room is MarkRequired<Room, "slackNotification"> =>
-  !!room.slackNotification;
+export type RoomWithSlackNotification = MarkRequired<RoomWithMeetingId, "slackNotification">;
+
+export const hasSlackNotifications = (room: Room): room is RoomWithSlackNotification => !!room.slackNotification;

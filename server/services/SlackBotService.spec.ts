@@ -73,6 +73,15 @@ describe("SlackBotService", () => {
           },
           type: "section",
         },
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: "1 participant",
+            },
+          ],
+        },
       ],
     });
   });
@@ -125,120 +134,6 @@ describe("SlackBotService", () => {
 
     onRoomEvent({ meetingId: "1", type: "join", participant });
 
-    expect(mockPostMessage).not.toHaveBeenCalled();
-  });
-
-  it("should send a message every `notificationInterval` and report the number of participants", async () => {
-    let clock = 0;
-    const advanceClock = (seconds: number) => {
-      clock += seconds * 1000;
-      mockDateNow.mockReturnValue(clock);
-      jest.advanceTimersByTime(seconds * 1000);
-    };
-
-    // given
-    when(participantsService.getParticipantsIn("1")).thenReturn([
-      { id: "123", username: "bla" },
-      { id: "124", username: "bla" },
-    ]);
-    const room = {
-      meetingId: "1",
-      roomId: "1",
-      name: "Test",
-      joinUrl: "http://bla.blub",
-      slackNotification: {
-        channelId: "slackChannel",
-        notificationInterval: 5,
-      },
-    };
-    when(officeService.getRoomsForMeetingId("1")).thenReturn([room]);
-    when(officeService.getOffice()).thenReturn({ rooms: [room], groups: [] });
-
-    expect(mockPostMessage).not.toHaveBeenCalled();
-
-    // when
-    advanceClock(30);
-
-    // then
-    expect(mockPostMessage).toHaveBeenCalledTimes(1);
-    expect(mockPostMessage).toHaveBeenCalledWith({
-      channel: "slackChannel",
-      text: "",
-      blocks: [
-        {
-          text: {
-            text: "*Test* is occupied - <http://bla.blub|Join>",
-            type: "mrkdwn",
-          },
-          type: "section",
-        },
-        {
-          elements: [
-            {
-              text: "2 participants",
-              type: "mrkdwn",
-            },
-          ],
-          type: "context",
-        },
-      ],
-    });
-
-    // when
-    advanceClock(30);
-
-    // then
-    expect(mockPostMessage).toHaveBeenCalledTimes(1);
-
-    // when
-    when(participantsService.getParticipantsIn("1")).thenReturn([{ id: "123", username: "bla" }]);
-    advanceClock(5 * 60);
-
-    // then
-    expect(mockPostMessage).toHaveBeenCalledTimes(2);
-    expect(mockPostMessage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        channel: "slackChannel",
-        blocks: expect.arrayContaining([
-          {
-            elements: [
-              {
-                text: "1 participant",
-                type: "mrkdwn",
-              },
-            ],
-            type: "context",
-          },
-        ]),
-      })
-    );
-  });
-
-  it("should not send a message if `notificationInterval` is not set", async () => {
-    // given
-    const room = {
-      meetingId: "1",
-      roomId: "1",
-      name: "Test",
-      joinUrl: "http://bla.blub",
-      slackNotification: {
-        channelId: "slackChannel",
-      },
-    };
-    when(officeService.getOffice()).thenReturn({ rooms: [room], groups: [] });
-    when(officeService.getRoomsForMeetingId("1")).thenReturn([room]);
-    when(participantsService.getParticipantsIn("1")).thenReturn([
-      { id: "123", username: "bla" },
-      { id: "124", username: "bla" },
-    ]);
-
-    expect(mockPostMessage).not.toHaveBeenCalled();
-
-    // when
-    mockDateNow.mockReturnValue(5 * 60 * 1000);
-    jest.advanceTimersByTime(5 * 60 * 1000);
-
-    // then
     expect(mockPostMessage).not.toHaveBeenCalled();
   });
 });
