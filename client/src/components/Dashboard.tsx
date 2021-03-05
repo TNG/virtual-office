@@ -24,6 +24,8 @@ import { Schedule } from "../../../server/express/types/Schedule";
 import { search } from "../search";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { Footer } from "./Footer";
+import { parseTime } from "../time";
+import { DateTime } from "luxon";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -139,12 +141,26 @@ const Dashboard = () => {
     }
   }
 
-  function renderSchedule(schedule: Schedule, viewMode: string) {
+  function sessionIsOver(end: string): boolean {
+    const zone = config?.timezone;
+    const endTime = parseTime(end, zone);
+    const now = DateTime.local();
+    return now >= endTime;
+  }
+
+  function renderSchedule(schedule: Schedule, viewMode: string, hideEndedSessions?: boolean) {
     const { rooms } = search(searchText, officeState.office, meetingsIndexed);
     const roomsIndexed = keyBy(rooms, (room) => room.roomId);
 
     const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
     const groupsWithRoomsIndexed = keyBy<GroupWithRooms>(groupsWithRooms, ({ group }) => group.id);
+
+    if (hideEndedSessions) {
+      schedule = {
+        tracks: schedule.tracks,
+        sessions: schedule.sessions.filter((session) => !sessionIsOver(session.end)),
+      };
+    }
 
     return (
       <ScheduleGrid
@@ -211,7 +227,7 @@ const Dashboard = () => {
 
   const content = initialLoadCompleted ? (
     officeState.office.schedule ? (
-      renderSchedule(officeState.office.schedule, config.viewMode)
+      renderSchedule(officeState.office.schedule, config.viewMode, config.hideEndedSessions)
     ) : (
       renderRoomGrid(config.viewMode)
     )
