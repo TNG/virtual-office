@@ -90,6 +90,7 @@ you can find our experiences in two articles (German only):
 | `TITLE`                                    | Title of the app
 | `DISABLE_AUTH`                             | When hosting public events that do not require a login, set this to `true`
 | `SESSION_START_MINUTES_OFFSET`             | Number of minutes the session is considered active (so events will be sent to the client, people can join)
+| `HIDE_ENDED_SESSIONS`                      | When sessions shall be hidden after they have ended, set this to `true`
 
 #### Office Configuration
 
