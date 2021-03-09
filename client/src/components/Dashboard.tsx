@@ -141,7 +141,7 @@ const Dashboard = () => {
     }
   }
 
-  function sessionIsOver(end: string): boolean {
+  function sessionIsOver({ end }: Session): boolean {
     const zone = config?.timezone;
     const endTime = parseTime(end, zone);
     const now = DateTime.local();
@@ -156,10 +156,7 @@ const Dashboard = () => {
     const groupsWithRoomsIndexed = keyBy<GroupWithRooms>(groupsWithRooms, ({ group }) => group.id);
 
     if (hideEndedSessions) {
-      schedule = {
-        tracks: schedule.tracks,
-        sessions: schedule.sessions.filter((session) => !sessionIsOver(session.end)),
-      };
+      schedule.sessions = schedule.sessions.filter((session) => !sessionIsOver(session));
     }
 
     return (
