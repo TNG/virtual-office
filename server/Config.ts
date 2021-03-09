@@ -48,6 +48,7 @@ export class Config {
     const logoUrl = process.env.LOGO_URL;
     const faviconUrl = process.env.FAVICON_URL;
     const sessionStartMinutesOffset = parseInt(process.env.SESSION_START_MINUTES_OFFSET ?? "10", 10);
+    const hideEndedSessions = process.env.HIDE_ENDED_SESSIONS === "true";
 
     return {
       backgroundUrl,
@@ -58,6 +59,7 @@ export class Config {
       logoUrl,
       faviconUrl,
       sessionStartMinutesOffset,
+      hideEndedSessions,
     };
   }
 

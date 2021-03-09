@@ -7,4 +7,5 @@ export interface ClientConfig {
   title?: string;
   logoUrl?: string;
   faviconUrl?: string;
+  hideEndedSessions?: boolean;
 }
