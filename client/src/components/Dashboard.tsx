@@ -20,7 +20,7 @@ import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import ScheduleGrid from "./ScheduleGrid";
-import { Schedule } from "../../../server/express/types/Schedule";
+import { Schedule, Session } from "../../../server/express/types/Schedule";
 import { search } from "../search";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { Footer } from "./Footer";
