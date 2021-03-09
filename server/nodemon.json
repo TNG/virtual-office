@@ -1,5 +1,0 @@
-{
-  "ext": "ts",
-  "ignore": ["**/*.spec.ts"],
-  "exec": "ts-node --files ./index.ts"
-}
