@@ -8,11 +8,12 @@ const office_old: OfficeLegacy = require("../../server/sz_office_pe.json");
 const office: OfficeWithBlocks = convertOffice(office_old);
 console.log(JSON.stringify(office, null, 4));
 
-// todo: cleanGroups also with sessions?
+// todo: show all sessions/rooms -> thereby create required groups?
+// todo: finalize for Schedule, adjust cleanGroups fct. therefore
 function convertOffice(office_old: OfficeLegacy): OfficeWithBlocks {
   cleanGroupsWithRoomInfo(office_old);
   if (office_old.schedule) {
-    return {
+    /*return {
       version: "2",
       blocks: [
         {
@@ -21,7 +22,7 @@ function convertOffice(office_old: OfficeLegacy): OfficeWithBlocks {
           sessions: y,
         },
       ],
-    };
+    };*/
   } else {
     // map groups into groupBlocks and return within officeWithBlocks
     return {
@@ -34,7 +35,6 @@ function convertOffice(office_old: OfficeLegacy): OfficeWithBlocks {
   }
 }
 
-// todo: should rooms with group-reference create the corresponding missing group?
 function cleanGroupsWithRoomInfo(office_old: OfficeLegacy): void {
   const existingGroupIds = getUniqueExistingGroupIds(office_old);
   const existingGroupReferences = getUniqueExistingGroupReferences(office_old);
@@ -91,7 +91,7 @@ function addGroup(office_old: OfficeLegacy, groupId: string, groupReferences: st
 // TODO: what if required props (name) missing?
 function convertGroup(group_old: Group_old, all_rooms: Room_old[]): Group {
   return {
-    name: group_old.name,
+    name: group_old.name || null,
     description: group_old.description,
     rooms: office_old.rooms
       .filter((room_old: Room_old) => room_old.groupId === group_old.id)
@@ -102,13 +102,13 @@ function convertGroup(group_old: Group_old, all_rooms: Room_old[]): Group {
 
 // TODO: what if required props (name, meetingId) missing?
 function convertRoom(room_old: Room_old): Room {
-  return {
+  const room: Room = {
     name: room_old.name,
     subtitle: room_old.subtitle,
     description: room_old.description,
     joinUrl: room_old.joinUrl,
     meeting: {
-      meetingId: room_old.meetingId,
+      meetingId: room_old.meetingId || null,
       participants: [],
     },
     titleUrl: room_old.titleUrl,
@@ -116,4 +116,5 @@ function convertRoom(room_old: Room_old): Room {
     icon: room_old.icon,
     slackNotification: room_old.slackNotification,
   };
+  return room;
 }
