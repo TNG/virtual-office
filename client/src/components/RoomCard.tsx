@@ -7,7 +7,7 @@ import RoomIcon from "@material-ui/icons/People";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
-import { Room } from "../../../server/express/types/Room";
+import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -100,7 +100,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 }));
 
 interface Props {
-  room: Room;
+  room: RoomLegacy;
   participants: MeetingParticipant[];
   isDisabled: boolean;
   isJoinable: boolean;

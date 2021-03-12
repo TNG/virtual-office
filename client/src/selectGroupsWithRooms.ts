@@ -1,12 +1,12 @@
 import { MeetingsIndexed } from "./components/MeetingsIndexed";
 import { search } from "./search";
-import { Room } from "../../server/express/types/Room";
+import { RoomLegacy } from "../../server/express/types/RoomLegacy";
 import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 
 export interface GroupWithRooms {
   group: GroupLegacy;
-  rooms: Room[];
+  rooms: RoomLegacy[];
 }
 
 export function selectGroupsWithRooms(

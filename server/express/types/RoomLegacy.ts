@@ -22,14 +22,14 @@ export interface RoomConfig extends RoomWithoutId {
   roomId?: string;
 }
 
-export interface Room extends RoomWithoutId {
+export interface RoomLegacy extends RoomWithoutId {
   roomId: string;
 }
 
-export interface RoomWithMeetingId extends Room {
+export interface RoomWithMeetingId extends RoomLegacy {
   meetingId: string;
 }
 
 export type RoomWithSlackNotification = MarkRequired<RoomWithMeetingId, "slackNotification">;
 
-export const hasSlackNotifications = (room: Room): room is RoomWithSlackNotification => !!room.slackNotification;
+export const hasSlackNotifications = (room: RoomLegacy): room is RoomWithSlackNotification => !!room.slackNotification;

@@ -1,19 +1,19 @@
 import { OfficeService } from "./OfficeService";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
-import { Room } from "../express/types/Room";
+import { RoomLegacy } from "../express/types/RoomLegacy";
 
 describe("OfficeService", () => {
   let officeService: OfficeService;
   let config: Config;
 
-  const existingRoom: Room = {
+  const existingRoom: RoomLegacy = {
     roomId: "1",
     meetingId: "meeting-1",
     name: "Test",
     joinUrl: "http://bla.blub",
   };
-  const existingRoom2: Room = {
+  const existingRoom2: RoomLegacy = {
     roomId: "2",
     meetingId: "meeting-2",
     name: "Test2",
@@ -64,7 +64,7 @@ describe("OfficeService", () => {
   });
 
   it("can create and delete temporary rooms", () => {
-    const temporaryRoom: Room = {
+    const temporaryRoom: RoomLegacy = {
       roomId: "3",
       meetingId: "4",
       name: "Puppenkiste",

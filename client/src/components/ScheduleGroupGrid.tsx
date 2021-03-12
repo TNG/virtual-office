@@ -6,7 +6,7 @@ import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import GroupJoinCard from "./GroupJoinCard";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
-import { Room } from "../../../server/express/types/Room";
+import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { partition } from "lodash";
 
@@ -72,7 +72,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 
 interface Props {
   group: GroupLegacy;
-  rooms: Room[];
+  rooms: RoomLegacy[];
   meetings: MeetingsIndexed;
   isDisabled: boolean;
   isJoinable: boolean;

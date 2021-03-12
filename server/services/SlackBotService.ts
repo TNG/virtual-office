@@ -4,7 +4,7 @@ import { Service } from "typedi";
 import { Config } from "../Config";
 import { MeetingEvent } from "../express/types/MeetingEvent";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { hasSlackNotifications, RoomWithSlackNotification } from "../express/types/Room";
+import { hasSlackNotifications, RoomWithSlackNotification } from "../express/types/RoomLegacy";
 import { logger } from "../log";
 import { MeetingsService } from "./MeetingsService";
 import { OfficeService } from "./OfficeService";

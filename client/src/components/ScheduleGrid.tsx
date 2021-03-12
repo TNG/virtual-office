@@ -5,7 +5,7 @@ import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
-import { Room } from "../../../server/express/types/Room";
+import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { Schedule, SessionLegacy, TrackLegacy } from "../../../server/express/types/Schedule";
 import { DateTime } from "luxon";
@@ -99,7 +99,7 @@ const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
 }));
 
 export interface RoomsIndexed {
-  [roomId: string]: Room;
+  [roomId: string]: RoomLegacy;
 }
 
 export interface GroupsWithRoomsIndexed {

@@ -1,9 +1,9 @@
 import { GroupLegacy } from "./GroupLegacy";
-import { Room } from "./Room";
+import { RoomLegacy } from "./RoomLegacy";
 import { Schedule } from "./Schedule";
 
 export interface OfficeLegacy {
-  rooms: Room[];
+  rooms: RoomLegacy[];
   groups: GroupLegacy[];
   schedule?: Schedule;
 }

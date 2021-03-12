@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { search } from "./search";
-import { Room, RoomWithMeetingId } from "../../server/express/types/Room";
+import { RoomLegacy, RoomWithMeetingId } from "../../server/express/types/RoomLegacy";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { Meeting } from "../../server/express/types/Meeting";

@@ -1,13 +1,13 @@
 import { Service } from "typedi";
 import { minBy, random } from "lodash";
 
-import { Room, RoomWithMeetingId } from "../express/types/Room";
+import { RoomLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 import { logger } from "../log";
 import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/GroupLegacy";
 
-function randomRoomIn(rooms: Room[]): Room | undefined {
+function randomRoomIn(rooms: RoomLegacy[]): RoomLegacy | undefined {
   const entry = random(0, rooms.length - 1);
   return rooms[entry];
 }
@@ -36,7 +36,7 @@ export class GroupJoinService {
     });
   }
 
-  joinRoomFor(groupId: string): Room | undefined {
+  joinRoomFor(groupId: string): RoomLegacy | undefined {
     const office = this.officeService.getOffice();
     const group = office.groups.find((group) => group.id === groupId);
     if (!group || !hasGroupJoin(group)) {
@@ -63,7 +63,7 @@ export class GroupJoinService {
     return room;
   }
 
-  private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): Room | undefined {
+  private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): RoomLegacy | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;

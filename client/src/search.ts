@@ -1,4 +1,4 @@
-import { Room } from "../../server/express/types/Room";
+import { RoomLegacy } from "../../server/express/types/RoomLegacy";
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 import { GroupLegacy } from "../../server/express/types/GroupLegacy";
@@ -24,8 +24,13 @@ export function search(searchText: string, office: OfficeLegacy, meetings: Meeti
   };
 }
 
-function searchRooms(search: string, rooms: Room[], groups: GroupLegacy[], meetings: MeetingsIndexed): Room[] {
-  function roomMatches(room: Room): boolean {
+function searchRooms(
+  search: string,
+  rooms: RoomLegacy[],
+  groups: GroupLegacy[],
+  meetings: MeetingsIndexed
+): RoomLegacy[] {
+  function roomMatches(room: RoomLegacy): boolean {
     const nameMatches = room.name.toLowerCase().includes(search);
 
     const groupId = room.groupId || "";
@@ -44,6 +49,6 @@ function searchRooms(search: string, rooms: Room[], groups: GroupLegacy[], meeti
   return rooms.filter((room) => roomMatches(room));
 }
 
-function searchGroups(rooms: Room[], groups: GroupLegacy[]): GroupLegacy[] {
+function searchGroups(rooms: RoomLegacy[], groups: GroupLegacy[]): GroupLegacy[] {
   return groups.filter((group) => rooms.some((room) => room.groupId === group.id));
 }

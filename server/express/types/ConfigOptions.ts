@@ -1,4 +1,4 @@
-import { RoomConfig } from "./Room";
+import { RoomConfig } from "./RoomLegacy";
 import { GroupLegacy } from "./GroupLegacy";
 import { Schedule } from "./Schedule";
 

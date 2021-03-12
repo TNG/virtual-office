@@ -9,7 +9,7 @@ import { GroupLegacy } from "../express/types/GroupLegacy";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { MeetingsService } from "./MeetingsService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
-import { RoomWithMeetingId } from "../express/types/Room";
+import { RoomWithMeetingId } from "../express/types/RoomLegacy";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;

@@ -3,7 +3,7 @@ import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { Config } from "../Config";
 import { ConfigOptions } from "../express/types/ConfigOptions";
 import { GroupLegacy } from "../express/types/GroupLegacy";
-import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room";
+import { RoomLegacy, RoomConfig, RoomWithMeetingId } from "../express/types/RoomLegacy";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
@@ -30,7 +30,7 @@ const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOf
 export class OfficeService {
   private officeChangeListeners: OfficeChangeListener[] = [];
   private groups: GroupLegacy[] = [];
-  private rooms: Room[] = [];
+  private rooms: RoomLegacy[] = [];
   private schedule: Schedule | undefined = undefined;
 
   public constructor(private readonly config: Config) {
@@ -55,13 +55,13 @@ export class OfficeService {
     return this.rooms.filter((room): room is RoomWithMeetingId => room.meetingId === meetingId);
   }
 
-  getRoom(roomId: string): Room | undefined {
+  getRoom(roomId: string): RoomLegacy | undefined {
     return this.rooms.find((room) => room.roomId === roomId);
   }
 
-  getActiveRoom(meetingId: string): Room | undefined {
+  getActiveRoom(meetingId: string): RoomLegacy | undefined {
     const { timezone, sessionStartMinutesOffset } = this.config.clientConfig ?? {};
-    const activeRooms: Room[] = this.getRoomsForMeetingId(meetingId)
+    const activeRooms: RoomLegacy[] = this.getRoomsForMeetingId(meetingId)
       .map((room) => ({
         room,
         closestSession: this.schedule
@@ -116,7 +116,7 @@ export class OfficeService {
     }
   }
 
-  private static roomConfigToRoom(config: RoomConfig): Room {
+  private static roomConfigToRoom(config: RoomConfig): RoomLegacy {
     return {
       ...config,
       roomId: config.roomId || uuid(),
@@ -160,7 +160,7 @@ export class OfficeService {
   }
 }
 
-const sessionBelongsToRoom = (room: Room) => (session: SessionLegacy) => {
+const sessionBelongsToRoom = (room: RoomLegacy) => (session: SessionLegacy) => {
   return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
 };
 
