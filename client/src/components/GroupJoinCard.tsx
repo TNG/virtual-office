@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { Group } from "../../../server/express/types/Group";
+import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -54,7 +54,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 }));
 
 interface Props {
-  group: Group;
+  group: GroupLegacy;
   isJoinable: boolean;
   isListMode: boolean;
   isDisabled?: boolean;

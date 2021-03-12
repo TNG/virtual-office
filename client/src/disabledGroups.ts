@@ -1,14 +1,14 @@
-import { Group } from "../../server/express/types/Group";
+import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { DateTime } from "luxon";
 
 export interface PotentiallyDisabledGroup {
   isUpcoming: boolean;
   isExpired: boolean;
   isJoinable: boolean;
-  group: Group;
+  group: GroupLegacy;
 }
 
-function toPotentiallyDisabledGroup(group: Group, zone?: string): PotentiallyDisabledGroup {
+function toPotentiallyDisabledGroup(group: GroupLegacy, zone?: string): PotentiallyDisabledGroup {
   const now = DateTime.local();
   const isExpired = (group.disabledAfter && DateTime.fromISO(group.disabledAfter, { zone }) <= now) || false;
   const isUpcoming = (group.disabledBefore && DateTime.fromISO(group.disabledBefore, { zone }) >= now) || false;
@@ -19,6 +19,6 @@ function toPotentiallyDisabledGroup(group: Group, zone?: string): PotentiallyDis
   return { isUpcoming, isExpired, isJoinable, group };
 }
 
-export function mapPotentiallyDisabledGroups(groups: Group[], timezone?: string): PotentiallyDisabledGroup[] {
+export function mapPotentiallyDisabledGroups(groups: GroupLegacy[], timezone?: string): PotentiallyDisabledGroup[] {
   return groups.map((group) => toPotentiallyDisabledGroup(group, timezone));
 }

@@ -5,7 +5,7 @@ import { Room, RoomWithMeetingId } from "../express/types/Room";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 import { logger } from "../log";
-import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/Group";
+import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/GroupLegacy";
 
 function randomRoomIn(rooms: Room[]): Room | undefined {
   const entry = random(0, rooms.length - 1);

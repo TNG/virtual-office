@@ -1,7 +1,7 @@
 import { Room } from "../../server/express/types/Room";
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
-import { Group } from "../../server/express/types/Group";
+import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { MeetingsIndexed } from "./components/MeetingsIndexed";
 
 export function participantMatches(search: string, participant: MeetingParticipant): boolean {
@@ -24,7 +24,7 @@ export function search(searchText: string, office: OfficeLegacy, meetings: Meeti
   };
 }
 
-function searchRooms(search: string, rooms: Room[], groups: Group[], meetings: MeetingsIndexed): Room[] {
+function searchRooms(search: string, rooms: Room[], groups: GroupLegacy[], meetings: MeetingsIndexed): Room[] {
   function roomMatches(room: Room): boolean {
     const nameMatches = room.name.toLowerCase().includes(search);
 
@@ -44,6 +44,6 @@ function searchRooms(search: string, rooms: Room[], groups: Group[], meetings: M
   return rooms.filter((room) => roomMatches(room));
 }
 
-function searchGroups(rooms: Room[], groups: Group[]): Group[] {
+function searchGroups(rooms: Room[], groups: GroupLegacy[]): GroupLegacy[] {
   return groups.filter((group) => rooms.some((room) => room.groupId === group.id));
 }

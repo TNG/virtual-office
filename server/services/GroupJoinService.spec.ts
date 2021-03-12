@@ -5,7 +5,7 @@ import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
 
 import { GroupJoinService } from "./GroupJoinService";
 import { OfficeService } from "./OfficeService";
-import { Group } from "../express/types/Group";
+import { GroupLegacy } from "../express/types/GroupLegacy";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { MeetingsService } from "./MeetingsService";
 import { MeetingEvent } from "../express/types/MeetingEvent";
@@ -29,7 +29,7 @@ describe("GroupJoinService", () => {
     id: groupId,
   };
 
-  const groups: Group[] = [group];
+  const groups: GroupLegacy[] = [group];
 
   const emptyRoom = randomRoom();
   const roomWithLessThanMinimum = randomRoom();

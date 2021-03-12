@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { Config } from "../Config";
 import { ConfigOptions } from "../express/types/ConfigOptions";
-import { Group } from "../express/types/Group";
+import { GroupLegacy } from "../express/types/GroupLegacy";
 import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
@@ -29,7 +29,7 @@ const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOf
 @Service()
 export class OfficeService {
   private officeChangeListeners: OfficeChangeListener[] = [];
-  private groups: Group[] = [];
+  private groups: GroupLegacy[] = [];
   private rooms: Room[] = [];
   private schedule: Schedule | undefined = undefined;
 

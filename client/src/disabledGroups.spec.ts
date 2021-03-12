@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
-import { Group } from "../../server/express/types/Group";
+import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { v4 as uuid } from "uuid";
 import { DateTime } from "luxon";
 import { PotentiallyDisabledGroup, mapPotentiallyDisabledGroups } from "./disabledGroups";
@@ -22,7 +22,7 @@ describe("disabledRooms", () => {
     disabledAfter?: number;
     joinableAfter?: number;
     name: string;
-  }): Group {
+  }): GroupLegacy {
     function toIsoString(millis?: number): string | undefined {
       if (!millis) {
         return undefined;

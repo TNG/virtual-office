@@ -1,9 +1,9 @@
 import { RoomConfig } from "./Room";
-import { Group } from "./Group";
+import { GroupLegacy } from "./GroupLegacy";
 import { Schedule } from "./Schedule";
 
 export interface ConfigOptions {
   rooms: RoomConfig[];
-  groups: Group[];
+  groups: GroupLegacy[];
   schedule?: Schedule;
 }

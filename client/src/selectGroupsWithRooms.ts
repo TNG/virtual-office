@@ -1,11 +1,11 @@
 import { MeetingsIndexed } from "./components/MeetingsIndexed";
 import { search } from "./search";
 import { Room } from "../../server/express/types/Room";
-import { Group } from "../../server/express/types/Group";
+import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 
 export interface GroupWithRooms {
-  group: Group;
+  group: GroupLegacy;
   rooms: Room[];
 }
 
@@ -15,7 +15,7 @@ export function selectGroupsWithRooms(
   office: OfficeLegacy
 ): GroupWithRooms[] {
   const searchResult = search(searchText, office, meetings);
-  const undefinedGroup: Group = {
+  const undefinedGroup: GroupLegacy = {
     id: "",
     name: "",
   };

@@ -5,7 +5,7 @@ export type GroupJoinConfig = {
   description: string;
 };
 
-export interface Group {
+export interface GroupLegacy {
   id: string;
   name?: string;
   description?: string;
@@ -15,8 +15,8 @@ export interface Group {
   groupJoin?: GroupJoinConfig;
 }
 
-export interface GroupWithGroupJoin extends Group {
+export interface GroupWithGroupJoin extends GroupLegacy {
   groupJoin: GroupJoinConfig;
 }
 
-export const hasGroupJoin = (group: Group): group is GroupWithGroupJoin => !!group.groupJoin;
+export const hasGroupJoin = (group: GroupLegacy): group is GroupWithGroupJoin => !!group.groupJoin;

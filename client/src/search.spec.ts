@@ -2,15 +2,15 @@ import { expect } from "chai";
 import { search } from "./search";
 import { Room, RoomWithMeetingId } from "../../server/express/types/Room";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
-import { Group } from "../../server/express/types/Group";
+import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { Meeting } from "../../server/express/types/Meeting";
 import { keyBy } from "lodash";
 
-const groupLordRings: Group = {
+const groupLordRings: GroupLegacy = {
   id: "a",
   name: "Lord of the Rings",
 };
-const groupStarWars: Group = {
+const groupStarWars: GroupLegacy = {
   id: "b",
   name: "Star Wars",
 };

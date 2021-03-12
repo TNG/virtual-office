@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { Group } from "../../../server/express/types/Group";
+import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import GroupJoinCard from "./GroupJoinCard";
 import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
@@ -71,7 +71,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 }));
 
 interface Props {
-  group: Group;
+  group: GroupLegacy;
   rooms: Room[];
   meetings: MeetingsIndexed;
   isDisabled: boolean;
