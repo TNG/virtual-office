@@ -1,4 +1,4 @@
-import { Office } from "../../server/express/types/Office";
+import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 
 describe("Schedule", () => {
   beforeEach(() => {
@@ -7,7 +7,7 @@ describe("Schedule", () => {
   });
 
   describe("shows a schedule", () => {
-    let office: Office;
+    let office: OfficeLegacy;
     beforeEach(() => {
       office = {
         rooms: [],

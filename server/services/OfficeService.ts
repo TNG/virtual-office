@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import { Office } from "../express/types/Office";
+import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { Config } from "../Config";
 import { ConfigOptions } from "../express/types/ConfigOptions";
 import { Group } from "../express/types/Group";
@@ -10,7 +10,7 @@ import fs from "fs";
 import { Schedule, Session } from "../express/types/Schedule";
 import { DateTime } from "luxon";
 
-export type OfficeChangeListener = (office: Office) => void;
+export type OfficeChangeListener = (office: OfficeLegacy) => void;
 
 const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
   a: Session,
@@ -39,7 +39,7 @@ export class OfficeService {
     this.updateSchedule(config.configOptions.schedule);
   }
 
-  getOffice(): Office {
+  getOffice(): OfficeLegacy {
     return {
       groups: this.groups,
       rooms: this.rooms,

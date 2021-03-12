@@ -1,6 +1,6 @@
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
-import { Office } from "../express/types/Office";
+import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { EventService } from "./EventService";
 import axios from "axios";
 import { Settings } from "luxon";
@@ -12,7 +12,7 @@ describe("EventService", () => {
   let eventService: EventService;
   let config: Config;
 
-  const office: Office = {
+  const office: OfficeLegacy = {
     schedule: {
       tracks: [],
       sessions: [

@@ -23,7 +23,7 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-import { Office } from "../../server/express/types/Office";
+import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 
 import "@testing-library/cypress/add-commands";
 
@@ -44,7 +44,7 @@ declare global {
   namespace Cypress {
     interface Chainable<Subject> {
       webhook(event: WebhookEvent, meetingId: string, participant: WebhookParticipant): void;
-      replaceOffice(office: Office): void;
+      replaceOffice(office: OfficeLegacy): void;
       clearAllParticipants(): void;
       assertCard(options: {
         alias: string;
@@ -58,7 +58,7 @@ declare global {
   }
 }
 
-Cypress.Commands.add("replaceOffice", (office: Office) => {
+Cypress.Commands.add("replaceOffice", (office: OfficeLegacy) => {
   cy.request({
     method: "POST",
     url: "http://localhost:9000/api/admin/replaceOffice",

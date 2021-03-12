@@ -15,7 +15,7 @@ import { keyBy } from "lodash";
 import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disabledGroups";
 import { GroupWithRooms, selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
-import { Office } from "../../../server/express/types/Office";
+import { OfficeLegacy } from "../../../server/express/types/OfficeLegacy";
 import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
@@ -67,7 +67,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
 }));
 
 interface OfficeState {
-  office: Office;
+  office: OfficeLegacy;
   potentiallyDisabledGroups: PotentiallyDisabledGroup[];
 }
 
@@ -90,7 +90,7 @@ const Dashboard = () => {
   const timezone = config?.timezone;
   const context = useContext(SocketContext);
 
-  const officeStateFrom = (office: Office): OfficeState => {
+  const officeStateFrom = (office: OfficeLegacy): OfficeState => {
     const groupsToRender = mapPotentiallyDisabledGroups(office.groups, timezone);
     return { office, potentiallyDisabledGroups: groupsToRender };
   };

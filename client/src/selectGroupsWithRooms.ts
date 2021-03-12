@@ -2,14 +2,18 @@ import { MeetingsIndexed } from "./components/MeetingsIndexed";
 import { search } from "./search";
 import { Room } from "../../server/express/types/Room";
 import { Group } from "../../server/express/types/Group";
-import { Office } from "../../server/express/types/Office";
+import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 
 export interface GroupWithRooms {
   group: Group;
   rooms: Room[];
 }
 
-export function selectGroupsWithRooms(meetings: MeetingsIndexed, searchText: string, office: Office): GroupWithRooms[] {
+export function selectGroupsWithRooms(
+  meetings: MeetingsIndexed,
+  searchText: string,
+  office: OfficeLegacy
+): GroupWithRooms[] {
   const searchResult = search(searchText, office, meetings);
   const undefinedGroup: Group = {
     id: "",

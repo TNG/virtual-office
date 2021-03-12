@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { search } from "./search";
 import { Room, RoomWithMeetingId } from "../../server/express/types/Room";
-import { Office } from "../../server/express/types/Office";
+import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 import { Group } from "../../server/express/types/Group";
 import { Meeting } from "../../server/express/types/Meeting";
 import { keyBy } from "lodash";
@@ -80,7 +80,7 @@ const meetings: Meeting[] = [
 ];
 const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
 
-const office: Office = {
+const office: OfficeLegacy = {
   groups: [groupLordRings, groupStarWars],
   rooms: [roomBree, roomMordor, roomCloud, roomOutback],
 };

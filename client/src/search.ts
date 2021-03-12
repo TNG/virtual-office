@@ -1,6 +1,6 @@
 import { Room } from "../../server/express/types/Room";
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
-import { Office } from "../../server/express/types/Office";
+import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 import { Group } from "../../server/express/types/Group";
 import { MeetingsIndexed } from "./components/MeetingsIndexed";
 
@@ -9,7 +9,7 @@ export function participantMatches(search: string, participant: MeetingParticipa
   return participant.username.toLowerCase().includes(search) || email.toLowerCase().includes(search);
 }
 
-export function search(searchText: string, office: Office, meetings: MeetingsIndexed): Office {
+export function search(searchText: string, office: OfficeLegacy, meetings: MeetingsIndexed): OfficeLegacy {
   const query = searchText.toLowerCase().normalize();
   if (query.length === 0) {
     return office;
