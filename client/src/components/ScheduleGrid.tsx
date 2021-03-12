@@ -7,7 +7,7 @@ import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { Schedule, Session, Track } from "../../../server/express/types/Schedule";
+import { Schedule, SessionLegacy, Track } from "../../../server/express/types/Schedule";
 import { DateTime } from "luxon";
 import { GroupWithRooms } from "../selectGroupsWithRooms";
 import ScheduleGroupGrid from "./ScheduleGroupGrid";
@@ -161,7 +161,7 @@ const ScheduleGrid = (props: Props) => {
     );
   }
 
-  function sessionIsActive({ start, end, alwaysActive }: Session) {
+  function sessionIsActive({ start, end, alwaysActive }: SessionLegacy) {
     const zone = props.clientConfig?.timezone;
     const startTime = parseTime(start, zone).minus({ minute: clientConfig?.sessionStartMinutesOffset ?? 0 });
     const endTime = parseTime(end, zone);

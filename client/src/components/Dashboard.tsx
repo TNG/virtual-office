@@ -20,7 +20,7 @@ import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import ScheduleGrid from "./ScheduleGrid";
-import { Schedule, Session } from "../../../server/express/types/Schedule";
+import { Schedule, SessionLegacy } from "../../../server/express/types/Schedule";
 import { search } from "../search";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { Footer } from "./Footer";
@@ -141,7 +141,7 @@ const Dashboard = () => {
     }
   }
 
-  function sessionIsOver({ alwaysActive, end }: Session): boolean {
+  function sessionIsOver({ alwaysActive, end }: SessionLegacy): boolean {
     const zone = config?.timezone;
     const endTime = parseTime(end, zone);
     const now = DateTime.local();

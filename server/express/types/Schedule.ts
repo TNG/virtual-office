@@ -1,6 +1,6 @@
 export interface Schedule {
   tracks: Track[];
-  sessions: Session[];
+  sessions: SessionLegacy[];
 }
 
 export interface Track {
@@ -8,7 +8,7 @@ export interface Track {
   name: string;
 }
 
-export interface Session {
+export interface SessionLegacy {
   roomId?: string;
   groupId?: string;
   trackId?: string;

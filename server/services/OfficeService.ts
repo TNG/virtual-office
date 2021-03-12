@@ -7,21 +7,21 @@ import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
-import { Schedule, Session } from "../express/types/Schedule";
+import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: OfficeLegacy) => void;
 
 const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
-  a: Session,
-  b: Session
+  a: SessionLegacy,
+  b: SessionLegacy
 ): number =>
   getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
   getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
 
 const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
-  a: Session,
-  b: Session
+  a: SessionLegacy,
+  b: SessionLegacy
 ): number =>
   getStartDateTime(b.start, zone, sessionStartMinutesOffset).diffNow().valueOf() -
   getStartDateTime(a.start, zone, sessionStartMinutesOffset).diffNow().valueOf();
@@ -71,7 +71,7 @@ export class OfficeService {
               .sort(sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset))[0] || undefined
           : undefined,
       }))
-      .filter((data): data is { closestSession: Session; room: RoomWithMeetingId } => !!data.closestSession)
+      .filter((data): data is { closestSession: SessionLegacy; room: RoomWithMeetingId } => !!data.closestSession)
       .sort(({ closestSession: a }, { closestSession: b }) =>
         sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset)(a, b)
       )
@@ -150,7 +150,7 @@ export class OfficeService {
     this.officeChangeListeners.forEach((listener) => listener(office));
   }
 
-  private sessionIsActive({ start, end, alwaysActive }: Session): boolean {
+  private sessionIsActive({ start, end, alwaysActive }: SessionLegacy): boolean {
     const { timezone: zone, sessionStartMinutesOffset } = this.config.clientConfig;
     const startTime = getStartDateTime(start, zone, sessionStartMinutesOffset);
     const endTime = DateTime.fromFormat(end, "HH:mm", { zone });
@@ -160,7 +160,7 @@ export class OfficeService {
   }
 }
 
-const sessionBelongsToRoom = (room: Room) => (session: Session) => {
+const sessionBelongsToRoom = (room: Room) => (session: SessionLegacy) => {
   return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
 };
 
