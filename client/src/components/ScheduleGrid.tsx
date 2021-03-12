@@ -7,7 +7,7 @@ import RoomCard from "./RoomCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { Schedule, SessionLegacy, Track } from "../../../server/express/types/Schedule";
+import { Schedule, SessionLegacy, TrackLegacy } from "../../../server/express/types/Schedule";
 import { DateTime } from "luxon";
 import { GroupWithRooms } from "../selectGroupsWithRooms";
 import ScheduleGroupGrid from "./ScheduleGroupGrid";
@@ -47,7 +47,7 @@ const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: Sty
 
 interface GridColumnDefinition {
   value: string;
-  prevTrack: Track | undefined;
+  prevTrack: TrackLegacy | undefined;
 }
 
 const calculateGridTemplateColumns = ({ schedule: { tracks } }: StyleProps) => {

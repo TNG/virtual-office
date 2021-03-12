@@ -1,9 +1,9 @@
 export interface Schedule {
-  tracks: Track[];
+  tracks: TrackLegacy[];
   sessions: SessionLegacy[];
 }
 
-export interface Track {
+export interface TrackLegacy {
   id: string;
   name: string;
 }
