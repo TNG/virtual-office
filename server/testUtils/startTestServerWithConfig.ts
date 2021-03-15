@@ -1,4 +1,4 @@
-import { ConfigOptions } from "../express/types/ConfigOptions";
+import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 import { Container } from "typedi";
 import { ExpressApp } from "../express/ExpressApp";
 import { Express } from "express";
@@ -32,7 +32,7 @@ export class TestServer {
   }
 }
 
-export async function startTestServerWithConfig(config: ConfigOptions): Promise<TestServer> {
+export async function startTestServerWithConfig(config: ConfigOptionsLegacy): Promise<TestServer> {
   process.env.SLACK_SECRET = "abc";
   process.env.SLACK_CLIENT_ID = "abc";
   process.env.SLACK_CALLBACK_URL = "http://localhost";

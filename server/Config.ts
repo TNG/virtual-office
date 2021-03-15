@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { findRootDir } from "./express/utils/findRootDir";
 import { v4 as uuid } from "uuid";
-import { ConfigOptions } from "./express/types/ConfigOptions";
+import { ConfigOptionsLegacy } from "./express/types/ConfigOptionsLegacy";
 import { ClientConfig } from "./express/types/ClientConfig";
 import * as fs from "fs";
 import { logger } from "./log";
@@ -26,7 +26,7 @@ export class Config {
   public readonly port = process.env.PORT || 9000;
   public readonly disableAuth = process.env.DISABLE_AUTH === "true";
   public readonly slack = Config.readSlackConfig(this.disableAuth);
-  public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
+  public readonly configOptions: ConfigOptionsLegacy = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
@@ -88,7 +88,7 @@ export class Config {
     return process.env.CONFIG_LOCATION || `${findRootDir()}/server/office.json`;
   }
 
-  private static readConfigFromFile(): ConfigOptions {
+  private static readConfigFromFile(): ConfigOptionsLegacy {
     if (process.env.CONFIG) {
       return JSON.parse(process.env.CONFIG);
     }
@@ -98,7 +98,7 @@ export class Config {
       return require(configFile);
     } else {
       logger.warn(`Config file '${configFile}' does not exist, creating default config`);
-      const emptyConfig: ConfigOptions = { rooms: [], groups: [] };
+      const emptyConfig: ConfigOptionsLegacy = { rooms: [], groups: [] };
       fs.writeFileSync(configFile, JSON.stringify(emptyConfig));
       return emptyConfig;
     }

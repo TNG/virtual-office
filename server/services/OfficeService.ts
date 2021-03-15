@@ -1,9 +1,9 @@
 import { Service } from "typedi";
 import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { Config } from "../Config";
-import { ConfigOptions } from "../express/types/ConfigOptions";
+import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 import { GroupLegacy } from "../express/types/GroupLegacy";
-import { RoomLegacy, RoomConfig, RoomWithMeetingId } from "../express/types/RoomLegacy";
+import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
@@ -80,7 +80,7 @@ export class OfficeService {
     return activeRooms[0];
   }
 
-  createRoom(room: RoomConfig): boolean {
+  createRoom(room: RoomConfigLegacy): boolean {
     if (this.rooms.some((knownRoom) => knownRoom.roomId === room.roomId)) {
       logger.info(`cannot create room, as room with roomId=${room.roomId} already exists`);
       return false;
@@ -101,7 +101,7 @@ export class OfficeService {
     return true;
   }
 
-  private updateRooms(update: RoomConfig[]) {
+  private updateRooms(update: RoomConfigLegacy[]) {
     this.rooms = update.map((room) => OfficeService.roomConfigToRoom(room));
   }
 
@@ -116,14 +116,14 @@ export class OfficeService {
     }
   }
 
-  private static roomConfigToRoom(config: RoomConfig): RoomLegacy {
+  private static roomConfigToRoom(config: RoomConfigLegacy): RoomLegacy {
     return {
       ...config,
       roomId: config.roomId || uuid(),
     };
   }
 
-  replaceOfficeWith(configOptions: ConfigOptions) {
+  replaceOfficeWith(configOptions: ConfigOptionsLegacy) {
     this.updateRooms(configOptions.rooms);
     this.groups = configOptions.groups;
     this.updateSchedule(configOptions.schedule);

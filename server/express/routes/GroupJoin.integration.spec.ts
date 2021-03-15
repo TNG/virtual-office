@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
+import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
 import { range } from "lodash";
 
 import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
@@ -22,7 +22,7 @@ const room2 = {
   groupId,
 };
 const rooms = [room1, room2];
-const config: ConfigOptions = {
+const config: ConfigOptionsLegacy = {
   rooms,
   groups: [
     {

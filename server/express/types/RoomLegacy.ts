@@ -1,29 +1,7 @@
-import { RoomLink, RoomLinkCodec } from "./RoomLink";
-import { MarkRequired } from "ts-essentials";
+import { RoomLinkCodec } from "./RoomLink";
 import * as t from "io-ts";
 
-interface RoomWithoutId {
-  meetingId?: string;
-  name: string;
-  subtitle?: string;
-  description?: string;
-  joinUrl?: string;
-  titleUrl?: string;
-  temporary?: boolean;
-  links?: RoomLink[];
-  groupId?: string;
-  icon?: string;
-  slackNotification?: {
-    channelId: string;
-    notificationInterval?: number;
-  };
-}
-
-export interface RoomConfig extends RoomWithoutId {
-  roomId?: string;
-}
-
-const SlackNotificationCodec = t.intersection([
+export const SlackNotificationCodec = t.intersection([
   t.type({
     channelId: t.string,
   }),
@@ -31,12 +9,10 @@ const SlackNotificationCodec = t.intersection([
     notificationInterval: t.number,
   }),
 ]);
-export { SlackNotificationCodec };
 
-export const RoomLegacyCodec = t.intersection([
+const RoomWithoutIdCodec = t.intersection([
   t.type({
     name: t.string,
-    roomId: t.string,
   }),
   t.partial({
     meetingId: t.string,
@@ -51,12 +27,38 @@ export const RoomLegacyCodec = t.intersection([
     slackNotification: SlackNotificationCodec,
   }),
 ]);
+export type RoomWithoutId = t.TypeOf<typeof RoomWithoutIdCodec>;
+
+export const RoomConfigLegacyCodec = t.intersection([
+  RoomWithoutIdCodec,
+  t.partial({
+    roomId: t.string,
+  }),
+]);
+export type RoomConfigLegacy = t.TypeOf<typeof RoomConfigLegacyCodec>;
+
+export const RoomLegacyCodec = t.intersection([
+  RoomWithoutIdCodec,
+  t.type({
+    roomId: t.string,
+  }),
+]);
 export type RoomLegacy = t.TypeOf<typeof RoomLegacyCodec>;
 
-export interface RoomWithMeetingId extends RoomLegacy {
-  meetingId: string;
-}
+const RoomWithMeetingIdCodec = t.intersection([
+  RoomLegacyCodec,
+  t.type({
+    meetingId: t.string,
+  }),
+]);
+export type RoomWithMeetingId = t.TypeOf<typeof RoomWithMeetingIdCodec>;
 
-export type RoomWithSlackNotification = MarkRequired<RoomWithMeetingId, "slackNotification">;
+const RoomWithSlackNotificationCodec = t.intersection([
+  RoomWithMeetingIdCodec,
+  t.type({
+    slackNotification: SlackNotificationCodec,
+  }),
+]);
+export type RoomWithSlackNotification = t.TypeOf<typeof RoomWithSlackNotificationCodec>;
 
 export const hasSlackNotifications = (room: RoomLegacy): room is RoomWithSlackNotification => !!room.slackNotification;

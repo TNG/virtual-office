@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
+import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
 import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
 import { endMeetingEvent, joinRoomEvent, leaveRoomEvent } from "../../testUtils/meetingEvents";
 
@@ -16,7 +16,7 @@ const room2 = {
   joinUrl: `https://zoom.us/j/2`,
 };
 const rooms = [room1, room2];
-const config: ConfigOptions = {
+const config: ConfigOptionsLegacy = {
   rooms,
   groups: [],
 };
