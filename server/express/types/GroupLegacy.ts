@@ -1,19 +1,31 @@
-export type GroupJoinConfig = {
-  minimumParticipantCount: number;
-  title: string;
-  subtitle?: string;
-  description: string;
-};
+import * as t from "io-ts";
 
-export interface GroupLegacy {
-  id: string;
-  name?: string;
-  description?: string;
-  disabledAfter?: string;
-  disabledBefore?: string;
-  joinableAfter?: string;
-  groupJoin?: GroupJoinConfig;
-}
+export const GroupJoinConfigCodec = t.intersection([
+  t.type({
+    minimumParticipantCount: t.number,
+    title: t.string,
+    description: t.string,
+  }),
+  t.partial({
+    subtitle: t.string,
+  }),
+]);
+export type GroupJoinConfig = t.TypeOf<typeof GroupJoinConfigCodec>;
+
+export const GroupLegacyCodec = t.intersection([
+  t.type({
+    id: t.string,
+  }),
+  t.partial({
+    name: t.string,
+    description: t.string,
+    disabledAfter: t.string,
+    disabledBefore: t.string,
+    joinableAfter: t.string,
+    groupJoin: GroupJoinConfigCodec,
+  }),
+]);
+export type GroupLegacy = t.TypeOf<typeof GroupLegacyCodec>;
 
 export interface GroupWithGroupJoin extends GroupLegacy {
   groupJoin: GroupJoinConfig;

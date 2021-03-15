@@ -1,9 +1,15 @@
-import { GroupLegacy } from "./GroupLegacy";
-import { RoomLegacy } from "./RoomLegacy";
-import { Schedule } from "./Schedule";
+import { GroupLegacyCodec } from "./GroupLegacy";
+import { RoomLegacyCodec } from "./RoomLegacy";
+import { ScheduleCodec } from "./Schedule";
+import * as t from "io-ts";
 
-export interface OfficeLegacy {
-  rooms: RoomLegacy[];
-  groups: GroupLegacy[];
-  schedule?: Schedule;
-}
+export const OfficeLegacyCodec = t.intersection([
+  t.type({
+    rooms: t.array(RoomLegacyCodec),
+    groups: t.array(GroupLegacyCodec),
+  }),
+  t.partial({
+    schedule: ScheduleCodec,
+  }),
+]);
+export type OfficeLegacy = t.TypeOf<typeof OfficeLegacyCodec>;

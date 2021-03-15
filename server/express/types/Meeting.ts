@@ -1,6 +1,8 @@
-import { MeetingParticipant } from "./MeetingParticipant";
+import { MeetingParticipantCodec } from "./MeetingParticipant";
+import * as t from "io-ts";
 
-export interface Meeting {
-  meetingId: string;
-  participants: MeetingParticipant[];
-}
+export const MeetingCodec = t.type({
+  meetingId: t.string,
+  participants: t.array(MeetingParticipantCodec),
+});
+export type Meeting = t.TypeOf<typeof MeetingCodec>;

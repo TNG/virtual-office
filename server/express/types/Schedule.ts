@@ -1,18 +1,27 @@
-export interface Schedule {
-  tracks: TrackLegacy[];
-  sessions: SessionLegacy[];
-}
+import * as t from "io-ts";
 
-export interface TrackLegacy {
-  id: string;
-  name: string;
-}
+export const TrackLegacyCodec = t.type({
+  id: t.string,
+  name: t.string,
+});
+export type TrackLegacy = t.TypeOf<typeof TrackLegacyCodec>;
 
-export interface SessionLegacy {
-  roomId?: string;
-  groupId?: string;
-  trackId?: string;
-  start: string;
-  end: string;
-  alwaysActive?: boolean;
-}
+export const SessionLegacyCodec = t.intersection([
+  t.type({
+    start: t.string,
+    end: t.string,
+  }),
+  t.partial({
+    roomId: t.string,
+    groupId: t.string,
+    trackId: t.string,
+    alwaysActive: t.boolean,
+  }),
+]);
+export type SessionLegacy = t.TypeOf<typeof SessionLegacyCodec>;
+
+export const ScheduleCodec = t.type({
+  tracks: t.array(TrackLegacyCodec),
+  sessions: t.array(SessionLegacyCodec),
+});
+export type Schedule = t.TypeOf<typeof ScheduleCodec>;
