@@ -20,6 +20,7 @@ const GroupSessionCodec = t.intersection([
     group: GroupCodec,
   }),
 ]);
+export type GroupSession = t.TypeOf<typeof GroupSessionCodec>;
 
 const RoomSessionCodec = t.intersection([
   SessionInterfaceCodec,
@@ -28,6 +29,7 @@ const RoomSessionCodec = t.intersection([
     room: RoomCodec,
   }),
 ]);
+export type RoomSession = t.TypeOf<typeof RoomSessionCodec>;
 
 export const SessionCodec = t.union([GroupSessionCodec, RoomSessionCodec]);
 export type Session = t.TypeOf<typeof SessionCodec>;

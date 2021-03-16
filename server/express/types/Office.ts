@@ -18,6 +18,7 @@ const GroupBlockCodec = t.intersection([
     group: GroupCodec,
   }),
 ]);
+export type GroupBlock = t.TypeOf<typeof GroupBlockCodec>;
 
 const ScheduleBlockCodec = t.intersection([
   BlockInterfaceCodec,
@@ -27,8 +28,10 @@ const ScheduleBlockCodec = t.intersection([
     sessions: t.array(SessionCodec),
   }),
 ]);
+export type ScheduleBlock = t.TypeOf<typeof ScheduleBlockCodec>;
 
 const BlockCodec = t.union([GroupBlockCodec, ScheduleBlockCodec]);
+export type Block = t.TypeOf<typeof BlockCodec>;
 
 export const OfficeWithBlocksCodec = t.type({
   version: t.literal("2"),

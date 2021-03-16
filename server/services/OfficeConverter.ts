@@ -1,22 +1,23 @@
-import { OfficeWithBlocks } from "../types/Office";
-import { OfficeService } from "../../services/OfficeService";
-import { Config } from "../../Config";
-import { instance, mock, when } from "ts-mockito";
-import { SessionLegacy, TrackLegacy } from "../types/Schedule";
-import { RoomLegacy } from "../types/RoomLegacy";
-import { OfficeLegacy } from "../types/OfficeLegacy";
-import { GroupLegacy } from "../types/GroupLegacy";
-import { Room } from "../types/Room";
-import { Group } from "../types/Group";
-import { Session } from "../types/Session";
+import { OfficeWithBlocks } from "../express/types/Office";
+import { OfficeService } from "./OfficeService";
+import { SessionLegacy, TrackLegacy } from "../express/types/Schedule";
+import { RoomLegacy } from "../express/types/RoomLegacy";
+import { OfficeLegacy } from "../express/types/OfficeLegacy";
+import { GroupLegacy } from "../express/types/GroupLegacy";
+import { Room } from "../express/types/Room";
+import { Group } from "../express/types/Group";
+import { Session } from "../express/types/Session";
+import { Config } from "../Config";
+
+/*import { instance, mock, when } from "ts-mockito";
 
 const config = mock(Config);
 when(config.clientConfig).thenReturn({ timezone: undefined, sessionStartMinutesOffset: 10 } as any);
-when(config.configOptions).thenReturn(require("../../_sz_office_pe.json"));
-const officeWithBlocks = OfficeLegacyToOfficeWithBlocks(instance(config));
-console.log(JSON.stringify(officeWithBlocks, null, 4));
+when(config.configOptions).thenReturn(require("../../_sz_office_tech.json"));
+const officeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
+console.log(JSON.stringify(officeWithBlocks, null, 4));*/
 
-export function OfficeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks {
+export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks {
   // clean with OfficeService: create Rooms from RoomConfigs, sort Schedule
   const officeService = new OfficeService(config);
   let officeLegacy = officeService.getOffice();
@@ -56,10 +57,12 @@ function cleanOfficeLegacy(officeLegacy: OfficeLegacy): OfficeLegacy {
 function removeUnusedGroups(officeLegacy: OfficeLegacy): OfficeLegacy {
   officeLegacy.groups = officeLegacy.groups.filter((groupLegacy: GroupLegacy) => {
     if (!officeLegacy.schedule) {
-      officeLegacy.rooms.some((roomLegacy: RoomLegacy) => roomLegacy.groupId === groupLegacy.id);
-    } /* else {
-      officeLegacy.schedule.sessions.some((sessionLegacy: SessionLegacy) => sessionLegacy.groupId === groupLegacy.id);
-    }*/
+      return officeLegacy.rooms.some((roomLegacy: RoomLegacy) => roomLegacy.groupId === groupLegacy.id);
+    } else {
+      return officeLegacy.schedule.sessions.some(
+        (sessionLegacy: SessionLegacy) => sessionLegacy.groupId === groupLegacy.id
+      );
+    }
   });
   return officeLegacy;
 }
@@ -80,15 +83,13 @@ function addDummyGroup(officeLegacy: OfficeLegacy): OfficeLegacy {
 // Session must have valid room or group reference
 function removeUnusedSessions(officeLegacy: OfficeLegacy): OfficeLegacy {
   if (officeLegacy.schedule) {
-    officeLegacy.schedule.sessions.filter((sessionLegacy: SessionLegacy) => {
-      if (sessionLegacy.roomId) {
-        return officeLegacy.rooms.some((roomLegacy: RoomLegacy) => roomLegacy.roomId === sessionLegacy.roomId);
-      } else if (sessionLegacy.groupId) {
-        return officeLegacy.groups.some((groupsLegacy: GroupLegacy) => groupsLegacy.id === sessionLegacy.groupId);
-      } else {
-        return false;
-      }
-    });
+    officeLegacy.schedule.sessions = officeLegacy.schedule.sessions.filter(
+      (sessionLegacy: SessionLegacy) =>
+        (sessionLegacy.roomId &&
+          officeLegacy.rooms.some((roomLegacy: RoomLegacy) => roomLegacy.roomId === sessionLegacy.roomId)) ||
+        (sessionLegacy.groupId &&
+          officeLegacy.groups.some((groupsLegacy: GroupLegacy) => groupsLegacy.id === sessionLegacy.groupId))
+    );
   }
   return officeLegacy;
 }
@@ -133,7 +134,7 @@ function sessionLegacyToSession(officeLegacy: OfficeLegacy, sessionLegacy: Sessi
       ),
       trackId: sessionLegacy.trackId,
     };
-  } else
+  } else {
     return {
       type: "GROUP_SESSION",
       start: sessionLegacy.start,
@@ -144,4 +145,5 @@ function sessionLegacyToSession(officeLegacy: OfficeLegacy, sessionLegacy: Sessi
       ),
       trackId: sessionLegacy.trackId,
     };
+  }
 }
