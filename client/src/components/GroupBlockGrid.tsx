@@ -8,6 +8,7 @@ import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import GroupJoinCard from "./GroupJoinCard";
 import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import { Group } from "../../../server/express/types/Group";
+import RoomCardNew from "./RoomCardNew";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -53,7 +54,7 @@ export const GroupBlockGrid = (props: Props) => {
     </div>
   );
 
-  // TODO: adapt to new data model
+  // TODO: adapt to new data model (e.g. random join yields error right now)
   function renderGroupJoinCard() {
     if (!group.groupJoinConfig) {
       return;
@@ -78,30 +79,9 @@ export const GroupBlockGrid = (props: Props) => {
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
     return shownRooms.map((room: Room) => {
-      const roomConvertedToLegacy: RoomLegacy = {
-        name: room.name,
-        roomId: room.meeting.meetingId,
-        meetingId: room.meeting.meetingId,
-        subtitle: room.subtitle,
-        description: room.description,
-        joinUrl: room.joinUrl,
-        titleUrl: room.titleUrl,
-        temporary: false,
-        links: room.roomLinks,
-        groupId: group.name,
-        icon: room.icon,
-        slackNotification: room.slackNotification,
-      };
       return renderGridCard(
         room.meeting.meetingId,
-        <RoomCard
-          room={roomConvertedToLegacy}
-          participants={room.meeting.participants}
-          isDisabled={false}
-          isJoinable={true}
-          isListMode={false}
-          fillHeight={true}
-        />
+        <RoomCardNew room={room} isDisabled={false} isJoinable={true} isListMode={false} fillHeight={true} />
       );
     });
   }

@@ -8,6 +8,7 @@ import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import { DateTime } from "luxon";
 import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
+import RoomCardNew from "./RoomCardNew";
 
 const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
   const earliestStart = sessions
@@ -132,22 +133,8 @@ export const ScheduleBlockGrid = (props: Props) => {
         const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
         const timezone = browserTimeZone();
         const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
-        const roomConvertedToLegacy: RoomLegacy = {
-          name: session.room.name,
-          roomId: session.room.meeting.meetingId,
-          meetingId: session.room.meeting.meetingId,
-          subtitle: session.room.subtitle,
-          description: session.room.description,
-          joinUrl: session.room.joinUrl,
-          titleUrl: session.room.titleUrl,
-          temporary: false,
-          links: session.room.roomLinks,
-          groupId: "",
-          icon: session.room.icon,
-          slackNotification: session.room.slackNotification,
-        };
         const roomWithTime = {
-          ...roomConvertedToLegacy,
+          ...session.room,
           subtitle: `(${timeString}) ${session.room.subtitle || ""}`,
         };
         return renderGridCard(
@@ -155,9 +142,8 @@ export const ScheduleBlockGrid = (props: Props) => {
           session.start,
           session.end,
           tracksOfSession,
-          <RoomCard
+          <RoomCardNew
             room={roomWithTime}
-            participants={session.room.meeting.participants}
             isDisabled={!isActive}
             isJoinable={isActive}
             isListMode={clientConfig.viewMode === "list"}
