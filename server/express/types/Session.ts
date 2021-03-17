@@ -9,7 +9,7 @@ const SessionInterfaceCodec = t.intersection([
     end: t.string,
   }),
   t.partial({
-    trackId: t.string,
+    trackName: t.string,
   }),
 ]);
 

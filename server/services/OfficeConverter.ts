@@ -136,7 +136,8 @@ function sessionLegacyToSession(officeLegacy: OfficeLegacy, sessionLegacy: Sessi
       room: roomLegacyToRoom(
         officeLegacy.rooms.find((roomLegacy: RoomLegacy) => roomLegacy.roomId === sessionLegacy.roomId)!
       ),
-      trackId: sessionLegacy.trackId,
+      trackName:
+        officeLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name || "",
     };
   } else {
     return {
@@ -147,7 +148,8 @@ function sessionLegacyToSession(officeLegacy: OfficeLegacy, sessionLegacy: Sessi
         officeLegacy,
         officeLegacy.groups.find((groupLegacy: GroupLegacy) => groupLegacy.id === sessionLegacy.groupId)!
       ),
-      trackId: sessionLegacy.trackId,
+      trackName:
+        officeLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name || "",
     };
   }
 }

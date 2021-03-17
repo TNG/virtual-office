@@ -3,7 +3,7 @@ export default {
   blocks: [
     {
       type: "GROUP_BLOCK",
-      name: "Block 1",
+      name: "Group 1",
       group: {
         name: "group1",
         rooms: [
@@ -48,7 +48,7 @@ export default {
     },
     {
       type: "GROUP_BLOCK",
-      name: "Block 2",
+      name: "Group 2",
       group: {
         name: "group2",
         rooms: [
@@ -77,6 +77,66 @@ export default {
           description: "Einer zufälligen Kaffeeküche beitreten.",
         },
       },
+    },
+    {
+      type: "SCHEDULE_BLOCK",
+      name: "Schedule 1",
+      tracks: [
+        {
+          name: "Frogstar",
+        },
+        {
+          name: "Unterwelt",
+        },
+      ],
+      sessions: [
+        {
+          type: "ROOM_SESSION",
+          start: "09:00",
+          end: "09:45",
+          room: {
+            name: "async/await",
+            meeting: {
+              meetingId: "804262732",
+              participants: [],
+            },
+            subtitle:
+              "[Jan Gosmann] \n\nÜber die letzten Jahre haben zunehmend mehr Programmiersprachen (C#, Python, JavaScript, Rust, ...) eine neue Syntax für asynchrone Programmierung eingeführt: async/await. Was ist der Unterschied zu anderen Methoden nebenläufiger Programmierung? Wofür eignet sich async/await besonders? Warum ist es so populär? Was passiert eigentlich im Hintergrund?",
+            joinUrl: "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+            roomLinks: [
+              {
+                href: "https://tngtech.slack.com/archives/CL78CL86N",
+                text: "#td-unterwelt-live",
+                icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+              },
+            ],
+          },
+          trackName: "Unterwelt",
+        },
+        {
+          type: "ROOM_SESSION",
+          start: "17:15",
+          end: "17:45",
+          room: {
+            name: "Curriculum: Architektur & Patterns",
+            meeting: {
+              meetingId: "277324357",
+              participants: [],
+            },
+            subtitle:
+              '[curriculum-architecture@tngtech.com, Michael Echerer] \n\nJede Software hat eine Architektur! - Hoffentlich passend für den Kontext statt zufällig entstanden.Nicht jeder Entwickler nennt sich Architekt, aber jeder im Team gestaltet die Softwarearchitektur mit. Grund genug zu wissen, worum es geht und wieso Architekturarbeit und -dokumentation wichtig ist bzw. nicht vernachlässigt werden darf.\n\nSogenannte Patterns helfen dabei die Architektur im Großen zu gestalten und auch auf Sourcecode-Ebene sauber zu halten. Sie dienen überdies auch der Kommunikation zwischen Entwicklern.\n\nWer bisher nur "programmiert" hat, lernt wichtige Aspekte kennen, um ein Software-Entwickler zu werden und was es bedeutet für die Architektur einen Teil der Mitverantwortung früh zu übernehmen.',
+            joinUrl: "https://zoom.us/j/277324357?pwd=bHV5Nm8walVaMUNmb1AvRk53YU9oQT09",
+            roomLinks: [
+              {
+                href: "https://tngtech.slack.com/archives/CLLG504A3",
+                text: "#td-frogstar-live",
+                icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+              },
+            ],
+          },
+          trackName: "Frogstar",
+        },
+      ],
     },
   ],
 };
