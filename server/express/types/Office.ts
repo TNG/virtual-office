@@ -6,6 +6,7 @@ import { GroupCodec } from "./Group";
 const TrackCodec = t.type({
   name: t.string,
 });
+export type Track = t.TypeOf<typeof TrackCodec>;
 
 const BlockInterfaceCodec = t.type({
   type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK")]),

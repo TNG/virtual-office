@@ -59,7 +59,7 @@ export const GroupBlockGrid = (props: Props) => {
       return;
     } else {
       const groupConvertedToLegacy: GroupLegacy = {
-        id: group.name, // TODO: other id?
+        id: group.name, // TODO: other id? ->
         name: group.name,
         description: group.description,
         disabledAfter: "",

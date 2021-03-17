@@ -227,12 +227,13 @@ const Dashboard = () => {
     );
   }
 
-  function renderOffice(office: OfficeWithBlocks, viewMode: string, hideEndedSessions?: boolean) {
+  function renderOffice(office: OfficeWithBlocks, config: ClientConfig) {
+    // TODO: check if key required
     return (
       <Fade in={initialLoadCompleted}>
         <div>
           {office.blocks.map((block: Block, index: number) => {
-            return <BlockGrid key={index} block={block} />;
+            return <BlockGrid key={index} block={block} clientConfig={config} />;
           })}
         </div>
       </Fade>
@@ -246,7 +247,7 @@ const Dashboard = () => {
   const showNewOffice: boolean = true;
   const content = initialLoadCompleted ? (
     showNewOffice ? (
-      renderOffice(office_new as OfficeWithBlocks, config.viewMode, config.hideEndedSessions)
+      renderOffice(office_new as OfficeWithBlocks, config)
     ) : officeState.office.schedule ? (
       renderSchedule(officeState.office.schedule, config.viewMode, config.hideEndedSessions)
     ) : (
