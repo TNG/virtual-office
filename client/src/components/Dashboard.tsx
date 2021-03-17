@@ -26,6 +26,15 @@ import useDeepCompareEffect from "use-deep-compare-effect";
 import { Footer } from "./Footer";
 import { parseTime } from "../time";
 import { DateTime } from "luxon";
+import office_new from "../../public/office_for_new_data_model";
+import {
+  OfficeWithBlocks,
+  GroupBlockCodec,
+  ScheduleBlockCodec,
+  Block,
+  GroupBlock,
+} from "../../../server/express/types/Office";
+import { BlockGrid } from "./BlockGrid";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
@@ -218,12 +227,27 @@ const Dashboard = () => {
     );
   }
 
+  function renderOffice(office: OfficeWithBlocks, viewMode: string, hideEndedSessions?: boolean) {
+    return (
+      <Fade in={initialLoadCompleted}>
+        <div>
+          {office.blocks.map((block: Block, index: number) => {
+            return <BlockGrid key={index} block={block} />;
+          })}
+        </div>
+      </Fade>
+    );
+  }
+
   if (!config) {
     return null;
   }
 
+  const showNewOffice: boolean = true;
   const content = initialLoadCompleted ? (
-    officeState.office.schedule ? (
+    showNewOffice ? (
+      renderOffice(office_new as OfficeWithBlocks, config.viewMode, config.hideEndedSessions)
+    ) : officeState.office.schedule ? (
       renderSchedule(officeState.office.schedule, config.viewMode, config.hideEndedSessions)
     ) : (
       renderRoomGrid(config.viewMode)
@@ -244,5 +268,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
