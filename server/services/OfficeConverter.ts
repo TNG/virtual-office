@@ -10,12 +10,14 @@ import { Session } from "../express/types/Session";
 import { Config } from "../Config";
 
 /*import { instance, mock, when } from "ts-mockito";
+import * as fs from "fs";
 
 const config = mock(Config);
 when(config.clientConfig).thenReturn({ timezone: undefined, sessionStartMinutesOffset: 10 } as any);
-when(config.configOptions).thenReturn(require("../../_sz_office_tech.json"));
+when(config.configOptions).thenReturn(require("../_sz_office_pe.json"));
 const officeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
-console.log(JSON.stringify(officeWithBlocks, null, 4));*/
+fs.writeFileSync("_sz_office_pe_new.json", JSON.stringify(officeWithBlocks));
+console.log(JSON.stringify(officeWithBlocks, null, 2));*/
 
 export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks {
   // clean with OfficeService: create Rooms from RoomConfigs, sort Schedule
@@ -28,6 +30,7 @@ export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks
       version: "2",
       blocks: officeLegacy.groups.map((groupLegacy: GroupLegacy) => ({
         type: "GROUP_BLOCK",
+        name: groupLegacy.name || "",
         group: groupLegacytoGroup(officeLegacy, groupLegacy),
       })),
     };
@@ -37,6 +40,7 @@ export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks
       blocks: [
         {
           type: "SCHEDULE_BLOCK",
+          name: "",
           tracks: officeLegacy.schedule.tracks.map((track: TrackLegacy) => ({ name: track.name })),
           sessions: officeLegacy.schedule.sessions.map((sessionLegacy: SessionLegacy) =>
             sessionLegacyToSession(officeLegacy, sessionLegacy)

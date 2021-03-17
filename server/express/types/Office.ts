@@ -9,9 +9,10 @@ const TrackCodec = t.type({
 
 const BlockInterfaceCodec = t.type({
   type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK")]),
+  name: t.string,
 });
 
-const GroupBlockCodec = t.intersection([
+export const GroupBlockCodec = t.intersection([
   BlockInterfaceCodec,
   t.type({
     type: t.literal("GROUP_BLOCK"),
@@ -20,7 +21,7 @@ const GroupBlockCodec = t.intersection([
 ]);
 export type GroupBlock = t.TypeOf<typeof GroupBlockCodec>;
 
-const ScheduleBlockCodec = t.intersection([
+export const ScheduleBlockCodec = t.intersection([
   BlockInterfaceCodec,
   t.type({
     type: t.literal("SCHEDULE_BLOCK"),
