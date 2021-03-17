@@ -32,7 +32,7 @@ export const BlockGrid = (props: Props) => {
       {renderBlockHeader()}
       <div>
         {block.type === "GROUP_BLOCK" ? (
-          <GroupBlockGrid group={block.group} />
+          <GroupBlockGrid group={block.group} isDisabled={false} isJoinable={true} isListMode={false} />
         ) : (
           <ScheduleBlockGrid tracks={block.tracks} sessions={block.sessions} clientConfig={clientConfig} />
         )}

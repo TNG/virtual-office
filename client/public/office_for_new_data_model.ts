@@ -136,6 +136,77 @@ export default {
           },
           trackName: "Frogstar",
         },
+        {
+          type: "GROUP_SESSION",
+          start: "11:00",
+          end: "12:00",
+          group: {
+            name: "new_workshops_name",
+            description: "new_workshops_description",
+            rooms: [
+              {
+                name: "WS Power Napping",
+                meeting: {
+                  meetingId: "9999999991",
+                  participants: [],
+                },
+                joinUrl: "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+                roomLinks: [
+                  {
+                    href: "https://tngtech.slack.com/archives/C011LJN92FP",
+                    text: "#workshop",
+                    icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+                  },
+                ],
+                icon:
+                  "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+                slackNotification: {
+                  channelId: "C011LJN92FP",
+                },
+              },
+              {
+                name: "WS Cooking",
+                meeting: {
+                  meetingId: "9999999992",
+                  participants: [],
+                },
+                joinUrl: "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+                roomLinks: [
+                  {
+                    href: "https://tngtech.slack.com/archives/C011LJN92FP",
+                    text: "#workshop",
+                    icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+                  },
+                ],
+                icon:
+                  "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+                slackNotification: {
+                  channelId: "C011LJN92FP",
+                },
+              },
+              {
+                name: "WS Swimming",
+                meeting: {
+                  meetingId: "9999999993",
+                  participants: [],
+                },
+                joinUrl: "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+                roomLinks: [
+                  {
+                    href: "https://tngtech.slack.com/archives/C011LJN92FP",
+                    text: "#workshop",
+                    icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+                  },
+                ],
+                icon:
+                  "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+                slackNotification: {
+                  channelId: "C011LJN92FP",
+                },
+              },
+            ],
+          },
+        },
       ],
     },
   ],

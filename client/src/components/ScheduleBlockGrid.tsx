@@ -9,6 +9,7 @@ import { DateTime } from "luxon";
 import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
 import RoomCardNew from "./RoomCardNew";
+import { GroupBlockGrid } from "./GroupBlockGrid";
 
 const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
   const earliestStart = sessions
@@ -120,6 +121,7 @@ export const ScheduleBlockGrid = (props: Props) => {
   }
 
   // TODO: ID + new data format, isActive
+  // TODO: GroupSession header missing
   function renderSchedule() {
     return sessions.map((session: Session) => {
       const tracksOfSession: [string, string?] = session.trackName
@@ -150,25 +152,20 @@ export const ScheduleBlockGrid = (props: Props) => {
             fillHeight={true}
           />
         );
-      } /*else if (groupId) {
-        const { group, rooms } = groupsWithRooms[groupId];
-
+      } else if (session.type === "GROUP_SESSION") {
         return renderGridCard(
-          groupId,
-          start,
-          end,
-          tracks,
-          <ScheduleGroupGrid
-            key={groupId}
-            group={group}
-            rooms={rooms}
-            meetings={meetings}
+          session.group.name,
+          session.start,
+          session.end,
+          tracksOfSession,
+          <GroupBlockGrid
+            group={session.group}
             isDisabled={!isActive}
             isJoinable={isActive}
-            isListMode={isListMode}
+            isListMode={clientConfig.viewMode === "list"}
           />
         );
-      }*/
+      }
       return "";
     });
   }

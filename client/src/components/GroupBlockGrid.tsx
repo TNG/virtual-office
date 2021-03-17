@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core";
+import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
 import { Room } from "../../../server/express/types/Room";
 import { partition } from "lodash";
@@ -38,21 +38,57 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 }));
 
 /** Props */
+// TODO: check if all props required
 interface Props {
   group: Group;
+  isDisabled: boolean;
+  isJoinable: boolean;
+  isListMode: boolean;
 }
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { group } = props;
+  const { group, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
+  return (
+    <div className={classes.root}>
+      {renderGroupHeader()}
+      <div className={classes.grid}>
+        {renderGroupJoinCard()}
+        {renderRoomCards()}
+      </div>
+    </div>
+  );
   return (
     <div className={classes.grid}>
       {renderGroupJoinCard()}
       {renderRoomCards()}
     </div>
   );
+
+  function renderGroupHeader() {
+    const description = group.description && (
+      <CardContent className={classes.groupHeaderCardContent}>
+        <Typography variant="body2">{group.description}</Typography>
+      </CardContent>
+    );
+
+    return (
+      group.name && (
+        <div className={`${classes.card}`}>
+          <Card className={classes.groupHeaderCard}>
+            <CardHeader
+              className={classes.groupHeaderCardHeader}
+              title={<Typography variant="h5">{group.name}</Typography>}
+            />
+            {description}
+            <CardActions />
+          </Card>
+        </div>
+      )
+    );
+  }
 
   // TODO: adapt to new data model (e.g. random join yields error right now)
   function renderGroupJoinCard() {
@@ -68,9 +104,15 @@ export const GroupBlockGrid = (props: Props) => {
         joinableAfter: "",
         groupJoin: group.groupJoinConfig,
       };
+      // todo: check props
       return renderGridCard(
         `group-join-${group.name}`,
-        <GroupJoinCard group={groupConvertedToLegacy} isJoinable={true} isListMode={false} fillHeight={true} />
+        <GroupJoinCard
+          group={groupConvertedToLegacy}
+          isJoinable={isJoinable}
+          isListMode={isListMode}
+          fillHeight={true}
+        />
       );
     }
   }
@@ -78,10 +120,17 @@ export const GroupBlockGrid = (props: Props) => {
   // TODO: adapt to new data model
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
+    // todo: check props
     return shownRooms.map((room: Room) => {
       return renderGridCard(
         room.meeting.meetingId,
-        <RoomCardNew room={room} isDisabled={false} isJoinable={true} isListMode={false} fillHeight={true} />
+        <RoomCardNew
+          room={room}
+          isDisabled={isDisabled}
+          isJoinable={isJoinable}
+          isListMode={isListMode}
+          fillHeight={true}
+        />
       );
     });
   }
