@@ -141,11 +141,11 @@ const Dashboard = () => {
     }
   }
 
-  function sessionIsOver({ end }: Session): boolean {
+  function sessionIsOver({ alwaysActive, end }: Session): boolean {
     const zone = config?.timezone;
     const endTime = parseTime(end, zone);
     const now = DateTime.local();
-    return now >= endTime;
+    return !alwaysActive && now >= endTime;
   }
 
   function renderSchedule(schedule: Schedule, viewMode: string, hideEndedSessions?: boolean) {
