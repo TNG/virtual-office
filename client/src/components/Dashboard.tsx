@@ -27,13 +27,7 @@ import { Footer } from "./Footer";
 import { parseTime } from "../time";
 import { DateTime } from "luxon";
 import office_new from "../../public/office_for_new_data_model";
-import {
-  OfficeWithBlocks,
-  GroupBlockCodec,
-  ScheduleBlockCodec,
-  Block,
-  GroupBlock,
-} from "../../../server/express/types/Office";
+import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
 
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -228,7 +222,6 @@ const Dashboard = () => {
   }
 
   function renderOffice(office: OfficeWithBlocks, config: ClientConfig) {
-    // TODO: check if key required
     return (
       <Fade in={initialLoadCompleted}>
         <div>

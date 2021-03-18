@@ -1,13 +1,17 @@
 import React from "react";
 import { Block } from "../../../server/express/types/Office";
 import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core";
+import { fade, Theme } from "@material-ui/core";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 
 /** Styles */
-const useStyles = makeStyles<Theme, Props>(() => ({
+const useStyles = makeStyles<Theme, Props>((theme) => ({
+  block: {
+    backgroundColor: fade(theme.palette.common.white, 0.3),
+    borderRadius: theme.shape.borderRadius,
+  },
   title: {
     color: "#fff",
     margin: 12,
@@ -30,9 +34,9 @@ export const BlockGrid = (props: Props) => {
   return (
     <div className={classes.root}>
       {renderBlockHeader()}
-      <div>
+      <div className={classes.block}>
         {block.type === "GROUP_BLOCK" ? (
-          <GroupBlockGrid group={block.group} isDisabled={false} isJoinable={true} isListMode={false} />
+          <GroupBlockGrid group={block.group} isActive={true} isListMode={clientConfig.viewMode === "list"} />
         ) : (
           <ScheduleBlockGrid tracks={block.tracks} sessions={block.sessions} clientConfig={clientConfig} />
         )}

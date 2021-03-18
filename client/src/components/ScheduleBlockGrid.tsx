@@ -3,14 +3,13 @@ import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
-import RoomCard from "./RoomCard";
-import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
 import { DateTime } from "luxon";
 import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
 import RoomCardNew from "./RoomCardNew";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 
+/** Styles */
 const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
   const earliestStart = sessions
     .map(({ start }) => DateTime.fromFormat(start, "HH:mm", { zone: clientConfig?.timezone }))
@@ -38,7 +37,7 @@ interface GridColumnDefinition {
 const calculateGridTemplateColumns = ({ tracks }: Props) => {
   const result = tracks.reduce<GridColumnDefinition>(
     ({ value, prevTrack }, val) => ({
-      value: value + `[${prevTrack ? `track-${prevTrack.name}-end ` : ""}track-${val.name}-start] 581px `, // TODO: replace by minmax(0, 1fr)
+      value: value + `[${prevTrack ? `track-${prevTrack.name}-end ` : ""}track-${val.name}-start] minmax(0, 1fr)`,
       prevTrack: val,
     }),
     { value: "", prevTrack: undefined }
@@ -48,12 +47,6 @@ const calculateGridTemplateColumns = ({ tracks }: Props) => {
 };
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
-  title: {
-    color: "#fff",
-    margin: 12,
-    marginTop: 24,
-    padding: 0,
-  },
   schedule: {
     [theme.breakpoints.up("md")]: {
       display: "grid",
@@ -73,22 +66,20 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       fontSize: 20,
     },
   },
-  time: {
-    color: "#fff",
-    fontSize: 20,
-  },
   card: {
     padding: 4,
     boxSizing: "border-box",
   },
 }));
 
+/** Props */
 interface Props {
   tracks: Track[];
   sessions: Session[];
   clientConfig: ClientConfig;
 }
 
+/** Component */
 export const ScheduleBlockGrid = (props: Props) => {
   const { tracks, sessions, clientConfig } = props;
   const classes = useStyles(props);
@@ -120,8 +111,6 @@ export const ScheduleBlockGrid = (props: Props) => {
     );
   }
 
-  // TODO: ID + new data format, isActive
-  // TODO: GroupSession header missing
   function renderSchedule() {
     return sessions.map((session: Session) => {
       const tracksOfSession: [string, string?] = session.trackName
@@ -146,8 +135,7 @@ export const ScheduleBlockGrid = (props: Props) => {
           tracksOfSession,
           <RoomCardNew
             room={roomWithTime}
-            isDisabled={!isActive}
-            isJoinable={isActive}
+            isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             fillHeight={true}
           />
@@ -158,12 +146,7 @@ export const ScheduleBlockGrid = (props: Props) => {
           session.start,
           session.end,
           tracksOfSession,
-          <GroupBlockGrid
-            group={session.group}
-            isDisabled={!isActive}
-            isJoinable={isActive}
-            isListMode={clientConfig.viewMode === "list"}
-          />
+          <GroupBlockGrid group={session.group} isActive={isActive} isListMode={clientConfig.viewMode === "list"} />
         );
       }
       return "";

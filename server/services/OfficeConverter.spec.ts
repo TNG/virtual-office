@@ -102,14 +102,14 @@ describe("OfficeConverter", () => {
       // 2 Groups (Group1 and new dummy group)
       expect(officeConverted.blocks.length).toBe(2);
       // 3 Rooms (1 in Group1, 2 in new dummy group)
-      const groupBlock1: GroupBlock = officeConverted.blocks.find(
-        (block: Block) => block.type === "GROUP_BLOCK" && block.group.name === "Group1"
-      ) as GroupBlock;
-      expect(groupBlock1.group.rooms.length).toBe(1);
-      const groupBlock2: GroupBlock = officeConverted.blocks.find(
-        (block: Block) => block.type === "GROUP_BLOCK" && block.group.name === ""
-      ) as GroupBlock;
-      expect(groupBlock2.group.rooms.length).toBe(2);
+      const groupBlock1: GroupBlock | undefined = officeConverted.blocks.find(
+        (block: Block): block is GroupBlock => block.type === "GROUP_BLOCK" && block.group.name === "Group1"
+      );
+      expect(groupBlock1?.group.rooms.length).toBe(1);
+      const groupBlock2: GroupBlock | undefined = officeConverted.blocks.find(
+        (block: Block): block is GroupBlock => block.type === "GROUP_BLOCK" && block.group.name === ""
+      );
+      expect(groupBlock2?.group.rooms.length).toBe(2);
     });
 
     it("when schedule office provided", () => {
@@ -124,14 +124,14 @@ describe("OfficeConverter", () => {
       expect(scheduleBlock.tracks.length).toBe(1);
       // 1 GroupSession with 1 Room
       const groupSession: GroupSession[] = scheduleBlock.sessions.filter(
-        (session: Session) => session.type === "GROUP_SESSION"
-      ) as GroupSession[];
+        (session: Session): session is GroupSession => session.type === "GROUP_SESSION"
+      );
       expect(groupSession.length).toBe(1);
       expect(groupSession[0].group.rooms.length).toBe(1);
       // 2 RoomSessions
       const roomSessions: RoomSession[] = scheduleBlock.sessions.filter(
-        (session: Session) => session.type === "ROOM_SESSION"
-      ) as RoomSession[];
+        (session: Session): session is RoomSession => session.type === "ROOM_SESSION"
+      );
       expect(roomSessions.length).toBe(2);
     });
   });

@@ -1,14 +1,12 @@
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
-import RoomCard from "./RoomCard";
 import { Room } from "../../../server/express/types/Room";
 import { partition } from "lodash";
-import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
-import GroupJoinCard from "./GroupJoinCard";
 import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import { Group } from "../../../server/express/types/Group";
 import RoomCardNew from "./RoomCardNew";
+import GroupJoinCardNew from "./GroupJoinCardNew";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -35,20 +33,41 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       width: "25%",
     },
   },
+  cardGroupHeader: {
+    padding: 8,
+  },
+  groupHeaderCard: {
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: "row",
+    },
+    opacity: (props) => (props.isActive ? 1 : 0.65),
+  },
+  groupHeaderCardHeader: {
+    flex: "0 0 auto",
+    minHeight: 40,
+  },
+  groupHeaderCardContent: {
+    display: "flex",
+    flex: "1 1 auto",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 8,
+    flexGrow: 1,
+  },
 }));
 
 /** Props */
-// TODO: check if all props required
 interface Props {
   group: Group;
-  isDisabled: boolean;
-  isJoinable: boolean;
+  isActive: boolean;
   isListMode: boolean;
 }
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { group, isDisabled, isJoinable, isListMode } = props;
+  const { group, isActive, isListMode } = props;
   const classes = useStyles(props);
 
   return (
@@ -58,12 +77,6 @@ export const GroupBlockGrid = (props: Props) => {
         {renderGroupJoinCard()}
         {renderRoomCards()}
       </div>
-    </div>
-  );
-  return (
-    <div className={classes.grid}>
-      {renderGroupJoinCard()}
-      {renderRoomCards()}
     </div>
   );
 
@@ -76,7 +89,7 @@ export const GroupBlockGrid = (props: Props) => {
 
     return (
       group.name && (
-        <div className={`${classes.card}`}>
+        <div className={`${classes.cardGroupHeader}`}>
           <Card className={classes.groupHeaderCard}>
             <CardHeader
               className={classes.groupHeaderCardHeader}
@@ -90,7 +103,7 @@ export const GroupBlockGrid = (props: Props) => {
     );
   }
 
-  // TODO: adapt to new data model (e.g. random join yields error right now)
+  // TODO: adapt groupJoin to new data model
   function renderGroupJoinCard() {
     if (!group.groupJoinConfig) {
       return;
@@ -104,12 +117,11 @@ export const GroupBlockGrid = (props: Props) => {
         joinableAfter: "",
         groupJoin: group.groupJoinConfig,
       };
-      // todo: check props
       return renderGridCard(
         `group-join-${group.name}`,
-        <GroupJoinCard
+        <GroupJoinCardNew
           group={groupConvertedToLegacy}
-          isJoinable={isJoinable}
+          isActive={isActive}
           isListMode={isListMode}
           fillHeight={true}
         />
@@ -117,20 +129,12 @@ export const GroupBlockGrid = (props: Props) => {
     }
   }
 
-  // TODO: adapt to new data model
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
-    // todo: check props
     return shownRooms.map((room: Room) => {
       return renderGridCard(
         room.meeting.meetingId,
-        <RoomCardNew
-          room={room}
-          isDisabled={isDisabled}
-          isJoinable={isJoinable}
-          isListMode={isListMode}
-          fillHeight={true}
-        />
+        <RoomCardNew room={room} isActive={isActive} isListMode={isListMode} fillHeight={true} />
       );
     });
   }
@@ -144,7 +148,6 @@ export const GroupBlockGrid = (props: Props) => {
     }
   }
 
-  // TODO: outsource?
   function renderGridCard(key: string, card: any) {
     return (
       <div key={key} className={classes.card}>

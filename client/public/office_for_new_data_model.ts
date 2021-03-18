@@ -5,7 +5,7 @@ export default {
       type: "GROUP_BLOCK",
       name: "Group 1",
       group: {
-        name: "group1",
+        name: "Büros",
         rooms: [
           {
             name: "P&E-Zoom",
@@ -50,7 +50,7 @@ export default {
       type: "GROUP_BLOCK",
       name: "Group 2",
       group: {
-        name: "group2",
+        name: "Kaffeeküchen",
         rooms: [
           {
             name: "Kaffeeküche 1",
@@ -137,12 +137,34 @@ export default {
           trackName: "Frogstar",
         },
         {
+          type: "ROOM_SESSION",
+          start: "13:00",
+          end: "13:30",
+          room: {
+            name: "Aktuelle halbe Stunde",
+            meeting: {
+              meetingId: "690987970",
+              participants: [],
+            },
+            subtitle: "",
+            joinUrl: "https://zoom.us/j/690987970?pwd=dUlacThRY1NjSmZXVXdoYkg1TExvQT09",
+            links: [
+              {
+                href: "https://tngtech.slack.com/archives/CL78AK9DG",
+                text: "#ahs-live",
+                icon: "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png",
+              },
+            ],
+          },
+        },
+
+        {
           type: "GROUP_SESSION",
-          start: "11:00",
+          start: "10:00",
           end: "12:00",
           group: {
-            name: "new_workshops_name",
-            description: "new_workshops_description",
+            name: "Workshops",
+            description: "description",
             rooms: [
               {
                 name: "WS Power Napping",
