@@ -17,6 +17,12 @@ interface StyleProps {
   clientConfig?: ClientConfig;
 }
 
+const findSessionInHour = (hour: number, timezone: string | undefined) => ({ start, end }: Session) => {
+  const dateStart = DateTime.fromFormat(start, "HH:mm", { zone: timezone });
+  const dateEnd = DateTime.fromFormat(end, "HH:mm", { zone: timezone });
+  return dateStart.hour <= hour && dateEnd.hour >= hour;
+};
+
 const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: StyleProps) => {
   const earliestStart = sessions
     .map(({ start }) => DateTime.fromFormat(start, "HH:mm", { zone: clientConfig?.timezone }))
@@ -29,6 +35,9 @@ const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: Sty
   let result = `[trackHeader] auto `;
   if (earliestStart && latestEnd) {
     for (let hour = earliestStart.hour; hour <= latestEnd.hour; hour++) {
+      if (!sessions.find(findSessionInHour(hour, clientConfig?.timezone))) {
+        continue;
+      }
       const paddedHour = String(hour).padStart(2, "0");
       result += `[time-${paddedHour}00] auto [time-${paddedHour}15] auto [time-${paddedHour}30] auto [time-${paddedHour}45] auto `;
     }
