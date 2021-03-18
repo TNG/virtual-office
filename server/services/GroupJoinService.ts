@@ -1,16 +1,17 @@
 import { Service } from "typedi";
-import { minBy, random } from "lodash";
+import { minBy } from "lodash";
+// import { random } from "lodash";
 
 import { RoomLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
-import { logger } from "../log";
-import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/GroupLegacy";
+/*import { logger } from "../log";
+import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/GroupLegacy";*/
 
-function randomRoomIn(rooms: RoomLegacy[]): RoomLegacy | undefined {
+/*function randomRoomIn(rooms: RoomLegacy[]): RoomLegacy | undefined {
   const entry = random(0, rooms.length - 1);
   return rooms[entry];
-}
+}*/
 
 interface ReservedSpaces {
   [roomId: string]: ReservedSpace[];
@@ -38,7 +39,7 @@ export class GroupJoinService {
 
   joinRoomFor(groupId: string): RoomLegacy | undefined {
     const office = this.officeService.getOffice();
-    const group = office.groups.find((group) => group.id === groupId);
+    /*const group = office.groups.find((group) => group.id === groupId);
     if (!group || !hasGroupJoin(group)) {
       logger.info(`joinRoomFor(groupId=${groupId}) - cannot find group`);
       return undefined;
@@ -60,10 +61,12 @@ export class GroupJoinService {
       logger.info(`joinRoomFor(groupId=${groupId}) - did not choose any room`);
     }
 
-    return room;
+    return room;*/
+    console.log(office);
+    return undefined;
   }
 
-  private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): RoomLegacy | undefined {
+  /*private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): RoomLegacy | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
     const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
@@ -97,7 +100,7 @@ export class GroupJoinService {
     // a room with a minimum number of participants.
     logger.info(`chooseRoom(group=${group.id}) - choosing a random room`);
     return randomRoomIn(roomsWithMinimumParticipantCount);
-  }
+  }*/
 
   reserveSpaceIn(roomId: string) {
     this.reservedSpaces[roomId] = [
@@ -127,7 +130,7 @@ export class GroupJoinService {
     return participants + reserved.length;
   }
 
-  private roomsWithParticipants(rooms: RoomWithMeetingId[], count: number): RoomWithMeetingId[] {
+  /*private roomsWithParticipants(rooms: RoomWithMeetingId[], count: number): RoomWithMeetingId[] {
     return rooms.filter((room) => this.participantsInRoom(room) === count);
-  }
+  }*/
 }

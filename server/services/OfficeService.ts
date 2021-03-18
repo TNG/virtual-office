@@ -1,5 +1,4 @@
 import { Service } from "typedi";
-import { OfficeLegacy } from "../express/types/OfficeLegacy";
 import { Config } from "../Config";
 import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 import { GroupLegacy } from "../express/types/GroupLegacy";
@@ -9,8 +8,9 @@ import { v4 as uuid } from "uuid";
 import fs from "fs";
 import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
+import { Block, OfficeWithBlocks } from "../express/types/Office";
 
-export type OfficeChangeListener = (office: OfficeLegacy) => void;
+export type OfficeChangeListener = (office: OfficeWithBlocks) => void;
 
 const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
   a: SessionLegacy,
@@ -32,18 +32,18 @@ export class OfficeService {
   private groups: GroupLegacy[] = [];
   private rooms: RoomLegacy[] = [];
   private schedule: Schedule | undefined = undefined;
+  private version: string = "";
+  private blocks: Block[] = [];
 
   public constructor(private readonly config: Config) {
-    this.groups = config.configOptions.groups;
-    this.updateRooms(config.configOptions.rooms);
-    this.updateSchedule(config.configOptions.schedule);
+    this.version = config.configOptions.version;
+    this.blocks = config.configOptions.blocks;
   }
 
-  getOffice(): OfficeLegacy {
+  getOffice(): OfficeWithBlocks {
     return {
-      groups: this.groups,
-      rooms: this.rooms,
-      schedule: this.schedule,
+      version: this.version as "2",
+      blocks: this.blocks,
     };
   }
 

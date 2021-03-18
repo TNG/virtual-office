@@ -9,27 +9,20 @@ import { SocketContext } from "../socket/Context";
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
-import RoomGrid from "./RoomGrid";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { keyBy } from "lodash";
-import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "../disabledGroups";
-import { GroupWithRooms, selectGroupsWithRooms } from "../selectGroupsWithRooms";
 import { mapMeetingEventToMeetings } from "../mapMeetingEventToMeetings";
-import { OfficeLegacy } from "../../../server/express/types/OfficeLegacy";
-import { Button, CircularProgress, Fade, Theme } from "@material-ui/core";
+import { CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
-import ScheduleGrid from "./ScheduleGrid";
-import { Schedule, SessionLegacy } from "../../../server/express/types/Schedule";
-import { search } from "../search";
-import useDeepCompareEffect from "use-deep-compare-effect";
 import { Footer } from "./Footer";
 import { parseTime } from "../time";
 import { DateTime } from "luxon";
-import office_new from "../../public/office_for_new_data_model";
 import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
+import { Session } from "../../../server/express/types/Session";
 
+/** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   background: {
     height: "100%",
@@ -56,12 +49,6 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
       maxWidth: 1500,
     },
   },
-  toggleGroupsButton: {
-    textAlign: "center",
-  },
-  rooms: {
-    marginTop: 24,
-  },
   loading: {
     display: "flex",
     justifyContent: "center",
@@ -69,11 +56,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   },
 }));
 
-interface OfficeState {
-  office: OfficeLegacy;
-  potentiallyDisabledGroups: PotentiallyDisabledGroup[];
-}
-
+/** Component */
 const Dashboard = () => {
   const history = useHistory();
   useEffect(() => {
@@ -81,22 +64,16 @@ const Dashboard = () => {
   }, [history]);
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
-  const [officeState, setOfficeState] = useState({
-    office: { rooms: [], groups: [], schedule: undefined },
-    potentiallyDisabledGroups: [],
-  } as OfficeState);
-  const [meetings, setMeetings] = useState([] as Meeting[]);
+  const [meetings, setMeetings] = useState([] as Meeting[]); // TODO: check if required
   const [searchText, setSearchText] = useState("");
-  const [showExpiredGroups, setShowExpiredGroups] = useState(false);
   const [config, setConfig] = useState<ClientConfig | undefined>();
 
-  const timezone = config?.timezone;
   const context = useContext(SocketContext);
 
-  const officeStateFrom = (office: OfficeLegacy): OfficeState => {
-    const groupsToRender = mapPotentiallyDisabledGroups(office.groups, timezone);
-    return { office, potentiallyDisabledGroups: groupsToRender };
-  };
+  const [office, setOffice] = useState<OfficeWithBlocks>({
+    version: "2",
+    blocks: [],
+  });
 
   useEffect(() => {
     context.init();
@@ -106,14 +83,13 @@ const Dashboard = () => {
       setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
     });
 
-    const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
+    const officeSubscription = context.onOffice().subscribe((event) => setOffice(event));
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
 
     const initSubscription = context.onInit().subscribe((event) => {
       setConfig(event.config);
       setTimeout(() => {
-        setOfficeState(officeStateFrom(event.office));
-        setMeetings(event.meetings);
+        setOffice(event.office);
         setInitialLoadCompleted(true);
       }, 500);
     });
@@ -127,10 +103,11 @@ const Dashboard = () => {
     };
   }, [context]);
 
-  useDeepCompareEffect(() => {
+  // TODO: check if required
+  /*useDeepCompareEffect(() => {
     const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
     return () => clearInterval(handler);
-  }, [officeState]);
+  }, [officeState]);*/
 
   const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
@@ -144,84 +121,18 @@ const Dashboard = () => {
     }
   }
 
-  function sessionIsOver({ alwaysActive, end }: SessionLegacy): boolean {
+  function sessionIsOver({ alwaysActive, end }: Session): boolean {
     const zone = config?.timezone;
     const endTime = parseTime(end, zone);
     const now = DateTime.local();
     return !alwaysActive && now >= endTime;
   }
 
-  function renderSchedule(schedule: Schedule, viewMode: string, hideEndedSessions?: boolean) {
-    const { rooms } = search(searchText, officeState.office, meetingsIndexed);
-    const roomsIndexed = keyBy(rooms, (room) => room.roomId);
-
-    const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
-    const groupsWithRoomsIndexed = keyBy<GroupWithRooms>(groupsWithRooms, ({ group }) => group.id);
-
-    if (hideEndedSessions) {
-      schedule.sessions = schedule.sessions.filter((session) => !sessionIsOver(session));
-    }
-
-    return (
-      <ScheduleGrid
-        meetings={meetingsIndexed}
-        rooms={roomsIndexed}
-        groupsWithRooms={groupsWithRoomsIndexed}
-        schedule={schedule}
-        isListMode={viewMode === "list"}
-        clientConfig={config}
-      />
-    );
-  }
-
-  function renderRoomGrid(viewMode: string) {
-    const groupsWithRooms = selectGroupsWithRooms(meetingsIndexed, searchText, officeState.office);
-    const hasExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => group.isExpired);
-    const hasNotExpiredGroups = officeState.potentiallyDisabledGroups.some((group) => !group.isExpired);
-
-    return (
-      <Fade in={initialLoadCompleted}>
-        <div>
-          {hasExpiredGroups && hasNotExpiredGroups && (
-            <Box className={classes.toggleGroupsButton}>
-              <Button color="secondary" size="small" onClick={() => setShowExpiredGroups(!showExpiredGroups)}>
-                {showExpiredGroups ? "Hide expired" : "Show expired"}
-              </Button>
-            </Box>
-          )}
-          <div className={classes.rooms}>
-            {groupsWithRooms.map(({ group, rooms }) => {
-              const potentiallyDisabledGroup = officeState.potentiallyDisabledGroups.find(
-                (disabledGroup) => disabledGroup.group === group
-              );
-              const isDisabled =
-                (potentiallyDisabledGroup &&
-                  (potentiallyDisabledGroup.isExpired || potentiallyDisabledGroup.isUpcoming)) ||
-                false;
-
-              if (potentiallyDisabledGroup?.isExpired && !showExpiredGroups && hasNotExpiredGroups) {
-                return null;
-              }
-
-              return (
-                <RoomGrid
-                  key={group.id}
-                  group={group}
-                  rooms={rooms}
-                  meetings={meetingsIndexed}
-                  isDisabled={isDisabled}
-                  isJoinable={potentiallyDisabledGroup ? potentiallyDisabledGroup.isJoinable : true}
-                  isListMode={viewMode === "list"}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </Fade>
-    );
-  }
-
   function renderOffice(office: OfficeWithBlocks, config: ClientConfig) {
+    // TODO: implement functionality to potentially hide ended sessions in schedule using if config.hideEndedSessions and sessionIsOver(session);
+    // TODO: implement toggle button to show/hide expired groups as in renderRoomGrid() before
+    // TODO: { rooms } = search(searchText) and selectGroupsWithRooms(searchText) as in renderSchedule() before
+
     return (
       <Fade in={initialLoadCompleted}>
         <div>
@@ -237,15 +148,8 @@ const Dashboard = () => {
     return null;
   }
 
-  const showNewOffice: boolean = true;
   const content = initialLoadCompleted ? (
-    showNewOffice ? (
-      renderOffice(office_new as OfficeWithBlocks, config)
-    ) : officeState.office.schedule ? (
-      renderSchedule(officeState.office.schedule, config.viewMode, config.hideEndedSessions)
-    ) : (
-      renderRoomGrid(config.viewMode)
-    )
+    renderOffice(office, config) // todo: why config not directly accessible inside renderOffice
   ) : (
     <Box className={classes.loading}>
       <CircularProgress color="secondary" size="100px" />

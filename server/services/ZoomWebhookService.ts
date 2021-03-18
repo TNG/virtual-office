@@ -34,8 +34,8 @@ export class ZoomWebhookService {
 
       const meetingIds = new Set<string>();
 
-      const rooms = this.officeService.getOffice().rooms;
-      rooms.forEach((room) => room.meetingId && meetingIds.add(room.meetingId));
+      /*const rooms = this.officeService.getOffice().rooms;
+      rooms.forEach((room) => room.meetingId && meetingIds.add(room.meetingId));*/
 
       const mappingUpdate = {
         endpoint: this.config.baseUrl + "/api/zoomus/webhook",
