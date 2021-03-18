@@ -1,13 +1,14 @@
 import { OfficeWithBlocks } from "../express/types/Office";
-import { OfficeService } from "./OfficeService";
-import { SessionLegacy, TrackLegacy } from "../express/types/Schedule";
-import { RoomLegacy } from "../express/types/RoomLegacy";
+import { getStartDateTime, OfficeService } from "./OfficeService";
 import { OfficeLegacy } from "../express/types/OfficeLegacy";
+import { SessionLegacy, TrackLegacy } from "../express/types/Schedule";
+import { ClientConfig } from "../express/types/ClientConfig";
 import { GroupLegacy } from "../express/types/GroupLegacy";
+import { RoomLegacy } from "../express/types/RoomLegacy";
 import { Room } from "../express/types/Room";
 import { Group } from "../express/types/Group";
 import { Session } from "../express/types/Session";
-import { Config } from "../Config";
+import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 
 /*import { instance, mock, when } from "ts-mockito";
 import * as fs from "fs";
@@ -19,10 +20,20 @@ const officeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
 fs.writeFileSync("_sz_office_pe_new.json", JSON.stringify(officeWithBlocks));
 console.log(JSON.stringify(officeWithBlocks, null, 2));*/
 
-export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks {
-  // clean with OfficeService: create Rooms from RoomConfigs, sort Schedule
-  const officeService = new OfficeService(config);
-  let officeLegacy = officeService.getOffice();
+export function officeLegacytoOfficeBlocks(
+  configOptionsLegacy: ConfigOptionsLegacy,
+  clientConfig: ClientConfig
+): OfficeWithBlocks {
+  // create Rooms from RoomConfigs
+  let officeLegacy: OfficeLegacy = {
+    groups: configOptionsLegacy.groups,
+    rooms: configOptionsLegacy.rooms.map((room) => OfficeService.roomConfigToRoom(room)),
+    schedule: configOptionsLegacy.schedule,
+  };
+  // sort schedule
+  if (officeLegacy.schedule) {
+    officeLegacy.schedule.sessions = sortSessions(officeLegacy.schedule.sessions, clientConfig);
+  }
   // clean additionally: remove unused groups, remove faulty sessions
   officeLegacy = cleanOfficeLegacy(officeLegacy);
   if (!officeLegacy.schedule) {
@@ -50,6 +61,18 @@ export function officeLegacyToOfficeWithBlocks(config: Config): OfficeWithBlocks
     };
   }
 }
+
+// TODO: check if required
+function sortSessions(sessions: SessionLegacy[], clientConfig: ClientConfig): SessionLegacy[] {
+  return sessions.sort(sortSessionsByStartTime(clientConfig.timezone, clientConfig.sessionStartMinutesOffset));
+}
+
+const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
+  a: SessionLegacy,
+  b: SessionLegacy
+): number =>
+  getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
+  getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
 
 function cleanOfficeLegacy(officeLegacy: OfficeLegacy): OfficeLegacy {
   officeLegacy = removeUnusedGroups(officeLegacy);

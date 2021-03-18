@@ -1,4 +1,4 @@
-import { officeLegacyToOfficeWithBlocks } from "./OfficeConverter";
+import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
 import { Block, GroupBlock, OfficeWithBlocks, OfficeWithBlocksCodec, ScheduleBlock } from "../express/types/Office";
@@ -96,7 +96,7 @@ describe("OfficeConverter", () => {
   describe("should output new office codec with all relevant elements", () => {
     it("when simple office provided", () => {
       when(config.configOptions).thenReturn(officeLegacySimple);
-      const officeConverted = officeLegacyToOfficeWithBlocks(instance(config));
+      const officeConverted = officeLegacytoOfficeBlocks(instance(config));
       expect(isRight(OfficeWithBlocksCodec.decode(officeConverted))).toBe(true);
 
       // 2 Groups (Group1 and new dummy group)
@@ -114,7 +114,7 @@ describe("OfficeConverter", () => {
 
     it("when schedule office provided", () => {
       when(config.configOptions).thenReturn(officeLegacySchedule);
-      const officeConverted = officeLegacyToOfficeWithBlocks(instance(config));
+      const officeConverted = officeLegacytoOfficeBlocks(instance(config));
       expect(isRight(OfficeWithBlocksCodec.decode(officeConverted))).toBe(true);
 
       // 1 ScheduleBlock
@@ -145,7 +145,7 @@ describe("OfficeConverter", () => {
     officeLegacySimple.groups.push(unusedGroup);
 
     when(config.configOptions).thenReturn(officeLegacySimple);
-    const officeConverted: OfficeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
+    const officeConverted: OfficeWithBlocks = officeLegacytoOfficeBlocks(instance(config));
 
     expect(officeConverted.blocks).not.toContainEqual(
       expect.objectContaining({
@@ -172,7 +172,7 @@ describe("OfficeConverter", () => {
     officeLegacySchedule.schedule!.sessions.push(unusedSession);
 
     when(config.configOptions).thenReturn(officeLegacySchedule);
-    const officeConverted: OfficeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
+    const officeConverted: OfficeWithBlocks = officeLegacytoOfficeBlocks(instance(config));
 
     expect(officeConverted.blocks).not.toContainEqual(
       expect.objectContaining({

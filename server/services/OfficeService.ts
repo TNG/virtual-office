@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { Config } from "../Config";
-import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
+import { ConfigOptionsLegacy, ConfigOptionsLegacyCodec } from "../express/types/ConfigOptionsLegacy";
 import { GroupLegacy } from "../express/types/GroupLegacy";
 import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
 import { logger } from "../log";
@@ -8,16 +8,11 @@ import { v4 as uuid } from "uuid";
 import fs from "fs";
 import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
-import { Block, OfficeWithBlocks } from "../express/types/Office";
+import { Block, OfficeWithBlocks, OfficeWithBlocksCodec } from "../express/types/Office";
+import { isRight } from "fp-ts/Either";
+import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
 
 export type OfficeChangeListener = (office: OfficeWithBlocks) => void;
-
-const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
-  a: SessionLegacy,
-  b: SessionLegacy
-): number =>
-  getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
-  getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
 
 const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
   a: SessionLegacy,
@@ -32,12 +27,22 @@ export class OfficeService {
   private groups: GroupLegacy[] = [];
   private rooms: RoomLegacy[] = [];
   private schedule: Schedule | undefined = undefined;
-  private version: string = "";
+  private version: string = ""; // TODO: splitting up required?
   private blocks: Block[] = [];
 
   public constructor(private readonly config: Config) {
-    this.version = config.configOptions.version;
-    this.blocks = config.configOptions.blocks;
+    const configOptionsDecodedLegacy = ConfigOptionsLegacyCodec.decode(config.configOptions);
+    const configOptionsDecodedBlocks = OfficeWithBlocksCodec.decode(config.configOptions);
+    if (isRight(configOptionsDecodedLegacy)) {
+      ({ version: this.version, blocks: this.blocks } = officeLegacytoOfficeBlocks(
+        configOptionsDecodedLegacy.right,
+        config.clientConfig
+      ));
+    } else if (isRight(configOptionsDecodedBlocks)) {
+      ({ version: this.version, blocks: this.blocks } = configOptionsDecodedBlocks.right);
+    } else {
+      throw Error("Neither an old nor new office format!"); // TODO: check
+    }
   }
 
   getOffice(): OfficeWithBlocks {
@@ -105,18 +110,7 @@ export class OfficeService {
     this.rooms = update.map((room) => OfficeService.roomConfigToRoom(room));
   }
 
-  private updateSchedule(schedule: Schedule | undefined) {
-    const { timezone: zone, sessionStartMinutesOffset } = this.config.clientConfig;
-
-    if (schedule) {
-      this.schedule = schedule;
-      this.schedule.sessions = this.schedule.sessions.sort(sortSessionsByStartTime(zone, sessionStartMinutesOffset));
-    } else {
-      this.schedule = undefined;
-    }
-  }
-
-  private static roomConfigToRoom(config: RoomConfigLegacy): RoomLegacy {
+  public static roomConfigToRoom(config: RoomConfigLegacy): RoomLegacy {
     return {
       ...config,
       roomId: config.roomId || uuid(),
@@ -126,7 +120,7 @@ export class OfficeService {
   replaceOfficeWith(configOptions: ConfigOptionsLegacy) {
     this.updateRooms(configOptions.rooms);
     this.groups = configOptions.groups;
-    this.updateSchedule(configOptions.schedule);
+    //this.updateSchedule(configOptions.schedule);
 
     this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();
@@ -164,5 +158,5 @@ const sessionBelongsToRoom = (room: RoomLegacy) => (session: SessionLegacy) => {
   return (room.roomId && room.roomId === session.roomId) || (room.groupId && room.groupId === session.groupId);
 };
 
-const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
+export const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
   DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: sessionStartMinutesOffset });
