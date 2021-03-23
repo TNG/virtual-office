@@ -8,10 +8,14 @@ const TrackCodec = t.type({
 });
 export type Track = t.TypeOf<typeof TrackCodec>;
 
-const BlockInterfaceCodec = t.type({
-  type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK")]),
-  name: t.string,
-});
+const BlockInterfaceCodec = t.intersection([
+  t.type({
+    type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK")]),
+  }),
+  t.partial({
+    name: t.string,
+  }),
+]);
 
 export const GroupBlockCodec = t.intersection([
   BlockInterfaceCodec,
