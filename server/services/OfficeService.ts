@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { Config } from "../Config";
-import { ConfigOptionsLegacy, ConfigOptionsLegacyCodec } from "../express/types/ConfigOptionsLegacy";
+import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 import { GroupLegacy } from "../express/types/GroupLegacy";
 import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
 import { logger } from "../log";
@@ -8,8 +8,7 @@ import { v4 as uuid } from "uuid";
 import fs from "fs";
 import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
-import { Block, OfficeWithBlocks, OfficeWithBlocksCodec } from "../express/types/Office";
-import { isRight } from "fp-ts/Either";
+import { Block, Office, OfficeWithBlocks } from "../express/types/Office";
 import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
 import { Room } from "../express/types/Room";
 import { Session } from "../express/types/Session";
@@ -29,29 +28,22 @@ export class OfficeService {
   private groups: GroupLegacy[] = [];
   private rooms: RoomLegacy[] = [];
   private schedule: Schedule | undefined = undefined;
-  private version: string = ""; // TODO: splitting up required?
-  private blocks: Block[] = [];
+  private office: OfficeWithBlocks = {
+    version: "2",
+    blocks: [],
+  };
 
   public constructor(private readonly config: Config) {
-    const configOptionsDecodedLegacy = ConfigOptionsLegacyCodec.decode(config.configOptions);
-    const configOptionsDecodedBlocks = OfficeWithBlocksCodec.decode(config.configOptions);
-    if (isRight(configOptionsDecodedLegacy)) {
-      ({ version: this.version, blocks: this.blocks } = officeLegacytoOfficeBlocks(
-        configOptionsDecodedLegacy.right,
-        config.clientConfig
-      ));
-    } else if (isRight(configOptionsDecodedBlocks)) {
-      ({ version: this.version, blocks: this.blocks } = configOptionsDecodedBlocks.right);
+    const officeParsed: Office = config.configOptions;
+    if ("blocks" in officeParsed) {
+      this.office = officeParsed as OfficeWithBlocks;
     } else {
-      throw Error("Neither an old nor new office format!"); // TODO: check
+      this.office = officeLegacytoOfficeBlocks(config.configOptions as ConfigOptionsLegacy, config.clientConfig);
     }
   }
 
   getOffice(): OfficeWithBlocks {
-    return {
-      version: this.version as "2",
-      blocks: this.blocks,
-    };
+    return this.office;
   }
 
   hasMeetingIdConfigured(meetingId: string): boolean {
@@ -61,7 +53,7 @@ export class OfficeService {
   getAllRooms(): Room[] {
     let rooms: Room[] = [];
 
-    this.blocks.forEach((block: Block) => {
+    this.office.blocks.forEach((block: Block) => {
       if (block.type === "GROUP_BLOCK") {
         rooms.push(...block.group.rooms);
       } else if (block.type === "SCHEDULE_BLOCK") {

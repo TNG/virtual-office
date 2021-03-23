@@ -4,7 +4,9 @@ import { v4 as uuid } from "uuid";
 import { ClientConfig } from "./express/types/ClientConfig";
 import * as fs from "fs";
 import { logger } from "./log";
-import { Office, OfficeWithBlocks } from "./express/types/Office";
+import { Office, OfficeWithBlocks, OfficeWithBlocksCodec } from "./express/types/Office";
+import { ConfigOptionsLegacyCodec } from "./express/types/ConfigOptionsLegacy";
+import { isRight } from "fp-ts/Either";
 
 export interface SlackConfig {
   clientId: string;
@@ -84,24 +86,36 @@ export class Config {
     };
   }
 
+  public static isOffice(config: any): boolean {
+    const configDecodedLegacy = ConfigOptionsLegacyCodec.decode(config);
+    const configDecodedBlocks = OfficeWithBlocksCodec.decode(config);
+    return isRight(configDecodedLegacy) || isRight(configDecodedBlocks);
+  }
+
   public static getConfigFile(): string {
     return process.env.CONFIG_LOCATION || `${findRootDir()}/server/office.json`;
   }
 
   private static readConfigFromFile(): Office {
     if (process.env.CONFIG) {
-      return JSON.parse(process.env.CONFIG);
+      const parsedConfig = JSON.parse(process.env.CONFIG);
+      if (Config.isOffice(parsedConfig)) {
+        return parsedConfig;
+      }
     }
 
     const configFile = Config.getConfigFile();
     if (fs.existsSync(configFile)) {
-      return require(configFile);
-    } else {
-      logger.warn(`Config file '${configFile}' does not exist, creating default config`);
-      const emptyConfig: OfficeWithBlocks = { version: "2", blocks: [] };
-      fs.writeFileSync(configFile, JSON.stringify(emptyConfig));
-      return emptyConfig;
+      const parsedConfig = require(configFile);
+      if (Config.isOffice(parsedConfig)) {
+        return parsedConfig;
+      }
     }
+
+    logger.warn(`Config file '${configFile}' does not exist or is not a valid office, creating default config`);
+    const emptyConfig: OfficeWithBlocks = { version: "2", blocks: [] };
+    fs.writeFileSync(`${findRootDir()}/server/office.json`, JSON.stringify(emptyConfig));
+    return emptyConfig;
   }
 
   private static readAdminEndpointsCredentials(): Credentials | undefined {
