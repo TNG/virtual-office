@@ -9,7 +9,7 @@ import fs from "fs";
 import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
 import { Block, Office, OfficeWithBlocks } from "../express/types/Office";
-import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
+import { officeLegacyToOfficeWithBlocks } from "../express/utils/convertOffice";
 import { Room } from "../express/types/Room";
 import { Session } from "../express/types/Session";
 
@@ -38,7 +38,7 @@ export class OfficeService {
     if ("blocks" in officeParsed) {
       this.office = officeParsed as OfficeWithBlocks;
     } else {
-      this.office = officeLegacytoOfficeBlocks(config.configOptions as ConfigOptionsLegacy, config.clientConfig);
+      this.office = officeLegacyToOfficeWithBlocks(config.configOptions as ConfigOptionsLegacy);
     }
   }
 

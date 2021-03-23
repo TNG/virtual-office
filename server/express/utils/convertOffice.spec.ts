@@ -1,13 +1,13 @@
-import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
-import { Config } from "../Config";
+import { officeLegacyToOfficeWithBlocks } from "./convertOffice";
+import { Config } from "../../Config";
 import { instance, mock, when } from "ts-mockito";
-import { Block, GroupBlock, OfficeWithBlocks, OfficeWithBlocksCodec, ScheduleBlock } from "../express/types/Office";
+import { Block, GroupBlock, OfficeWithBlocks, OfficeWithBlocksCodec, ScheduleBlock } from "../types/Office";
 import { isRight } from "fp-ts/Either";
-import { RoomConfigLegacy, RoomLegacy } from "../express/types/RoomLegacy";
-import { GroupLegacy } from "../express/types/GroupLegacy";
-import { SessionLegacy, TrackLegacy } from "../express/types/Schedule";
-import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
-import { GroupSession, RoomSession, Session } from "../express/types/Session";
+import { RoomConfigLegacy, RoomLegacy } from "../types/RoomLegacy";
+import { GroupLegacy } from "../types/GroupLegacy";
+import { SessionLegacy, TrackLegacy } from "../types/Schedule";
+import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
+import { GroupSession, RoomSession, Session } from "../types/Session";
 
 describe("OfficeConverter", () => {
   const track1: TrackLegacy = {
@@ -96,7 +96,7 @@ describe("OfficeConverter", () => {
   describe("should output new office codec with all relevant elements", () => {
     it("when simple office provided", () => {
       when(config.configOptions).thenReturn(officeLegacySimple);
-      const officeConverted = officeLegacytoOfficeBlocks(instance(config));
+      const officeConverted = officeLegacyToOfficeWithBlocks(instance(config));
       expect(isRight(OfficeWithBlocksCodec.decode(officeConverted))).toBe(true);
 
       // 2 Groups (Group1 and new dummy group)
@@ -114,7 +114,7 @@ describe("OfficeConverter", () => {
 
     it("when schedule office provided", () => {
       when(config.configOptions).thenReturn(officeLegacySchedule);
-      const officeConverted = officeLegacytoOfficeBlocks(instance(config));
+      const officeConverted = officeLegacyToOfficeWithBlocks(instance(config));
       expect(isRight(OfficeWithBlocksCodec.decode(officeConverted))).toBe(true);
 
       // 1 ScheduleBlock
@@ -145,7 +145,7 @@ describe("OfficeConverter", () => {
     officeLegacySimple.groups.push(unusedGroup);
 
     when(config.configOptions).thenReturn(officeLegacySimple);
-    const officeConverted: OfficeWithBlocks = officeLegacytoOfficeBlocks(instance(config));
+    const officeConverted: OfficeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
 
     expect(officeConverted.blocks).not.toContainEqual(
       expect.objectContaining({
@@ -172,7 +172,7 @@ describe("OfficeConverter", () => {
     officeLegacySchedule.schedule!.sessions.push(unusedSession);
 
     when(config.configOptions).thenReturn(officeLegacySchedule);
-    const officeConverted: OfficeWithBlocks = officeLegacytoOfficeBlocks(instance(config));
+    const officeConverted: OfficeWithBlocks = officeLegacyToOfficeWithBlocks(instance(config));
 
     expect(officeConverted.blocks).not.toContainEqual(
       expect.objectContaining({
