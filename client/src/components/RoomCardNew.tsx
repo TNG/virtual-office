@@ -8,6 +8,7 @@ import RoomIcon from "@material-ui/icons/People";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -99,12 +100,13 @@ interface Props {
   isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
+  participants: MeetingParticipant[];
 }
 
 /** Component */
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { room, isActive, isListMode } = props;
+  const { room, isActive, isListMode, participants } = props;
 
   const subtitleRef = useRef(null);
 
@@ -149,11 +151,12 @@ const RoomCard = (props: Props) => {
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 
   const joinUrlView = renderJoinUrl();
+
   const participantsView = isActive && room.meeting.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
         name={room.name}
-        participants={room.meeting.participants}
+        participants={participants}
         showParticipants={participantsOpen}
         setShowParticipants={setParticipantsOpen}
       />

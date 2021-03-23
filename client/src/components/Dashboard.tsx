@@ -21,6 +21,7 @@ import { DateTime } from "luxon";
 import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
 import { Session } from "../../../server/express/types/Session";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -64,7 +65,7 @@ const Dashboard = () => {
   }, [history]);
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
-  const [meetings, setMeetings] = useState([] as Meeting[]); // TODO: check if required
+  const [meetings, setMeetings] = useState([] as Meeting[]);
   const [searchText, setSearchText] = useState("");
   const [config, setConfig] = useState<ClientConfig | undefined>();
 
@@ -90,6 +91,7 @@ const Dashboard = () => {
       setConfig(event.config);
       setTimeout(() => {
         setOffice(event.office);
+        setMeetings(event.meetings);
         setInitialLoadCompleted(true);
       }, 500);
     });
@@ -103,11 +105,10 @@ const Dashboard = () => {
     };
   }, [context]);
 
-  // TODO: check if required
-  /*useDeepCompareEffect(() => {
-    const handler = setInterval(() => setOfficeState(officeStateFrom(officeState.office)), 60000);
+  useDeepCompareEffect(() => {
+    const handler = setInterval(() => setOffice(office), 60000);
     return () => clearInterval(handler);
-  }, [officeState]);*/
+  }, [office]);
 
   const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
@@ -137,7 +138,7 @@ const Dashboard = () => {
       <Fade in={initialLoadCompleted}>
         <div>
           {office.blocks.map((block: Block, index: number) => {
-            return <BlockGrid key={index} block={block} clientConfig={config} />;
+            return <BlockGrid key={index} block={block} clientConfig={config} meetings={meetingsIndexed} />;
           })}
         </div>
       </Fade>

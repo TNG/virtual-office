@@ -7,6 +7,8 @@ import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import { Group } from "../../../server/express/types/Group";
 import RoomCardNew from "./RoomCardNew";
 import GroupJoinCardNew from "./GroupJoinCardNew";
+import { MeetingsIndexed } from "./MeetingsIndexed";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -63,11 +65,12 @@ interface Props {
   group: Group;
   isActive: boolean;
   isListMode: boolean;
+  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { group, isActive, isListMode } = props;
+  const { group, isActive, isListMode, meetings } = props;
   const classes = useStyles(props);
 
   return (
@@ -132,18 +135,35 @@ export const GroupBlockGrid = (props: Props) => {
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
     return shownRooms.map((room: Room) => {
+      const participants = participantsInMeeting(room.meeting.meetingId);
       return renderGridCard(
         room.meeting.meetingId,
-        <RoomCardNew room={room} isActive={isActive} isListMode={isListMode} fillHeight={true} />
+        <RoomCardNew
+          room={room}
+          isActive={isActive}
+          isListMode={isListMode}
+          fillHeight={true}
+          participants={participants}
+        />
       );
     });
+  }
+
+  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+    if (meetingId && meetings[meetingId]) {
+      return meetings[meetingId].participants;
+    }
+    return [];
   }
 
   function selectShownRooms() {
     if (!group.groupJoinConfig) {
       return group.rooms;
     } else {
-      const [emptyRooms, filledRooms] = partition(group.rooms, (room) => room.meeting.participants.length === 0);
+      const [emptyRooms, filledRooms] = partition(
+        group.rooms,
+        (room) => participantsInMeeting(room.meeting.meetingId).length === 0
+      );
       return [...filledRooms, ...emptyRooms.slice(0, 1)];
     }
   }

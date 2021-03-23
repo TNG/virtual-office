@@ -8,6 +8,8 @@ import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
 import RoomCardNew from "./RoomCardNew";
 import { GroupBlockGrid } from "./GroupBlockGrid";
+import { MeetingsIndexed } from "./MeetingsIndexed";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 /** Styles */
 const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
@@ -77,11 +79,12 @@ interface Props {
   tracks: Track[];
   sessions: Session[];
   clientConfig: ClientConfig;
+  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const { tracks, sessions, clientConfig } = props;
+  const { tracks, sessions, clientConfig, meetings } = props;
   const classes = useStyles(props);
 
   return (
@@ -128,6 +131,8 @@ export const ScheduleBlockGrid = (props: Props) => {
           ...session.room,
           subtitle: `(${timeString}) ${session.room.subtitle || ""}`,
         };
+        const participants = participantsInMeeting(session.room.meeting.meetingId);
+
         return renderGridCard(
           session.room.meeting.meetingId,
           session.start,
@@ -138,6 +143,7 @@ export const ScheduleBlockGrid = (props: Props) => {
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             fillHeight={true}
+            participants={participants}
           />
         );
       } else if (session.type === "GROUP_SESSION") {
@@ -146,7 +152,12 @@ export const ScheduleBlockGrid = (props: Props) => {
           session.start,
           session.end,
           tracksOfSession,
-          <GroupBlockGrid group={session.group} isActive={isActive} isListMode={clientConfig.viewMode === "list"} />
+          <GroupBlockGrid
+            group={session.group}
+            isActive={isActive}
+            isListMode={clientConfig.viewMode === "list"}
+            meetings={meetings}
+          />
         );
       }
       return "";
@@ -160,6 +171,13 @@ export const ScheduleBlockGrid = (props: Props) => {
     const now = DateTime.local();
 
     return startTime < now && endTime > now;
+  }
+
+  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+    if (meetingId && meetings[meetingId]) {
+      return meetings[meetingId].participants;
+    }
+    return [];
   }
 
   function renderGridCard(

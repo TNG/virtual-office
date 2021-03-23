@@ -5,6 +5,7 @@ import { fade, Theme } from "@material-ui/core";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
+import { MeetingsIndexed } from "./MeetingsIndexed";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -24,11 +25,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 interface Props {
   block: Block;
   clientConfig: ClientConfig;
+  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const BlockGrid = (props: Props) => {
-  const { block, clientConfig } = props;
+  const { block, clientConfig, meetings } = props;
   const classes = useStyles(props);
 
   return (
@@ -36,9 +38,19 @@ export const BlockGrid = (props: Props) => {
       {renderBlockHeader()}
       <div className={classes.block}>
         {block.type === "GROUP_BLOCK" ? (
-          <GroupBlockGrid group={block.group} isActive={true} isListMode={clientConfig.viewMode === "list"} />
+          <GroupBlockGrid
+            group={block.group}
+            isActive={true}
+            isListMode={clientConfig.viewMode === "list"}
+            meetings={meetings}
+          />
         ) : (
-          <ScheduleBlockGrid tracks={block.tracks} sessions={block.sessions} clientConfig={clientConfig} />
+          <ScheduleBlockGrid
+            tracks={block.tracks}
+            sessions={block.sessions}
+            clientConfig={clientConfig}
+            meetings={meetings}
+          />
         )}
       </div>
     </div>

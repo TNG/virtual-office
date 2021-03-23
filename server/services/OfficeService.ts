@@ -11,6 +11,8 @@ import { DateTime } from "luxon";
 import { Block, OfficeWithBlocks, OfficeWithBlocksCodec } from "../express/types/Office";
 import { isRight } from "fp-ts/Either";
 import { officeLegacytoOfficeBlocks } from "./OfficeConverter";
+import { Room } from "../express/types/Room";
+import { Session } from "../express/types/Session";
 
 export type OfficeChangeListener = (office: OfficeWithBlocks) => void;
 
@@ -53,7 +55,27 @@ export class OfficeService {
   }
 
   hasMeetingIdConfigured(meetingId: string): boolean {
-    return this.rooms.some((room) => room.meetingId === meetingId);
+    return this.getAllRooms().some((room: Room) => room.meeting.meetingId === meetingId);
+  }
+
+  getAllRooms(): Room[] {
+    let rooms: Room[] = [];
+
+    this.blocks.forEach((block: Block) => {
+      if (block.type === "GROUP_BLOCK") {
+        rooms.push(...block.group.rooms);
+      } else if (block.type === "SCHEDULE_BLOCK") {
+        block.sessions.forEach((session: Session) => {
+          if (session.type === "GROUP_SESSION") {
+            rooms.push(...session.group.rooms);
+          } else if (session.type === "ROOM_SESSION") {
+            rooms.push(session.room);
+          }
+        });
+      }
+    });
+
+    return rooms;
   }
 
   getRoomsForMeetingId(meetingId: string): RoomWithMeetingId[] {

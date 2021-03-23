@@ -1,6 +1,5 @@
 import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
-import { OfficeLegacy } from "../../../server/express/types/OfficeLegacy";
 import { Meeting } from "../../../server/express/types/Meeting";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { OfficeWithBlocks } from "../../../server/express/types/Office";
@@ -29,7 +28,7 @@ export class SocketService {
     return fromEvent(this.socket, "clientConfig");
   }
 
-  public onInit(): Observable<{ office: OfficeWithBlocks; config: ClientConfig }> {
+  public onInit(): Observable<{ office: OfficeWithBlocks; meetings: Meeting[]; config: ClientConfig }> {
     return fromEvent(this.socket, "init");
   }
 

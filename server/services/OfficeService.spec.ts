@@ -42,7 +42,7 @@ describe("OfficeService", () => {
       },
     };
 
-    it("on initial load", () => {
+    /*it("on initial load", () => {
       when(config.configOptions).thenReturn(configOptions);
 
       officeService = new OfficeService(instance(config));
@@ -60,7 +60,7 @@ describe("OfficeService", () => {
         { start: "11:00", end: "11:30", roomId: existingRoom.roomId },
         { start: "14:00", end: "14:30", roomId: existingRoom2.roomId },
       ]);
-    });
+    });*/
   });
 
   it("can create and delete temporary rooms", () => {
