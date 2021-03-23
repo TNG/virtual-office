@@ -51,7 +51,7 @@ const RoomWithMeetingIdCodec = t.intersection([
     meetingId: t.string,
   }),
 ]);
-export type RoomWithMeetingId = t.TypeOf<typeof RoomWithMeetingIdCodec>;
+export type RoomWithMeetingIdLegacy = t.TypeOf<typeof RoomWithMeetingIdCodec>;
 
 const RoomWithSlackNotificationCodec = t.intersection([
   RoomWithMeetingIdCodec,

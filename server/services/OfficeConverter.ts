@@ -135,10 +135,7 @@ function groupLegacytoGroup(officeLegacy: OfficeLegacy, groupLegacy: GroupLegacy
 function roomLegacyToRoom(roomLegacy: RoomLegacy): Room {
   return {
     name: roomLegacy.name,
-    meeting: {
-      meetingId: roomLegacy.meetingId || "",
-      participants: [],
-    },
+    meetingId: roomLegacy.meetingId,
     subtitle: roomLegacy.subtitle,
     description: roomLegacy.description,
     joinUrl: roomLegacy.joinUrl,

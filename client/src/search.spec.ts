@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { search } from "./search";
-import { RoomLegacy, RoomWithMeetingId } from "../../server/express/types/RoomLegacy";
+import { RoomLegacy, RoomWithMeetingIdLegacy } from "../../server/express/types/RoomLegacy";
 import { OfficeLegacy } from "../../server/express/types/OfficeLegacy";
 import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { Meeting } from "../../server/express/types/Meeting";
@@ -15,28 +15,28 @@ const groupStarWars: GroupLegacy = {
   name: "Star Wars",
 };
 
-const roomMordor: RoomWithMeetingId = {
+const roomMordor: RoomWithMeetingIdLegacy = {
   meetingId: "1",
   roomId: "room1",
   name: "Mordor",
   groupId: groupLordRings.id,
   joinUrl: "http://mordor.join",
 };
-const roomBree: RoomWithMeetingId = {
+const roomBree: RoomWithMeetingIdLegacy = {
   meetingId: "2",
   roomId: "room2",
   name: "Bree City",
   groupId: groupLordRings.id,
   joinUrl: "http://bree.join",
 };
-const roomCloud: RoomWithMeetingId = {
+const roomCloud: RoomWithMeetingIdLegacy = {
   meetingId: "3",
   roomId: "room3",
   name: "Cloud City",
   groupId: groupStarWars.id,
   joinUrl: "http://cloud.join",
 };
-const roomOutback: RoomWithMeetingId = {
+const roomOutback: RoomWithMeetingIdLegacy = {
   meetingId: "4",
   roomId: "room4",
   name: "Outback",

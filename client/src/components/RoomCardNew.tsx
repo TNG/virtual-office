@@ -152,7 +152,7 @@ const RoomCard = (props: Props) => {
 
   const joinUrlView = renderJoinUrl();
 
-  const participantsView = isActive && room.meeting.meetingId && (
+  const participantsView = isActive && room.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
         name={room.name}
@@ -194,7 +194,7 @@ const RoomCard = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={room.meeting.meetingId}>
+    <Card className={classes.root} key={room.meetingId}>
       <CardHeader
         classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
         avatar={

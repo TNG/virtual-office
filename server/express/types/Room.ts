@@ -1,14 +1,13 @@
 import * as t from "io-ts";
-import { MeetingCodec } from "./Meeting";
 import { RoomLinkCodec } from "./RoomLink";
 import { SlackNotificationCodec } from "./RoomLegacy";
 
 export const RoomCodec = t.intersection([
   t.type({
     name: t.string,
-    meeting: MeetingCodec,
   }),
   t.partial({
+    meetingId: t.string,
     subtitle: t.string,
     description: t.string,
     joinUrl: t.string,
@@ -19,3 +18,11 @@ export const RoomCodec = t.intersection([
   }),
 ]);
 export type Room = t.TypeOf<typeof RoomCodec>;
+
+export const RoomWithMeetingIdCodec = t.intersection([
+  RoomCodec,
+  t.type({
+    meetingId: t.string,
+  }),
+]);
+export type RoomWithMeetingId = t.TypeOf<typeof RoomWithMeetingIdCodec>;

@@ -115,7 +115,7 @@ export const ScheduleBlockGrid = (props: Props) => {
   }
 
   function renderSchedule() {
-    return sessions.map((session: Session) => {
+    return sessions.map((session: Session, index: number) => {
       const tracksOfSession: [string, string?] = session.trackName
         ? [session.trackName]
         : [tracks[0].name, tracks[tracks.length - 1].name];
@@ -131,10 +131,10 @@ export const ScheduleBlockGrid = (props: Props) => {
           ...session.room,
           subtitle: `(${timeString}) ${session.room.subtitle || ""}`,
         };
-        const participants = participantsInMeeting(session.room.meeting.meetingId);
+        const participants = participantsInMeeting(session.room.meetingId);
 
         return renderGridCard(
-          session.room.meeting.meetingId,
+          index.toString(),
           session.start,
           session.end,
           tracksOfSession,

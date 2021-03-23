@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { Config } from "../Config";
 import { ConfigOptionsLegacy, ConfigOptionsLegacyCodec } from "../express/types/ConfigOptionsLegacy";
 import { GroupLegacy } from "../express/types/GroupLegacy";
-import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
+import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
@@ -55,7 +55,7 @@ export class OfficeService {
   }
 
   hasMeetingIdConfigured(meetingId: string): boolean {
-    return this.getAllRooms().some((room: Room) => room.meeting.meetingId === meetingId);
+    return this.getAllRooms().some((room: Room) => room.meetingId === meetingId);
   }
 
   getAllRooms(): Room[] {
@@ -78,8 +78,8 @@ export class OfficeService {
     return rooms;
   }
 
-  getRoomsForMeetingId(meetingId: string): RoomWithMeetingId[] {
-    return this.rooms.filter((room): room is RoomWithMeetingId => room.meetingId === meetingId);
+  getRoomsForMeetingId(meetingId: string): RoomWithMeetingIdLegacy[] {
+    return this.rooms.filter((room): room is RoomWithMeetingIdLegacy => room.meetingId === meetingId);
   }
 
   getRoom(roomId: string): RoomLegacy | undefined {
@@ -98,7 +98,7 @@ export class OfficeService {
               .sort(sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset))[0] || undefined
           : undefined,
       }))
-      .filter((data): data is { closestSession: SessionLegacy; room: RoomWithMeetingId } => !!data.closestSession)
+      .filter((data): data is { closestSession: SessionLegacy; room: RoomWithMeetingIdLegacy } => !!data.closestSession)
       .sort(({ closestSession: a }, { closestSession: b }) =>
         sortSessionsByDiffToNow(timezone, sessionStartMinutesOffset)(a, b)
       )

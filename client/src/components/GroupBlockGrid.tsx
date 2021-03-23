@@ -134,10 +134,10 @@ export const GroupBlockGrid = (props: Props) => {
 
   function renderRoomCards() {
     const shownRooms = selectShownRooms();
-    return shownRooms.map((room: Room) => {
-      const participants = participantsInMeeting(room.meeting.meetingId);
+    return shownRooms.map((room: Room, index: number) => {
+      const participants = participantsInMeeting(room.meetingId);
       return renderGridCard(
-        room.meeting.meetingId,
+        index.toString(),
         <RoomCardNew
           room={room}
           isActive={isActive}
@@ -162,7 +162,7 @@ export const GroupBlockGrid = (props: Props) => {
     } else {
       const [emptyRooms, filledRooms] = partition(
         group.rooms,
-        (room) => participantsInMeeting(room.meeting.meetingId).length === 0
+        (room) => participantsInMeeting(room.meetingId).length === 0
       );
       return [...filledRooms, ...emptyRooms.slice(0, 1)];
     }

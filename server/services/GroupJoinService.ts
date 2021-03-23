@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { minBy } from "lodash";
 // import { random } from "lodash";
 
-import { RoomLegacy, RoomWithMeetingId } from "../express/types/RoomLegacy";
+import { RoomLegacy, RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 /*import { logger } from "../log";
@@ -124,7 +124,7 @@ export class GroupJoinService {
     }
   }
 
-  participantsInRoom(room: RoomWithMeetingId): number {
+  participantsInRoom(room: RoomWithMeetingIdLegacy): number {
     const reserved = this.reservedSpaces[room.meetingId] || [];
     const participants = this.meetingsService.getParticipantsIn(room.meetingId).length;
     return participants + reserved.length;
