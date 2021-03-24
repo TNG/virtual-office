@@ -130,9 +130,14 @@ const Dashboard = () => {
   }
 
   function renderOffice(office: OfficeWithBlocks, config: ClientConfig) {
-    // TODO: implement functionality to potentially hide ended sessions in schedule using if config.hideEndedSessions and sessionIsOver(session);
-    // TODO: implement toggle button to show/hide expired groups as in renderRoomGrid() before
-    // TODO: { rooms } = search(searchText) and selectGroupsWithRooms(searchText) as in renderSchedule() before
+    if (config.hideEndedSessions) {
+      office.blocks = office.blocks.map((block: Block) => {
+        if (block.type === "SCHEDULE_BLOCK") {
+          block.sessions = block.sessions.filter((session: Session) => !sessionIsOver(session));
+        }
+        return block;
+      });
+    }
 
     return (
       <Fade in={initialLoadCompleted}>
@@ -150,7 +155,7 @@ const Dashboard = () => {
   }
 
   const content = initialLoadCompleted ? (
-    renderOffice(office, config) // todo: why config not directly accessible inside renderOffice
+    renderOffice(office, config)
   ) : (
     <Box className={classes.loading}>
       <CircularProgress color="secondary" size="100px" />
