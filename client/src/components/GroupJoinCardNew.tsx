@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
+import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
 /** Styles */
@@ -53,7 +53,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 
 /** Props */
 interface Props {
-  group: GroupLegacy;
+  group: Group;
   isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
@@ -64,12 +64,12 @@ const GroupJoinCardNew = (props: Props) => {
   const { group, isActive } = props;
   const classes = useStyles(props);
 
-  if (!group.groupJoin) {
+  if (!group.groupJoinConfig) {
     return null;
   }
 
   function renderJoinUrl() {
-    const href = `/api/groups/${group.id}/join`;
+    const href = `/api/groups/${group.name}/join`;
     return (
       isActive && (
         <Button
@@ -87,16 +87,16 @@ const GroupJoinCardNew = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={group.id}>
+    <Card className={classes.root} key={group.name}>
       <CardHeader
         className={classes.header}
         avatar={<GroupIcon color="action" fontSize="large" />}
-        title={<Typography variant="h5">{group.groupJoin.title}</Typography>}
-        subheader={<Typography variant="body2">{group.groupJoin.subtitle}</Typography>}
+        title={<Typography variant="h5">{group.groupJoinConfig.title}</Typography>}
+        subheader={<Typography variant="body2">{group.groupJoinConfig.subtitle}</Typography>}
       />
 
       <CardContent className={classes.content}>
-        <Typography variant="body2">{group.groupJoin.description}</Typography>
+        <Typography variant="body2">{group.groupJoinConfig.description}</Typography>
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>

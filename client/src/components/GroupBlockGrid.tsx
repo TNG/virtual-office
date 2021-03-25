@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { Room } from "../../../server/express/types/Room";
 import { partition } from "lodash";
-import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
 import { Group } from "../../../server/express/types/Group";
 import RoomCardNew from "./RoomCardNew";
 import GroupJoinCardNew from "./GroupJoinCardNew";
@@ -110,23 +109,9 @@ export const GroupBlockGrid = (props: Props) => {
     if (!group.groupJoinConfig) {
       return;
     } else {
-      const groupConvertedToLegacy: GroupLegacy = {
-        id: group.name,
-        name: group.name,
-        description: group.description,
-        disabledAfter: "",
-        disabledBefore: "",
-        joinableAfter: "",
-        groupJoin: group.groupJoinConfig,
-      };
       return renderGridCard(
         `group-join-${group.name}`,
-        <GroupJoinCardNew
-          group={groupConvertedToLegacy}
-          isActive={isActive}
-          isListMode={isListMode}
-          fillHeight={true}
-        />
+        <GroupJoinCardNew group={group} isActive={isActive} isListMode={isListMode} fillHeight={true} />
       );
     }
   }
