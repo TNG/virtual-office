@@ -20,6 +20,7 @@ import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
 import { Session } from "../../../server/express/types/Session";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { search } from "../search";
 import { sessionIsOver } from "../sessionTimeProps";
 
 /** Styles */
@@ -131,10 +132,25 @@ const Dashboard = () => {
       });
     }
 
+    let officeSearched: OfficeWithBlocks = search(searchText, office, meetingsIndexed);
+
+    officeSearched.blocks = officeSearched.blocks.filter(
+      (block: Block) => !(block.type === "GROUP_BLOCK" && block.group.rooms.length < 1)
+    );
+
+    officeSearched.blocks = officeSearched.blocks.map((block: Block) => {
+      if (block.type === "SCHEDULE_BLOCK") {
+        block.sessions = block.sessions.filter(
+          (session: Session) => !(session.type === "GROUP_SESSION" && session.group.rooms.length < 1)
+        );
+      }
+      return block;
+    });
+
     return (
       <Fade in={initialLoadCompleted}>
         <div>
-          {office.blocks.map((block: Block, index: number) => {
+          {officeSearched.blocks.map((block: Block, index: number) => {
             return <BlockGrid key={index} block={block} clientConfig={config} meetings={meetingsIndexed} />;
           })}
         </div>
