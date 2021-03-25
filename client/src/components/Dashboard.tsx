@@ -16,12 +16,11 @@ import { CircularProgress, Fade, Theme } from "@material-ui/core";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import { Footer } from "./Footer";
-import { parseTime } from "../time";
-import { DateTime } from "luxon";
 import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
 import { Session } from "../../../server/express/types/Session";
 import useDeepCompareEffect from "use-deep-compare-effect";
+import { sessionIsOver } from "../sessionTimeProps";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -122,18 +121,11 @@ const Dashboard = () => {
     }
   }
 
-  function sessionIsOver({ alwaysActive, end }: Session): boolean {
-    const zone = config?.timezone;
-    const endTime = parseTime(end, zone);
-    const now = DateTime.local();
-    return !alwaysActive && now >= endTime;
-  }
-
-  function renderOffice(office: OfficeWithBlocks, config: ClientConfig) {
+  function renderOffice(config: ClientConfig) {
     if (config.hideEndedSessions) {
       office.blocks = office.blocks.map((block: Block) => {
         if (block.type === "SCHEDULE_BLOCK") {
-          block.sessions = block.sessions.filter((session: Session) => !sessionIsOver(session));
+          block.sessions = block.sessions.filter((session: Session) => !sessionIsOver(session, config));
         }
         return block;
       });
@@ -155,7 +147,7 @@ const Dashboard = () => {
   }
 
   const content = initialLoadCompleted ? (
-    renderOffice(office, config)
+    renderOffice(config)
   ) : (
     <Box className={classes.loading}>
       <CircularProgress color="secondary" size="100px" />

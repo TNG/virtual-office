@@ -10,6 +10,7 @@ import RoomCardNew from "./RoomCardNew";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { sessionIsActive } from "../sessionTimeProps";
 
 /** Styles */
 const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
@@ -124,7 +125,7 @@ export const ScheduleBlockGrid = (props: Props) => {
         ? [session.trackName]
         : [tracks[0].name, tracks[tracks.length - 1].name];
 
-      const isActive = sessionIsActive(session);
+      const isActive = sessionIsActive(session, clientConfig);
 
       if (session.type === "ROOM_SESSION") {
         const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
@@ -168,15 +169,6 @@ export const ScheduleBlockGrid = (props: Props) => {
       }
       return "";
     });
-  }
-
-  function sessionIsActive({ start, end }: Session) {
-    const zone = props.clientConfig?.timezone;
-    const startTime = parseTime(start, zone).minus({ minute: clientConfig?.sessionStartMinutesOffset ?? 0 });
-    const endTime = parseTime(end, zone);
-    const now = DateTime.local();
-
-    return startTime < now && endTime > now;
   }
 
   function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
