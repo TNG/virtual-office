@@ -125,7 +125,7 @@ const Dashboard = () => {
   function renderOffice(config: ClientConfig) {
     if (config.hideEndedSessions) {
       office.blocks = office.blocks.map((block: Block) => {
-        if (block.type === "SCHEDULE_BLOCK") {
+        if (block.type === "SCHEDULE_BLOCK" || block.type === "SESSION_BLOCK") {
           block.sessions = block.sessions.filter((session: Session) => !sessionIsOver(session, config));
         }
         return block;

@@ -22,7 +22,7 @@ const GroupSessionCodec = t.intersection([
 ]);
 export type GroupSession = t.TypeOf<typeof GroupSessionCodec>;
 
-const RoomSessionCodec = t.intersection([
+export const RoomSessionCodec = t.intersection([
   SessionInterfaceCodec,
   t.type({
     type: t.literal("ROOM_SESSION"),

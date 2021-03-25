@@ -6,6 +6,7 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { MeetingsIndexed } from "./MeetingsIndexed";
+import { SessionBlockGrid } from "./SessionBlockGrid";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -36,28 +37,45 @@ export const BlockGrid = (props: Props) => {
   return (
     <div className={classes.root}>
       {renderBlockHeader()}
-      <div className={classes.block}>
-        {block.type === "GROUP_BLOCK" ? (
-          <GroupBlockGrid
-            group={block.group}
-            isActive={true}
-            isListMode={clientConfig.viewMode === "list"}
-            meetings={meetings}
-          />
-        ) : (
-          <ScheduleBlockGrid
-            tracks={block.tracks}
-            sessions={block.sessions}
-            clientConfig={clientConfig}
-            meetings={meetings}
-          />
-        )}
-      </div>
+      <div className={classes.block}>{renderBlock()}</div>
     </div>
   );
 
   function renderBlockHeader() {
     const blockHeader = block.name;
     return <h2 className={classes.title}>{blockHeader}</h2>;
+  }
+
+  function renderBlock() {
+    if (block.type === "GROUP_BLOCK") {
+      return (
+        <GroupBlockGrid
+          group={block.group}
+          isActive={true}
+          isListMode={clientConfig.viewMode === "list"}
+          meetings={meetings}
+        />
+      );
+    } else if (block.type === "SCHEDULE_BLOCK") {
+      return (
+        <ScheduleBlockGrid
+          tracks={block.tracks}
+          sessions={block.sessions}
+          clientConfig={clientConfig}
+          meetings={meetings}
+        />
+      );
+    } else if (block.type === "SESSION_BLOCK") {
+      return (
+        <SessionBlockGrid
+          title={block.title}
+          description={block.description}
+          sessions={block.sessions}
+          isListMode={clientConfig.viewMode === "list"}
+          clientConfig={clientConfig}
+          meetings={meetings}
+        />
+      );
+    }
   }
 };

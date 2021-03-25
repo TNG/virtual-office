@@ -1,7 +1,7 @@
 import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
 import { MeetingsIndexed } from "./components/MeetingsIndexed";
 import { Block, OfficeWithBlocks, Track } from "../../server/express/types/Office";
-import { Session } from "../../server/express/types/Session";
+import { RoomSession, Session } from "../../server/express/types/Session";
 import { Room } from "../../server/express/types/Room";
 import { cloneDeep } from "lodash";
 
@@ -24,7 +24,7 @@ export function search(searchText: string, office: OfficeWithBlocks, meetings: M
       if (!block.name?.toLowerCase().includes(searchText) && !block.group.name.toLowerCase().includes(searchText)) {
         block.group.rooms = block.group.rooms.filter((room) => roomMatches(room, searchText, meetings));
       }
-    } else {
+    } else if (block.type === "SCHEDULE_BLOCK") {
       if (!block.name?.toLowerCase().includes(searchText)) {
         if (block.tracks.some((track: Track) => track.name.toLowerCase().includes(searchText))) {
           block.sessions = block.sessions.filter((session: Session) =>
@@ -44,6 +44,12 @@ export function search(searchText: string, office: OfficeWithBlocks, meetings: M
           });
         }
       }
+    } else if (block.type === "SESSION_BLOCK") {
+      if (!block.name?.toLowerCase().includes(searchText) && !block.title.toLowerCase().includes(searchText)) {
+        block.sessions = block.sessions.filter((session: RoomSession) => {
+          return roomMatches(session.room, searchText, meetings);
+        });
+      }
     }
     return block;
   });
@@ -62,7 +68,7 @@ export function search(searchText: string, office: OfficeWithBlocks, meetings: M
   officeSearched.blocks = officeSearched.blocks.filter((block: Block) => {
     if (block.type === "GROUP_BLOCK") {
       return block.group.rooms.length > 0;
-    } else if (block.type === "SCHEDULE_BLOCK") {
+    } else if (block.type === "SCHEDULE_BLOCK" || block.type === "SESSION_BLOCK") {
       return block.sessions.length > 0;
     }
   });

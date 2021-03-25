@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 import { OfficeLegacyCodec } from "./OfficeLegacy";
-import { SessionCodec } from "./Session";
+import { RoomSessionCodec, SessionCodec } from "./Session";
 import { GroupCodec } from "./Group";
 
 const TrackCodec = t.type({
@@ -10,7 +10,7 @@ export type Track = t.TypeOf<typeof TrackCodec>;
 
 const BlockInterfaceCodec = t.intersection([
   t.type({
-    type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK")]),
+    type: t.union([t.literal("GROUP_BLOCK"), t.literal("SCHEDULE_BLOCK"), t.literal("SESSION_BLOCK")]),
   }),
   t.partial({
     name: t.string,
@@ -36,7 +36,20 @@ export const ScheduleBlockCodec = t.intersection([
 ]);
 export type ScheduleBlock = t.TypeOf<typeof ScheduleBlockCodec>;
 
-const BlockCodec = t.union([GroupBlockCodec, ScheduleBlockCodec]);
+export const SessionBlockCodec = t.intersection([
+  BlockInterfaceCodec,
+  t.type({
+    type: t.literal("SESSION_BLOCK"),
+    title: t.string,
+    sessions: t.array(RoomSessionCodec),
+  }),
+  t.partial({
+    description: t.string,
+  }),
+]);
+export type SessionBlock = t.TypeOf<typeof SessionBlockCodec>;
+
+const BlockCodec = t.union([GroupBlockCodec, ScheduleBlockCodec, SessionBlockCodec]);
 export type Block = t.TypeOf<typeof BlockCodec>;
 
 export const OfficeWithBlocksCodec = t.type({
