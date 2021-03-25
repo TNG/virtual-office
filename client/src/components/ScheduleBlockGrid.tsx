@@ -134,7 +134,7 @@ export const ScheduleBlockGrid = (props: Props) => {
         const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
         const roomWithTime = {
           ...session.room,
-          subtitle: `(${timeString}) ${session.room.subtitle || ""}`,
+          description: `(${timeString}) ${session.room.description || ""}`,
         };
         const participants = participantsInMeeting(session.room.meetingId);
 

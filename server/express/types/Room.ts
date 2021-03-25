@@ -8,7 +8,6 @@ export const RoomCodec = t.intersection([
   }),
   t.partial({
     meetingId: t.string,
-    subtitle: t.string,
     description: t.string,
     joinUrl: t.string,
     titleUrl: t.string,

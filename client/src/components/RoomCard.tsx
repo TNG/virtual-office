@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { compact } from "lodash";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
@@ -29,16 +28,16 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   headerContent: {
     overflow: "hidden",
   },
-  subtitle: {
+  description: {
     display: "flex",
     alignItems: "flex-start",
   },
-  collapsedSubtitle: {
+  collapsedDescription: {
     textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",
   },
-  expandedSubtitle: {
+  expandedDescription: {
     whiteSpace: "pre-wrap",
   },
   body: {
@@ -108,18 +107,18 @@ const RoomCard = (props: Props) => {
   const classes = useStyles(props);
   const { room, isActive, isListMode, participants } = props;
 
-  const subtitleRef = useRef(null);
+  const descriptionRef = useRef(null);
 
-  const [collapseSubtitle, setCollapseSubtitle] = React.useState(true);
+  const [collapseDescription, setCollapseDescription] = React.useState(true);
   const [expandable, setExpandable] = React.useState(false);
   const [participantsOpen, setParticipantsOpen] = React.useState(false);
 
   useEffect((): any => {
-    if (!subtitleRef?.current) {
+    if (!descriptionRef?.current) {
       return;
     }
-    setExpandable((subtitleRef.current as any).offsetWidth < (subtitleRef.current as any).scrollWidth);
-  }, [subtitleRef]);
+    setExpandable((descriptionRef.current as any).offsetWidth < (descriptionRef.current as any).scrollWidth);
+  }, [descriptionRef]);
 
   function renderJoinUrl() {
     return (
@@ -177,16 +176,15 @@ const RoomCard = (props: Props) => {
   );
 
   function renderSubheader() {
-    const subtitle = compact([room.subtitle, room.description]).join(" - ");
-    const subtitleClass = collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle;
+    const descriptionClass = collapseDescription ? classes.collapsedDescription : classes.expandedDescription;
     const expandButton = expandable && (
-      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>
+      <div className={classes.expandButton}>{collapseDescription ? <ExpandMore /> : <ExpandLess />}</div>
     );
 
     return (
-      <div className={classes.subtitle} onClick={() => setCollapseSubtitle(!collapseSubtitle)}>
-        <Typography variant="body2" className={subtitleClass} ref={subtitleRef}>
-          {subtitle}
+      <div className={classes.description} onClick={() => setCollapseDescription(!collapseDescription)}>
+        <Typography variant="body2" className={descriptionClass} ref={descriptionRef}>
+          {room.description}
         </Typography>
         {expandButton}
       </div>

@@ -49,7 +49,7 @@ declare global {
       assertCard(options: {
         alias: string;
         title: string;
-        subtitle?: string;
+        description?: string;
         isJoinable: boolean;
         isDisabled?: boolean;
         hasNoParticipantsView?: boolean;

@@ -36,7 +36,7 @@ describe("OfficeConverter", () => {
     name: "Room1",
     joinUrl: "http://bla.blub",
     icon: "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Assistance.jpg",
-    subtitle: "[Mr. Bond] \n\nGolden Eye",
+    description: "[Mr. Bond] \n\nGolden Eye",
     links: [
       {
         href: "https://blub.bla",

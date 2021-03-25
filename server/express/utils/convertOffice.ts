@@ -6,6 +6,7 @@ import { Room } from "../types/Room";
 import { Group } from "../types/Group";
 import { Session } from "../types/Session";
 import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
+import { compact } from "lodash";
 
 export function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy): OfficeWithBlocks {
   configOptionsLegacy = cleanOfficeLegacy(configOptionsLegacy);
@@ -102,8 +103,7 @@ function roomConfigLegacyToRoom(roomConfigLegacy: RoomConfigLegacy): Room {
   return {
     name: roomConfigLegacy.name,
     meetingId: roomConfigLegacy.meetingId,
-    subtitle: roomConfigLegacy.subtitle,
-    description: roomConfigLegacy.description,
+    description: compact([roomConfigLegacy.subtitle, roomConfigLegacy.description]).join(" - "),
     joinUrl: roomConfigLegacy.joinUrl,
     titleUrl: roomConfigLegacy.titleUrl,
     roomLinks: roomConfigLegacy.links,

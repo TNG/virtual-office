@@ -31,7 +31,7 @@ describe("Schedule", () => {
 
         it("with a subtitle", () => {
           office.rooms = [
-            { roomId: "1", name: "A room", subtitle: "With a subtitle", meetingId: "123", joinUrl: "join-url" },
+            { roomId: "1", name: "A room", description: "With a subtitle", meetingId: "123", joinUrl: "join-url" },
           ];
           office.schedule.sessions = [{ start: "09:00", end: "11:00", roomId: "1", trackId: "track1" }];
           cy.replaceOffice(office);
@@ -42,7 +42,7 @@ describe("Schedule", () => {
           cy.assertCard({
             alias: "@card",
             title: "A room",
-            subtitle: "(9:00 AM-11:00 AM UTC) With a subtitle",
+            description: "(9:00 AM-11:00 AM UTC) With a subtitle",
             isJoinable: true,
           });
         });
@@ -54,7 +54,7 @@ describe("Schedule", () => {
           cy.visit("/");
 
           cy.get(".MuiCard-root").as("card");
-          cy.assertCard({ alias: "@card", title: "A room", subtitle: "(10:00 AM-12:00 PM UTC)", isJoinable: false });
+          cy.assertCard({ alias: "@card", title: "A room", description: "(10:00 AM-12:00 PM UTC)", isJoinable: false });
         });
 
         it("that is active", () => {
@@ -64,7 +64,7 @@ describe("Schedule", () => {
           cy.visit("/");
 
           cy.get(".MuiCard-root").as("card");
-          cy.assertCard({ alias: "@card", title: "A room", subtitle: "(8:00 AM-10:00 AM UTC)", isJoinable: true });
+          cy.assertCard({ alias: "@card", title: "A room", description: "(8:00 AM-10:00 AM UTC)", isJoinable: true });
         });
       });
     });
@@ -103,19 +103,19 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-12:00 PM UTC)",
+          description: "(9:00 AM-12:00 PM UTC)",
           isJoinable: true,
         });
         cy.assertCard({
           alias: "@session2Card",
           title: "Session 2",
-          subtitle: "(10:00 AM-12:30 PM UTC)",
+          description: "(10:00 AM-12:30 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session3Card",
           title: "Session 3",
-          subtitle: "(10:00 AM-2:00 PM UTC)",
+          description: "(10:00 AM-2:00 PM UTC)",
           isJoinable: false,
         });
 
@@ -124,19 +124,19 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-12:00 PM UTC)",
+          description: "(9:00 AM-12:00 PM UTC)",
           isJoinable: true,
         });
         cy.assertCard({
           alias: "@session2Card",
           title: "Session 2",
-          subtitle: "(10:00 AM-12:30 PM UTC)",
+          description: "(10:00 AM-12:30 PM UTC)",
           isJoinable: true,
         });
         cy.assertCard({
           alias: "@session3Card",
           title: "Session 3",
-          subtitle: "(10:00 AM-2:00 PM UTC)",
+          description: "(10:00 AM-2:00 PM UTC)",
           isJoinable: true,
         });
 
@@ -145,19 +145,19 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-12:00 PM UTC)",
+          description: "(9:00 AM-12:00 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session2Card",
           title: "Session 2",
-          subtitle: "(10:00 AM-12:30 PM UTC)",
+          description: "(10:00 AM-12:30 PM UTC)",
           isJoinable: true,
         });
         cy.assertCard({
           alias: "@session3Card",
           title: "Session 3",
-          subtitle: "(10:00 AM-2:00 PM UTC)",
+          description: "(10:00 AM-2:00 PM UTC)",
           isJoinable: true,
         });
 
@@ -166,19 +166,19 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-12:00 PM UTC)",
+          description: "(9:00 AM-12:00 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session2Card",
           title: "Session 2",
-          subtitle: "(10:00 AM-12:30 PM UTC)",
+          description: "(10:00 AM-12:30 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session3Card",
           title: "Session 3",
-          subtitle: "(10:00 AM-2:00 PM UTC)",
+          description: "(10:00 AM-2:00 PM UTC)",
           isJoinable: true,
         });
 
@@ -187,25 +187,25 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-12:00 PM UTC)",
+          description: "(9:00 AM-12:00 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session2Card",
           title: "Session 2",
-          subtitle: "(10:00 AM-12:30 PM UTC)",
+          description: "(10:00 AM-12:30 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session3Card",
           title: "Session 3",
-          subtitle: "(10:00 AM-2:00 PM UTC)",
+          description: "(10:00 AM-2:00 PM UTC)",
           isJoinable: false,
         });
         cy.assertCard({
           alias: "@session4Card",
           title: "Session 4",
-          subtitle: "(2:00 PM-4:00 PM UTC)",
+          description: "(2:00 PM-4:00 PM UTC)",
           isJoinable: true,
         });
       });
@@ -235,7 +235,7 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-10:00 AM UTC)",
+          description: "(9:00 AM-10:00 AM UTC)",
           isJoinable: true,
         });
         cy.assertCard({ alias: "@session2Card", title: "Session 2", isJoinable: false });
@@ -248,7 +248,7 @@ describe("Schedule", () => {
         cy.assertCard({
           alias: "@session1Card",
           title: "Session 1",
-          subtitle: "(9:00 AM-10:00 AM UTC)",
+          description: "(9:00 AM-10:00 AM UTC)",
           isJoinable: false,
         });
         cy.assertCard({ alias: "@session2Card", title: "Session 2", isJoinable: true });
@@ -270,12 +270,12 @@ describe("Schedule", () => {
     cy.visit("/");
 
     cy.get(".MuiCard-root").as("card");
-    cy.assertCard({ alias: "@card", title: "A room", subtitle: "(10:00 AM-12:00 PM UTC)", isJoinable: false });
+    cy.assertCard({ alias: "@card", title: "A room", description: "(10:00 AM-12:00 PM UTC)", isJoinable: false });
 
     tickMinutes(11);
 
     cy.get(".MuiCard-root").as("card");
-    cy.assertCard({ alias: "@card", title: "A room", subtitle: "(10:00 AM-12:00 PM UTC)", isJoinable: true });
+    cy.assertCard({ alias: "@card", title: "A room", description: "(10:00 AM-12:00 PM UTC)", isJoinable: true });
   });
 
   it("should disable a card when the end time is reached", () => {
@@ -291,12 +291,12 @@ describe("Schedule", () => {
     cy.visit("/");
 
     cy.get(".MuiCard-root").as("card");
-    cy.assertCard({ alias: "@card", title: "A room", subtitle: "(8:00 AM-10:00 AM UTC)", isJoinable: true });
+    cy.assertCard({ alias: "@card", title: "A room", description: "(8:00 AM-10:00 AM UTC)", isJoinable: true });
 
     tickMinutes(11); // 10:01
 
     cy.get(".MuiCard-root").as("card");
-    cy.assertCard({ alias: "@card", title: "A room", subtitle: "(8:00 AM-10:00 AM UTC)", isJoinable: false });
+    cy.assertCard({ alias: "@card", title: "A room", description: "(8:00 AM-10:00 AM UTC)", isJoinable: false });
   });
 });
 

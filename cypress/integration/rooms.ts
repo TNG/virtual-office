@@ -40,7 +40,7 @@ describe("Virtual Office", () => {
           name: "A second room",
           meetingId: "234",
           joinUrl: "http://fake-zoom.us/234",
-          subtitle: "A subtitle",
+          description: "A subtitle",
         },
       ],
       groups: [],
@@ -53,7 +53,7 @@ describe("Virtual Office", () => {
     cy.get("@firstCard").findByText("Join").parent("a").should("have.prop", "href", "http://fake-zoom.us/123");
 
     cy.get(".MuiCard-root").last().as("secondCard");
-    cy.assertCard({ alias: "@secondCard", title: "A second room", subtitle: "A subtitle", isJoinable: true });
+    cy.assertCard({ alias: "@secondCard", title: "A second room", description: "A subtitle", isJoinable: true });
     cy.get("@secondCard").findByText("Join").parent("a").should("have.prop", "href", "http://fake-zoom.us/234");
   });
 
@@ -66,7 +66,7 @@ describe("Virtual Office", () => {
           name: "A second room",
           meetingId: "234",
           joinUrl: "http://fake-zoom.us/234",
-          subtitle: "A subtitle",
+          description: "A subtitle",
         },
       ],
       groups: [],
@@ -79,7 +79,7 @@ describe("Virtual Office", () => {
     cy.get("@firstCard").findByText("Join").parent("a").should("have.prop", "href", "http://fake-zoom.us/123");
 
     cy.get(".MuiCard-root").last().as("secondCard");
-    cy.assertCard({ alias: "@secondCard", title: "A second room", subtitle: "A subtitle", isJoinable: true });
+    cy.assertCard({ alias: "@secondCard", title: "A second room", description: "A subtitle", isJoinable: true });
     cy.get("@secondCard").findByText("Join").parent("a").should("have.prop", "href", "http://fake-zoom.us/234");
   });
 });
