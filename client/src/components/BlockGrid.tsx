@@ -57,6 +57,7 @@ export const BlockGrid = (props: Props) => {
   );
 
   function renderBlockHeader() {
-    return block.name && <h2 className={classes.title}>{block.name}</h2>;
+    const blockHeader = block.name;
+    return <h2 className={classes.title}>{blockHeader}</h2>;
   }
 };
