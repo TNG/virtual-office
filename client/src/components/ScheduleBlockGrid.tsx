@@ -69,7 +69,11 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     },
   },
   card: {
-    padding: 4,
+    padding: 8,
+    boxSizing: "border-box",
+  },
+  groupCard: {
+    padding: 0,
     boxSizing: "border-box",
   },
 }));
@@ -135,6 +139,7 @@ export const ScheduleBlockGrid = (props: Props) => {
 
         return renderGridCard(
           index.toString(),
+          classes.card,
           session.start,
           session.end,
           tracksOfSession,
@@ -149,6 +154,7 @@ export const ScheduleBlockGrid = (props: Props) => {
       } else if (session.type === "GROUP_SESSION") {
         return renderGridCard(
           session.group.name,
+          classes.groupCard,
           session.start,
           session.end,
           tracksOfSession,
@@ -182,6 +188,7 @@ export const ScheduleBlockGrid = (props: Props) => {
 
   function renderGridCard(
     key: string,
+    className: any,
     start: string,
     end: string,
     [trackStart, trackEnd]: [string, string?],
@@ -191,7 +198,7 @@ export const ScheduleBlockGrid = (props: Props) => {
     const gridRowEnd = `time-${end.replace(":", "")}`;
     const gridColumn = trackEnd ? `track-${trackStart}-start / track-${trackEnd}-end` : `track-${trackStart}`;
     return (
-      <div key={key} className={classes.card} style={{ gridRow: `${gridRowStart} / ${gridRowEnd}`, gridColumn }}>
+      <div key={key} className={className} style={{ gridRow: `${gridRowStart} / ${gridRowEnd}`, gridColumn }}>
         {card}
       </div>
     );

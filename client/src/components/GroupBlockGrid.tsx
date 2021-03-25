@@ -106,13 +106,12 @@ export const GroupBlockGrid = (props: Props) => {
     );
   }
 
-  // TODO: adapt groupJoin to new data model
   function renderGroupJoinCard() {
     if (!group.groupJoinConfig) {
       return;
     } else {
       const groupConvertedToLegacy: GroupLegacy = {
-        id: group.name, // TODO: other id? ->
+        id: group.name,
         name: group.name,
         description: group.description,
         disabledAfter: "",
