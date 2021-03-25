@@ -127,11 +127,12 @@ export const ScheduleBlockGrid = (props: Props) => {
 
       const isActive = sessionIsActive(session, clientConfig);
 
+      const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
+      const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
+      const timezone = browserTimeZone();
+      const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
+
       if (session.type === "ROOM_SESSION") {
-        const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
-        const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
-        const timezone = browserTimeZone();
-        const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
         const roomWithTime = {
           ...session.room,
           description: `(${timeString}) ${session.room.description || ""}`,
@@ -153,6 +154,11 @@ export const ScheduleBlockGrid = (props: Props) => {
           />
         );
       } else if (session.type === "GROUP_SESSION") {
+        const groupWithTime = {
+          ...session.group,
+          description: `(${timeString}) ${session.group.description || ""}`,
+        };
+
         return renderGridCard(
           session.group.name,
           classes.groupCard,
@@ -160,7 +166,7 @@ export const ScheduleBlockGrid = (props: Props) => {
           session.end,
           tracksOfSession,
           <GroupBlockGrid
-            group={session.group}
+            group={groupWithTime}
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             meetings={meetings}
