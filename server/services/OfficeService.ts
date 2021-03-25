@@ -35,11 +35,7 @@ export class OfficeService {
 
   public constructor(private readonly config: Config) {
     const officeParsed: Office = config.configOptions;
-    if ("blocks" in officeParsed) {
-      this.office = officeParsed as OfficeWithBlocks;
-    } else {
-      this.office = officeLegacyToOfficeWithBlocks(config.configOptions as ConfigOptionsLegacy);
-    }
+    this.office = getOfficeWithBlocksFromOffice(officeParsed);
   }
 
   getOffice(): OfficeWithBlocks {
@@ -104,7 +100,7 @@ export class OfficeService {
       logger.info(`cannot create room, as room with roomId=${room.roomId} already exists`);
       return false;
     }
-    this.rooms.push(OfficeService.roomConfigToRoom(room));
+    this.rooms.push(OfficeService.roomConfigLegacyToRoomLegacy(room));
     return true;
   }
 
@@ -120,21 +116,15 @@ export class OfficeService {
     return true;
   }
 
-  private updateRooms(update: RoomConfigLegacy[]) {
-    this.rooms = update.map((room) => OfficeService.roomConfigToRoom(room));
-  }
-
-  public static roomConfigToRoom(config: RoomConfigLegacy): RoomLegacy {
+  public static roomConfigLegacyToRoomLegacy(config: RoomConfigLegacy): RoomLegacy {
     return {
       ...config,
       roomId: config.roomId || uuid(),
     };
   }
 
-  replaceOfficeWith(configOptions: ConfigOptionsLegacy) {
-    this.updateRooms(configOptions.rooms);
-    this.groups = configOptions.groups;
-    //this.updateSchedule(configOptions.schedule);
+  replaceOfficeWith(officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy) {
+    this.office = getOfficeWithBlocksFromOffice(officeOrConfigOptionsLegacy);
 
     this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();
@@ -174,3 +164,11 @@ const sessionBelongsToRoom = (room: RoomLegacy) => (session: SessionLegacy) => {
 
 export const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
   DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: sessionStartMinutesOffset });
+
+const getOfficeWithBlocksFromOffice = (officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy): OfficeWithBlocks => {
+  if ("blocks" in officeOrConfigOptionsLegacy) {
+    return officeOrConfigOptionsLegacy as OfficeWithBlocks;
+  } else {
+    return officeLegacyToOfficeWithBlocks(officeOrConfigOptionsLegacy as ConfigOptionsLegacy);
+  }
+};
