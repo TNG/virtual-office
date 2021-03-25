@@ -6,7 +6,7 @@ import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { DateTime } from "luxon";
 import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
-import RoomCardNew from "./RoomCardNew";
+import RoomCard from "./RoomCard";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
@@ -144,7 +144,7 @@ export const ScheduleBlockGrid = (props: Props) => {
           session.start,
           session.end,
           tracksOfSession,
-          <RoomCardNew
+          <RoomCard
             room={roomWithTime}
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}

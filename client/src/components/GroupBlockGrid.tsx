@@ -4,8 +4,8 @@ import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@
 import { Room } from "../../../server/express/types/Room";
 import { partition } from "lodash";
 import { Group } from "../../../server/express/types/Group";
-import RoomCardNew from "./RoomCardNew";
-import GroupJoinCardNew from "./GroupJoinCardNew";
+import RoomCard from "./RoomCard";
+import GroupJoinCard from "./GroupJoinCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
@@ -111,7 +111,7 @@ export const GroupBlockGrid = (props: Props) => {
     } else {
       return renderGridCard(
         `group-join-${group.name}`,
-        <GroupJoinCardNew group={group} isActive={isActive} isListMode={isListMode} fillHeight={true} />
+        <GroupJoinCard group={group} isActive={isActive} isListMode={isListMode} fillHeight={true} />
       );
     }
   }
@@ -122,7 +122,7 @@ export const GroupBlockGrid = (props: Props) => {
       const participants = participantsInMeeting(room.meetingId);
       return renderGridCard(
         index.toString(),
-        <RoomCardNew
+        <RoomCard
           room={room}
           isActive={isActive}
           isListMode={isListMode}

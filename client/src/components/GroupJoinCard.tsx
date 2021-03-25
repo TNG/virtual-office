@@ -2,9 +2,10 @@ import React from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { GroupLegacy } from "../../../server/express/types/GroupLegacy";
+import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 
+/** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
     display: "flex",
@@ -12,7 +13,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     padding: 12,
     boxSizing: "border-box",
     height: (props) => (props.fillHeight ? "100%" : undefined),
-    opacity: (props) => (props.isDisabled ? 0.65 : 1),
+    opacity: (props) => (props.isActive ? 1 : 0.65),
     backgroundColor: theme.palette.secondary.light,
   },
   header: {
@@ -45,34 +46,32 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     justifyContent: "space-between",
     flexDirection: "row-reverse",
   },
-  avatarGroup: {
-    marginLeft: 8,
-  },
   button: {
     margin: "12px 4px 0",
   },
 }));
 
+/** Props */
 interface Props {
-  group: GroupLegacy;
-  isJoinable: boolean;
+  group: Group;
+  isActive: boolean;
   isListMode: boolean;
-  isDisabled?: boolean;
   fillHeight?: boolean;
 }
 
+/** Component */
 const GroupJoinCard = (props: Props) => {
-  const { group, isJoinable } = props;
+  const { group, isActive } = props;
   const classes = useStyles(props);
 
-  if (!group.groupJoin) {
+  if (!group.groupJoinConfig) {
     return null;
   }
 
   function renderJoinUrl() {
-    const href = `/api/groups/${group.id}/join`;
+    const href = `/api/groups/${group.name}/join`;
     return (
-      isJoinable && (
+      isActive && (
         <Button
           className={classes.button}
           size="small"
@@ -88,16 +87,16 @@ const GroupJoinCard = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={group.id}>
+    <Card className={classes.root} key={group.name}>
       <CardHeader
         className={classes.header}
         avatar={<GroupIcon color="action" fontSize="large" />}
-        title={<Typography variant="h5">{group.groupJoin.title}</Typography>}
-        subheader={<Typography variant="body2">{group.groupJoin.subtitle}</Typography>}
+        title={<Typography variant="h5">{group.groupJoinConfig.title}</Typography>}
+        subheader={<Typography variant="body2">{group.groupJoinConfig.subtitle}</Typography>}
       />
 
       <CardContent className={classes.content}>
-        <Typography variant="body2">{group.groupJoin.description}</Typography>
+        <Typography variant="body2">{group.groupJoinConfig.description}</Typography>
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>

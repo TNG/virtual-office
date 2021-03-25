@@ -7,9 +7,10 @@ import RoomIcon from "@material-ui/icons/People";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
-import { RoomLegacy } from "../../../server/express/types/RoomLegacy";
+import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
+/** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
     display: "flex",
@@ -17,10 +18,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     padding: 12,
     boxSizing: "border-box",
     height: (props) => (props.fillHeight ? "100%" : undefined),
-    opacity: (props) => (props.isDisabled ? 0.65 : 1),
-  },
-  border: {
-    border: "3px solid rgb(44, 106, 168)",
+    opacity: (props) => (props.isActive ? 1 : 0.65),
   },
   header: {
     flex: "0 0 auto",
@@ -69,9 +67,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     flex: "0 0 auto",
     margin: "0 8px",
   },
-  avatarGroup: {
-    marginLeft: 8,
-  },
   headerAvatar: {
     height: 40,
   },
@@ -99,18 +94,19 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** Props */
 interface Props {
-  room: RoomLegacy;
-  participants: MeetingParticipant[];
-  isDisabled: boolean;
-  isJoinable: boolean;
+  room: Room;
+  isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
+  participants: MeetingParticipant[];
 }
 
+/** Component */
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { room, participants, isDisabled, isJoinable, isListMode } = props;
+  const { room, isActive, isListMode, participants } = props;
 
   const subtitleRef = useRef(null);
 
@@ -128,7 +124,7 @@ const RoomCard = (props: Props) => {
   function renderJoinUrl() {
     return (
       room.joinUrl &&
-      isJoinable && (
+      isActive && (
         <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
           Join
         </Button>
@@ -149,11 +145,14 @@ const RoomCard = (props: Props) => {
     );
   }
 
-  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
+  const roomLinksView = (room.roomLinks ?? []).length > 0 && (
+    <RoomLinks links={room.roomLinks} isListMode={isListMode} />
+  );
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 
   const joinUrlView = renderJoinUrl();
-  const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
+
+  const participantsView = isActive && room.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
         name={room.name}
@@ -195,7 +194,7 @@ const RoomCard = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={room.roomId}>
+    <Card className={classes.root} key={room.meetingId}>
       <CardHeader
         classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
         avatar={
@@ -208,7 +207,6 @@ const RoomCard = (props: Props) => {
         title={renderTitle()}
         subheader={renderSubheader()}
       />
-
       {bodyView}
     </Card>
   );
