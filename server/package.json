@@ -53,7 +53,7 @@
     "@types/pino": "6.3.4",
     "@types/sinonjs__fake-timers": "6.0.2",
     "@types/socket.io": "2.1.13",
-    "@types/supertest": "2.0.10",
+    "@types/supertest": "2.0.11",
     "@types/swagger-ui-express": "4.1.2",
     "@types/uuid": "8.3.0",
     "diff": "4.0.2",
