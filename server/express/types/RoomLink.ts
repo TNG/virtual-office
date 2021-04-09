@@ -7,7 +7,7 @@ export const RoomLinkCodec = t.intersection([
   }),
   t.partial({
     icon: t.string,
-    group: t.string,
+    linkGroup: t.string,
   }),
 ]);
 export type RoomLink = t.TypeOf<typeof RoomLinkCodec>;

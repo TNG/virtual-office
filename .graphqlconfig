@@ -1,0 +1,15 @@
+{
+  "name": "Virtual Office GraphQL Server Schema",
+  "schemaPath": "server/apollo/schema.ts",
+  "extensions": {
+    "endpoints": {
+      "Default GraphQL Endpoint": {
+        "url": "http://localhost:9000/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": false
+      }
+    }
+  }
+}

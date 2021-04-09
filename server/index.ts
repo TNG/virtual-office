@@ -9,6 +9,7 @@ import { ExpressApp } from "./express/ExpressApp";
 import { WebSocketController } from "./express/WebSocketController";
 import { SlackBotService } from "./services/SlackBotService";
 import { ZoomWebhookService } from "./services/ZoomWebhookService";
+import { ApolloServerService } from "./apollo/ApolloServerService";
 
 const result = dotenv.config();
 if (result.error) {
@@ -23,10 +24,6 @@ if (result.error) {
   const expressApp = Container.get(ExpressApp);
   const appInstance = await expressApp.create();
 
-  const server = appInstance.listen(config.port);
-
-  Container.get(WebSocketController).init(server);
-
   if (config.slack?.botOAuthAccessToken) {
     Container.get(SlackBotService);
   }
@@ -35,5 +32,10 @@ if (result.error) {
     Container.get(ZoomWebhookService);
   }
 
-  logger.info(`started on port ${config.port}`);
+  const apolloServer = Container.get(ApolloServerService);
+  const apolloServerInstance = await apolloServer.init(appInstance);
+  const expressServer = appInstance.listen(config.port, () => {
+    logger.info(`Server listening on http://localhost:${config.port}${apolloServerInstance.graphqlPath}`);
+  });
+  Container.get(WebSocketController).init(expressServer);
 })();

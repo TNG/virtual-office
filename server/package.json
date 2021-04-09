@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@slack/web-api": "6.1.0",
+    "apollo-server-express": "2.22.1",
     "axios": "0.21.1",
     "body-parser": "1.19.0",
     "cookie-parser": "1.4.5",
@@ -23,6 +24,7 @@
     "express-async-handler": "1.1.4",
     "express-basic-auth": "1.2.0",
     "fp-ts": "2.9.5",
+    "graphql": "15.5.0",
     "io-ts": "2.2.16",
     "lodash": "4.17.21",
     "luxon": "1.26.0",

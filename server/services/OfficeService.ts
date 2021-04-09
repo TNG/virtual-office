@@ -165,7 +165,9 @@ const sessionBelongsToRoom = (room: RoomLegacy) => (session: SessionLegacy) => {
 export const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
   DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: sessionStartMinutesOffset });
 
-const getOfficeWithBlocksFromOffice = (officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy): OfficeWithBlocks => {
+export const getOfficeWithBlocksFromOffice = (
+  officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy
+): OfficeWithBlocks => {
   if ("blocks" in officeOrConfigOptionsLegacy) {
     return officeOrConfigOptionsLegacy as OfficeWithBlocks;
   } else {
