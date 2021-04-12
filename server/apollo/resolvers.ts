@@ -13,11 +13,17 @@ export const resolvers = {
     getGroup: (_, { id }, { dataSources }) => {
       return dataSources.officeStore.getGroup(id);
     },
+    getGroupJoinConfig: (_, { id }, { dataSources }) => {
+      return dataSources.officeStore.getGroupJoinConfig(id);
+    },
     getSession: (_, { id }, { dataSources }) => {
       return dataSources.officeStore.getSession(id);
     },
     getRoom: (_, { id }, { dataSources }) => {
       return dataSources.officeStore.getRoom(id);
+    },
+    getRoomLinks: (_, { ids }, { dataSources }) => {
+      return dataSources.officeStore.getRoomLinks(ids);
     },
   },
   /*Mutation: {

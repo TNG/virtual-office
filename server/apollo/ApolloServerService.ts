@@ -16,6 +16,7 @@ export class ApolloServerService {
       dataSources: () => ({
         officeStore: this.officeStore,
       }),
+      debug: true,
     });
     await apolloServer.start();
     apolloServer.applyMiddleware({ app: expressApp });

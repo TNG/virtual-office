@@ -113,14 +113,16 @@ export const typeDefs = gql`
     getOffice: Office
     getBlock(id: ID!): Block
     getGroup(id: ID!): Group
+    getGroupJoinConfig(id: ID!): GroupJoinConfig
     getSession(id: ID!): Session
     getRoom(id: ID!): Room
+    getRoomLinks(ids: [ID!]!): [RoomLink!]
   }
 `;
 
 /*
 type Mutation {
-  addRoomToGroup(roomInput: RoomInput!, groupName: String!): AddRoomToGroupResponse!
+  addRoomToGroup(roomInput: RoomInput!, groupId: ID!): AddRoomToGroupResponse!
 }
 
 input RoomInput {

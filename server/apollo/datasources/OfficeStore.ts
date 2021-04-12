@@ -25,6 +25,7 @@ import {
 } from "../TypesApollo";
 import { getOfficeWithBlocksFromOffice } from "../../services/OfficeService";
 import { v4 as uuid } from "uuid";
+import { logger } from "../../log";
 
 @Service()
 export class OfficeStore extends DataSource {
@@ -256,6 +257,16 @@ export class OfficeStore extends DataSource {
     }
   }
 
+  public getGroupJoinConfig(id: string): GroupJoinConfigApollo | undefined {
+    for (let i = 0; i < this.groups.length; i++) {
+      if (this.groups[i].groupJoinConfig?.id === id) {
+        logger.info("Found");
+        return this.groups[i].groupJoinConfig;
+      }
+    }
+    return undefined;
+  }
+
   public getSession(id: string): SessionApollo | undefined {
     const sessionDb: SessionApolloDb | undefined = this.sessions.find((session: SessionApolloDb) => session.id === id);
     if (!sessionDb) {
@@ -289,6 +300,18 @@ export class OfficeStore extends DataSource {
 
   public getRoom(id: string): RoomApollo | undefined {
     return this.rooms.find((room: RoomApollo) => room.id === id);
+  }
+
+  public getRoomLinks(ids: string[]): RoomLinkApollo[] {
+    const roomLinks: RoomLinkApollo[] = [];
+    this.rooms.forEach((room: RoomApollo) => {
+      room.roomLinks?.forEach((roomLink: RoomLinkApollo) => {
+        if (ids.includes(roomLink.id)) {
+          roomLinks.push(roomLink);
+        }
+      });
+    });
+    return roomLinks;
   }
 
   /*public addRoomToGroup(roomInput: RoomApollo, groupName: string): GroupApollo | undefined {
