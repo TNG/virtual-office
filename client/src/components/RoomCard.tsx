@@ -8,6 +8,9 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { MeetingsIndexed } from "./MeetingsIndexed";
+import { gql, useQuery } from "@apollo/client";
+import { ROOM_FRAGMENT_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -93,19 +96,32 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_ROOM = gql`
+  query getRoom($id: ID!) {
+    getRoom(id: $id) {
+      ...RoomFragmentShort
+    }
+  }
+  ${ROOM_FRAGMENT_SHORT}
+`;
+
 /** Props */
 interface Props {
-  room: Room;
+  id: string;
+  timeStringForDescription?: string;
   isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
-  participants: MeetingParticipant[];
+  meetings: MeetingsIndexed;
 }
 
 /** Component */
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { room, isActive, isListMode, participants } = props;
+  const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
+
+  const { data, loading, error } = useQuery(GET_ROOM, { variables: { id } });
 
   const descriptionRef = useRef(null);
 
@@ -120,11 +136,20 @@ const RoomCard = (props: Props) => {
     setExpandable((descriptionRef.current as any).offsetWidth < (descriptionRef.current as any).scrollWidth);
   }, [descriptionRef]);
 
+  if (!data) return null;
+
+  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+    if (meetingId && meetings[meetingId]) {
+      return meetings[meetingId].participants;
+    }
+    return [];
+  }
+
   function renderJoinUrl() {
     return (
-      room.joinUrl &&
+      data.getRoom.joinUrl &&
       isActive && (
-        <Button size="small" color="secondary" variant="text" href={room.joinUrl} target="_blank">
+        <Button size="small" color="secondary" variant="text" href={data.getRoom.joinUrl} target="_blank">
           Join
         </Button>
       )
@@ -132,30 +157,30 @@ const RoomCard = (props: Props) => {
   }
 
   function renderTitle() {
-    const titleName = <Typography variant="h5">{room.name}</Typography>;
-    if (!room.titleUrl) {
+    const titleName = <Typography variant="h5">{data.getRoom.name}</Typography>;
+    if (!data.getRoom.titleUrl) {
       return titleName;
     }
 
     return (
-      <a className={classes.titleLink} href={room.titleUrl} target="_blank" rel="noopener noreferrer">
+      <a className={classes.titleLink} href={data.getRoom.titleUrl} target="_blank" rel="noopener noreferrer">
         {titleName}
       </a>
     );
   }
 
-  const roomLinksView = (room.roomLinks ?? []).length > 0 && (
-    <RoomLinks links={room.roomLinks} isListMode={isListMode} />
+  const roomLinksView = (data.getRoom.roomLinks ?? []).length > 0 && (
+    <RoomLinks ids={data.getRoom.roomLinks.map((roomLink: { id: string }) => roomLink.id)} isListMode={isListMode} />
   );
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 
   const joinUrlView = renderJoinUrl();
 
-  const participantsView = isActive && room.meetingId && (
+  const participantsView = isActive && data.getRoom.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
-        name={room.name}
-        participants={participants}
+        name={data.getRoom.name}
+        participants={participantsInMeeting(data.getRoom.meetingId)}
         showParticipants={participantsOpen}
         setShowParticipants={setParticipantsOpen}
       />
@@ -181,10 +206,12 @@ const RoomCard = (props: Props) => {
       <div className={classes.expandButton}>{collapseDescription ? <ExpandMore /> : <ExpandLess />}</div>
     );
 
+    const descriptionWithTime = [timeStringForDescription, data.getRoom.description].filter(Boolean).join(" ");
+
     return (
       <div className={classes.description} onClick={() => setCollapseDescription(!collapseDescription)}>
         <Typography variant="body2" className={descriptionClass} ref={descriptionRef}>
-          {room.description}
+          {descriptionWithTime}
         </Typography>
         {expandButton}
       </div>
@@ -192,12 +219,12 @@ const RoomCard = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={room.meetingId}>
+    <Card className={classes.root} key={data.getRoom.meetingId}>
       <CardHeader
         classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
         avatar={
-          room.icon ? (
-            <Avatar variant="square" src={room.icon} />
+          data.getRoom.icon ? (
+            <Avatar variant="square" src={data.getRoom.icon} />
           ) : (
             <RoomIcon className={classes.roomIcon} color="action" />
           )

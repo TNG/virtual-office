@@ -8,6 +8,8 @@ import { RoomSession } from "../../../server/express/types/Session";
 import { sessionIsActive } from "../sessionTimeProps";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
+import { gql, useQuery } from "@apollo/client";
+import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -58,11 +60,19 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_BLOCK = gql`
+  query getBlock($id: ID!) {
+    getBlock(id: $id) {
+      ...BlockFragmentShort
+    }
+  }
+  ${BLOCK_FRAGMENT_SHORT}
+`;
+
 /** Props */
 interface Props {
-  title: string;
-  description?: string;
-  sessions: RoomSession[];
+  id: string;
   isListMode: boolean;
   clientConfig: ClientConfig;
   meetings: MeetingsIndexed;
@@ -70,7 +80,8 @@ interface Props {
 
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
-  const { title, description, sessions, isListMode, meetings, clientConfig } = props;
+  const { id, isListMode, meetings, clientConfig } = props;
+  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
   const classes = useStyles(props);
 
   return (
@@ -81,16 +92,19 @@ export const SessionBlockGrid = (props: Props) => {
   );
 
   function renderGroupHeader() {
-    const descriptionConfigured = description && (
+    const descriptionConfigured = data.getBlock.description && (
       <CardContent className={classes.groupHeaderCardContent}>
-        <Typography variant="body2">{description}</Typography>
+        <Typography variant="body2">{data.getBlock.description}</Typography>
       </CardContent>
     );
 
     return (
       <div className={`${classes.cardGroupHeader}`}>
         <Card className={classes.groupHeaderCard}>
-          <CardHeader className={classes.groupHeaderCardHeader} title={<Typography variant="h5">{title}</Typography>} />
+          <CardHeader
+            className={classes.groupHeaderCardHeader}
+            title={<Typography variant="h5">{data.getBlock.title}</Typography>}
+          />
           {descriptionConfigured}
           <CardActions />
         </Card>
@@ -99,26 +113,23 @@ export const SessionBlockGrid = (props: Props) => {
   }
 
   function renderRoomCards() {
-    return sessions.map((session: RoomSession, index: number) => {
+    return data.getBlock.sessions.map((session: any) => {
       const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
       const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
       const timezone = browserTimeZone();
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
-      const roomWithTime = {
-        ...session.room,
-        description: `(${timeString}) ${session.room.description || ""}`,
-      };
       const participants = participantsInMeeting(session.room.meetingId);
 
       return renderGridCard(
-        index.toString(),
+        session.id,
         <RoomCard
-          room={roomWithTime}
+          id={session.room.id}
+          timeStringForDescription={timeString}
           isActive={sessionIsActive(session, clientConfig)}
           isListMode={isListMode}
           fillHeight={true}
-          participants={participants}
+          meetings={meetings}
         />
       );
     });

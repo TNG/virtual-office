@@ -7,6 +7,8 @@ import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { SessionBlockGrid } from "./SessionBlockGrid";
+import { gql, useQuery } from "@apollo/client";
+import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -22,17 +24,32 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_BLOCK = gql`
+  query getBlock($id: ID!) {
+    getBlock(id: $id) {
+      ...BlockFragmentShort
+    }
+  }
+  ${BLOCK_FRAGMENT_SHORT}
+`;
+
 /** Props */
 interface Props {
-  block: Block;
+  id: string;
   clientConfig: ClientConfig;
   meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const BlockGrid = (props: Props) => {
-  const { block, clientConfig, meetings } = props;
+  const { id, clientConfig, meetings } = props;
   const classes = useStyles(props);
+
+  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
+
+  // TODO: how to do
+  if (!data) return null;
 
   return (
     <div className={classes.root}>
@@ -42,35 +59,26 @@ export const BlockGrid = (props: Props) => {
   );
 
   function renderBlockHeader() {
-    const blockHeader = block.name;
+    const blockHeader = data.getBlock.name;
     return <h2 className={classes.title}>{blockHeader}</h2>;
   }
 
   function renderBlock() {
-    if (block.type === "GROUP_BLOCK") {
+    if (data.getBlock.type === "GROUP_BLOCK") {
       return (
         <GroupBlockGrid
-          group={block.group}
+          id={data.getBlock.group.id}
           isActive={true}
           isListMode={clientConfig.viewMode === "list"}
           meetings={meetings}
         />
       );
-    } else if (block.type === "SCHEDULE_BLOCK") {
-      return (
-        <ScheduleBlockGrid
-          tracks={block.tracks}
-          sessions={block.sessions}
-          clientConfig={clientConfig}
-          meetings={meetings}
-        />
-      );
-    } else if (block.type === "SESSION_BLOCK") {
+    } else if (data.getBlock.type === "SCHEDULE_BLOCK") {
+      return <ScheduleBlockGrid id={data.getBlock.id} clientConfig={clientConfig} meetings={meetings} />;
+    } else if (data.getBlock.type === "SESSION_BLOCK") {
       return (
         <SessionBlockGrid
-          title={block.title}
-          description={block.description}
-          sessions={block.sessions}
+          id={data.getBlock.id}
           isListMode={clientConfig.viewMode === "list"}
           clientConfig={clientConfig}
           meetings={meetings}

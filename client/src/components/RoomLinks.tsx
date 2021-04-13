@@ -2,9 +2,12 @@ import React from "react";
 
 import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { RoomLink } from "../../../server/express/types/RoomLink";
 import LinkIcon from "@material-ui/icons/Link";
+import { RoomLinkApollo } from "../../../server/apollo/TypesApollo";
+import { gql, useQuery } from "@apollo/client";
+import { ROOM_LINK_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
 
+/** Styles */
 const useStyles = makeStyles<Theme, Props>({
   root: {
     width: "100%",
@@ -44,24 +47,40 @@ const useStyles = makeStyles<Theme, Props>({
   },
 });
 
+/** GraphQL Data */
+const GET_ROOM_LINKS = gql`
+  query getRoomLinks($ids: [ID!]!) {
+    getRoomLinks(ids: $ids) {
+      ...RoomLinkFragmentComplete
+    }
+  }
+  ${ROOM_LINK_FRAGMENT_COMPLETE}
+`;
+
+/** Props */
 interface Props {
-  links: RoomLink[] | undefined;
+  ids: string[] | undefined;
   isListMode: boolean;
 }
 
+interface Data {
+  getRoomLinks: RoomLinkApollo[];
+}
+
+/** Component */
 const RoomLinks = (props: Props) => {
   const classes = useStyles(props);
-  const { links } = props;
+  const { ids } = props;
 
-  if (!links || links.length <= 0) {
-    return null;
-  }
+  const { data, loading, error } = useQuery<Data>(GET_ROOM_LINKS, { variables: { ids } });
 
-  const groupedLinks = links.reduce((acc, link) => {
-    const group = link.group || "";
+  if (!data || data.getRoomLinks.length <= 0) return null;
+
+  const groupedLinks = data.getRoomLinks.reduce((acc, link: RoomLinkApollo) => {
+    const group = link.linkGroup || "";
     acc[group] = [...(acc[group] || []), link];
     return acc;
-  }, {} as { [group: string]: RoomLink[] });
+  }, {} as { [group: string]: RoomLinkApollo[] });
 
   return (
     <div className={classes.root}>
@@ -69,7 +88,7 @@ const RoomLinks = (props: Props) => {
         <div className={classes.group} key={group}>
           <Typography variant="subtitle2">{group}</Typography>
           <div className={classes.linkGroup}>
-            {groupLinks.map((link, index) => (
+            {groupLinks.map((link: RoomLinkApollo, index: number) => (
               <Link key={link.text + index} className={classes.link} href={link.href} target="_blank">
                 {link.icon ? (
                   <img className={classes.icon} src={link.icon} alt={link.text} />

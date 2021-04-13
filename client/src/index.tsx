@@ -11,21 +11,36 @@ import Dashboard from "./components/Dashboard";
 import "./index.css";
 import theme from "./theme";
 import axios from "axios";
+import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
+
+// Initialize ApolloClient
+const apolloClient: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+  cache: new InMemoryCache({
+    possibleTypes: {
+      Block: ["GroupBlock", "ScheduleBlock", "SessionBlock"],
+      Session: ["GroupSession", "RoomSession"],
+    },
+  }),
+  uri: "http://localhost:9000/graphql",
+  connectToDevTools: true,
+});
 
 axios.get("/api/clientConfig").then(({ data }) => {
   document.title = data.title ?? "Virtual Office";
   ReactDOM.render(
-    <BrowserRouter>
-      <ThemeProvider theme={theme(data)}>
-        <CssBaseline />
-        <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/login">
-            <Login />
-          </Route>
-        </Switch>
-      </ThemeProvider>
-    </BrowserRouter>,
+    <ApolloProvider client={apolloClient}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme(data)}>
+          <CssBaseline />
+          <Switch>
+            <Route exact path="/" component={Dashboard} />
+            <Route path="/login">
+              <Login />
+            </Route>
+          </Switch>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ApolloProvider>,
     document.getElementById("root")
   );
 });

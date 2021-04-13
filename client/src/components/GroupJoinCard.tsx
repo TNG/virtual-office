@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
+import { GroupJoinConfig } from "../../../server/express/types/GroupLegacy";
+import { gql, useQuery } from "@apollo/client";
+import { GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -51,9 +54,20 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_GROUP_JOIN_CONFIG = gql`
+  query getGroupJoinConfig($id: ID!) {
+    getGroupJoinConfig(id: $id) {
+      ...GroupJoinConfigFragmentComplete
+    }
+  }
+  ${GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE}
+`;
+
 /** Props */
 interface Props {
-  group: Group;
+  id: string;
+  groupName: string;
   isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
@@ -61,15 +75,15 @@ interface Props {
 
 /** Component */
 const GroupJoinCard = (props: Props) => {
-  const { group, isActive } = props;
+  const { id, groupName, isActive } = props;
   const classes = useStyles(props);
 
-  if (!group.groupJoinConfig) {
-    return null;
-  }
+  const { data, loading, error } = useQuery(GET_GROUP_JOIN_CONFIG, { variables: { id } });
+
+  if (!data) return null;
 
   function renderJoinUrl() {
-    const href = `/api/groups/${group.name}/join`;
+    const href = `/api/groups/${groupName}/join`;
     return (
       isActive && (
         <Button
@@ -87,16 +101,16 @@ const GroupJoinCard = (props: Props) => {
   }
 
   return (
-    <Card className={classes.root} key={group.name}>
+    <Card className={classes.root} key={groupName}>
       <CardHeader
         className={classes.header}
         avatar={<GroupIcon color="action" fontSize="large" />}
-        title={<Typography variant="h5">{group.groupJoinConfig.title}</Typography>}
-        subheader={<Typography variant="body2">{group.groupJoinConfig.subtitle}</Typography>}
+        title={<Typography variant="h5">{data.getGroupJoinConfig.title}</Typography>}
+        subheader={<Typography variant="body2">{data.getGroupJoinConfig.subtitle}</Typography>}
       />
 
       <CardContent className={classes.content}>
-        <Typography variant="body2">{group.groupJoinConfig.description}</Typography>
+        <Typography variant="body2">{data.getGroupJoinConfig.description}</Typography>
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>

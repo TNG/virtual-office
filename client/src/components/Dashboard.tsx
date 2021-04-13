@@ -22,6 +22,9 @@ import { Session } from "../../../server/express/types/Session";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { search } from "../search";
 import { sessionIsOver } from "../sessionTimeProps";
+import { gql, useQuery } from "@apollo/client";
+import { BLOCK_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
+import { BlockApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -57,6 +60,20 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_OFFICE = gql`
+  query getOffice {
+    getOffice {
+      id
+      version
+      blocks {
+        ...BlockFragmentComplete
+      }
+    }
+  }
+  ${BLOCK_FRAGMENT_COMPLETE}
+`;
+
 /** Component */
 const Dashboard = () => {
   const history = useHistory();
@@ -75,6 +92,8 @@ const Dashboard = () => {
     version: "2",
     blocks: [],
   });
+
+  const { data, loading, error } = useQuery(GET_OFFICE);
 
   useEffect(() => {
     context.init();
@@ -123,7 +142,7 @@ const Dashboard = () => {
   }
 
   function renderOffice(config: ClientConfig) {
-    if (config.hideEndedSessions) {
+    /*if (config.hideEndedSessions) {
       office.blocks = office.blocks.map((block: Block) => {
         if (block.type === "SCHEDULE_BLOCK" || block.type === "SESSION_BLOCK") {
           block.sessions = block.sessions.filter((session: Session) => !sessionIsOver(session, config));
@@ -152,6 +171,20 @@ const Dashboard = () => {
         <div>
           {officeSearched.blocks.map((block: Block, index: number) => {
             return <BlockGrid key={index} block={block} clientConfig={config} meetings={meetingsIndexed} />;
+          })}
+        </div>
+      </Fade>
+    );*/
+
+    if (loading) return <p>loading</p>;
+    if (error) return <p>ERROR: {error.message}</p>;
+    if (!data) return <p>Not found</p>;
+
+    return (
+      <Fade in={initialLoadCompleted}>
+        <div>
+          {data.getOffice.blocks.map((block: BlockApollo) => {
+            return <BlockGrid key={block.id} id={block.id} clientConfig={config} meetings={meetingsIndexed} />;
           })}
         </div>
       </Fade>

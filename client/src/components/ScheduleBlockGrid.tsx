@@ -11,15 +11,37 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { sessionIsActive } from "../sessionTimeProps";
+import { gql, useQuery } from "@apollo/client";
+import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { TrackApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
-const calculateGridTemplateRows = ({ sessions, clientConfig }: Props) => {
+interface StyleProps {
+  clientConfig: ClientConfig;
+  data: {
+    getBlock: {
+      tracks: TrackApollo[];
+      sessions: {
+        id: string;
+        start: string;
+        end: string;
+      }[];
+    };
+  };
+}
+
+const calculateGridTemplateRows = ({
+  clientConfig,
+  data: {
+    getBlock: { sessions },
+  },
+}: StyleProps) => {
   const earliestStart = sessions
-    .map(({ start }) => DateTime.fromFormat(start, "HH:mm", { zone: clientConfig?.timezone }))
+    .map((session: any) => DateTime.fromFormat(session.start, "HH:mm", { zone: clientConfig?.timezone }))
     .sort()
     .shift();
   const latestEnd = sessions
-    .map(({ end }) => DateTime.fromFormat(end, "HH:mm", { zone: clientConfig?.timezone }))
+    .map((session: any) => DateTime.fromFormat(session.end, "HH:mm", { zone: clientConfig?.timezone }))
     .sort()
     .pop();
   let result = `[trackHeader] auto `;
@@ -37,7 +59,11 @@ interface GridColumnDefinition {
   prevTrack: Track | undefined;
 }
 
-const calculateGridTemplateColumns = ({ tracks }: Props) => {
+const calculateGridTemplateColumns = ({
+  data: {
+    getBlock: { tracks },
+  },
+}: StyleProps) => {
   const result = tracks.reduce<GridColumnDefinition>(
     ({ value, prevTrack }, val) => ({
       value: value + `[${prevTrack ? `track-${prevTrack.name}-end ` : ""}track-${val.name}-start] minmax(0, 1fr)`,
@@ -49,7 +75,7 @@ const calculateGridTemplateColumns = ({ tracks }: Props) => {
   return result.value + `[track-${lastTrack.name}-end]`;
 };
 
-const useStyles = makeStyles<Theme, Props>((theme) => ({
+const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   schedule: {
     [theme.breakpoints.up("md")]: {
       display: "grid",
@@ -79,18 +105,31 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_BLOCK = gql`
+  query getBlock($id: ID!) {
+    getBlock(id: $id) {
+      ...BlockFragmentShort
+    }
+  }
+  ${BLOCK_FRAGMENT_SHORT}
+`;
+
 /** Props */
 interface Props {
-  tracks: Track[];
-  sessions: Session[];
+  id: string;
   clientConfig: ClientConfig;
   meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const { tracks, sessions, clientConfig, meetings } = props;
-  const classes = useStyles(props);
+  const { id, clientConfig, meetings } = props;
+  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
+
+  if (!data) return null;
+
+  const classes = useStyles({ clientConfig, data });
 
   return (
     <div className={classes.root}>
@@ -104,7 +143,7 @@ export const ScheduleBlockGrid = (props: Props) => {
   function renderTrackHeader() {
     return (
       <>
-        {tracks.map((track: Track) => {
+        {data.getBlock.tracks.map((track: TrackApollo) => {
           return (
             <div
               key={`track-${track.name}`}
@@ -120,10 +159,10 @@ export const ScheduleBlockGrid = (props: Props) => {
   }
 
   function renderSchedule() {
-    return sessions.map((session: Session, index: number) => {
+    return data.getBlock.sessions.map((session: any) => {
       const tracksOfSession: [string, string?] = session.trackName
         ? [session.trackName]
-        : [tracks[0].name, tracks[tracks.length - 1].name];
+        : [data.getBlock.tracks[0].name, data.getBlock.tracks[data.getBlock.tracks.length - 1].name];
 
       const isActive = sessionIsActive(session, clientConfig);
 
@@ -133,47 +172,39 @@ export const ScheduleBlockGrid = (props: Props) => {
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
       if (session.type === "ROOM_SESSION") {
-        const roomWithTime = {
-          ...session.room,
-          description: `(${timeString}) ${session.room.description || ""}`,
-        };
         const participants = participantsInMeeting(session.room.meetingId);
 
         return renderGridCard(
-          index.toString(),
+          session.id,
           classes.card,
           session.start,
           session.end,
           tracksOfSession,
           <RoomCard
-            room={roomWithTime}
+            id={session.room.id}
+            timeStringForDescription={timeString}
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             fillHeight={true}
-            participants={participants}
+            meetings={meetings}
           />
         );
       } else if (session.type === "GROUP_SESSION") {
-        const groupWithTime = {
-          ...session.group,
-          description: `(${timeString}) ${session.group.description || ""}`,
-        };
-
         return renderGridCard(
-          session.group.name,
+          session.id,
           classes.groupCard,
           session.start,
           session.end,
           tracksOfSession,
           <GroupBlockGrid
-            group={groupWithTime}
+            id={session.group.id}
+            timeStringForDescription={timeString}
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             meetings={meetings}
           />
         );
       }
-      return "";
     });
   }
 

@@ -8,6 +8,8 @@ import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { gql, useQuery } from "@apollo/client";
+import { GROUP_FRAGMENT_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -59,9 +61,20 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
+/** GraphQL Data */
+const GET_GROUP = gql`
+  query getGroup($id: ID!) {
+    getGroup(id: $id) {
+      ...GroupFragmentShort
+    }
+  }
+  ${GROUP_FRAGMENT_SHORT}
+`;
+
 /** Props */
 interface Props {
-  group: Group;
+  id: string;
+  timeStringForDescription?: string;
   isActive: boolean;
   isListMode: boolean;
   meetings: MeetingsIndexed;
@@ -69,8 +82,12 @@ interface Props {
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { group, isActive, isListMode, meetings } = props;
+  const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
   const classes = useStyles(props);
+
+  const { data, loading, error } = useQuery(GET_GROUP, { variables: { id } });
+
+  if (!data) return null;
 
   return (
     <div className={classes.root}>
@@ -82,20 +99,23 @@ export const GroupBlockGrid = (props: Props) => {
     </div>
   );
 
+  //
+
   function renderGroupHeader() {
-    const description = group.description && (
+    const descriptionWithTime = [timeStringForDescription, data.getGroup.description].filter(Boolean).join(" ");
+    const description = descriptionWithTime && (
       <CardContent className={classes.groupHeaderCardContent}>
-        <Typography variant="body2">{group.description}</Typography>
+        <Typography variant="body2">{descriptionWithTime}</Typography>
       </CardContent>
     );
 
     return (
-      group.name && (
+      data.getGroup.name && (
         <div className={`${classes.cardGroupHeader}`}>
           <Card className={classes.groupHeaderCard}>
             <CardHeader
               className={classes.groupHeaderCardHeader}
-              title={<Typography variant="h5">{group.name}</Typography>}
+              title={<Typography variant="h5">{data.getGroup.name}</Typography>}
             />
             {description}
             <CardActions />
@@ -106,51 +126,51 @@ export const GroupBlockGrid = (props: Props) => {
   }
 
   function renderGroupJoinCard() {
-    if (!group.groupJoinConfig) {
+    if (!data.getGroup.groupJoinConfig) {
       return;
     } else {
       return renderGridCard(
-        `group-join-${group.name}`,
-        <GroupJoinCard group={group} isActive={isActive} isListMode={isListMode} fillHeight={true} />
+        `group-join-${data.getGroup.name}`,
+        <GroupJoinCard
+          id={data.getGroup.groupJoinConfig.id}
+          groupName={data.getGroup.name}
+          isActive={isActive}
+          isListMode={isListMode}
+          fillHeight={true}
+        />
       );
     }
   }
 
   function renderRoomCards() {
-    const shownRooms = selectShownRooms();
+    /*const shownRooms = selectShownRooms();
     return shownRooms.map((room: Room, index: number) => {
       const participants = participantsInMeeting(room.meetingId);
       return renderGridCard(
         index.toString(),
-        <RoomCard
-          room={room}
-          isActive={isActive}
-          isListMode={isListMode}
-          fillHeight={true}
-          participants={participants}
-        />
+        <RoomCard roomName={roomName} isActive={isActive} isListMode={isListMode} fillHeight={true} meetings={meetings} />
+      );
+    });*/
+    return data.getGroup.rooms.map((room: { id: string }) => {
+      return renderGridCard(
+        room.id,
+        <RoomCard id={room.id} isActive={isActive} isListMode={isListMode} fillHeight={true} meetings={meetings} />
       );
     });
   }
 
-  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
-    if (meetingId && meetings[meetingId]) {
-      return meetings[meetingId].participants;
-    }
-    return [];
-  }
-
-  function selectShownRooms() {
-    if (!group.groupJoinConfig) {
-      return group.rooms;
+  // TODO: to implement
+  /*function selectShownRooms() {
+    if (!data.group.groupJoinConfig) {
+      return data.group.roomNames;
     } else {
       const [emptyRooms, filledRooms] = partition(
-        group.rooms,
+        data.group.roomNames,
         (room) => participantsInMeeting(room.meetingId).length === 0
       );
       return [...filledRooms, ...emptyRooms.slice(0, 1)];
     }
-  }
+  }*/
 
   function renderGridCard(key: string, card: any) {
     return (
