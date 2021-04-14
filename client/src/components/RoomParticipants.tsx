@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Theme, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
@@ -9,6 +9,10 @@ import ParticipantAvatar from "./ParticipantAvatar";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
+import { useQuery } from "@apollo/client";
+import { GET_PARTICIPANTS_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
+import axios from "axios";
+import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
 
 const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";
 const useStyles = makeStyles<Theme>((theme) => ({
@@ -33,13 +37,15 @@ const useStyles = makeStyles<Theme>((theme) => ({
 }));
 
 interface Props {
-  name: string;
-  participants: MeetingParticipant[];
+  roomName: string;
+  meetingId: string;
   showParticipants: boolean;
   setShowParticipants: (open: boolean) => void;
 }
 
 const RoomParticipants = (props: Props) => {
+  const { roomName, meetingId, showParticipants, setShowParticipants } = props;
+
   const [participantSearch, setParticipantSearch] = React.useState("");
 
   function handleSearch(searchText: string) {
@@ -48,12 +54,48 @@ const RoomParticipants = (props: Props) => {
 
   function openDialog(open: boolean) {
     setParticipantSearch("");
-    props.setShowParticipants(open);
+    setShowParticipants(open);
+  }
+
+  function subscribeToParticipantMutations() {
+    subscribeToMore({
+      document: PARTICIPANT_MUTATED_SUBSCRIPTION,
+      variables: { meetingId: meetingId },
+      updateQuery: (currentData, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return currentData;
+        }
+        if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_ADDED") {
+          return {
+            getParticipants: [...currentData.getParticipants, subscriptionData.data.participantMutated.participant],
+          };
+        } else if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_REMOVED") {
+          return {
+            getParticipants: currentData.getParticipants.filter(
+              (participant: ParticipantApollo) =>
+                participant.id !== subscriptionData.data.participantMutated.participant.id
+            ),
+          };
+        } else {
+          return currentData;
+        }
+      },
+    });
   }
 
   const classes = useStyles();
 
-  if (props.participants.length <= 0) {
+  const { subscribeToMore, data, loading, error } = useQuery(GET_PARTICIPANTS_COMPLETE, {
+    variables: { id: meetingId },
+  });
+
+  useEffect(() => {
+    subscribeToParticipantMutations();
+  }, []);
+
+  if (!data) return null;
+
+  if (data.getParticipants.length <= 0) {
     return (
       <div className={classes.userParticipant}>
         <Typography className={classes.emptyGroup} variant="body2">
@@ -67,20 +109,20 @@ const RoomParticipants = (props: Props) => {
     return (
       <div className={classes.anonymousParticipant}>
         <Typography variant="body2" className={classes.anonymousParticipantsText}>
-          {props.participants.length} participant{props.participants.length > 1 ? "s" : ""}
+          {data.getParticipants.length} participant{data.getParticipants.length > 1 ? "s" : ""}
         </Typography>
       </div>
     );
   }
 
-  const sortedParticipants = sortBy(props.participants, (participant) => participant.username);
+  const sortedParticipants = sortBy(data.getParticipants, (participant) => participant.username);
   const filteredParticipants = sortedParticipants.filter((participant) =>
     participantMatches(participantSearch, participant)
   );
 
   return (
     <div>
-      <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => props.setShowParticipants(true)}>
+      <AvatarGroup className={classes.avatarGroup} max={5} onClick={() => setShowParticipants(true)}>
         {sortedParticipants.map((participant, index) => (
           <ParticipantAvatar
             key={participant.id}
@@ -91,11 +133,11 @@ const RoomParticipants = (props: Props) => {
       </AvatarGroup>
 
       <Dialog
-        open={props.showParticipants}
+        open={showParticipants}
         setOpen={openDialog}
-        title={props.name}
+        title={roomName}
         variant="big"
-        handleOk={() => props.setShowParticipants(false)}
+        handleOk={() => setShowParticipants(false)}
         handleSearch={debounce(handleSearch, 200)}
       >
         <ParticipantsList participants={filteredParticipants} />

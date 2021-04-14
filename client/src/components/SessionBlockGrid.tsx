@@ -8,8 +8,8 @@ import { RoomSession } from "../../../server/express/types/Session";
 import { sessionIsActive } from "../sessionTimeProps";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
-import { gql, useQuery } from "@apollo/client";
-import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -60,16 +60,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_BLOCK = gql`
-  query getBlock($id: ID!) {
-    getBlock(id: $id) {
-      ...BlockFragmentShort
-    }
-  }
-  ${BLOCK_FRAGMENT_SHORT}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -81,7 +71,7 @@ interface Props {
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
   const { id, isListMode, meetings, clientConfig } = props;
-  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
   const classes = useStyles(props);
 
   return (

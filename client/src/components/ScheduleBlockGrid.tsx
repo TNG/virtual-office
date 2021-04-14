@@ -11,9 +11,9 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { sessionIsActive } from "../sessionTimeProps";
-import { gql, useQuery } from "@apollo/client";
-import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
 import { TrackApollo } from "../../../server/apollo/TypesApollo";
+import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 interface StyleProps {
@@ -105,16 +105,6 @@ const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_BLOCK = gql`
-  query getBlock($id: ID!) {
-    getBlock(id: $id) {
-      ...BlockFragmentShort
-    }
-  }
-  ${BLOCK_FRAGMENT_SHORT}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -125,7 +115,7 @@ interface Props {
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
   const { id, clientConfig, meetings } = props;
-  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
   if (!data) return null;
 

@@ -9,8 +9,8 @@ import RoomLinks from "./RoomLinks";
 import { Room } from "../../../server/express/types/Room";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { MeetingsIndexed } from "./MeetingsIndexed";
-import { gql, useQuery } from "@apollo/client";
-import { ROOM_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_ROOM_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -96,16 +96,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_ROOM = gql`
-  query getRoom($id: ID!) {
-    getRoom(id: $id) {
-      ...RoomFragmentShort
-    }
-  }
-  ${ROOM_FRAGMENT_SHORT}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -121,7 +111,7 @@ const RoomCard = (props: Props) => {
   const classes = useStyles(props);
   const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
 
-  const { data, loading, error } = useQuery(GET_ROOM, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_ROOM_SHORT, { variables: { id } });
 
   const descriptionRef = useRef(null);
 
@@ -179,8 +169,8 @@ const RoomCard = (props: Props) => {
   const participantsView = isActive && data.getRoom.meetingId && (
     <div className={classes.participants}>
       <RoomParticipants
-        name={data.getRoom.name}
-        participants={participantsInMeeting(data.getRoom.meetingId)}
+        roomName={data.getRoom.name}
+        meetingId={data.getRoom.meetingId}
         showParticipants={participantsOpen}
         setShowParticipants={setParticipantsOpen}
       />

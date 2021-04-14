@@ -20,11 +20,11 @@ import { OfficeWithBlocks, Block } from "../../../server/express/types/Office";
 import { BlockGrid } from "./BlockGrid";
 import { Session } from "../../../server/express/types/Session";
 import useDeepCompareEffect from "use-deep-compare-effect";
-import { search } from "../search";
+import { blockMatchesSearch, search } from "../search";
 import { sessionIsOver } from "../sessionTimeProps";
-import { gql, useQuery } from "@apollo/client";
-import { BLOCK_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
 import { BlockApollo } from "../../../server/apollo/TypesApollo";
+import { GET_OFFICE_COMPLETE } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -60,26 +60,12 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_OFFICE = gql`
-  query getOffice {
-    getOffice {
-      id
-      version
-      blocks {
-        ...BlockFragmentComplete
-      }
-    }
-  }
-  ${BLOCK_FRAGMENT_COMPLETE}
-`;
-
 /** Component */
 const Dashboard = () => {
-  const history = useHistory();
+  /*const history = useHistory();
   useEffect(() => {
     axios.get("/api/me").catch(() => history.push("/login"));
-  }, [history]);
+  }, [history]);*/
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [meetings, setMeetings] = useState([] as Meeting[]);
@@ -93,9 +79,9 @@ const Dashboard = () => {
     blocks: [],
   });
 
-  const { data, loading, error } = useQuery(GET_OFFICE);
+  const { data, loading, error } = useQuery(GET_OFFICE_COMPLETE);
 
-  useEffect(() => {
+  /*useEffect(() => {
     context.init();
 
     const stateUpdate = context.onNotify();
@@ -127,7 +113,7 @@ const Dashboard = () => {
   useDeepCompareEffect(() => {
     const handler = setInterval(() => setOffice(office), 60000);
     return () => clearInterval(handler);
-  }, [office]);
+  }, [office]);*/
 
   const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
   const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
@@ -189,6 +175,18 @@ const Dashboard = () => {
         </div>
       </Fade>
     );
+  }
+
+  if (!config) {
+    setConfig({
+      viewMode: "grid",
+      theme: "light",
+      sessionStartMinutesOffset: 10,
+      timezone: "Europe/Berlin",
+      title: "Virtual Office",
+      hideEndedSessions: false,
+    });
+    setInitialLoadCompleted(true);
   }
 
   if (!config) {

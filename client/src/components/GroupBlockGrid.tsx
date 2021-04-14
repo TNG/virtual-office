@@ -8,8 +8,8 @@ import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { gql, useQuery } from "@apollo/client";
-import { GROUP_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_GROUP_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -61,16 +61,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_GROUP = gql`
-  query getGroup($id: ID!) {
-    getGroup(id: $id) {
-      ...GroupFragmentShort
-    }
-  }
-  ${GROUP_FRAGMENT_SHORT}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -85,7 +75,7 @@ export const GroupBlockGrid = (props: Props) => {
   const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
   const classes = useStyles(props);
 
-  const { data, loading, error } = useQuery(GET_GROUP, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_GROUP_SHORT, { variables: { id } });
 
   if (!data) return null;
 
@@ -98,8 +88,6 @@ export const GroupBlockGrid = (props: Props) => {
       </div>
     </div>
   );
-
-  //
 
   function renderGroupHeader() {
     const descriptionWithTime = [timeStringForDescription, data.getGroup.description].filter(Boolean).join(" ");

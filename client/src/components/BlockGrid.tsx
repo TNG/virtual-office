@@ -7,8 +7,8 @@ import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { MeetingsIndexed } from "./MeetingsIndexed";
 import { SessionBlockGrid } from "./SessionBlockGrid";
-import { gql, useQuery } from "@apollo/client";
-import { BLOCK_FRAGMENT_SHORT } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -24,16 +24,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_BLOCK = gql`
-  query getBlock($id: ID!) {
-    getBlock(id: $id) {
-      ...BlockFragmentShort
-    }
-  }
-  ${BLOCK_FRAGMENT_SHORT}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -46,7 +36,7 @@ export const BlockGrid = (props: Props) => {
   const { id, clientConfig, meetings } = props;
   const classes = useStyles(props);
 
-  const { data, loading, error } = useQuery(GET_BLOCK, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
   // TODO: how to do
   if (!data) return null;

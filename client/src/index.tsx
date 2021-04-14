@@ -11,24 +11,13 @@ import Dashboard from "./components/Dashboard";
 import "./index.css";
 import theme from "./theme";
 import axios from "axios";
-import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
-
-// Initialize ApolloClient
-const apolloClient: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-  cache: new InMemoryCache({
-    possibleTypes: {
-      Block: ["GroupBlock", "ScheduleBlock", "SessionBlock"],
-      Session: ["GroupSession", "RoomSession"],
-    },
-  }),
-  uri: "http://localhost:9000/graphql",
-  connectToDevTools: true,
-});
+import { ApolloProvider } from "@apollo/client";
+import { getApolloClient } from "./apollo/ApolloClient";
 
 axios.get("/api/clientConfig").then(({ data }) => {
   document.title = data.title ?? "Virtual Office";
   ReactDOM.render(
-    <ApolloProvider client={apolloClient}>
+    <ApolloProvider client={getApolloClient()}>
       <BrowserRouter>
         <ThemeProvider theme={theme(data)}>
           <CssBaseline />

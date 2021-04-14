@@ -16,6 +16,6 @@ module.exports = {
   proxy: {
     "/auth": "http://localhost:9000/auth",
     "/logout": "http://localhost:9000/logout",
-    "/api": { target: "http://localhost:9000", ws: true },
+    //"/api": { target: "http://localhost:9000", ws: true },
   },
 };

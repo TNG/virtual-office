@@ -4,6 +4,24 @@ import { Block, OfficeWithBlocks, Track } from "../../server/express/types/Offic
 import { RoomSession, Session } from "../../server/express/types/Session";
 import { Room } from "../../server/express/types/Room";
 import { cloneDeep } from "lodash";
+import {
+  BlockApollo,
+  GroupApollo,
+  ParticipantApollo,
+  RoomApollo,
+  RoomLinkApollo,
+  SessionApollo,
+  TrackApollo,
+} from "../../server/apollo/TypesApollo";
+import { ApolloClient, ApolloQueryResult, NormalizedCacheObject, useQuery } from "@apollo/client";
+import { getApolloClient } from "./apollo/ApolloClient";
+import {
+  GET_BLOCK_SHORT,
+  GET_GROUP_SHORT,
+  GET_PARTICIPANTS_COMPLETE,
+  GET_ROOM_COMPLETE,
+  GET_SESSION_SHORT,
+} from "./apollo/gqlQueries";
 
 export function participantMatches(search: string, participant: MeetingParticipant): boolean {
   const email = participant.email || "";
@@ -82,4 +100,127 @@ function roomMatches(room: Room, searchText: string, meetings: MeetingsIndexed):
   const someParticipantMatches = participants.some((participant) => participantMatches(searchText, participant));
 
   return nameMatches || someParticipantMatches;
+}
+
+export function blockMatchesSearch(id: string, searchText: string): boolean {
+  const apolloClient: ApolloClient<NormalizedCacheObject> = getApolloClient();
+  console.log(apolloClient);
+  let block: any | undefined;
+  apolloClient.query({ query: GET_BLOCK_SHORT, variables: id }).then((result) => {
+    block = result.data.getBlock;
+    console.log(".then");
+  });
+  if (!block) {
+    console.log("!block");
+    return false;
+  }
+  if (propsMatchSearch(getExistingProps([block.name]), searchText)) {
+    return true;
+  }
+  if (block.type === "GROUP_BLOCK") {
+    return groupMatchesSearch(block.group, searchText);
+  } else if (block.type === "SCHEDULE_BLOCK") {
+    const anyTrackMatches: boolean = block.tracks
+      ? block.tracks?.some((track: TrackApollo) => trackMatchesSearch(track, searchText))
+      : false;
+    const anySessionMatches: boolean = block.sessions.some((sessionId: string) =>
+      sessionMatchesSearch(sessionId, searchText)
+    );
+    return anyTrackMatches || anySessionMatches;
+  } else if (block.type === "SESSION_BLOCK") {
+    const anyPropMatches: boolean = propsMatchSearch([block.title], searchText);
+    const anySessionMatches: boolean = block.sessions.some((sessionId: string) =>
+      sessionMatchesSearch(sessionId, searchText)
+    );
+    return anyPropMatches || anySessionMatches;
+  }
+  return false;
+}
+
+function groupMatchesSearch(id: string, searchText: string): boolean {
+  const apolloClient: ApolloClient<NormalizedCacheObject> = getApolloClient();
+  let group: any | undefined;
+  apolloClient.query({ query: GET_GROUP_SHORT, variables: id }).then((result) => {
+    group = result.data.getGroup;
+  });
+  if (!group) {
+    return false;
+  }
+  if (
+    propsMatchSearch(
+      getExistingProps([
+        group.name,
+        group.description,
+        group.groupJoinConfig?.title,
+        group.groupJoinConfig?.subtitle,
+        group.groupJoinConfig?.description,
+      ]),
+      searchText
+    )
+  ) {
+    return true;
+  }
+  return group.rooms.some((roomId: string) => roomMatchesSearch(roomId, searchText));
+}
+
+function roomMatchesSearch(id: string, searchText: string): boolean {
+  const apolloClient: ApolloClient<NormalizedCacheObject> = getApolloClient();
+  let room: RoomApollo | undefined;
+  apolloClient.query({ query: GET_ROOM_COMPLETE, variables: id }).then((result) => {
+    room = result.data.getRoom;
+  });
+  if (!room) {
+    return false;
+  }
+  // TODO: add roomLink + URL props?
+  if (propsMatchSearch(getExistingProps([room.name, room.description]), searchText)) {
+    return true;
+  }
+  if (room.meetingId) {
+    let participants: ParticipantApollo[] | undefined;
+    apolloClient.query({ query: GET_PARTICIPANTS_COMPLETE, variables: room.meetingId }).then((result) => {
+      participants = result.data.getMeetingParticipants;
+    });
+    if (!participants) {
+      return false;
+    }
+    return participants.some((participant: ParticipantApollo) => participantMatchesSearch(participant, searchText));
+  }
+  return false;
+}
+
+function trackMatchesSearch(track: TrackApollo, searchText: string): boolean {
+  return propsMatchSearch([track.name], searchText);
+}
+
+function sessionMatchesSearch(id: string, searchText: string): boolean {
+  const apolloClient: ApolloClient<NormalizedCacheObject> = getApolloClient();
+  let session: any | undefined;
+  apolloClient.query({ query: GET_SESSION_SHORT, variables: id }).then((result) => {
+    session = result.data.getSession;
+  });
+  if (!session) {
+    return false;
+  }
+  if (propsMatchSearch(getExistingProps([session.trackName]), searchText)) {
+    return true;
+  }
+  if (session.type === "GROUP_SESSION") {
+    return groupMatchesSearch(session.group.id, searchText);
+  } else if (session.type === "ROOM_SESSION") {
+    return roomMatchesSearch(session.room.id, searchText);
+  }
+  return false;
+}
+
+function participantMatchesSearch(participant: ParticipantApollo, searchText: string): boolean {
+  return propsMatchSearch(getExistingProps([participant.username, participant.email]), searchText);
+}
+
+function propsMatchSearch(props: string[], searchText: string): boolean {
+  return props.some((prop: string) => prop.toLowerCase().includes(searchText.toLowerCase()));
+}
+
+function getExistingProps(props: (string | undefined)[]): string[] {
+  return props.filter((prop: string | undefined): prop is string => prop !== undefined);
 }

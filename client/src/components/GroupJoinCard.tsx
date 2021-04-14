@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/styles";
 import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 import { GroupJoinConfig } from "../../../server/express/types/GroupLegacy";
-import { gql, useQuery } from "@apollo/client";
-import { GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -54,16 +54,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
 }));
 
-/** GraphQL Data */
-const GET_GROUP_JOIN_CONFIG = gql`
-  query getGroupJoinConfig($id: ID!) {
-    getGroupJoinConfig(id: $id) {
-      ...GroupJoinConfigFragmentComplete
-    }
-  }
-  ${GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE}
-`;
-
 /** Props */
 interface Props {
   id: string;
@@ -78,7 +68,7 @@ const GroupJoinCard = (props: Props) => {
   const { id, groupName, isActive } = props;
   const classes = useStyles(props);
 
-  const { data, loading, error } = useQuery(GET_GROUP_JOIN_CONFIG, { variables: { id } });
+  const { data, loading, error } = useQuery(GET_GROUP_JOIN_CONFIG_COMPLETE, { variables: { id } });
 
   if (!data) return null;
 

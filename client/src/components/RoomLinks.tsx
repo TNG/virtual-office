@@ -4,8 +4,8 @@ import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import LinkIcon from "@material-ui/icons/Link";
 import { RoomLinkApollo } from "../../../server/apollo/TypesApollo";
-import { gql, useQuery } from "@apollo/client";
-import { ROOM_LINK_FRAGMENT_COMPLETE } from "../apollo/gqlQueries";
+import { useQuery } from "@apollo/client";
+import { GET_ROOM_LINKS_COMPLETE } from "../apollo/gqlQueries";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>({
@@ -47,16 +47,6 @@ const useStyles = makeStyles<Theme, Props>({
   },
 });
 
-/** GraphQL Data */
-const GET_ROOM_LINKS = gql`
-  query getRoomLinks($ids: [ID!]!) {
-    getRoomLinks(ids: $ids) {
-      ...RoomLinkFragmentComplete
-    }
-  }
-  ${ROOM_LINK_FRAGMENT_COMPLETE}
-`;
-
 /** Props */
 interface Props {
   ids: string[] | undefined;
@@ -72,7 +62,7 @@ const RoomLinks = (props: Props) => {
   const classes = useStyles(props);
   const { ids } = props;
 
-  const { data, loading, error } = useQuery<Data>(GET_ROOM_LINKS, { variables: { ids } });
+  const { data, loading, error } = useQuery<Data>(GET_ROOM_LINKS_COMPLETE, { variables: { ids } });
 
   if (!data || data.getRoomLinks.length <= 0) return null;
 
