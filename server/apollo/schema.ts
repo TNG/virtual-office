@@ -109,53 +109,88 @@ export const typeDefs = gql`
     notificationInterval: Float
   }
 
+  type Participant {
+    id: ID!
+    username: String!
+    email: String
+    imageUrl: String
+  }
+
   type Query {
     getOffice: Office
     getBlock(id: ID!): Block
     getGroup(id: ID!): Group
     getGroupJoinConfig(id: ID!): GroupJoinConfig
     getSession(id: ID!): Session
+    getParticipants(id: ID!): [Participant!]!
     getRoom(id: ID!): Room
-    getRoomLinks(ids: [ID!]!): [RoomLink!]
+    getRoomLinks(ids: [ID!]!): [RoomLink!]!
+  }
+
+  type Subscription {
+    participantMutated(meetingId: ID!): ParticipantMutatedPayload!
+  }
+
+  type Mutation {
+    addRoomToGroup(roomConfig: RoomConfig!, groupId: ID!): AddRoomToGroupResponse!
+    addParticipantToMeeting(participant: ParticipantInput!, id: ID!): AddParticipantToMeetingResponse!
+    removeParticipantFromMeeting(participant: ParticipantInput!, id: ID!): AddParticipantToMeetingResponse!
+  }
+
+  interface MutationResponse {
+    success: Boolean!
+    message: String!
+  }
+
+  input RoomConfig {
+    name: String!
+    description: String
+    joinUrl: String
+    titleUrl: String
+    icon: String
+    roomLinks: [RoomLinkConfig!]
+    slackNotification: SlackNotificationConfig
+    meetingId: String
+  }
+
+  input RoomLinkConfig {
+    href: String!
+    text: String!
+    icon: String
+    linkGroup: String
+  }
+
+  input SlackNotificationConfig {
+    channelId: String!
+    notificationInterval: Float
+  }
+
+  type AddRoomToGroupResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    room: Room
+    group: Group
+  }
+
+  type AddParticipantToMeetingResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+  }
+
+  input ParticipantInput {
+    id: ID!
+    username: String!
+    email: String
+    imageUrl: String
+  }
+
+  type ParticipantMutatedPayload {
+    mutationType: ParticipantMutationType!
+    participant: Participant!
+  }
+
+  enum ParticipantMutationType {
+    PARTICIPANT_ADDED
+    PARTICIPANT_REMOVED
   }
 `;
-
-/*
-type Mutation {
-  addRoomToGroup(roomInput: RoomInput!, groupId: ID!): AddRoomToGroupResponse!
-}
-
-input RoomInput {
-  name: String!
-  description: String
-  joinUrl: String
-  titleUrl: String
-  icon: String
-  roomLinks: [RoomLinkInput!]
-  slackNotification: SlackNotificationInput
-  meetingId: String
-}
-
-input RoomLinkInput {
-  href: String!
-  text: String!
-  icon: String
-  linkGroup: String
-}
-
-input SlackNotificationInput {
-  channelId: String!
-  notificationInterval: Float
-}
-
-interface MutationResponse {
-  success: Boolean!
-  message: String!
-}
-
-type AddRoomToGroupResponse implements MutationResponse {
-  success: Boolean!
-  message: String!
-  room: Room
-  group: Group
-}*/

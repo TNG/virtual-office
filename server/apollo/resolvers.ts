@@ -1,6 +1,11 @@
 // @ts-nocheck
 
 import { BlockApollo, SessionApollo } from "./ApolloTypes";
+import { GroupApollo, RoomApollo } from "./TypesApollo";
+
+import { PubSub, withFilter } from "apollo-server-express";
+
+const pubsub = new PubSub();
 
 export const resolvers = {
   Query: {
@@ -25,22 +30,81 @@ export const resolvers = {
     getRoomLinks: (_, { ids }, { dataSources }) => {
       return dataSources.officeStore.getRoomLinks(ids);
     },
+    getParticipants: (_, { id }, { dataSources }) => {
+      return dataSources.participantsStore.getParticipantsInMeeting(id);
+    },
   },
-  /*Mutation: {
-    addRoomToGroup: (_, { roomInput, groupName }, { dataSources }) => {
-      const groupFromOffice = dataSources.officeStore.addRoomToGroup(roomInput, groupName);
-      const success: boolean = !!groupFromOffice;
+  Subscription: {
+    participantMutated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
+        (payload, variables) => payload.meetingId === variables.meetingId
+      ),
+    },
+    /*participantAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(["PARTICIPANT_ADDED"]),
+        (payload, variables) => payload.meetingId === variables.id
+      ),
+    },
+    participantRemoved: {
+      subscribe: () => pubsub.asyncIterator(["PARTICIPANT_REMOVED"]),
+    },*/
+  },
+  Mutation: {
+    addRoomToGroup: (_, { roomConfig, groupId }, { dataSources }) => {
+      const {
+        roomFromOfficeStore,
+        groupFromOfficeStore,
+      }: {
+        roomFromOfficeStore: RoomApollo | undefined;
+        groupFromOfficeStore: GroupApollo | undefined;
+      } = dataSources.officeStore.addRoomToGroup(roomConfig, groupId);
+      const success: boolean =
+        !!roomFromOfficeStore &&
+        !!groupFromOfficeStore &&
+        groupFromOfficeStore?.rooms.some((room: RoomApollo) => room.id === roomFromOfficeStore.id);
       const message: string = success
-        ? `Added room \"${roomInput.name}\" to group \"${groupFromOffice.name}\".`
-        : `Error! Group \"${groupName}\" does not exist.`;
+        ? `Added room "${roomFromOfficeStore.name}" (ID=${roomFromOfficeStore.id}) to group "${groupFromOfficeStore.name}" (ID=${roomFromOfficeStore.id}).`
+        : !groupFromOfficeStore
+        ? `Error! Group with ID=${groupId} does not exist.`
+        : !roomFromOfficeStore
+        ? `Error! Room provided is not a valid room type.`
+        : `Undefined Error!`;
       return {
         success: success,
         message: message,
-        room: roomInput,
-        group: groupFromOffice,
+        room: roomFromOfficeStore,
+        group: groupFromOfficeStore,
       };
     },
-  },*/
+    addParticipantToMeeting: (_, { participant, id }, { dataSources }) => {
+      pubsub.publish("PARTICIPANT_ADDED", {
+        participantMutated: { mutationType: "PARTICIPANT_ADDED", participant: participant },
+        meetingId: id,
+      });
+      dataSources.participantsStore.addParticipantToMeeting(participant, id);
+      const success: boolean = true;
+      return {
+        success: success,
+        message: success ? "Successfully added participant" : "ERROR!",
+      };
+    },
+    removeParticipantFromMeeting: (_, { participant, id }, { dataSources }) => {
+      pubsub.publish("PARTICIPANT_REMOVED", {
+        participantMutated: {
+          mutationType: "PARTICIPANT_REMOVED",
+          participant: participant,
+        },
+        meetingId: id,
+      });
+      const success: boolean = dataSources.participantsStore.removeParticipantFromMeeting(participant, id);
+      return {
+        success: success,
+        message: success ? "Successfully removed participant" : "ERROR!",
+      };
+    },
+  },
   Block: {
     __resolveType(block: BlockApollo) {
       if (block.type === "GROUP_BLOCK") {
@@ -63,6 +127,11 @@ export const resolvers = {
       } else {
         return null;
       }
+    },
+  },
+  MutationResponse: {
+    __resolveType(response: MutationResponse) {
+      return "MutationResponse";
     },
   },
 };

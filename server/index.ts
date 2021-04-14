@@ -10,6 +10,7 @@ import { WebSocketController } from "./express/WebSocketController";
 import { SlackBotService } from "./services/SlackBotService";
 import { ZoomWebhookService } from "./services/ZoomWebhookService";
 import { ApolloServerService } from "./apollo/ApolloServerService";
+import { HttpServerService } from "./apollo/HttpServerService";
 
 const result = dotenv.config();
 if (result.error) {
@@ -32,10 +33,13 @@ if (result.error) {
     Container.get(ZoomWebhookService);
   }
 
+  const httpServer = Container.get(HttpServerService);
+  const httpServerInstance = await httpServer.create(appInstance);
   const apolloServer = Container.get(ApolloServerService);
-  const apolloServerInstance = await apolloServer.init(appInstance);
-  const expressServer = appInstance.listen(config.port, () => {
+  const apolloServerInstance = await apolloServer.init(appInstance, httpServerInstance);
+  const expressServer = httpServerInstance.listen(config.port, () => {
     logger.info(`Server listening on http://localhost:${config.port}${apolloServerInstance.graphqlPath}`);
+    logger.info(`Subscriptions ready at ws://localhost:${config.port}${apolloServerInstance.subscriptionsPath}`);
   });
   Container.get(WebSocketController).init(expressServer);
 })();

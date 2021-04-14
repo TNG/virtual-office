@@ -11,6 +11,7 @@ export const RoomLinkApolloConfigCodec = t.intersection([
   }),
 ]);
 export type RoomLinkApolloConfig = t.TypeOf<typeof RoomLinkApolloConfigCodec>;
+export type RoomLinkApolloDb = RoomLinkApolloConfig & { id: string };
 export type RoomLinkApollo = RoomLinkApolloConfig & { id: string };
 
 export const SlackNotificationApolloConfigCodec = t.intersection([
@@ -22,6 +23,7 @@ export const SlackNotificationApolloConfigCodec = t.intersection([
   }),
 ]);
 export type SlackNotificationApolloConfig = t.TypeOf<typeof SlackNotificationApolloConfigCodec>;
+export type SlackNotificationApolloDb = SlackNotificationApolloConfig & { id: string };
 export type SlackNotificationApollo = SlackNotificationApolloConfig & { id: string };
 
 const RoomApolloConfigCodec = t.intersection([
@@ -41,8 +43,8 @@ const RoomApolloConfigCodec = t.intersection([
 export type RoomApolloConfig = t.TypeOf<typeof RoomApolloConfigCodec>;
 export type RoomApolloDb = Omit<RoomApolloConfig, "roomLinks" | "slackNotification"> & {
   id: string;
-  roomLinks?: RoomLinkApollo[];
-  slackNotification?: SlackNotificationApollo;
+  roomLinks?: RoomLinkApolloDb[];
+  slackNotification?: SlackNotificationApolloDb;
 };
 export type RoomApollo = Omit<RoomApolloConfig, "roomLinks" | "slackNotification"> & {
   id: string;
@@ -61,6 +63,7 @@ export const GroupJoinConfigApolloConfigCodec = t.intersection([
   }),
 ]);
 export type GroupJoinConfigApolloConfig = t.TypeOf<typeof GroupJoinConfigApolloConfigCodec>;
+export type GroupJoinConfigApolloDb = GroupJoinConfigApolloConfig & { id: string };
 export type GroupJoinConfigApollo = GroupJoinConfigApolloConfig & { id: string };
 
 export const GroupApolloConfigCodec = t.intersection([
@@ -203,3 +206,15 @@ const OfficeApolloConfigCodec = t.type({
 export type OfficeApolloConfig = t.TypeOf<typeof OfficeApolloConfigCodec>;
 export type OfficeApolloDb = Omit<OfficeApolloConfig, "blocks"> & { id: string; blocks: string[] };
 export type OfficeApollo = Omit<OfficeApolloConfig, "blocks"> & { id: string; blocks: BlockApollo[] };
+
+const ParticipantApolloCodec = t.intersection([
+  t.type({
+    id: t.string,
+    username: t.string,
+  }),
+  t.partial({
+    email: t.string,
+    imageUrl: t.string,
+  }),
+]);
+export type ParticipantApollo = t.TypeOf<typeof ParticipantApolloCodec>;
