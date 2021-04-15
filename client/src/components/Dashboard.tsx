@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 
 import { MeetingEvent } from "../../../server/express/types/MeetingEvent";
-import { SocketContext } from "../socket/Context";
+import { SocketContext, SearchProvider } from "../socket/Context";
 
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
@@ -68,18 +68,36 @@ const Dashboard = () => {
   }, [history]);*/
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
-  const [meetings, setMeetings] = useState([] as Meeting[]);
+  //const [meetings, setMeetings] = useState([] as Meeting[]);
   const [searchText, setSearchText] = useState("");
   const [config, setConfig] = useState<ClientConfig | undefined>();
 
-  const context = useContext(SocketContext);
+  /*const context = useContext(SocketContext);
 
   const [office, setOffice] = useState<OfficeWithBlocks>({
     version: "2",
     blocks: [],
-  });
+  });*/
 
   const { data, loading, error } = useQuery(GET_OFFICE_COMPLETE);
+
+  const [blockIdsToRender, setBlockIdsToRender] = useState<string[]>([]);
+  useEffect(() => {
+    if (data) {
+      (async function setIds() {
+        const blocksMatch: boolean[] = await Promise.all(
+          data.getOffice.blocks.map((block: BlockApollo) => blockMatchesSearch(block.id, searchText))
+        );
+        const blockIdsMatching: string[] = [];
+        blocksMatch.forEach((matches, index) => {
+          if (matches) {
+            blockIdsMatching.push(data.getOffice.blocks[index].id);
+          }
+        });
+        setBlockIdsToRender(blockIdsMatching);
+      })();
+    }
+  }, [searchText, data]);
 
   /*useEffect(() => {
     context.init();
@@ -115,8 +133,7 @@ const Dashboard = () => {
     return () => clearInterval(handler);
   }, [office]);*/
 
-  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
-  const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
+  //const meetingsIndexed = keyBy(meetings, (meeting) => meeting.meetingId);
 
   if (config?.faviconUrl) {
     const favicon = document.getElementById("favicon") as HTMLLinkElement;
@@ -126,6 +143,8 @@ const Dashboard = () => {
       appleTouchIcon.href = config.faviconUrl;
     }
   }
+
+  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
 
   function renderOffice(config: ClientConfig) {
     /*if (config.hideEndedSessions) {
@@ -169,8 +188,8 @@ const Dashboard = () => {
     return (
       <Fade in={initialLoadCompleted}>
         <div>
-          {data.getOffice.blocks.map((block: BlockApollo) => {
-            return <BlockGrid key={block.id} id={block.id} clientConfig={config} meetings={meetingsIndexed} />;
+          {blockIdsToRender.map((id: string) => {
+            return <BlockGrid key={id} id={id} clientConfig={config} />;
           })}
         </div>
       </Fade>
@@ -204,9 +223,11 @@ const Dashboard = () => {
   return (
     <div className={classes.background}>
       <div className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
-        <div className={classes.scroller}>{content}</div>
-        {initialLoadCompleted ? <Footer /> : ""}
+        <SearchProvider value={searchText}>
+          <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
+          <div className={classes.scroller}>{content}</div>
+          {initialLoadCompleted ? <Footer /> : ""}
+        </SearchProvider>
       </div>
     </div>
   );

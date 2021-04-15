@@ -28,12 +28,11 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 interface Props {
   id: string;
   clientConfig: ClientConfig;
-  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const BlockGrid = (props: Props) => {
-  const { id, clientConfig, meetings } = props;
+  const { id, clientConfig } = props;
   const classes = useStyles(props);
 
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
@@ -59,19 +58,18 @@ export const BlockGrid = (props: Props) => {
         <GroupBlockGrid
           id={data.getBlock.group.id}
           isActive={true}
+          isInsideScheduleBlock={false}
           isListMode={clientConfig.viewMode === "list"}
-          meetings={meetings}
         />
       );
     } else if (data.getBlock.type === "SCHEDULE_BLOCK") {
-      return <ScheduleBlockGrid id={data.getBlock.id} clientConfig={clientConfig} meetings={meetings} />;
+      return <ScheduleBlockGrid id={data.getBlock.id} clientConfig={clientConfig} />;
     } else if (data.getBlock.type === "SESSION_BLOCK") {
       return (
         <SessionBlockGrid
           id={data.getBlock.id}
           isListMode={clientConfig.viewMode === "list"}
           clientConfig={clientConfig}
-          meetings={meetings}
         />
       );
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
@@ -14,6 +14,8 @@ import { sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
+import { SearchContext } from "../socket/Context";
+import { roomMatchesSearch, sessionMatchesSearch } from "../search";
 
 /** Styles */
 interface StyleProps {
@@ -109,13 +111,31 @@ const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
 interface Props {
   id: string;
   clientConfig: ClientConfig;
-  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const { id, clientConfig, meetings } = props;
+  const { id, clientConfig } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
+
+  const searchText = useContext(SearchContext);
+  const [sessionsToRender, setSessionsToRender] = useState<any[]>([]);
+  useEffect(() => {
+    if (data) {
+      (async function setIds() {
+        const sessionsMatch: boolean[] = await Promise.all(
+          data.getBlock.sessions.map((session: any) => sessionMatchesSearch(session.id, searchText))
+        );
+        const sessionsMatching: any[] = [];
+        sessionsMatch.forEach((matches, index) => {
+          if (matches) {
+            sessionsMatching.push(data.getBlock.sessions[index]);
+          }
+        });
+        setSessionsToRender(sessionsMatching);
+      })();
+    }
+  }, [searchText, data]);
 
   if (!data) return null;
 
@@ -162,7 +182,7 @@ export const ScheduleBlockGrid = (props: Props) => {
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
       if (session.type === "ROOM_SESSION") {
-        const participants = participantsInMeeting(session.room.meetingId);
+        // const participants = participantsInMeeting(session.room.meetingId);
 
         return renderGridCard(
           session.id,
@@ -176,7 +196,6 @@ export const ScheduleBlockGrid = (props: Props) => {
             isActive={isActive}
             isListMode={clientConfig.viewMode === "list"}
             fillHeight={true}
-            meetings={meetings}
           />
         );
       } else if (session.type === "GROUP_SESSION") {
@@ -190,20 +209,20 @@ export const ScheduleBlockGrid = (props: Props) => {
             id={session.group.id}
             timeStringForDescription={timeString}
             isActive={isActive}
+            isInsideScheduleBlock={true}
             isListMode={clientConfig.viewMode === "list"}
-            meetings={meetings}
           />
         );
       }
     });
   }
 
-  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
     if (meetingId && meetings[meetingId]) {
       return meetings[meetingId].participants;
     }
     return [];
-  }
+  }*/
 
   function renderGridCard(
     key: string,

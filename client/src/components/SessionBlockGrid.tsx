@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
@@ -10,6 +10,8 @@ import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
+import { SearchContext } from "../socket/Context";
+import { sessionMatchesSearch } from "../search";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -65,14 +67,32 @@ interface Props {
   id: string;
   isListMode: boolean;
   clientConfig: ClientConfig;
-  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
-  const { id, isListMode, meetings, clientConfig } = props;
+  const { id, isListMode, clientConfig } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
   const classes = useStyles(props);
+
+  const searchText = useContext(SearchContext);
+  const [sessionsToRender, setSessionsToRender] = useState<any[]>([]);
+  useEffect(() => {
+    if (data) {
+      (async function setIds() {
+        const sessionsMatch: boolean[] = await Promise.all(
+          data.getBlock.sessions.map((session: any) => sessionMatchesSearch(session.id, searchText))
+        );
+        const sessionsMatching: any[] = [];
+        sessionsMatch.forEach((matches, index) => {
+          if (matches) {
+            sessionsMatching.push(data.getBlock.sessions[index]);
+          }
+        });
+        setSessionsToRender(sessionsMatching);
+      })();
+    }
+  }, [searchText, data]);
 
   return (
     <div className={classes.root}>
@@ -103,13 +123,13 @@ export const SessionBlockGrid = (props: Props) => {
   }
 
   function renderRoomCards() {
-    return data.getBlock.sessions.map((session: any) => {
+    return sessionsToRender.map((session: any) => {
       const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
       const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
       const timezone = browserTimeZone();
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
-      const participants = participantsInMeeting(session.room.meetingId);
+      // const participants = participantsInMeeting(session.room.meetingId);
 
       return renderGridCard(
         session.id,
@@ -119,18 +139,17 @@ export const SessionBlockGrid = (props: Props) => {
           isActive={sessionIsActive(session, clientConfig)}
           isListMode={isListMode}
           fillHeight={true}
-          meetings={meetings}
         />
       );
     });
   }
 
-  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
     if (meetingId && meetings[meetingId]) {
       return meetings[meetingId].participants;
     }
     return [];
-  }
+  }*/
 
   function renderGridCard(key: string, card: any) {
     return (

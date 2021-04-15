@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { Room } from "../../../server/express/types/Room";
@@ -10,6 +10,9 @@ import { MeetingsIndexed } from "./MeetingsIndexed";
 import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { useQuery } from "@apollo/client";
 import { GET_GROUP_SHORT } from "../apollo/gqlQueries";
+import { SearchContext } from "../socket/Context";
+import { BlockApollo } from "../../../server/apollo/TypesApollo";
+import { blockMatchesSearch, roomMatchesSearch } from "../search";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -66,16 +69,35 @@ interface Props {
   id: string;
   timeStringForDescription?: string;
   isActive: boolean;
+  isInsideScheduleBlock: boolean;
   isListMode: boolean;
-  meetings: MeetingsIndexed;
 }
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
+  const { id, timeStringForDescription, isActive, isInsideScheduleBlock, isListMode } = props;
   const classes = useStyles(props);
 
   const { data, loading, error } = useQuery(GET_GROUP_SHORT, { variables: { id } });
+
+  const searchText = useContext(SearchContext);
+  const [roomIdsToRender, setRoomIdsToRender] = useState<string[]>([]);
+  useEffect(() => {
+    if (data) {
+      (async function setIds() {
+        const roomsMatch: boolean[] = await Promise.all(
+          data.getGroup.rooms.map((room: any) => roomMatchesSearch(room.id, searchText))
+        );
+        const roomIdsMatching: string[] = [];
+        roomsMatch.forEach((matches, index) => {
+          if (matches || isInsideScheduleBlock) {
+            roomIdsMatching.push(data.getGroup.rooms[index].id);
+          }
+        });
+        setRoomIdsToRender(roomIdsMatching);
+      })();
+    }
+  }, [searchText, data]);
 
   if (!data) return null;
 
@@ -139,11 +161,8 @@ export const GroupBlockGrid = (props: Props) => {
         <RoomCard roomName={roomName} isActive={isActive} isListMode={isListMode} fillHeight={true} meetings={meetings} />
       );
     });*/
-    return data.getGroup.rooms.map((room: { id: string }) => {
-      return renderGridCard(
-        room.id,
-        <RoomCard id={room.id} isActive={isActive} isListMode={isListMode} fillHeight={true} meetings={meetings} />
-      );
+    return roomIdsToRender.map((id: string) => {
+      return renderGridCard(id, <RoomCard id={id} isActive={isActive} isListMode={isListMode} fillHeight={true} />);
     });
   }
 

@@ -103,13 +103,12 @@ interface Props {
   isActive: boolean;
   isListMode: boolean;
   fillHeight?: boolean;
-  meetings: MeetingsIndexed;
 }
 
 /** Component */
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const { id, timeStringForDescription, isActive, isListMode, meetings } = props;
+  const { id, timeStringForDescription, isActive, isListMode } = props;
 
   const { data, loading, error } = useQuery(GET_ROOM_SHORT, { variables: { id } });
 
@@ -128,12 +127,12 @@ const RoomCard = (props: Props) => {
 
   if (!data) return null;
 
-  function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
+  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
     if (meetingId && meetings[meetingId]) {
       return meetings[meetingId].participants;
     }
     return [];
-  }
+  }*/
 
   function renderJoinUrl() {
     return (
