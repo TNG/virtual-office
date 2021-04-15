@@ -6,7 +6,7 @@ import { Container } from "typedi";
 import { logger } from "./log";
 import { Config } from "./Config";
 import { ExpressApp } from "./express/ExpressApp";
-import { WebSocketController } from "./express/WebSocketController";
+//import { WebSocketController } from "./express/WebSocketController";
 import { SlackBotService } from "./services/SlackBotService";
 import { ZoomWebhookService } from "./services/ZoomWebhookService";
 import { ApolloServerService } from "./apollo/ApolloServerService";
@@ -37,9 +37,9 @@ if (result.error) {
   const httpServerInstance = await httpServer.create(appInstance);
   const apolloServer = Container.get(ApolloServerService);
   const apolloServerInstance = await apolloServer.init(appInstance, httpServerInstance);
-  const expressServer = httpServerInstance.listen(config.port, () => {
+  httpServerInstance.listen(config.port, () => {
     logger.info(`Server listening on http://localhost:${config.port}${apolloServerInstance.graphqlPath}`);
     logger.info(`Subscriptions ready at ws://localhost:${config.port}${apolloServerInstance.subscriptionsPath}`);
   });
-  Container.get(WebSocketController).init(expressServer);
+  //Container.get(WebSocketController).init(expressServer);
 })();

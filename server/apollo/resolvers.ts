@@ -3,9 +3,8 @@
 import { BlockApollo, SessionApollo } from "./ApolloTypes";
 import { GroupApollo, RoomApollo } from "./TypesApollo";
 
-import { PubSub, withFilter } from "apollo-server-express";
-
-const pubsub = new PubSub();
+import { withFilter } from "apollo-server-express";
+import { pubsub } from "./ApolloPubSubService";
 
 export const resolvers = {
   Query: {
