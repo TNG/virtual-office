@@ -2,9 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
-import { MeetingsIndexed } from "./MeetingsIndexed";
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { RoomSession } from "../../../server/express/types/Session";
 import { sessionIsActive } from "../sessionTimeProps";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
@@ -129,8 +126,6 @@ export const SessionBlockGrid = (props: Props) => {
       const timezone = browserTimeZone();
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
-      // const participants = participantsInMeeting(session.room.meetingId);
-
       return renderGridCard(
         session.id,
         <RoomCard
@@ -143,13 +138,6 @@ export const SessionBlockGrid = (props: Props) => {
       );
     });
   }
-
-  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
-    if (meetingId && meetings[meetingId]) {
-      return meetings[meetingId].participants;
-    }
-    return [];
-  }*/
 
   function renderGridCard(key: string, card: any) {
     return (

@@ -6,9 +6,6 @@ import RoomIcon from "@material-ui/icons/People";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
-import { Room } from "../../../server/express/types/Room";
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
-import { MeetingsIndexed } from "./MeetingsIndexed";
 import { useQuery } from "@apollo/client";
 import { GET_ROOM_SHORT } from "../apollo/gqlQueries";
 
@@ -126,13 +123,6 @@ const RoomCard = (props: Props) => {
   }, [descriptionRef]);
 
   if (!data) return null;
-
-  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
-    if (meetingId && meetings[meetingId]) {
-      return meetings[meetingId].participants;
-    }
-    return [];
-  }*/
 
   function renderJoinUrl() {
     return (

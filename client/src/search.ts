@@ -173,7 +173,6 @@ export async function roomMatchesSearch(id: string, searchText: string): Promise
   const response = await apolloClient.query({ query: GET_ROOM_COMPLETE, variables: { id: id } });
   const room = response.data.getRoom;
 
-  // TODO: add roomLink + URL props?
   if (propsMatchSearch(getExistingProps([room.name, room.description]), searchText)) {
     console.log("room " + room.name + " matches due to props");
     return true;

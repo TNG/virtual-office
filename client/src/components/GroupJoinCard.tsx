@@ -2,9 +2,7 @@ import React from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { Group } from "../../../server/express/types/Group";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
-import { GroupJoinConfig } from "../../../server/express/types/GroupLegacy";
 import { useQuery } from "@apollo/client";
 import { GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 

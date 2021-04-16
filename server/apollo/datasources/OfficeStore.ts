@@ -327,7 +327,6 @@ export class OfficeStore extends DataSource {
     return roomLinks;
   }
 
-  // TODO: add type-checking e.g. for room?
   public addRoomToGroup(
     roomApolloConfig: RoomApolloConfig,
     groupId: string

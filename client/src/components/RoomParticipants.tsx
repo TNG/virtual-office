@@ -4,14 +4,12 @@ import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
 import { debounce, sortBy } from "lodash";
 
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import ParticipantAvatar from "./ParticipantAvatar";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatches } from "../search";
 import { useQuery } from "@apollo/client";
 import { GET_PARTICIPANTS_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
-import axios from "axios";
 import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
 
 const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";

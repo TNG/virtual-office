@@ -6,7 +6,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 
 import * as serviceWorker from "./serviceWorker";
 import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
+import { Dashboard } from "./components/Dashboard";
 
 import "./index.css";
 import theme from "./theme";

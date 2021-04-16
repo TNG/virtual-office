@@ -37,7 +37,6 @@ export const BlockGrid = (props: Props) => {
 
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
-  // TODO: how to do
   if (!data) return null;
 
   return (

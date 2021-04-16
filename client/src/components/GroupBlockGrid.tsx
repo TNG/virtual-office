@@ -12,7 +12,7 @@ import { useQuery } from "@apollo/client";
 import { GET_GROUP_SHORT } from "../apollo/gqlQueries";
 import { SearchContext } from "../socket/Context";
 import { BlockApollo } from "../../../server/apollo/TypesApollo";
-import { blockMatchesSearch, roomMatchesSearch } from "../search";
+import { roomMatchesSearch } from "../search";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -166,7 +166,6 @@ export const GroupBlockGrid = (props: Props) => {
     });
   }
 
-  // TODO: to implement
   /*function selectShownRooms() {
     if (!data.group.groupJoinConfig) {
       return data.group.roomNames;

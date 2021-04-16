@@ -4,18 +4,15 @@ import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { DateTime } from "luxon";
-import { Session } from "../../../server/express/types/Session";
 import { Track } from "../../../server/express/types/Office";
 import RoomCard from "./RoomCard";
 import { GroupBlockGrid } from "./GroupBlockGrid";
-import { MeetingsIndexed } from "./MeetingsIndexed";
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 import { sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
 import { SearchContext } from "../socket/Context";
-import { roomMatchesSearch, sessionMatchesSearch } from "../search";
+import { sessionMatchesSearch } from "../search";
 
 /** Styles */
 interface StyleProps {
@@ -182,8 +179,6 @@ export const ScheduleBlockGrid = (props: Props) => {
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
       if (session.type === "ROOM_SESSION") {
-        // const participants = participantsInMeeting(session.room.meetingId);
-
         return renderGridCard(
           session.id,
           classes.card,
@@ -216,13 +211,6 @@ export const ScheduleBlockGrid = (props: Props) => {
       }
     });
   }
-
-  /*function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
-    if (meetingId && meetings[meetingId]) {
-      return meetings[meetingId].participants;
-    }
-    return [];
-  }*/
 
   function renderGridCard(
     key: string,
