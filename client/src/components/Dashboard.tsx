@@ -1,9 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
-
-import { SearchProvider } from "../socket/Context";
 
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
@@ -13,10 +9,10 @@ import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import { Footer } from "./Footer";
 import { BlockGrid } from "./BlockGrid";
-import { blockMatchesSearch } from "../search";
+import { applySearchToOffice } from "../search";
 import { useQuery } from "@apollo/client";
-import { BlockApollo } from "../../../server/apollo/TypesApollo";
-import { GET_OFFICE_COMPLETE } from "../apollo/gqlQueries";
+import { GET_MEETINGS_COMPLETE, GET_OFFICE_COMPLETE, GET_OFFICE_SHORT } from "../apollo/gqlQueries";
+import { getApolloClient } from "../apollo/ApolloClient";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -59,52 +55,40 @@ export const Dashboard = () => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);*/
 
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
+  const dummyConfig: ClientConfig = {
+    viewMode: "grid",
+    theme: "light",
+    sessionStartMinutesOffset: 10,
+    timezone: "Europe/Berlin",
+    title: "Virtual Office Apollo",
+    hideEndedSessions: false,
+  };
+
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [config, setConfig] = useState<ClientConfig | undefined>();
+  const [config, setConfig] = useState<ClientConfig | undefined>(dummyConfig);
 
-  const { data, loading, error } = useQuery(GET_OFFICE_COMPLETE);
+  const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
+  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
+  const { data: blocksData, loading: blocksLoading, error: blocksError } = useQuery(GET_OFFICE_SHORT);
 
-  const [blockIdsToRender, setBlockIdsToRender] = useState<string[]>([]);
   useEffect(() => {
-    if (data) {
-      (async function setIds() {
-        const blocksMatch: boolean[] = await Promise.all(
-          data.getOffice.blocks.map((block: BlockApollo) => blockMatchesSearch(block.id, searchText))
-        );
-        const blockIdsMatching: string[] = [];
-        blocksMatch.forEach((matches, index) => {
-          if (matches) {
-            blockIdsMatching.push(data.getOffice.blocks[index].id);
-          }
-        });
-        setBlockIdsToRender(blockIdsMatching);
-      })();
+    console.log("NEW SEARCH: " + searchText);
+    if (officeData && meetingsData) {
+      applySearchToOffice(officeData.getOffice, meetingsData.getMeetings, searchText, getApolloClient());
     }
-  }, [searchText, data]);
+  }, [searchText, officeData, meetingsData]);
 
   function renderOffice(config: ClientConfig) {
     return (
       <Fade in={initialLoadCompleted}>
         <div>
-          {blockIdsToRender.map((id: string) => {
-            return <BlockGrid key={id} id={id} clientConfig={config} />;
+          {blocksData.getOffice.blocks.map((block: any) => {
+            return block.isInSearch && <BlockGrid key={block.id} id={block.id} clientConfig={config} />;
           })}
         </div>
       </Fade>
     );
-  }
-
-  if (!config) {
-    setConfig({
-      viewMode: "grid",
-      theme: "light",
-      sessionStartMinutesOffset: 10,
-      timezone: "Europe/Berlin",
-      title: "Virtual Office",
-      hideEndedSessions: false,
-    });
-    setInitialLoadCompleted(true);
   }
 
   if (config?.faviconUrl) {
@@ -122,9 +106,14 @@ export const Dashboard = () => {
     return null;
   }
 
-  if (loading) return <p>loading</p>;
-  if (error) return <p>ERROR: {error.message}</p>;
-  if (!data) return <p>Not found</p>;
+  if (officeLoading || meetingsLoading) return <p>loading</p>;
+  if (officeError) return <p>ERROR: {officeError.message}</p>;
+  if (meetingsError) return <p>ERROR: {meetingsError.message}</p>;
+  if (!officeData || !meetingsData || !blocksData) {
+    return <p>Not found</p>;
+  } else {
+    //setInitialLoadCompleted(true);
+  }
 
   const content = initialLoadCompleted ? (
     renderOffice(config)
@@ -137,11 +126,9 @@ export const Dashboard = () => {
   return (
     <div className={classes.background}>
       <div className={classes.content}>
-        <SearchProvider value={searchText}>
-          <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
-          <div className={classes.scroller}>{content}</div>
-          {initialLoadCompleted ? <Footer /> : ""}
-        </SearchProvider>
+        <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
+        <div className={classes.scroller}>{content}</div>
+        {initialLoadCompleted ? <Footer /> : ""}
       </div>
     </div>
   );

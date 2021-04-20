@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
@@ -7,8 +7,6 @@ import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
-import { SearchContext } from "../socket/Context";
-import { sessionMatchesSearch } from "../search";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -72,25 +70,6 @@ export const SessionBlockGrid = (props: Props) => {
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
   const classes = useStyles(props);
 
-  const searchText = useContext(SearchContext);
-  const [sessionsToRender, setSessionsToRender] = useState<any[]>([]);
-  useEffect(() => {
-    if (data) {
-      (async function setIds() {
-        const sessionsMatch: boolean[] = await Promise.all(
-          data.getBlock.sessions.map((session: any) => sessionMatchesSearch(session.id, searchText))
-        );
-        const sessionsMatching: any[] = [];
-        sessionsMatch.forEach((matches, index) => {
-          if (matches) {
-            sessionsMatching.push(data.getBlock.sessions[index]);
-          }
-        });
-        setSessionsToRender(sessionsMatching);
-      })();
-    }
-  }, [searchText, data]);
-
   return (
     <div className={classes.root}>
       {renderGroupHeader()}
@@ -120,21 +99,24 @@ export const SessionBlockGrid = (props: Props) => {
   }
 
   function renderRoomCards() {
-    return sessionsToRender.map((session: any) => {
+    return data.getBlock.sessions.map((session: any) => {
       const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
       const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
       const timezone = browserTimeZone();
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
-      return renderGridCard(
-        session.id,
-        <RoomCard
-          id={session.room.id}
-          timeStringForDescription={timeString}
-          isActive={sessionIsActive(session, clientConfig)}
-          isListMode={isListMode}
-          fillHeight={true}
-        />
+      return (
+        session.isInSearch &&
+        renderGridCard(
+          session.id,
+          <RoomCard
+            id={session.room.id}
+            timeStringForDescription={timeString}
+            isActive={sessionIsActive(session, clientConfig)}
+            isListMode={isListMode}
+            fillHeight={true}
+          />
+        )
       );
     });
   }

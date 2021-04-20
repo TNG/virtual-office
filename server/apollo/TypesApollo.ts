@@ -218,3 +218,9 @@ const ParticipantApolloCodec = t.intersection([
   }),
 ]);
 export type ParticipantApollo = t.TypeOf<typeof ParticipantApolloCodec>;
+
+const MeetingApolloCodec = t.type({
+  id: t.string,
+  participants: t.array(ParticipantApolloCodec),
+});
+export type MeetingApollo = t.TypeOf<typeof MeetingApolloCodec>;

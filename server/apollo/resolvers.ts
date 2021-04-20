@@ -29,7 +29,10 @@ export const resolvers = {
     getRoomLinks: (_, { ids }, { dataSources }) => {
       return dataSources.officeStore.getRoomLinks(ids);
     },
-    getParticipants: (_, { id }, { dataSources }) => {
+    getMeetings: (_, __, { dataSources }) => {
+      return dataSources.participantsStore.getMeetings();
+    },
+    getParticipantsInMeeting: (_, { id }, { dataSources }) => {
       return dataSources.participantsStore.getParticipantsInMeeting(id);
     },
   },

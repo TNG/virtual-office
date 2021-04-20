@@ -1,46 +1,50 @@
 import { Service } from "typedi";
 import { DataSource } from "apollo-datasource";
-import { ParticipantApollo } from "../TypesApollo";
+import { MeetingApollo, ParticipantApollo } from "../TypesApollo";
 
 @Service()
 export class ParticipantsStore extends DataSource {
-  private participantsPerMeeting: {
-    [meetingId: string]: ParticipantApollo[];
-  } = {};
+  private meetings: MeetingApollo[] = [];
 
   constructor() {
     super();
-    this.participantsPerMeeting["91905545648"] = [
-      {
-        id: "user1",
-        username: "Sebastian Zett",
-      },
-    ];
+    this.meetings.push({
+      id: "91905545648",
+      participants: [{ id: "zettsebastian", username: "Sebastian Zett" }],
+    });
   }
 
   initialize() {
     //this.context = config.context;
   }
 
+  public getMeetings(): MeetingApollo[] {
+    return this.meetings;
+  }
+
+  public getOrCreateMeeting(id: string): MeetingApollo {
+    let meeting: MeetingApollo | undefined = this.meetings.find((meeting: MeetingApollo) => meeting.id === id);
+    if (!meeting) {
+      meeting = {
+        id: id,
+        participants: [],
+      };
+      this.meetings.push(meeting);
+    }
+    return meeting;
+  }
+
   public getParticipantsInMeeting(id: string): ParticipantApollo[] {
-    const participants: ParticipantApollo[] | undefined = this.participantsPerMeeting[id];
-    return participants ? participants : [];
+    return this.getOrCreateMeeting(id).participants;
   }
 
   public addParticipantToMeeting(participant: ParticipantApollo, id: string) {
-    if (!this.participantsPerMeeting[id]) {
-      this.participantsPerMeeting[id] = [];
-    }
-    this.participantsPerMeeting[id].push(participant);
+    this.getOrCreateMeeting(id).participants.push(participant);
   }
 
-  public removeParticipantFromMeeting(participant: ParticipantApollo, id: string): boolean {
-    if (this.participantsPerMeeting[id]) {
-      this.participantsPerMeeting[id] = this.participantsPerMeeting[id].filter(
-        (existingPart: ParticipantApollo) => existingPart.id !== participant.id
-      );
-      return true;
-    }
-    return false;
+  public removeParticipantFromMeeting(participant: ParticipantApollo, id: string) {
+    this.getOrCreateMeeting(id).participants.filter(
+      (existingPart: ParticipantApollo) => existingPart.id !== participant.id
+    );
   }
 }

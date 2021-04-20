@@ -7,9 +7,9 @@ import { debounce, sortBy } from "lodash";
 import ParticipantAvatar from "./ParticipantAvatar";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
-import { participantMatches } from "../search";
+import { participantMatches, participantMatchesSearch } from "../search";
 import { useQuery } from "@apollo/client";
-import { GET_PARTICIPANTS_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
+import { GET_PARTICIPANTS_IN_MEETING_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
 import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
 
 const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";
@@ -65,11 +65,14 @@ const RoomParticipants = (props: Props) => {
         }
         if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_ADDED") {
           return {
-            getParticipants: [...currentData.getParticipants, subscriptionData.data.participantMutated.participant],
+            getParticipantsInMeeting: [
+              ...currentData.getParticipantsInMeeting,
+              subscriptionData.data.participantMutated.participant,
+            ],
           };
         } else if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_REMOVED") {
           return {
-            getParticipants: currentData.getParticipants.filter(
+            getParticipantsInMeeting: currentData.getParticipantsInMeeting.filter(
               (participant: ParticipantApollo) =>
                 participant.id !== subscriptionData.data.participantMutated.participant.id
             ),
@@ -83,7 +86,7 @@ const RoomParticipants = (props: Props) => {
 
   const classes = useStyles();
 
-  const { subscribeToMore, data, loading, error } = useQuery(GET_PARTICIPANTS_COMPLETE, {
+  const { subscribeToMore, data, loading, error } = useQuery(GET_PARTICIPANTS_IN_MEETING_COMPLETE, {
     variables: { id: meetingId },
   });
 
@@ -93,7 +96,7 @@ const RoomParticipants = (props: Props) => {
 
   if (!data) return null;
 
-  if (data.getParticipants.length <= 0) {
+  if (data.getParticipantsInMeeting.length <= 0) {
     return (
       <div className={classes.userParticipant}>
         <Typography className={classes.emptyGroup} variant="body2">
@@ -107,15 +110,15 @@ const RoomParticipants = (props: Props) => {
     return (
       <div className={classes.anonymousParticipant}>
         <Typography variant="body2" className={classes.anonymousParticipantsText}>
-          {data.getParticipants.length} participant{data.getParticipants.length > 1 ? "s" : ""}
+          {data.getParticipantsInMeeting.length} participant{data.getParticipantsInMeeting.length > 1 ? "s" : ""}
         </Typography>
       </div>
     );
   }
 
-  const sortedParticipants = sortBy(data.getParticipants, (participant) => participant.username);
+  const sortedParticipants = sortBy(data.getParticipantsInMeeting, (participant) => participant.username);
   const filteredParticipants = sortedParticipants.filter((participant) =>
-    participantMatches(participantSearch, participant)
+    participantMatchesSearch(participant, participantSearch)
   );
 
   return (

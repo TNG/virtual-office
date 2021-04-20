@@ -1,11 +1,9 @@
 import React from "react";
-import { Block } from "../../../server/express/types/Office";
 import { makeStyles } from "@material-ui/styles";
 import { fade, Theme } from "@material-ui/core";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
-import { MeetingsIndexed } from "./MeetingsIndexed";
 import { SessionBlockGrid } from "./SessionBlockGrid";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
@@ -54,12 +52,9 @@ export const BlockGrid = (props: Props) => {
   function renderBlock() {
     if (data.getBlock.type === "GROUP_BLOCK") {
       return (
-        <GroupBlockGrid
-          id={data.getBlock.group.id}
-          isActive={true}
-          isInsideScheduleBlock={false}
-          isListMode={clientConfig.viewMode === "list"}
-        />
+        data.getBlock.group.isInSearch && (
+          <GroupBlockGrid id={data.getBlock.group.id} isActive={true} isListMode={clientConfig.viewMode === "list"} />
+        )
       );
     } else if (data.getBlock.type === "SCHEDULE_BLOCK") {
       return <ScheduleBlockGrid id={data.getBlock.id} clientConfig={clientConfig} />;

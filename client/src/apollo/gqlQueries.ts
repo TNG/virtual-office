@@ -4,6 +4,8 @@ import {
   BLOCK_FRAGMENT_SHORT,
   GROUP_FRAGMENT_SHORT,
   GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE,
+  MEETING_FRAGMENT_COMPLETE,
+  OFFICE_FRAGMENT_SHORT,
   PARTICIPANT_FRAGMENT_COMPLETE,
   ROOM_FRAGMENT_COMPLETE,
   ROOM_FRAGMENT_SHORT,
@@ -74,15 +76,6 @@ export const GET_SESSION_SHORT = gql`
   ${SESSION_FRAGMENT_SHORT}
 `;
 
-export const GET_PARTICIPANTS_COMPLETE = gql`
-  query getParticipants($id: ID!) {
-    getParticipants(id: $id) {
-      ...ParticipantFragmentComplete
-    }
-  }
-  ${PARTICIPANT_FRAGMENT_COMPLETE}
-`;
-
 export const GET_OFFICE_COMPLETE = gql`
   query getOffice {
     getOffice {
@@ -94,6 +87,33 @@ export const GET_OFFICE_COMPLETE = gql`
     }
   }
   ${BLOCK_FRAGMENT_COMPLETE}
+`;
+
+export const GET_OFFICE_SHORT = gql`
+  query getOffice {
+    getOffice {
+      ...OfficeFragmentShort
+    }
+  }
+  ${OFFICE_FRAGMENT_SHORT}
+`;
+
+export const GET_PARTICIPANTS_IN_MEETING_COMPLETE = gql`
+  query getParticipantsInMeeting($id: ID!) {
+    getParticipantsInMeeting(id: $id) {
+      ...ParticipantFragmentComplete
+    }
+  }
+  ${PARTICIPANT_FRAGMENT_COMPLETE}
+`;
+
+export const GET_MEETINGS_COMPLETE = gql`
+  query getMeetings {
+    getMeetings {
+      ...MeetingFragmentComplete
+    }
+  }
+  ${MEETING_FRAGMENT_COMPLETE}
 `;
 
 export const PARTICIPANT_MUTATED_SUBSCRIPTION = gql`

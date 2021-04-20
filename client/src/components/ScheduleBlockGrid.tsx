@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
@@ -11,8 +11,6 @@ import { sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
-import { SearchContext } from "../socket/Context";
-import { sessionMatchesSearch } from "../search";
 
 /** Styles */
 interface StyleProps {
@@ -115,25 +113,6 @@ export const ScheduleBlockGrid = (props: Props) => {
   const { id, clientConfig } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
-  const searchText = useContext(SearchContext);
-  const [sessionsToRender, setSessionsToRender] = useState<any[]>([]);
-  useEffect(() => {
-    if (data) {
-      (async function setIds() {
-        const sessionsMatch: boolean[] = await Promise.all(
-          data.getBlock.sessions.map((session: any) => sessionMatchesSearch(session.id, searchText))
-        );
-        const sessionsMatching: any[] = [];
-        sessionsMatch.forEach((matches, index) => {
-          if (matches) {
-            sessionsMatching.push(data.getBlock.sessions[index]);
-          }
-        });
-        setSessionsToRender(sessionsMatching);
-      })();
-    }
-  }, [searchText, data]);
-
   if (!data) return null;
 
   const classes = useStyles({ clientConfig, data });
@@ -179,34 +158,39 @@ export const ScheduleBlockGrid = (props: Props) => {
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
       if (session.type === "ROOM_SESSION") {
-        return renderGridCard(
-          session.id,
-          classes.card,
-          session.start,
-          session.end,
-          tracksOfSession,
-          <RoomCard
-            id={session.room.id}
-            timeStringForDescription={timeString}
-            isActive={isActive}
-            isListMode={clientConfig.viewMode === "list"}
-            fillHeight={true}
-          />
+        return (
+          session.isInSearch &&
+          renderGridCard(
+            session.id,
+            classes.card,
+            session.start,
+            session.end,
+            tracksOfSession,
+            <RoomCard
+              id={session.room.id}
+              timeStringForDescription={timeString}
+              isActive={isActive}
+              isListMode={clientConfig.viewMode === "list"}
+              fillHeight={true}
+            />
+          )
         );
       } else if (session.type === "GROUP_SESSION") {
-        return renderGridCard(
-          session.id,
-          classes.groupCard,
-          session.start,
-          session.end,
-          tracksOfSession,
-          <GroupBlockGrid
-            id={session.group.id}
-            timeStringForDescription={timeString}
-            isActive={isActive}
-            isInsideScheduleBlock={true}
-            isListMode={clientConfig.viewMode === "list"}
-          />
+        return (
+          session.isInSearch &&
+          renderGridCard(
+            session.id,
+            classes.groupCard,
+            session.start,
+            session.end,
+            tracksOfSession,
+            <GroupBlockGrid
+              id={session.group.id}
+              timeStringForDescription={timeString}
+              isActive={isActive}
+              isListMode={clientConfig.viewMode === "list"}
+            />
+          )
         );
       }
     });

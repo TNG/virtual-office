@@ -109,6 +109,11 @@ export const typeDefs = gql`
     notificationInterval: Float
   }
 
+  type Meeting {
+    id: ID!
+    participants: [Participant!]!
+  }
+
   type Participant {
     id: ID!
     username: String!
@@ -122,9 +127,10 @@ export const typeDefs = gql`
     getGroup(id: ID!): Group
     getGroupJoinConfig(id: ID!): GroupJoinConfig
     getSession(id: ID!): Session
-    getParticipants(id: ID!): [Participant!]!
     getRoom(id: ID!): Room
     getRoomLinks(ids: [ID!]!): [RoomLink!]!
+    getMeetings: [Meeting!]!
+    getParticipantsInMeeting(id: ID!): [Participant!]!
   }
 
   type Subscription {

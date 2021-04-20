@@ -51,6 +51,12 @@ export const ROOM_FRAGMENT_SHORT = gql`
   }
 `;
 
+export const ROOM_SEARCH_FRAGMENT = gql`
+  fragment RoomSearchFragment on Room {
+    isInSearch @client
+  }
+`;
+
 export const GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE = gql`
   fragment GroupJoinConfigFragmentComplete on GroupJoinConfig {
     id
@@ -83,11 +89,18 @@ export const GROUP_FRAGMENT_SHORT = gql`
     name
     rooms {
       id
+      isInSearch @client
     }
     description
     groupJoinConfig {
       id
     }
+  }
+`;
+
+export const GROUP_SEARCH_FRAGMENT = gql`
+  fragment GroupSearchFragment on Group {
+    isInSearch @client
   }
 `;
 
@@ -120,6 +133,7 @@ export const SESSION_FRAGMENT_SHORT = gql`
     start
     end
     trackName
+    isInSearch @client
     ... on GroupSession {
       group {
         id
@@ -130,6 +144,12 @@ export const SESSION_FRAGMENT_SHORT = gql`
         id
       }
     }
+  }
+`;
+
+export const SESSION_SEARCH_FRAGMENT = gql`
+  fragment SessionSearchFragment on Session {
+    isInSearch @client
   }
 `;
 
@@ -171,6 +191,7 @@ export const BLOCK_FRAGMENT_SHORT = gql`
     ... on GroupBlock {
       group {
         id
+        isInSearch @client
       }
     }
     ... on ScheduleBlock {
@@ -192,6 +213,23 @@ export const BLOCK_FRAGMENT_SHORT = gql`
   ${SESSION_FRAGMENT_SHORT}
 `;
 
+export const BLOCK_SEARCH_FRAGMENT = gql`
+  fragment BlockSearchFragment on Block {
+    isInSearch @client
+  }
+`;
+
+export const OFFICE_FRAGMENT_SHORT = gql`
+  fragment OfficeFragmentShort on Office {
+    id
+    version
+    blocks {
+      id
+      isInSearch @client
+    }
+  }
+`;
+
 export const PARTICIPANT_FRAGMENT_COMPLETE = gql`
   fragment ParticipantFragmentComplete on Participant {
     id
@@ -199,4 +237,14 @@ export const PARTICIPANT_FRAGMENT_COMPLETE = gql`
     email
     imageUrl
   }
+`;
+
+export const MEETING_FRAGMENT_COMPLETE = gql`
+  fragment MeetingFragmentComplete on Meeting {
+    id
+    participants {
+      ...ParticipantFragmentComplete
+    }
+  }
+  ${PARTICIPANT_FRAGMENT_COMPLETE}
 `;
