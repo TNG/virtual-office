@@ -6,10 +6,15 @@ import { Express } from "express";
 import { OfficeStore } from "./datasources/OfficeStore";
 import { ParticipantsStore } from "./datasources/ParticipantsStore";
 import { Server } from "http";
+import { ClientConfigStore } from "./datasources/ClientConfigStore";
 
 @Service()
 export class ApolloServerService {
-  constructor(private readonly officeStore: OfficeStore, private readonly participantsStore: ParticipantsStore) {}
+  constructor(
+    private readonly officeStore: OfficeStore,
+    private readonly participantsStore: ParticipantsStore,
+    private readonly clientConfigStore: ClientConfigStore
+  ) {}
 
   async init(expressApp: Express, httpServer: Server): Promise<ApolloServer> {
     const apolloServer = new ApolloServer({
@@ -18,6 +23,7 @@ export class ApolloServerService {
       dataSources: () => ({
         officeStore: this.officeStore,
         participantsStore: this.participantsStore,
+        clientConfigStore: this.clientConfigStore,
       }),
       debug: true,
     });

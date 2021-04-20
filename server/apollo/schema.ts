@@ -121,6 +121,19 @@ export const typeDefs = gql`
     imageUrl: String
   }
 
+  type ClientConfig {
+    id: ID!
+    viewMode: String!
+    theme: String!
+    sessionStartMinutesOffset: Int!
+    backgroundUrl: String
+    timezone: String
+    title: String
+    logoUrl: String
+    faviconUrl: String
+    hideEndedSessions: Boolean
+  }
+
   type Query {
     getOffice: Office
     getBlock(id: ID!): Block
@@ -131,6 +144,7 @@ export const typeDefs = gql`
     getRoomLinks(ids: [ID!]!): [RoomLink!]!
     getMeetings: [Meeting!]!
     getParticipantsInMeeting(id: ID!): [Participant!]!
+    getClientConfig: ClientConfig!
   }
 
   type Subscription {

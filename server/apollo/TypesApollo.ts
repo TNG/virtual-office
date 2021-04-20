@@ -224,3 +224,22 @@ const MeetingApolloCodec = t.type({
   participants: t.array(ParticipantApolloCodec),
 });
 export type MeetingApollo = t.TypeOf<typeof MeetingApolloCodec>;
+
+const ClientConfigApolloConfigCodec = t.intersection([
+  t.type({
+    viewMode: t.union([t.literal("list"), t.literal("grid")]),
+    theme: t.union([t.literal("dark"), t.literal("light")]),
+    sessionStartMinutesOffset: t.number,
+  }),
+  t.partial({
+    backgroundUrl: t.string,
+    timezone: t.string,
+    title: t.string,
+    logoUrl: t.string,
+    faviconUrl: t.string,
+    hideEndedSessions: t.boolean,
+  }),
+]);
+export type ClientConfigApolloConfig = t.TypeOf<typeof ClientConfigApolloConfigCodec>;
+export type ClientConfigApolloDb = ClientConfigApolloConfig & { id: string };
+export type ClientConfigApollo = ClientConfigApolloConfig & { id: string };

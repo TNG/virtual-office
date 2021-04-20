@@ -35,6 +35,9 @@ export const resolvers = {
     getParticipantsInMeeting: (_, { id }, { dataSources }) => {
       return dataSources.participantsStore.getParticipantsInMeeting(id);
     },
+    getClientConfig: (_, { id }, { dataSources }) => {
+      return dataSources.clientConfigStore.getClientConfig();
+    },
   },
   Subscription: {
     participantMutated: {
