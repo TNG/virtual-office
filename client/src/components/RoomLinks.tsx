@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import LinkIcon from "@material-ui/icons/Link";
-import { RoomLinkApollo } from "../../../server/apollo/TypesApollo";
+import { ClientConfigApollo, RoomLinkApollo } from "../../../server/apollo/TypesApollo";
 import { useQuery } from "@apollo/client";
 import { GET_ROOM_LINKS_COMPLETE } from "../apollo/gqlQueries";
+import { ClientConfigContext } from "../contexts/ClientConfigContext";
 
 /** Styles */
-const useStyles = makeStyles<Theme, Props>({
+interface StyleProps {
+  clientConfig: ClientConfigApollo;
+}
+const useStyles = makeStyles<Theme, StyleProps>({
   root: {
     width: "100%",
   },
@@ -30,8 +34,8 @@ const useStyles = makeStyles<Theme, Props>({
     paddingTop: 4,
     paddingBottom: 4,
     display: "flex",
-    flexDirection: (props) => (props.isListMode ? "row" : "column"),
-    alignItems: (props) => (props.isListMode ? "center" : "stretch"),
+    flexDirection: (props) => (props.clientConfig.viewMode === "list" ? "row" : "column"),
+    alignItems: (props) => (props.clientConfig.viewMode === "list" ? "center" : "stretch"),
     flexWrap: "wrap",
   },
   linkText: {
@@ -50,7 +54,6 @@ const useStyles = makeStyles<Theme, Props>({
 /** Props */
 interface Props {
   ids: string[] | undefined;
-  isListMode: boolean;
 }
 
 interface Data {
@@ -59,7 +62,8 @@ interface Data {
 
 /** Component */
 const RoomLinks = (props: Props) => {
-  const classes = useStyles(props);
+  const clientConfig = useContext(ClientConfigContext);
+  const classes = useStyles({ clientConfig: clientConfig });
   const { ids } = props;
 
   const { data, loading, error } = useQuery<Data>(GET_ROOM_LINKS_COMPLETE, { variables: { ids } });

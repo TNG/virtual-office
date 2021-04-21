@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 import Box from "@material-ui/core/Box/Box";
@@ -11,8 +11,14 @@ import { Footer } from "./Footer";
 import { BlockGrid } from "./BlockGrid";
 import { applySearchToOffice } from "../search";
 import { useQuery } from "@apollo/client";
-import { GET_MEETINGS_COMPLETE, GET_OFFICE_COMPLETE, GET_OFFICE_SHORT } from "../apollo/gqlQueries";
+import {
+  GET_CLIENT_CONFIG_COMPLETE,
+  GET_MEETINGS_COMPLETE,
+  GET_OFFICE_COMPLETE,
+  GET_OFFICE_SHORT,
+} from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
+import { ClientConfigProvider } from "../contexts/ClientConfigContext";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -55,68 +61,68 @@ export const Dashboard = () => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);*/
 
-  const dummyConfig: ClientConfig = {
-    viewMode: "grid",
-    theme: "light",
-    sessionStartMinutesOffset: 10,
-    timezone: "Europe/Berlin",
-    title: "Virtual Office Apollo",
-    hideEndedSessions: false,
-  };
-
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [config, setConfig] = useState<ClientConfig | undefined>(dummyConfig);
+  //const [clientConfig, setClientConfig] = useState<ClientConfig | undefined>(dummyConfig);
 
   const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
   const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
+  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery(
+    GET_CLIENT_CONFIG_COMPLETE
+  );
   const { data: blocksData, loading: blocksLoading, error: blocksError } = useQuery(GET_OFFICE_SHORT);
 
+  const classes = useStyles({
+    ...(clientConfigData ? clientConfigData.getClientConfig : {}),
+    backgroundUrl: Background,
+  });
+
   useEffect(() => {
-    console.log("NEW SEARCH: " + searchText);
     if (officeData && meetingsData) {
       applySearchToOffice(officeData.getOffice, meetingsData.getMeetings, searchText, getApolloClient());
     }
   }, [searchText, officeData, meetingsData]);
 
-  function renderOffice(config: ClientConfig) {
+  function renderOffice() {
     return (
       <Fade in={initialLoadCompleted}>
-        <div>
-          {blocksData.getOffice.blocks.map((block: any) => {
-            return block.isInSearch && <BlockGrid key={block.id} id={block.id} clientConfig={config} />;
-          })}
-        </div>
+        <ClientConfigProvider value={clientConfigData.getClientConfig}>
+          <div>
+            {blocksData.getOffice.blocks.map((block: any) => {
+              return block.isInSearch && <BlockGrid key={block.id} id={block.id} />;
+            })}
+          </div>
+        </ClientConfigProvider>
       </Fade>
     );
   }
 
-  if (config?.faviconUrl) {
-    const favicon = document.getElementById("favicon") as HTMLLinkElement;
-    const appleTouchIcon = document.getElementById("apple-touch-icon") as HTMLLinkElement;
-    if (favicon && appleTouchIcon) {
-      favicon.href = config.faviconUrl;
-      appleTouchIcon.href = config.faviconUrl;
-    }
-  }
-
-  const classes = useStyles({ backgroundUrl: Background, ...(config || {}) });
-
-  if (!config) {
+  if (!clientConfigData) {
     return null;
   }
 
-  if (officeLoading || meetingsLoading) return <p>loading</p>;
+  if (clientConfigData.getClientConfig.faviconUrl) {
+    const favicon = document.getElementById("favicon") as HTMLLinkElement;
+    const appleTouchIcon = document.getElementById("apple-touch-icon") as HTMLLinkElement;
+    if (favicon && appleTouchIcon) {
+      favicon.href = clientConfigData.getClientConfig.faviconUrl;
+      appleTouchIcon.href = clientConfigData.getClientConfig.faviconUrl;
+    }
+  }
+
+  // TODO: check
+  if (officeLoading || meetingsLoading || clientConfigLoading) return <p>loading</p>;
   if (officeError) return <p>ERROR: {officeError.message}</p>;
   if (meetingsError) return <p>ERROR: {meetingsError.message}</p>;
-  if (!officeData || !meetingsData || !blocksData) {
+  if (clientConfigError) return <p>ERROR: {clientConfigError.message}</p>;
+  if (!officeData || !meetingsData || !clientConfigData || !blocksData) {
     return <p>Not found</p>;
   } else {
     //setInitialLoadCompleted(true);
   }
 
   const content = initialLoadCompleted ? (
-    renderOffice(config)
+    renderOffice()
   ) : (
     <Box className={classes.loading}>
       <CircularProgress color="secondary" size="100px" />
@@ -126,7 +132,11 @@ export const Dashboard = () => {
   return (
     <div className={classes.background}>
       <div className={classes.content}>
-        <AppBar onSearchTextChange={setSearchText} title={config.title} logoUrl={config.logoUrl} />
+        <AppBar
+          onSearchTextChange={setSearchText}
+          title={clientConfigData.getClientConfig.title}
+          logoUrl={clientConfigData.getClientConfig.logoUrl}
+        />
         <div className={classes.scroller}>{content}</div>
         {initialLoadCompleted ? <Footer /> : ""}
       </div>

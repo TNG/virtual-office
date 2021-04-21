@@ -1,20 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 import { useQuery } from "@apollo/client";
 import { GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
+import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
-const useStyles = makeStyles<Theme, Props>((theme) => ({
+interface StyleProps {
+  clientConfig: ClientConfigApollo;
+  props: Props;
+}
+const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     padding: 12,
     boxSizing: "border-box",
-    height: (props) => (props.fillHeight ? "100%" : undefined),
-    opacity: (props) => (props.isActive ? 1 : 0.65),
+    height: (props) => (props.props.fillHeight ? "100%" : undefined),
+    opacity: (props) => (props.props.isActive ? 1 : 0.65),
     backgroundColor: theme.palette.secondary.light,
   },
   header: {
@@ -29,14 +35,14 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
-    justifyContent: (props) => (props.isListMode ? "space-between" : "flex-end"),
+    justifyContent: (props) => (props.clientConfig.viewMode === "list" ? "space-between" : "flex-end"),
     "&:last-child": {
       padding: "0 8px",
     },
 
     [theme.breakpoints.up("sm")]: {
-      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
-      flexDirection: (props) => (props.isListMode ? "row" : "column-reverse"),
+      alignItems: (props) => (props.clientConfig.viewMode === "list" ? "center" : "stretch"),
+      flexDirection: (props) => (props.clientConfig.viewMode === "list" ? "row" : "column-reverse"),
     },
   },
   actions: {
@@ -57,14 +63,14 @@ interface Props {
   id: string;
   groupName: string;
   isActive: boolean;
-  isListMode: boolean;
   fillHeight?: boolean;
 }
 
 /** Component */
 const GroupJoinCard = (props: Props) => {
+  const clientConfig = useContext(ClientConfigContext);
   const { id, groupName, isActive } = props;
-  const classes = useStyles(props);
+  const classes = useStyles({ clientConfig: clientConfig, props: props });
 
   const { data, loading, error } = useQuery(GET_GROUP_JOIN_CONFIG_COMPLETE, { variables: { id } });
 

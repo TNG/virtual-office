@@ -61,12 +61,11 @@ interface Props {
   id: string;
   timeStringForDescription?: string;
   isActive: boolean;
-  isListMode: boolean;
 }
 
 /** Component */
 export const GroupBlockGrid = (props: Props) => {
-  const { id, timeStringForDescription, isActive, isListMode } = props;
+  const { id, timeStringForDescription, isActive } = props;
   const classes = useStyles(props);
 
   const { data, loading, error } = useQuery(GET_GROUP_SHORT, { variables: { id } });
@@ -117,7 +116,6 @@ export const GroupBlockGrid = (props: Props) => {
           id={data.getGroup.groupJoinConfig.id}
           groupName={data.getGroup.name}
           isActive={isActive}
-          isListMode={isListMode}
           fillHeight={true}
         />
       );
@@ -135,8 +133,7 @@ export const GroupBlockGrid = (props: Props) => {
     });*/
     return data.getGroup.rooms.map((room: any) => {
       return (
-        room.isInSearch &&
-        renderGridCard(room.id, <RoomCard id={room.id} isActive={isActive} isListMode={isListMode} fillHeight={true} />)
+        room.isInSearch && renderGridCard(room.id, <RoomCard id={room.id} isActive={isActive} fillHeight={true} />)
       );
     });
   }

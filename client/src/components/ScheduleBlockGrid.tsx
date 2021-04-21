@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
@@ -7,14 +7,15 @@ import { DateTime } from "luxon";
 import { Track } from "../../../server/express/types/Office";
 import RoomCard from "./RoomCard";
 import { GroupBlockGrid } from "./GroupBlockGrid";
-import { sessionIsActive } from "../sessionTimeProps";
+import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
-import { TrackApollo } from "../../../server/apollo/TypesApollo";
+import { ClientConfigApollo, TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
+import { ClientConfigContext } from "../contexts/ClientConfigContext";
 
 /** Styles */
 interface StyleProps {
-  clientConfig: ClientConfig;
+  clientConfig: ClientConfigApollo;
   data: {
     getBlock: {
       tracks: TrackApollo[];
@@ -105,12 +106,12 @@ const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
 /** Props */
 interface Props {
   id: string;
-  clientConfig: ClientConfig;
 }
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const { id, clientConfig } = props;
+  const clientConfig = useContext(ClientConfigContext);
+  const { id } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
   if (!data) return null;
@@ -150,7 +151,9 @@ export const ScheduleBlockGrid = (props: Props) => {
         ? [session.trackName]
         : [data.getBlock.tracks[0].name, data.getBlock.tracks[data.getBlock.tracks.length - 1].name];
 
-      const isActive = sessionIsActive(session, clientConfig);
+      const hideSession: boolean = clientConfig.hideEndedSessions
+        ? clientConfig.hideEndedSessions && sessionHasEnded(session, clientConfig)
+        : false;
 
       const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
       const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
@@ -159,6 +162,7 @@ export const ScheduleBlockGrid = (props: Props) => {
 
       if (session.type === "ROOM_SESSION") {
         return (
+          !hideSession &&
           session.isInSearch &&
           renderGridCard(
             session.id,
@@ -169,14 +173,14 @@ export const ScheduleBlockGrid = (props: Props) => {
             <RoomCard
               id={session.room.id}
               timeStringForDescription={timeString}
-              isActive={isActive}
-              isListMode={clientConfig.viewMode === "list"}
+              isActive={sessionIsActive(session, clientConfig)}
               fillHeight={true}
             />
           )
         );
       } else if (session.type === "GROUP_SESSION") {
         return (
+          !hideSession &&
           session.isInSearch &&
           renderGridCard(
             session.id,
@@ -187,8 +191,7 @@ export const ScheduleBlockGrid = (props: Props) => {
             <GroupBlockGrid
               id={session.group.id}
               timeStringForDescription={timeString}
-              isActive={isActive}
-              isListMode={clientConfig.viewMode === "list"}
+              isActive={sessionIsActive(session, clientConfig)}
             />
           )
         );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
@@ -8,16 +8,23 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { useQuery } from "@apollo/client";
 import { GET_ROOM_SHORT } from "../apollo/gqlQueries";
+import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
-const useStyles = makeStyles<Theme, Props>((theme) => ({
+interface StyleProps {
+  clientConfig: ClientConfigApollo;
+  props: Props;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     padding: 12,
     boxSizing: "border-box",
-    height: (props) => (props.fillHeight ? "100%" : undefined),
-    opacity: (props) => (props.isActive ? 1 : 0.65),
+    height: (props) => (props.props.fillHeight ? "100%" : undefined),
+    opacity: (props) => (props.props.isActive ? 1 : 0.65),
   },
   header: {
     flex: "0 0 auto",
@@ -42,8 +49,8 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   },
   body: {
     [theme.breakpoints.up("sm")]: {
-      flexDirection: (props) => (props.isListMode ? "row" : "column"),
-      alignItems: (props) => (props.isListMode ? "flex-end" : "stretch"),
+      flexDirection: (props) => (props.clientConfig.viewMode === "list" ? "row" : "column"),
+      alignItems: (props) => (props.clientConfig.viewMode === "list" ? "flex-end" : "stretch"),
     },
   },
   content: {
@@ -52,14 +59,14 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     alignItems: "stretch",
     flexDirection: "column-reverse",
-    justifyContent: (props) => (props.isListMode ? "space-between" : "flex-end"),
+    justifyContent: (props) => (props.clientConfig.viewMode === "list" ? "space-between" : "flex-end"),
     "&:last-child": {
       padding: "0 8px",
     },
 
     [theme.breakpoints.up("sm")]: {
-      alignItems: (props) => (props.isListMode ? "center" : "stretch"),
-      flexDirection: (props) => (props.isListMode ? "column" : "column-reverse"),
+      alignItems: (props) => (props.clientConfig.viewMode === "list" ? "center" : "stretch"),
+      flexDirection: (props) => (props.clientConfig.viewMode === "list" ? "column" : "column-reverse"),
     },
   },
   participants: {
@@ -98,14 +105,14 @@ interface Props {
   id: string;
   timeStringForDescription?: string;
   isActive: boolean;
-  isListMode: boolean;
   fillHeight?: boolean;
 }
 
 /** Component */
 const RoomCard = (props: Props) => {
-  const classes = useStyles(props);
-  const { id, timeStringForDescription, isActive, isListMode } = props;
+  const clientConfig = useContext(ClientConfigContext);
+  const { id, timeStringForDescription, isActive } = props;
+  const classes = useStyles({ clientConfig: clientConfig, props: props });
 
   const { data, loading, error } = useQuery(GET_ROOM_SHORT, { variables: { id } });
 
@@ -149,7 +156,7 @@ const RoomCard = (props: Props) => {
   }
 
   const roomLinksView = (data.getRoom.roomLinks ?? []).length > 0 && (
-    <RoomLinks ids={data.getRoom.roomLinks.map((roomLink: { id: string }) => roomLink.id)} isListMode={isListMode} />
+    <RoomLinks ids={data.getRoom.roomLinks.map((roomLink: { id: string }) => roomLink.id)} />
   );
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 

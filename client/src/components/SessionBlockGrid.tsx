@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
-import { sessionIsActive } from "../sessionTimeProps";
+import { sessionIsActive, sessionHasEnded } from "../sessionTimeProps";
 import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
+import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -60,13 +62,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
 /** Props */
 interface Props {
   id: string;
-  isListMode: boolean;
-  clientConfig: ClientConfig;
 }
 
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
-  const { id, isListMode, clientConfig } = props;
+  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
+  const { id } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
   const classes = useStyles(props);
 
@@ -105,7 +106,12 @@ export const SessionBlockGrid = (props: Props) => {
       const timezone = browserTimeZone();
       const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
 
+      const hideSession: boolean = clientConfig.hideEndedSessions
+        ? clientConfig.hideEndedSessions && sessionHasEnded(session, clientConfig)
+        : false;
+
       return (
+        !hideSession &&
         session.isInSearch &&
         renderGridCard(
           session.id,
@@ -113,7 +119,6 @@ export const SessionBlockGrid = (props: Props) => {
             id={session.room.id}
             timeStringForDescription={timeString}
             isActive={sessionIsActive(session, clientConfig)}
-            isListMode={isListMode}
             fillHeight={true}
           />
         )

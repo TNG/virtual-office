@@ -248,3 +248,18 @@ export const MEETING_FRAGMENT_COMPLETE = gql`
   }
   ${PARTICIPANT_FRAGMENT_COMPLETE}
 `;
+
+export const CLIENT_CONFIG_FRAGMENT_COMPLETE = gql`
+  fragment ClientConfigFragmentComplete on ClientConfig {
+    id
+    viewMode
+    theme
+    sessionStartMinutesOffset
+    backgroundUrl
+    timezone
+    title
+    logoUrl
+    faviconUrl
+    hideEndedSessions
+  }
+`;
