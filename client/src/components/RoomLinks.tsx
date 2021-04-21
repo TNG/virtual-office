@@ -62,7 +62,7 @@ interface Data {
 
 /** Component */
 const RoomLinks = (props: Props) => {
-  const clientConfig = useContext(ClientConfigContext);
+  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const classes = useStyles({ clientConfig: clientConfig });
   const { ids } = props;
 

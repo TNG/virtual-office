@@ -110,7 +110,7 @@ interface Props {
 
 /** Component */
 const RoomCard = (props: Props) => {
-  const clientConfig = useContext(ClientConfigContext);
+  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id, timeStringForDescription, isActive } = props;
   const classes = useStyles({ clientConfig: clientConfig, props: props });
 

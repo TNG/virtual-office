@@ -89,6 +89,7 @@ export const GROUP_FRAGMENT_SHORT = gql`
     name
     rooms {
       id
+      meetingId
       isInSearch @client
     }
     description

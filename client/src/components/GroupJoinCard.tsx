@@ -68,7 +68,7 @@ interface Props {
 
 /** Component */
 const GroupJoinCard = (props: Props) => {
-  const clientConfig = useContext(ClientConfigContext);
+  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id, groupName, isActive } = props;
   const classes = useStyles({ clientConfig: clientConfig, props: props });
 

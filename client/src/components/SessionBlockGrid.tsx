@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
 import { sessionIsActive, sessionHasEnded } from "../sessionTimeProps";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";

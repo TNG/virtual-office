@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { DateTime } from "luxon";
 import { Track } from "../../../server/express/types/Office";
@@ -110,7 +109,7 @@ interface Props {
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const clientConfig = useContext(ClientConfigContext);
+  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id } = props;
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
