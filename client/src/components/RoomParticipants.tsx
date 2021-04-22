@@ -7,7 +7,7 @@ import { debounce, sortBy } from "lodash";
 import ParticipantAvatar from "./ParticipantAvatar";
 import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
-import { participantMatches, participantMatchesSearch } from "../search";
+import { participantMatchesSearch } from "../search";
 import { useQuery } from "@apollo/client";
 import { GET_PARTICIPANTS_IN_MEETING_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
 import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
@@ -118,7 +118,7 @@ const RoomParticipants = (props: Props) => {
 
   const sortedParticipants = sortBy(data.getParticipantsInMeeting, (participant) => participant.username);
   const filteredParticipants = sortedParticipants.filter((participant) =>
-    participantMatchesSearch(participant, participantSearch)
+    participantMatchesSearch({ searchObject: participant, searchText: participantSearch })
   );
 
   return (

@@ -1,4 +1,3 @@
-import { MeetingParticipant } from "../../server/express/types/MeetingParticipant";
 import {
   BlockApollo,
   GroupApollo,
@@ -17,10 +16,28 @@ import {
   SESSION_SEARCH_FRAGMENT,
 } from "./apollo/gqlFragments";
 
-export function participantMatches(search: string, participant: MeetingParticipant): boolean {
-  const email = participant.email || "";
-  return participant.username.toLowerCase().includes(search) || email.toLowerCase().includes(search);
-}
+type OfficeApolloClient = OfficeApollo & { __typename: "Office" };
+type BlockApolloClient = BlockApollo & { __typename: "Block" | "GroupBlock" | "ScheduleBlock" | "SessionBlock" };
+type GroupApolloClient = GroupApollo & { __typename: "Group" };
+type TrackApolloClient = TrackApollo & { __typename: "Track" };
+type SessionApolloClient = SessionApollo & { __typename: "Session" | "RoomSession" | "GroupSession" };
+type RoomApolloClient = RoomApollo & { __typename: "Room" };
+type ParticipantApolloClient = ParticipantApollo & { __typename: "Participant" };
+
+type SearchInput = {
+  searchObject:
+    | OfficeApolloClient
+    | BlockApolloClient
+    | GroupApolloClient
+    | TrackApolloClient
+    | SessionApolloClient
+    | RoomApolloClient
+    | ParticipantApolloClient;
+  searchText: string;
+  meetings?: MeetingApollo[];
+  client?: ApolloClient<NormalizedCacheObject>;
+  someParentMatches?: boolean;
+};
 
 export function applySearchToOffice(
   office: OfficeApollo,
@@ -29,17 +46,29 @@ export function applySearchToOffice(
   client: ApolloClient<NormalizedCacheObject>
 ) {
   office.blocks.map((block: BlockApollo) => {
-    blockMatchesSearch(block, meetings, searchText, client, false);
+    blockMatchesSearch({
+      searchObject: { __typename: "Block", ...block },
+      meetings,
+      searchText,
+      client,
+      someParentMatches: false,
+    });
   });
 }
 
-function blockMatchesSearch(
-  block: BlockApollo,
-  meetings: MeetingApollo[],
-  searchText: string,
-  client: ApolloClient<NormalizedCacheObject>,
-  someParentMatches: boolean
-): boolean {
+function blockMatchesSearch(searchInput: SearchInput): boolean {
+  if (
+    !(
+      searchInput.searchObject.__typename === "Block" ||
+      searchInput.searchObject.__typename === "GroupBlock" ||
+      searchInput.searchObject.__typename === "ScheduleBlock" ||
+      searchInput.searchObject.__typename === "SessionBlock"
+    )
+  ) {
+    return false;
+  }
+  let { searchObject: block, searchText, meetings, client, someParentMatches } = searchInput;
+
   let somePropMatches: boolean = propsMatchSearch(getExistingProps([block.name]), searchText);
   someParentMatches = someParentMatches || somePropMatches;
   let groupMatches: boolean = false;
@@ -47,15 +76,32 @@ function blockMatchesSearch(
   let someSessionMatches: boolean = false;
 
   if (block.type === "GROUP_BLOCK") {
-    groupMatches = groupMatchesSearch(block.group, meetings, searchText, someParentMatches, client);
+    groupMatches = groupMatchesSearch({
+      searchObject: { __typename: "Group", ...block.group },
+      meetings,
+      searchText,
+      someParentMatches,
+      client,
+    });
   } else {
     block.sessions.forEach((session: SessionApollo) => {
       someSessionMatches =
-        sessionMatchesSearch(session, meetings, searchText, someParentMatches, client) || someSessionMatches;
+        sessionMatchesSearch({
+          searchObject: { __typename: "Session", ...session },
+          meetings,
+          searchText,
+          someParentMatches,
+          client,
+        }) || someSessionMatches;
     });
     if (block.type === "SCHEDULE_BLOCK") {
       block.tracks?.forEach((track: TrackApollo) => {
-        someTrackMatches = trackMatchesSearch(track, searchText, someParentMatches) || someTrackMatches;
+        someTrackMatches =
+          trackMatchesSearch({
+            searchObject: { __typename: "Track", ...track },
+            searchText,
+            someParentMatches,
+          }) || someTrackMatches;
       });
     } else if (block.type === "SESSION_BLOCK") {
       somePropMatches = propsMatchSearch([block.title], searchText) || somePropMatches;
@@ -65,7 +111,7 @@ function blockMatchesSearch(
 
   const blockMatches: boolean =
     someParentMatches || somePropMatches || groupMatches || someTrackMatches || someSessionMatches;
-  client.writeFragment({
+  client?.writeFragment({
     id: client.cache.identify(block),
     fragment: BLOCK_SEARCH_FRAGMENT,
     data: {
@@ -75,13 +121,12 @@ function blockMatchesSearch(
   return blockMatches;
 }
 
-function groupMatchesSearch(
-  group: GroupApollo,
-  meetings: MeetingApollo[],
-  searchText: string,
-  someParentMatches: boolean,
-  client: ApolloClient<NormalizedCacheObject>
-): boolean {
+function groupMatchesSearch(searchInput: SearchInput): boolean {
+  if (searchInput.searchObject.__typename !== "Group") {
+    return false;
+  }
+  let { searchObject: group, searchText, meetings, client, someParentMatches } = searchInput;
+
   const somePropMatches: boolean = propsMatchSearch(
     getExistingProps([
       group.name,
@@ -96,11 +141,18 @@ function groupMatchesSearch(
   let someRoomMatches = false;
 
   group.rooms.forEach((room: RoomApollo) => {
-    someRoomMatches = roomMatchesSearch(room, meetings, searchText, someParentMatches, client) || someRoomMatches;
+    someRoomMatches =
+      roomMatchesSearch({
+        searchObject: { __typename: "Room", ...room },
+        meetings,
+        searchText,
+        someParentMatches,
+        client,
+      }) || someRoomMatches;
   });
 
   const groupMatches: boolean = someParentMatches || somePropMatches || someRoomMatches;
-  client.writeFragment({
+  client?.writeFragment({
     id: client.cache.identify(group),
     fragment: GROUP_SEARCH_FRAGMENT,
     data: {
@@ -110,28 +162,33 @@ function groupMatchesSearch(
   return groupMatches;
 }
 
-function roomMatchesSearch(
-  room: RoomApollo,
-  meetings: MeetingApollo[],
-  searchText: string,
-  someParentMatches: boolean,
-  client: ApolloClient<NormalizedCacheObject>
-): boolean {
+function roomMatchesSearch(searchInput: SearchInput): boolean {
+  if (searchInput.searchObject.__typename !== "Room") {
+    return false;
+  }
+  let { searchObject: room, searchText, meetings, client, someParentMatches } = searchInput;
+
   const somePropMatches: boolean = propsMatchSearch(getExistingProps([room.name, room.description]), searchText);
   someParentMatches = someParentMatches || somePropMatches;
   let someParticipantMatches: boolean = false;
 
   if (room.meetingId) {
-    const meeting: MeetingApollo | undefined = meetings.find((meeting: MeetingApollo) => meeting.id === room.meetingId);
+    const meeting: MeetingApollo | undefined = meetings?.find(
+      (meeting: MeetingApollo) => meeting.id === room.meetingId
+    );
     const participants: ParticipantApollo[] = meeting ? meeting.participants : [];
     participants.forEach((participant: ParticipantApollo) => {
       someParticipantMatches =
-        participantMatchesSearch(participant, searchText, someParentMatches) || someParticipantMatches;
+        participantMatchesSearch({
+          searchObject: { __typename: "Participant", ...participant },
+          searchText,
+          someParentMatches,
+        }) || someParticipantMatches;
     });
   }
 
   const roomMatches: boolean = someParentMatches || somePropMatches || someParticipantMatches;
-  client.writeFragment({
+  client?.writeFragment({
     id: client.cache.identify(room),
     fragment: ROOM_SEARCH_FRAGMENT,
     data: {
@@ -141,32 +198,55 @@ function roomMatchesSearch(
   return roomMatches;
 }
 
-function trackMatchesSearch(track: TrackApollo, searchText: string, someParentMatches: boolean): boolean {
+function trackMatchesSearch(searchInput: SearchInput): boolean {
+  if (searchInput.searchObject.__typename !== "Track") {
+    return false;
+  }
+  let { searchObject: track, searchText, someParentMatches } = searchInput;
+
   const somePropMatches: boolean = propsMatchSearch([track.name], searchText);
   const trackMatches = someParentMatches || somePropMatches;
   return trackMatches;
 }
 
-function sessionMatchesSearch(
-  session: SessionApollo,
-  meetings: MeetingApollo[],
-  searchText: string,
-  someParentMatches: boolean,
-  client: ApolloClient<NormalizedCacheObject>
-): boolean {
+function sessionMatchesSearch(searchInput: SearchInput): boolean {
+  if (
+    !(
+      searchInput.searchObject.__typename === "Session" ||
+      searchInput.searchObject.__typename === "RoomSession" ||
+      searchInput.searchObject.__typename === "GroupSession"
+    )
+  ) {
+    console.log("early return");
+    return false;
+  }
+  let { searchObject: session, searchText, meetings, client, someParentMatches } = searchInput;
+
   const somePropMatches: boolean = propsMatchSearch(getExistingProps([session.trackName]), searchText);
   someParentMatches = someParentMatches || somePropMatches;
   let groupMatches: boolean = false;
   let someRoomMatches: boolean = false;
 
   if (session.type === "GROUP_SESSION") {
-    groupMatches = groupMatchesSearch(session.group, meetings, searchText, someParentMatches, client);
+    groupMatches = groupMatchesSearch({
+      searchObject: { __typename: "Group", ...session.group },
+      meetings,
+      searchText,
+      someParentMatches,
+      client,
+    });
   } else if (session.type === "ROOM_SESSION") {
-    someRoomMatches = roomMatchesSearch(session.room, meetings, searchText, someParentMatches, client);
+    someRoomMatches = roomMatchesSearch({
+      searchObject: { __typename: "Room", ...session.room },
+      meetings,
+      searchText,
+      someParentMatches,
+      client,
+    });
   }
 
   const sessionMatches: boolean = someParentMatches || somePropMatches || groupMatches || someRoomMatches;
-  client.writeFragment({
+  client?.writeFragment({
     id: client.cache.identify(session),
     fragment: SESSION_SEARCH_FRAGMENT,
     data: {
@@ -176,11 +256,12 @@ function sessionMatchesSearch(
   return sessionMatches;
 }
 
-export function participantMatchesSearch(
-  participant: ParticipantApollo,
-  searchText: string,
-  someParentMatches?: boolean
-): boolean {
+export function participantMatchesSearch(searchInput: SearchInput): boolean {
+  if (searchInput.searchObject.__typename !== "Participant") {
+    return false;
+  }
+  let { searchObject: participant, searchText, someParentMatches } = searchInput;
+
   const somePropMatches: boolean = propsMatchSearch(
     getExistingProps([participant.username, participant.email]),
     searchText
