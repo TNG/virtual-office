@@ -38,13 +38,25 @@ export class ParticipantsStore extends DataSource {
     return this.getOrCreateMeeting(id).participants;
   }
 
-  public addParticipantToMeeting(participant: ParticipantApollo, id: string) {
-    this.getOrCreateMeeting(id).participants.push(participant);
+  public addParticipantToMeeting(participant: ParticipantApollo, id: string): boolean {
+    const meeting: MeetingApollo = this.getOrCreateMeeting(id);
+    const sameParticipantsInMeeting: ParticipantApollo[] = meeting.participants.filter(
+      (existingPart: ParticipantApollo) => existingPart.id === participant.id
+    );
+    if (sameParticipantsInMeeting.length === 0) {
+      meeting.participants.push(participant);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public removeParticipantFromMeeting(participant: ParticipantApollo, id: string) {
-    this.getOrCreateMeeting(id).participants.filter(
+    const meeting: MeetingApollo = this.getOrCreateMeeting(id);
+    const participantCountBefore: number = meeting.participants.length;
+    meeting.participants = meeting.participants.filter(
       (existingPart: ParticipantApollo) => existingPart.id !== participant.id
     );
+    return participantCountBefore > meeting.participants.length;
   }
 }

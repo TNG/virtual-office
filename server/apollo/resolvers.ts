@@ -84,29 +84,29 @@ export const resolvers = {
       };
     },
     addParticipantToMeeting: (_, { participant, id }, { dataSources }) => {
-      pubsub.publish("PARTICIPANT_ADDED", {
-        participantMutated: { mutationType: "PARTICIPANT_ADDED", participant: participant },
-        meetingId: id,
-      });
-      dataSources.participantsStore.addParticipantToMeeting(participant, id);
-      const success: boolean = true;
+      const success: boolean = dataSources.participantsStore.addParticipantToMeeting(participant, id);
+      if (success) {
+        pubsub.publish("PARTICIPANT_ADDED", {
+          participantMutated: { mutationType: "PARTICIPANT_ADDED", participant: participant },
+          meetingId: id,
+        });
+      }
       return {
         success: success,
-        message: success ? "Successfully added participant" : "ERROR!",
+        message: success ? "Successfully added participant!" : "Participant already in meeting!",
       };
     },
     removeParticipantFromMeeting: (_, { participant, id }, { dataSources }) => {
-      pubsub.publish("PARTICIPANT_REMOVED", {
-        participantMutated: {
-          mutationType: "PARTICIPANT_REMOVED",
-          participant: participant,
-        },
-        meetingId: id,
-      });
       const success: boolean = dataSources.participantsStore.removeParticipantFromMeeting(participant, id);
+      if (success) {
+        pubsub.publish("PARTICIPANT_REMOVED", {
+          participantMutated: { mutationType: "PARTICIPANT_REMOVED", participant: participant },
+          meetingId: id,
+        });
+      }
       return {
         success: success,
-        message: success ? "Successfully removed participant" : "ERROR!",
+        message: success ? "Successfully removed participant!" : "Participant not in meeting!",
       };
     },
   },

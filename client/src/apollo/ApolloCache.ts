@@ -5,4 +5,16 @@ export const apolloCache = new InMemoryCache({
     Block: ["GroupBlock", "ScheduleBlock", "SessionBlock"],
     Session: ["GroupSession", "RoomSession"],
   },
+  typePolicies: {
+    Query: {
+      fields: {
+        getParticipantInMeeting(_, { args, toReference }) {
+          return toReference({
+            __typename: "Participant",
+            id: args!.id,
+          });
+        },
+      },
+    },
+  },
 });
