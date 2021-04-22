@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
@@ -9,8 +9,7 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { ClientConfigApollo, TrackApollo } from "../../../server/apollo/TypesApollo";
-import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
-import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 
 /** Styles */
 interface StyleProps {
@@ -109,13 +108,17 @@ interface Props {
 
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
-  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id } = props;
-  const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
+  const { data: blockData, loading: blockLoading, error: blockError } = useQuery(GET_BLOCK_SHORT, {
+    variables: { id },
+  });
+  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
+    getClientConfig: ClientConfigApollo;
+  }>(GET_CLIENT_CONFIG_COMPLETE);
 
-  if (!data) return null;
+  if (!blockData || !clientConfigData) return null;
 
-  const classes = useStyles({ clientConfig, data });
+  const classes = useStyles({ clientConfig: clientConfigData.getClientConfig, data: blockData });
 
   return (
     <div className={classes.root}>
@@ -129,7 +132,7 @@ export const ScheduleBlockGrid = (props: Props) => {
   function renderTrackHeader() {
     return (
       <>
-        {data.getBlock.tracks.map((track: TrackApollo) => {
+        {blockData.getBlock.tracks.map((track: TrackApollo) => {
           return (
             <div
               key={`track-${track.name}`}
@@ -145,19 +148,24 @@ export const ScheduleBlockGrid = (props: Props) => {
   }
 
   function renderSchedule() {
-    return data.getBlock.sessions.map((session: any) => {
+    return blockData.getBlock.sessions.map((session: any) => {
       const tracksOfSession: [string, string?] = session.trackName
         ? [session.trackName]
-        : [data.getBlock.tracks[0].name, data.getBlock.tracks[data.getBlock.tracks.length - 1].name];
+        : [blockData.getBlock.tracks[0].name, blockData.getBlock.tracks[blockData.getBlock.tracks.length - 1].name];
 
-      const hideSession: boolean = clientConfig.hideEndedSessions
-        ? clientConfig.hideEndedSessions && sessionHasEnded(session, clientConfig)
+      if (!clientConfigData) return null;
+
+      const hideSession: boolean = clientConfigData.getClientConfig.hideEndedSessions
+        ? clientConfigData.getClientConfig.hideEndedSessions &&
+          sessionHasEnded(session, clientConfigData.getClientConfig)
         : false;
 
-      const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
-      const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
+      const formattedStart = printHoursMinutes(parseTime(session.start, clientConfigData.getClientConfig.timezone));
+      const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfigData.getClientConfig.timezone));
       const timezone = browserTimeZone();
-      const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
+      const timeString = `${formattedStart}-${formattedEnd}${
+        clientConfigData.getClientConfig.timezone ? ` ${timezone}` : ""
+      }`;
 
       if (session.type === "ROOM_SESSION") {
         return (
@@ -172,7 +180,7 @@ export const ScheduleBlockGrid = (props: Props) => {
             <RoomCard
               id={session.room.id}
               timeStringForDescription={timeString}
-              isActive={sessionIsActive(session, clientConfig)}
+              isActive={sessionIsActive(session, clientConfigData.getClientConfig)}
               fillHeight={true}
             />
           )
@@ -190,7 +198,7 @@ export const ScheduleBlockGrid = (props: Props) => {
             <GroupBlockGrid
               id={session.group.id}
               timeStringForDescription={timeString}
-              isActive={sessionIsActive(session, clientConfig)}
+              isActive={sessionIsActive(session, clientConfigData.getClientConfig)}
             />
           )
         );

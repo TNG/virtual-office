@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 import { useQuery } from "@apollo/client";
-import { GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
-import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { GET_CLIENT_CONFIG_COMPLETE, GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
+import { defaultClientConfig } from "../contexts/ClientConfigContext";
 import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
@@ -68,13 +68,23 @@ interface Props {
 
 /** Component */
 const GroupJoinCard = (props: Props) => {
-  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id, groupName, isActive } = props;
-  const classes = useStyles({ clientConfig: clientConfig, props: props });
 
-  const { data, loading, error } = useQuery(GET_GROUP_JOIN_CONFIG_COMPLETE, { variables: { id } });
+  const {
+    data: groupJoinData,
+    loading: groupJoinLoading,
+    error: groupJoinError,
+  } = useQuery(GET_GROUP_JOIN_CONFIG_COMPLETE, { variables: { id } });
+  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
+    getClientConfig: ClientConfigApollo;
+  }>(GET_CLIENT_CONFIG_COMPLETE);
 
-  if (!data) return null;
+  const classes = useStyles({
+    clientConfig: clientConfigData ? clientConfigData.getClientConfig : defaultClientConfig,
+    props: props,
+  });
+
+  if (!groupJoinData) return null;
 
   function renderJoinUrl() {
     const href = `/api/groups/${groupName}/join`;
@@ -99,12 +109,12 @@ const GroupJoinCard = (props: Props) => {
       <CardHeader
         className={classes.header}
         avatar={<GroupIcon color="action" fontSize="large" />}
-        title={<Typography variant="h5">{data.getGroupJoinConfig.title}</Typography>}
-        subheader={<Typography variant="body2">{data.getGroupJoinConfig.subtitle}</Typography>}
+        title={<Typography variant="h5">{groupJoinData.getGroupJoinConfig.title}</Typography>}
+        subheader={<Typography variant="body2">{groupJoinData.getGroupJoinConfig.subtitle}</Typography>}
       />
 
       <CardContent className={classes.content}>
-        <Typography variant="body2">{data.getGroupJoinConfig.description}</Typography>
+        <Typography variant="body2">{groupJoinData.getGroupJoinConfig.description}</Typography>
       </CardContent>
 
       <CardActions className={classes.actions}>{renderJoinUrl()}</CardActions>

@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
 import { sessionIsActive, sessionHasEnded } from "../sessionTimeProps";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
-import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
-import { ClientConfigContext } from "../contexts/ClientConfigContext";
+import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
@@ -65,9 +64,14 @@ interface Props {
 
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
-  const clientConfig: ClientConfigApollo = useContext(ClientConfigContext);
   const { id } = props;
-  const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
+  const { data: blockData, loading: blockLoading, error: blockError } = useQuery(GET_BLOCK_SHORT, {
+    variables: { id },
+  });
+  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
+    getClientConfig: ClientConfigApollo;
+  }>(GET_CLIENT_CONFIG_COMPLETE);
+
   const classes = useStyles(props);
 
   return (
@@ -78,9 +82,9 @@ export const SessionBlockGrid = (props: Props) => {
   );
 
   function renderGroupHeader() {
-    const descriptionConfigured = data.getBlock.description && (
+    const descriptionConfigured = blockData.getBlock.description && (
       <CardContent className={classes.groupHeaderCardContent}>
-        <Typography variant="body2">{data.getBlock.description}</Typography>
+        <Typography variant="body2">{blockData.getBlock.description}</Typography>
       </CardContent>
     );
 
@@ -89,7 +93,7 @@ export const SessionBlockGrid = (props: Props) => {
         <Card className={classes.groupHeaderCard}>
           <CardHeader
             className={classes.groupHeaderCardHeader}
-            title={<Typography variant="h5">{data.getBlock.title}</Typography>}
+            title={<Typography variant="h5">{blockData.getBlock.title}</Typography>}
           />
           {descriptionConfigured}
           <CardActions />
@@ -99,14 +103,19 @@ export const SessionBlockGrid = (props: Props) => {
   }
 
   function renderRoomCards() {
-    return data.getBlock.sessions.map((session: any) => {
-      const formattedStart = printHoursMinutes(parseTime(session.start, clientConfig?.timezone));
-      const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfig?.timezone));
-      const timezone = browserTimeZone();
-      const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
+    if (!clientConfigData) return null;
 
-      const hideSession: boolean = clientConfig.hideEndedSessions
-        ? clientConfig.hideEndedSessions && sessionHasEnded(session, clientConfig)
+    return blockData.getBlock.sessions.map((session: any) => {
+      const formattedStart = printHoursMinutes(parseTime(session.start, clientConfigData.getClientConfig.timezone));
+      const formattedEnd = printHoursMinutes(parseTime(session.end, clientConfigData.getClientConfig.timezone));
+      const timezone = browserTimeZone();
+      const timeString = `${formattedStart}-${formattedEnd}${
+        clientConfigData.getClientConfig.timezone ? ` ${timezone}` : ""
+      }`;
+
+      const hideSession: boolean = clientConfigData.getClientConfig.hideEndedSessions
+        ? clientConfigData.getClientConfig.hideEndedSessions &&
+          sessionHasEnded(session, clientConfigData.getClientConfig)
         : false;
 
       return (
@@ -117,7 +126,7 @@ export const SessionBlockGrid = (props: Props) => {
           <RoomCard
             id={session.room.id}
             timeStringForDescription={timeString}
-            isActive={sessionIsActive(session, clientConfig)}
+            isActive={sessionIsActive(session, clientConfigData.getClientConfig)}
             fillHeight={true}
           />
         )

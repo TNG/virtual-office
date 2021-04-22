@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 import Box from "@material-ui/core/Box/Box";
 import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import { CircularProgress, Fade, Theme } from "@material-ui/core";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { StyleConfig } from "../types";
 import { Footer } from "./Footer";
 import { BlockGrid } from "./BlockGrid";
@@ -18,7 +17,7 @@ import {
   GET_OFFICE_SHORT,
 } from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
-import { ClientConfigProvider } from "../contexts/ClientConfigContext";
+import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -63,13 +62,12 @@ export const Dashboard = () => {
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(true);
   const [searchText, setSearchText] = useState("");
-  //const [clientConfig, setClientConfig] = useState<ClientConfig | undefined>(dummyConfig);
 
   const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
   const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
-  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery(
-    GET_CLIENT_CONFIG_COMPLETE
-  );
+  const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
+    getClientConfig: ClientConfigApollo;
+  }>(GET_CLIENT_CONFIG_COMPLETE);
   const { data: blocksData, loading: blocksLoading, error: blocksError } = useQuery(GET_OFFICE_SHORT);
 
   const classes = useStyles({
@@ -84,15 +82,15 @@ export const Dashboard = () => {
   }, [searchText, officeData, meetingsData]);
 
   function renderOffice() {
+    if (!clientConfigData) return null;
+
     return (
       <Fade in={initialLoadCompleted}>
-        <ClientConfigProvider value={clientConfigData.getClientConfig}>
-          <div>
-            {blocksData.getOffice.blocks.map((block: any) => {
-              return block.isInSearch && <BlockGrid key={block.id} id={block.id} />;
-            })}
-          </div>
-        </ClientConfigProvider>
+        <div>
+          {blocksData.getOffice.blocks.map((block: any) => {
+            return block.isInSearch && <BlockGrid key={block.id} id={block.id} />;
+          })}
+        </div>
       </Fade>
     );
   }
