@@ -18,7 +18,7 @@ export class ParticipantsStore extends DataSource {
     //this.context = config.context;
   }
 
-  public getMeetings(): MeetingApollo[] {
+  public getAllMeetings(): MeetingApollo[] {
     return this.meetings;
   }
 

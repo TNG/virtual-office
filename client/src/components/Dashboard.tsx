@@ -12,7 +12,7 @@ import { applySearchToOffice } from "../search";
 import { useQuery } from "@apollo/client";
 import {
   GET_CLIENT_CONFIG_COMPLETE,
-  GET_MEETINGS_COMPLETE,
+  GET_ALL_MEETINGS_COMPLETE,
   GET_OFFICE_COMPLETE,
   GET_OFFICE_SHORT,
 } from "../apollo/gqlQueries";
@@ -65,7 +65,7 @@ export const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
 
   const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
-  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
+  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_ALL_MEETINGS_COMPLETE);
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
     getClientConfig: ClientConfigApollo;
   }>(GET_CLIENT_CONFIG_COMPLETE);
@@ -84,7 +84,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     if (officeData && meetingsData) {
-      applySearchToOffice(officeData.getOffice, meetingsData.getMeetings, searchText, getApolloClient());
+      applySearchToOffice(officeData.getOffice, meetingsData.getAllMeetings, searchText, getApolloClient());
     }
   }, [searchText, officeData, meetingsData]);
 

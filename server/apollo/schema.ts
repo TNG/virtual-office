@@ -142,7 +142,7 @@ export const typeDefs = gql`
     getSession(id: ID!): Session
     getRoom(id: ID!): Room
     getRoomLinks(ids: [ID!]!): [RoomLink!]!
-    getMeetings: [Meeting!]!
+    getAllMeetings: [Meeting!]!
     getParticipantsInMeeting(id: ID!): [Participant!]!
     getClientConfig: ClientConfig!
   }

@@ -108,9 +108,9 @@ export const GET_PARTICIPANTS_IN_MEETING_COMPLETE = gql`
   ${PARTICIPANT_FRAGMENT_COMPLETE}
 `;
 
-export const GET_MEETINGS_COMPLETE = gql`
-  query getMeetings {
-    getMeetings {
+export const GET_ALL_MEETINGS_COMPLETE = gql`
+  query getAllMeetings {
+    getAllMeetings {
       ...MeetingFragmentComplete
     }
   }

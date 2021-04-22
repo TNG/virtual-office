@@ -4,7 +4,7 @@ import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@
 import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { useQuery } from "@apollo/client";
-import { GET_GROUP_SHORT, GET_MEETINGS_COMPLETE } from "../apollo/gqlQueries";
+import { GET_GROUP_SHORT, GET_ALL_MEETINGS_COMPLETE } from "../apollo/gqlQueries";
 import { partition } from "lodash";
 import { MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 
@@ -73,7 +73,7 @@ export const GroupBlockGrid = (props: Props) => {
   const { data: groupData, loading: groupLoading, error: groupError } = useQuery(GET_GROUP_SHORT, {
     variables: { id },
   });
-  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
+  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_ALL_MEETINGS_COMPLETE);
 
   if (!(groupData && meetingsData)) {
     return null;
@@ -151,7 +151,7 @@ export const GroupBlockGrid = (props: Props) => {
   }
 
   function participantsInMeeting(meetingId: string | undefined): ParticipantApollo[] {
-    const meeting: MeetingApollo | undefined = meetingsData.getMeetings.find(
+    const meeting: MeetingApollo | undefined = meetingsData.getAllMeetings.find(
       (meeting: MeetingApollo) => meeting.id === meetingId
     );
     if (meeting) {

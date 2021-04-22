@@ -29,8 +29,8 @@ export const resolvers = {
     getRoomLinks: (_, { ids }, { dataSources }) => {
       return dataSources.officeStore.getRoomLinks(ids);
     },
-    getMeetings: (_, __, { dataSources }) => {
-      return dataSources.participantsStore.getMeetings();
+    getAllMeetings: (_, __, { dataSources }) => {
+      return dataSources.participantsStore.getAllMeetings();
     },
     getParticipantsInMeeting: (_, { id }, { dataSources }) => {
       return dataSources.participantsStore.getParticipantsInMeeting(id);
