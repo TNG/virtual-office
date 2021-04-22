@@ -10,6 +10,7 @@ import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { ClientConfigApollo, TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
+import { defaultClientConfig } from "../contexts/ClientConfigContext";
 
 /** Styles */
 interface StyleProps {
@@ -109,6 +110,7 @@ interface Props {
 /** Component */
 export const ScheduleBlockGrid = (props: Props) => {
   const { id } = props;
+
   const { data: blockData, loading: blockLoading, error: blockError } = useQuery(GET_BLOCK_SHORT, {
     variables: { id },
   });
@@ -116,9 +118,14 @@ export const ScheduleBlockGrid = (props: Props) => {
     getClientConfig: ClientConfigApollo;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
-  if (!blockData || !clientConfigData) return null;
+  const classes = useStyles({
+    clientConfig: clientConfigData ? clientConfigData.getClientConfig : defaultClientConfig,
+    data: blockData,
+  });
 
-  const classes = useStyles({ clientConfig: clientConfigData.getClientConfig, data: blockData });
+  if (!(blockData && clientConfigData)) {
+    return null;
+  }
 
   return (
     <div className={classes.root}>

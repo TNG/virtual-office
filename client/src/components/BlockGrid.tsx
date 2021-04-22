@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/styles";
 import { fade, Theme } from "@material-ui/core";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
 import { SessionBlockGrid } from "./SessionBlockGrid";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
@@ -34,7 +33,9 @@ export const BlockGrid = (props: Props) => {
 
   const { data, loading, error } = useQuery(GET_BLOCK_SHORT, { variables: { id } });
 
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
 
   return (
     <div className={classes.root}>

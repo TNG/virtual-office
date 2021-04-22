@@ -65,6 +65,8 @@ interface Props {
 /** Component */
 export const SessionBlockGrid = (props: Props) => {
   const { id } = props;
+  const classes = useStyles(props);
+
   const { data: blockData, loading: blockLoading, error: blockError } = useQuery(GET_BLOCK_SHORT, {
     variables: { id },
   });
@@ -72,7 +74,9 @@ export const SessionBlockGrid = (props: Props) => {
     getClientConfig: ClientConfigApollo;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
-  const classes = useStyles(props);
+  if (!blockData) {
+    return null;
+  }
 
   return (
     <div className={classes.root}>

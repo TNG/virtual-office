@@ -75,7 +75,9 @@ export const GroupBlockGrid = (props: Props) => {
   });
   const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_MEETINGS_COMPLETE);
 
-  if (!groupData) return null;
+  if (!(groupData && meetingsData)) {
+    return null;
+  }
 
   return (
     <div className={classes.root}>

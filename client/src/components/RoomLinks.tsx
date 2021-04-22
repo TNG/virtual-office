@@ -77,7 +77,9 @@ const RoomLinks = (props: Props) => {
     clientConfig: clientConfigData ? clientConfigData.getClientConfig : defaultClientConfig,
   });
 
-  if (!roomLinksData || roomLinksData.getRoomLinks.length <= 0 || !clientConfigData) return null;
+  if (!(roomLinksData && clientConfigData) || roomLinksData.getRoomLinks.length <= 0) {
+    return null;
+  }
 
   const groupedLinks = roomLinksData.getRoomLinks.reduce((acc, link: RoomLinkApollo) => {
     const group = link.linkGroup || "";

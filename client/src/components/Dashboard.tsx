@@ -18,6 +18,7 @@ import {
 } from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
 import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
+import { defaultClientConfig } from "../contexts/ClientConfigContext";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -60,7 +61,7 @@ export const Dashboard = () => {
     axios.get("/api/me").catch(() => history.push("/login"));
   }, [history]);*/
 
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(true);
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [searchText, setSearchText] = useState("");
 
   const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
@@ -71,9 +72,15 @@ export const Dashboard = () => {
   const { data: blocksData, loading: blocksLoading, error: blocksError } = useQuery(GET_OFFICE_SHORT);
 
   const classes = useStyles({
-    ...(clientConfigData ? clientConfigData.getClientConfig : {}),
+    ...(clientConfigData ? clientConfigData.getClientConfig : defaultClientConfig),
     backgroundUrl: Background,
   });
+
+  useEffect(() => {
+    if (officeData && meetingsData && clientConfigData && blocksData) {
+      setInitialLoadCompleted(true);
+    }
+  }, [officeLoading, meetingsLoading, clientConfigLoading, blocksLoading]);
 
   useEffect(() => {
     if (officeData && meetingsData) {
@@ -81,21 +88,7 @@ export const Dashboard = () => {
     }
   }, [searchText, officeData, meetingsData]);
 
-  function renderOffice() {
-    if (!clientConfigData) return null;
-
-    return (
-      <Fade in={initialLoadCompleted}>
-        <div>
-          {blocksData.getOffice.blocks.map((block: any) => {
-            return block.isInSearch && <BlockGrid key={block.id} id={block.id} />;
-          })}
-        </div>
-      </Fade>
-    );
-  }
-
-  if (!clientConfigData) {
+  if (!(officeData && meetingsData && clientConfigData && blocksData)) {
     return null;
   }
 
@@ -106,17 +99,6 @@ export const Dashboard = () => {
       favicon.href = clientConfigData.getClientConfig.faviconUrl;
       appleTouchIcon.href = clientConfigData.getClientConfig.faviconUrl;
     }
-  }
-
-  // TODO: check
-  if (officeLoading || meetingsLoading || clientConfigLoading) return <p>loading</p>;
-  if (officeError) return <p>ERROR: {officeError.message}</p>;
-  if (meetingsError) return <p>ERROR: {meetingsError.message}</p>;
-  if (clientConfigError) return <p>ERROR: {clientConfigError.message}</p>;
-  if (!officeData || !meetingsData || !clientConfigData || !blocksData) {
-    return <p>Not found</p>;
-  } else {
-    //setInitialLoadCompleted(true);
   }
 
   const content = initialLoadCompleted ? (
@@ -140,4 +122,18 @@ export const Dashboard = () => {
       </div>
     </div>
   );
+
+  function renderOffice() {
+    if (!clientConfigData) return null;
+
+    return (
+      <Fade in={initialLoadCompleted}>
+        <div>
+          {blocksData.getOffice.blocks.map((block: any) => {
+            return block.isInSearch && <BlockGrid key={block.id} id={block.id} />;
+          })}
+        </div>
+      </Fade>
+    );
+  }
 };
