@@ -327,18 +327,25 @@ export class OfficeStore extends DataSource {
     return roomLinks;
   }
 
-  public addRoomToGroup(
-    roomApolloConfig: RoomApolloConfig,
-    groupId: string
-  ): { roomFromOfficeStore: RoomApollo | undefined; groupFromOfficeStore: GroupApollo | undefined } {
-    for (let i = 0; i < this.groups.length; i++) {
-      const groupFromDb: GroupApolloDb = this.groups[i];
-      if (groupFromDb.id === groupId) {
+  public addRoomToGroup(roomApolloConfig: RoomApolloConfig, groupId: string): boolean {
+    for (let group of this.groups) {
+      if (group.id === groupId) {
         const roomApolloDb: RoomApolloDb = this.importRoomApolloConfig(roomApolloConfig);
-        groupFromDb.rooms.push(roomApolloDb.id);
-        return { roomFromOfficeStore: this.getRoom(roomApolloDb.id), groupFromOfficeStore: this.getGroup(groupId) };
+        group.rooms.push(roomApolloDb.id);
+        return true;
       }
     }
-    return { roomFromOfficeStore: undefined, groupFromOfficeStore: undefined };
+    return false;
+  }
+
+  public removeRoomFromGroup(roomId: string, groupId: string): boolean {
+    for (let group of this.groups) {
+      if (group.id === groupId) {
+        const roomCountBefore: number = group.rooms.length;
+        group.rooms = group.rooms.filter((roomIdInDb: string) => roomIdInDb !== roomId);
+        return roomCountBefore > group.rooms.length;
+      }
+    }
+    return false;
   }
 }

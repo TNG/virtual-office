@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { useQuery } from "@apollo/client";
-import { GET_GROUP_SHORT, GET_ALL_MEETINGS_COMPLETE } from "../apollo/gqlQueries";
+import {
+  GET_GROUP_SHORT,
+  GET_ALL_MEETINGS_COMPLETE,
+  PARTICIPANT_MUTATED_SUBSCRIPTION,
+  ROOM_IN_GROUP_MUTATED_SUBSCRIPTION,
+} from "../apollo/gqlQueries";
 import { partition } from "lodash";
-import { MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
+import { GroupApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -70,10 +75,17 @@ export const GroupBlockGrid = (props: Props) => {
   const { id, timeStringForDescription, isActive } = props;
   const classes = useStyles(props);
 
-  const { data: groupData, loading: groupLoading, error: groupError } = useQuery(GET_GROUP_SHORT, {
-    variables: { id },
-  });
+  const { subscribeToMore: subscribeToGroup, data: groupData, loading: groupLoading, error: groupError } = useQuery(
+    GET_GROUP_SHORT,
+    {
+      variables: { id },
+    }
+  );
   const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_ALL_MEETINGS_COMPLETE);
+
+  useEffect(() => {
+    subscribeToRoomInGroupMutations();
+  }, []);
 
   if (!(groupData && meetingsData)) {
     return null;
@@ -166,5 +178,19 @@ export const GroupBlockGrid = (props: Props) => {
         {card}
       </div>
     );
+  }
+
+  function subscribeToRoomInGroupMutations() {
+    subscribeToGroup({
+      document: ROOM_IN_GROUP_MUTATED_SUBSCRIPTION,
+      updateQuery: (currentData, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return currentData;
+        } else {
+          console.log(subscriptionData.data.roomInGroupMutated.group);
+          return { getGroup: subscriptionData.data.roomInGroupMutated.group };
+        }
+      },
+    });
   }
 };

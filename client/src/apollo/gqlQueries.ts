@@ -3,6 +3,7 @@ import {
   BLOCK_FRAGMENT_COMPLETE,
   BLOCK_FRAGMENT_SHORT,
   CLIENT_CONFIG_FRAGMENT_COMPLETE,
+  GROUP_FRAGMENT_COMPLETE,
   GROUP_FRAGMENT_SHORT,
   GROUP_JOIN_CONFIG_FRAGMENT_COMPLETE,
   MEETING_FRAGMENT_COMPLETE,
@@ -128,6 +129,18 @@ export const PARTICIPANT_MUTATED_SUBSCRIPTION = gql`
     }
   }
   ${PARTICIPANT_FRAGMENT_COMPLETE}
+`;
+
+export const ROOM_IN_GROUP_MUTATED_SUBSCRIPTION = gql`
+  subscription roomInGroupMutated {
+    roomInGroupMutated {
+      mutationType
+      group {
+        ...GroupFragmentComplete
+      }
+    }
+  }
+  ${GROUP_FRAGMENT_COMPLETE}
 `;
 
 export const GET_CLIENT_CONFIG_COMPLETE = gql`

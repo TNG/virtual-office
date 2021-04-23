@@ -157,9 +157,9 @@ export const Dashboard = () => {
         let newMeetings: MeetingApollo[] = JSON.parse(JSON.stringify(currentData.getAllMeetings));
         newMeetings.forEach((meeting: MeetingApollo) => {
           if (meeting.id === subscriptionData.data.participantMutated.meetingId) {
-            if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_ADDED") {
+            if (subscriptionData.data.participantMutated.mutationType === "ADD") {
               meeting.participants.push(subscriptionData.data.participantMutated.participant);
-            } else if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_REMOVED") {
+            } else if (subscriptionData.data.participantMutated.mutationType === "REMOVE") {
               meeting.participants = meeting.participants.filter(
                 (participant: ParticipantApollo) =>
                   participant.id !== subscriptionData.data.participantMutated.participant.id

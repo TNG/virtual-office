@@ -148,53 +148,42 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    participantMutated: ParticipantMutatedPayload!
+    participantMutated: ParticipantMutationResponse!
+    roomInGroupMutated: RoomInGroupMutationResponse!
   }
 
   type Mutation {
-    addRoomToGroup(roomConfig: RoomConfig!, groupId: ID!): AddRoomToGroupResponse!
-    addParticipantToMeeting(participant: ParticipantInput!, id: ID!): AddParticipantToMeetingResponse!
-    removeParticipantFromMeeting(participant: ParticipantInput!, id: ID!): AddParticipantToMeetingResponse!
+    addParticipantToMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutationResponse!
+    removeParticipantFromMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutationResponse!
+    addRoomToGroup(roomInput: RoomInput!, groupId: ID!): RoomInGroupMutationResponse!
+    removeRoomFromGroup(roomId: ID!, groupId: ID!): RoomInGroupMutationResponse!
+  }
+
+  enum MutationType {
+    ADD
+    REMOVE
+    UPDATE
   }
 
   interface MutationResponse {
     success: Boolean!
     message: String!
+    mutationType: MutationType!
   }
 
-  input RoomConfig {
-    name: String!
-    description: String
-    joinUrl: String
-    titleUrl: String
-    icon: String
-    roomLinks: [RoomLinkConfig!]
-    slackNotification: SlackNotificationConfig
-    meetingId: String
-  }
-
-  input RoomLinkConfig {
-    href: String!
-    text: String!
-    icon: String
-    linkGroup: String
-  }
-
-  input SlackNotificationConfig {
-    channelId: String!
-    notificationInterval: Float
-  }
-
-  type AddRoomToGroupResponse implements MutationResponse {
+  type ParticipantMutationResponse implements MutationResponse {
     success: Boolean!
     message: String!
-    room: Room
+    mutationType: MutationType!
+    participant: Participant!
+    meetingId: ID!
+  }
+
+  type RoomInGroupMutationResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
     group: Group
-  }
-
-  type AddParticipantToMeetingResponse implements MutationResponse {
-    success: Boolean!
-    message: String!
   }
 
   input ParticipantInput {
@@ -204,14 +193,26 @@ export const typeDefs = gql`
     imageUrl: String
   }
 
-  type ParticipantMutatedPayload {
-    mutationType: ParticipantMutationType!
-    participant: Participant!
-    meetingId: ID!
+  input RoomInput {
+    name: String!
+    description: String
+    joinUrl: String
+    titleUrl: String
+    icon: String
+    roomLinks: [RoomLinkInput!]
+    slackNotification: SlackNotificationInput
+    meetingId: String
   }
 
-  enum ParticipantMutationType {
-    PARTICIPANT_ADDED
-    PARTICIPANT_REMOVED
+  input RoomLinkInput {
+    href: String!
+    text: String!
+    icon: String
+    linkGroup: String
+  }
+
+  input SlackNotificationInput {
+    channelId: String!
+    notificationInterval: Float
   }
 `;

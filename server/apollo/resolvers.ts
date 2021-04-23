@@ -41,67 +41,80 @@ export const resolvers = {
   },
   Subscription: {
     participantMutated: {
-      subscribe: () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
+        (payload, variables) => payload.participantMutated.success
+      ),
+    },
+    roomInGroupMutated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(["ROOM_IN_GROUP_ADDED", "ROOM_IN_GROUP_REMOVED"]),
+        (payload, variables) => payload.roomInGroupMutated.success
+      ),
     },
   },
   Mutation: {
-    addRoomToGroup: (_, { roomConfig, groupId }, { dataSources }) => {
-      const {
-        roomFromOfficeStore,
-        groupFromOfficeStore,
-      }: {
-        roomFromOfficeStore: RoomApollo | undefined;
-        groupFromOfficeStore: GroupApollo | undefined;
-      } = dataSources.officeStore.addRoomToGroup(roomConfig, groupId);
-      const success: boolean =
-        !!roomFromOfficeStore &&
-        !!groupFromOfficeStore &&
-        groupFromOfficeStore?.rooms.some((room: RoomApollo) => room.id === roomFromOfficeStore.id);
-      const message: string = success
-        ? `Added room "${roomFromOfficeStore.name}" (ID=${roomFromOfficeStore.id}) to group "${groupFromOfficeStore.name}" (ID=${roomFromOfficeStore.id}).`
-        : !groupFromOfficeStore
-        ? `Error! Group with ID=${groupId} does not exist.`
-        : !roomFromOfficeStore
-        ? `Error! Room provided is not a valid room type.`
-        : `Undefined Error!`;
-      return {
+    addRoomToGroup: (_, { roomInput, groupId }, { dataSources }) => {
+      const success: boolean = dataSources.officeStore.addRoomToGroup(roomInput, groupId);
+
+      const mutationResponse = {
         success: success,
-        message: message,
-        room: roomFromOfficeStore,
-        group: groupFromOfficeStore,
+        message: success ? "Successfully added room to group!" : "GroupId not existing!",
+        mutationType: "ADD",
+        group: dataSources.officeStore.getGroup(groupId),
       };
-    },
-    addParticipantToMeeting: (_, { participant, id }, { dataSources }) => {
-      const success: boolean = dataSources.participantsStore.addParticipantToMeeting(participant, id);
+
       if (success) {
-        pubsub.publish("PARTICIPANT_ADDED", {
-          participantMutated: {
-            mutationType: "PARTICIPANT_ADDED",
-            participant: participant,
-            meetingId: id,
-          },
-        });
+        pubsub.publish("ROOM_IN_GROUP_ADDED", { roomInGroupMutated: mutationResponse });
       }
-      return {
+      return mutationResponse;
+    },
+    removeRoomFromGroup: (_, { roomId, groupId }, { dataSources }) => {
+      const success: boolean = dataSources.officeStore.removeRoomFromGroup(roomId, groupId);
+
+      const mutationResponse = {
+        success: success,
+        message: success ? "Successfully removed room from group!" : "Room or group not existing or room not in group!",
+        mutationType: "REMOVE",
+        group: dataSources.officeStore.getGroup(groupId),
+      };
+
+      if (success) {
+        pubsub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
+      }
+      return mutationResponse;
+    },
+    addParticipantToMeeting: (_, { participant, meetingId }, { dataSources }) => {
+      const success: boolean = dataSources.participantsStore.addParticipantToMeeting(participant, meetingId);
+
+      const mutationResponse = {
         success: success,
         message: success ? "Successfully added participant!" : "Participant already in meeting!",
+        mutationType: "ADD",
+        participant: participant,
+        meetingId: meetingId,
       };
-    },
-    removeParticipantFromMeeting: (_, { participant, id }, { dataSources }) => {
-      const success: boolean = dataSources.participantsStore.removeParticipantFromMeeting(participant, id);
+
       if (success) {
-        pubsub.publish("PARTICIPANT_REMOVED", {
-          participantMutated: {
-            mutationType: "PARTICIPANT_REMOVED",
-            participant: participant,
-            meetingId: id,
-          },
-        });
+        pubsub.publish("PARTICIPANT_ADDED", { participantMutated: mutationResponse });
       }
-      return {
+      return mutationResponse;
+    },
+    removeParticipantFromMeeting: (_, { participant, meetingId }, { dataSources }) => {
+      const success: boolean = dataSources.participantsStore.removeParticipantFromMeeting(participant, meetingId);
+
+      const mutationResponse = {
         success: success,
         message: success ? "Successfully removed participant!" : "Participant not in meeting!",
+        mutationType: "REMOVE",
+        participant: participant,
+        meetingId: meetingId,
       };
+
+      if (success) {
+        pubsub.publish("PARTICIPANT_REMOVED", { participantMutated: mutationResponse });
+      }
+      return mutationResponse;
     },
   },
   Block: {
