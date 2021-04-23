@@ -55,44 +55,11 @@ const RoomParticipants = (props: Props) => {
     setShowParticipants(open);
   }
 
-  function subscribeToParticipantMutations() {
-    subscribeToMore({
-      document: PARTICIPANT_MUTATED_SUBSCRIPTION,
-      variables: { meetingId: meetingId },
-      updateQuery: (currentData, { subscriptionData }) => {
-        if (!subscriptionData.data) {
-          return currentData;
-        }
-        if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_ADDED") {
-          return {
-            getParticipantsInMeeting: [
-              ...currentData.getParticipantsInMeeting,
-              subscriptionData.data.participantMutated.participant,
-            ],
-          };
-        } else if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_REMOVED") {
-          return {
-            getParticipantsInMeeting: currentData.getParticipantsInMeeting.filter(
-              (participant: ParticipantApollo) =>
-                participant.id !== subscriptionData.data.participantMutated.participant.id
-            ),
-          };
-        } else {
-          return currentData;
-        }
-      },
-    });
-  }
-
   const classes = useStyles();
 
-  const { subscribeToMore, data, loading, error } = useQuery(GET_PARTICIPANTS_IN_MEETING_COMPLETE, {
+  const { data, loading, error } = useQuery(GET_PARTICIPANTS_IN_MEETING_COMPLETE, {
     variables: { id: meetingId },
   });
-
-  useEffect(() => {
-    subscribeToParticipantMutations();
-  }, []);
 
   if (!data) return null;
 

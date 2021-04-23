@@ -15,9 +15,10 @@ import {
   GET_ALL_MEETINGS_COMPLETE,
   GET_OFFICE_COMPLETE,
   GET_OFFICE_SHORT,
+  PARTICIPANT_MUTATED_SUBSCRIPTION,
 } from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
-import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
+import { ClientConfigApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
 
 /** Styles */
@@ -65,7 +66,12 @@ export const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
 
   const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
-  const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_ALL_MEETINGS_COMPLETE);
+  const {
+    subscribeToMore: subscribeToMeetings,
+    data: meetingsData,
+    loading: meetingsLoading,
+    error: meetingsError,
+  } = useQuery(GET_ALL_MEETINGS_COMPLETE);
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
     getClientConfig: ClientConfigApollo;
   }>(GET_CLIENT_CONFIG_COMPLETE);
@@ -75,6 +81,10 @@ export const Dashboard = () => {
     ...(clientConfigData ? clientConfigData.getClientConfig : defaultClientConfig),
     backgroundUrl: Background,
   });
+
+  useEffect(() => {
+    subscribeToParticipantMutations();
+  }, []);
 
   useEffect(() => {
     if (officeData && meetingsData && clientConfigData && blocksData) {
@@ -135,5 +145,30 @@ export const Dashboard = () => {
         </div>
       </Fade>
     );
+  }
+
+  function subscribeToParticipantMutations() {
+    subscribeToMeetings({
+      document: PARTICIPANT_MUTATED_SUBSCRIPTION,
+      updateQuery: (currentData, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return currentData;
+        }
+        let newMeetings: MeetingApollo[] = JSON.parse(JSON.stringify(currentData.getAllMeetings));
+        newMeetings.forEach((meeting: MeetingApollo) => {
+          if (meeting.id === subscriptionData.data.participantMutated.meetingId) {
+            if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_ADDED") {
+              meeting.participants.push(subscriptionData.data.participantMutated.participant);
+            } else if (subscriptionData.data.participantMutated.mutationType === "PARTICIPANT_REMOVED") {
+              meeting.participants = meeting.participants.filter(
+                (participant: ParticipantApollo) =>
+                  participant.id !== subscriptionData.data.participantMutated.participant.id
+              );
+            }
+          }
+        });
+        return { getAllMeetings: newMeetings };
+      },
+    });
   }
 };

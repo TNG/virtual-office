@@ -118,12 +118,13 @@ export const GET_ALL_MEETINGS_COMPLETE = gql`
 `;
 
 export const PARTICIPANT_MUTATED_SUBSCRIPTION = gql`
-  subscription participantMutated($meetingId: ID!) {
-    participantMutated(meetingId: $meetingId) {
+  subscription participantMutated {
+    participantMutated {
       mutationType
       participant {
         ...ParticipantFragmentComplete
       }
+      meetingId
     }
   }
   ${PARTICIPANT_FRAGMENT_COMPLETE}

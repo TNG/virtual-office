@@ -148,7 +148,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    participantMutated(meetingId: ID!): ParticipantMutatedPayload!
+    participantMutated: ParticipantMutatedPayload!
   }
 
   type Mutation {
@@ -207,6 +207,7 @@ export const typeDefs = gql`
   type ParticipantMutatedPayload {
     mutationType: ParticipantMutationType!
     participant: Participant!
+    meetingId: ID!
   }
 
   enum ParticipantMutationType {

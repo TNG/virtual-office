@@ -41,20 +41,8 @@ export const resolvers = {
   },
   Subscription: {
     participantMutated: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
-        (payload, variables) => payload.meetingId === variables.meetingId
-      ),
+      subscribe: () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
     },
-    /*participantAdded: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(["PARTICIPANT_ADDED"]),
-        (payload, variables) => payload.meetingId === variables.id
-      ),
-    },
-    participantRemoved: {
-      subscribe: () => pubsub.asyncIterator(["PARTICIPANT_REMOVED"]),
-    },*/
   },
   Mutation: {
     addRoomToGroup: (_, { roomConfig, groupId }, { dataSources }) => {
@@ -87,8 +75,11 @@ export const resolvers = {
       const success: boolean = dataSources.participantsStore.addParticipantToMeeting(participant, id);
       if (success) {
         pubsub.publish("PARTICIPANT_ADDED", {
-          participantMutated: { mutationType: "PARTICIPANT_ADDED", participant: participant },
-          meetingId: id,
+          participantMutated: {
+            mutationType: "PARTICIPANT_ADDED",
+            participant: participant,
+            meetingId: id,
+          },
         });
       }
       return {
@@ -100,8 +91,11 @@ export const resolvers = {
       const success: boolean = dataSources.participantsStore.removeParticipantFromMeeting(participant, id);
       if (success) {
         pubsub.publish("PARTICIPANT_REMOVED", {
-          participantMutated: { mutationType: "PARTICIPANT_REMOVED", participant: participant },
-          meetingId: id,
+          participantMutated: {
+            mutationType: "PARTICIPANT_REMOVED",
+            participant: participant,
+            meetingId: id,
+          },
         });
       }
       return {
