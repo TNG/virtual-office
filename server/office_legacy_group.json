@@ -1,0 +1,61 @@
+{
+  "groups": [
+    {
+      "id": "g1",
+      "name": "Group1"
+    },
+    {
+      "id": "g2",
+      "name": "Group2"
+    }
+  ],
+  "rooms": [
+    {
+      "groupId": "g1",
+      "meetingId": "91905545648",
+      "name": "P&E-Zoom",
+      "joinUrl": "https://zoom.us/j/91905545648?pwd=azM4Q3NHd0JwdWN0VVJOZ3orTWk3QT09",
+      "icon": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Assistance.jpg",
+      "roomId": "7f1e8f5f-b116-4f30-927d-5327a22127cb"
+    },
+    {
+      "groupId": "g1",
+      "name": "Geonosis",
+      "joinUrl": "https://zoom.us/j/946906589?pwd=ZnFibnAvOHdGNDVBWCtyZXZuazdhUT09",
+      "icon": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Geonosis.jpg",
+      "roomId": "2361f847-d693-4019-af78-efd18678f149"
+    },
+    {
+      "groupId": "g1",
+      "meetingId": "95884899984",
+      "name": "Tatooine",
+      "joinUrl": "https://zoom.us/j/95884899984?pwd=WEFYeFV6aVpUK1RSTUhLd3JZMEFSdz09",
+      "icon": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Tatooine.jpg",
+      "roomId": "07539fd9-8c28-481d-a4af-69d4d8109bd9"
+    },
+    {
+      "groupId": "g1",
+      "meetingId": "96403812995",
+      "name": "Alderaan",
+      "joinUrl": "https://zoom.us/j/96403812995?pwd=TVFmc29SdDBhTThST1gzenp2U1NCZz09",
+      "icon": "https://i.imgur.com/Gx0gvFV.jpg",
+      "roomId": "alderaan"
+    },
+    {
+      "groupId": "g2",
+      "meetingId": "96827182012",
+      "name": "P&E und Partner",
+      "joinUrl": "https://zoom.us/j/96827182012?pwd=UXZTeC9oaDN0cWZUSDBUMmF3YjlpZz09",
+      "icon": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Kaffeek%C3%BCche.jpg",
+      "roomId": "6909949f-f586-41c8-a06e-4d04aadf7f6f"
+    },
+    {
+      "groupId": "g2",
+      "meetingId": "97652607410",
+      "name": "P&E-Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/97652607410?pwd=RDZpUDRQa0ZVYm9OTVd5ejJaRzEyUT09",
+      "icon": "https://virtual-office-icons.s3.eu-central-1.amazonaws.com/people-events/Kaffeek%C3%BCche.jpg",
+      "roomId": "4aa21ef8-182e-43af-b927-8167c2494cbd"
+    }
+  ]
+}

@@ -1,0 +1,454 @@
+{
+  "schedule": {
+    "tracks": [
+      {
+        "id": "frogstar",
+        "name": "Frogstar"
+      },
+      {
+        "id": "unterwelt",
+        "name": "Unterwelt"
+      }
+    ],
+    "sessions": [
+      {
+        "groupId": "coffee-rooms",
+        "start": "06:45",
+        "end": "07:45",
+        "alwaysActive": true
+      },
+      {
+        "groupId": "new_workshops",
+        "start": "08:00",
+        "end": "09:00",
+        "alwaysActive": true
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "f1faa0a0-f52c-433a-abdc-a3304c2ff00c",
+        "start": "09:15",
+        "end": "10:15"
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "b75fed44-ae67-44b2-b0e3-44b7464496de",
+        "start": "10:45",
+        "end": "11:00"
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "aa2767eb-0746-42da-87ee-f93486480732",
+        "start": "11:00",
+        "end": "12:00"
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "129c75e6-1b31-4417-be6c-504d3dc6dacb",
+        "start": "13:30",
+        "end": "14:00"
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "0beb76f9-2fee-4c4d-bef6-038db9e880c6",
+        "start": "14:15",
+        "end": "15:15"
+      },
+      {
+        "roomId": "55cf66a2-1ea6-4255-a808-7a32dc342b54",
+        "start": "15:30",
+        "end": "15:45"
+      },
+      {
+        "trackId": "unterwelt",
+        "roomId": "157f293e-d5b6-4f38-aeb3-daef48300f05",
+        "start": "15:45",
+        "end": "16:30"
+      },
+      {
+        "trackId": "frogstar",
+        "roomId": "978c259d-b878-4794-b350-a20949971f9e",
+        "start": "09:15",
+        "end": "10:00"
+      },
+      {
+        "trackId": "frogstar",
+        "roomId": "cc058d8f-c6e9-4292-ae9b-b8172d2f2df5",
+        "start": "10:45",
+        "end": "12:00"
+      },
+      {
+        "trackId": "frogstar",
+        "roomId": "963d3935-39bd-49b0-8389-c78652f08a81",
+        "start": "14:15",
+        "end": "15:30"
+      },
+      {
+        "roomId": "24ae5c78-ee24-4cfb-84f8-52378c726692",
+        "start": "13:00",
+        "end": "13:30"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "id": "coffee-rooms",
+      "groupJoin": {
+        "minimumParticipantCount": 3,
+        "title": "Kaffeeküchen",
+        "description": "Einer zufälligen Kaffeeküche beitreten."
+      }
+    },
+    {
+      "id": "tech-huddles",
+      "name": "Tech Huddles (13:30 - 14:00)"
+    },
+    {
+      "id": "new_workshops",
+      "name": "new_workshops_name",
+      "description": "new_workshops_description"
+    }
+  ],
+  "rooms": [
+    {
+      "roomId": "test_id_ws1",
+      "meetingId": "9999999991",
+      "name": "WS Power Napping",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#workshop",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "new_workshops",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "roomId": "test_id_ws2",
+      "meetingId": "9999999992",
+      "name": "WS Cooking",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#workshop",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "new_workshops",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "roomId": "test_id_ws3",
+      "meetingId": "9999999993",
+      "name": "WS Swimming",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#workshop",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "new_workshops",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "roomId": "test_id_ws4",
+      "meetingId": "9999999994",
+      "name": "WS CodeKatas",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#workshop",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "new_workshops",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "roomId": "test_id_ws5",
+      "meetingId": "9999999995",
+      "name": "WS Coding",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://www.flaticon.com/svg/vstatic/svg/2849/2849198.svg?token=exp=1614345002~hmac=dcbbc9f0384175295024016f343097da",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#workshop",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "new_workshops",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "roomId": "kaffeekueche",
+      "meetingId": "6140140408",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "icon": "https://image.flaticon.com/icons/png/512/924/924514.png",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms",
+      "slackNotification": {
+        "channelId": "C011LJN92FP"
+      }
+    },
+    {
+      "meetingId": "96176786140",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/96176786140?pwd=cERpdk5MaUFyVkFqYVBaMW9WQXNjQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms"
+    },
+    {
+      "meetingId": "93247588460",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/93247588460?pwd=V3hRRjFFYXNkN1UzMzg3UUUrY050UT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms"
+    },
+    {
+      "meetingId": "94965347836",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/94965347836?pwd=bk5hOGllemxSdjJ0V0JsV1FoN3prZz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms"
+    },
+    {
+      "meetingId": "94114562333",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/94114562333?pwd=THcxZmdaMGVBQ2JLdG1OZWpkc3ltdz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms"
+    },
+    {
+      "meetingId": "96189701221",
+      "name": "Kaffeeküche",
+      "joinUrl": "https://zoom.us/j/96189701221?pwd=S1B0WWN6N0wvcld0Z1J0K0VkSXp0QT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ],
+      "groupId": "coffee-rooms"
+    },
+    {
+      "roomId": "f1faa0a0-f52c-433a-abdc-a3304c2ff00c",
+      "name": "async/await",
+      "subtitle": "[Jan Gosmann] \n\nÜber die letzten Jahre haben zunehmend mehr Programmiersprachen (C#, Python, JavaScript, Rust, ...) eine neue Syntax für asynchrone Programmierung eingeführt: async/await. Was ist der Unterschied zu anderen Methoden nebenläufiger Programmierung? Wofür eignet sich async/await besonders? Warum ist es so populär? Was passiert eigentlich im Hintergrund?",
+      "meetingId": "804262732",
+      "joinUrl": "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78CL86N",
+          "text": "#td-unterwelt-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "b75fed44-ae67-44b2-b0e3-44b7464496de",
+      "name": "Kaffeerunde",
+      "subtitle": "",
+      "meetingId": "804262732",
+      "joinUrl": "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78CL86N",
+          "text": "#td-unterwelt-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "aa2767eb-0746-42da-87ee-f93486480732",
+      "name": "Blobby VR - Ein Multiplayer Volleyballspiel in Unity 3D",
+      "subtitle": "[Thomas Endres, Christoph Bergemann] \n\nWie können wir ein Multiplayer-Volleyballspiel in VR realisieren? Welche Fallstricke werden uns auf dem Weg begegnen? Und wird das Spiel am Ende Spaß machen? Heute können wir Antworten auf diese Fragen geben, die uns vor zwei Jahren bewegten. In diesem Vortrag werden wir über die Herausforderungen berichten, die wir auf dem Weg zu einem fertigen Spiel überwinden mussten.\n\nNach einem Einblick in die inneren Mechaniken des Spiels beschäftigen wir uns insbesondere mit der Netzwerk-Implementierung, der Cloud-Umsetzung und der Migration auf die Oculus Quest.",
+      "meetingId": "804262732",
+      "joinUrl": "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78CL86N",
+          "text": "#td-unterwelt-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "129c75e6-1b31-4417-be6c-504d3dc6dacb",
+      "name": "Lightning Talks",
+      "subtitle": "[Various]",
+      "meetingId": "690987970",
+      "joinUrl": "https://zoom.us/j/690987970?pwd=dUlacThRY1NjSmZXVXdoYkg1TExvQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78AK9DG",
+          "text": "#ahs-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "0beb76f9-2fee-4c4d-bef6-038db9e880c6",
+      "name": "Die Trainer-KI - Mit neuronalen Netzen zu den Olympischen Spielen",
+      "subtitle": "[Jonas Mayer, Thomas Endres, Marc Schuh] \n\nKünstliche Intelligenz kann auch im olympischen Sport eingesetzt werden, um in Echtzeit Technikauswertungen für Sportler zu erstellen und somit stundenlange Nachbearbeitung der Videos durch den Trainer zu ersetzen. In Zusammenarbeit mit dem Olympiastützpunkt Heidelberg hat das TNG Innovation Hacking Team eine Software erstellt, die die wissenschaftliche Technik-Analyse im Kanu-Spitzensport automatisiert. In diesem Vortrag stellen wir die verwendeten Techniken aus dem Bereich der KI und der Computer Vision vor.",
+      "meetingId": "804262732",
+      "joinUrl": "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78CL86N",
+          "text": "#td-unterwelt-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "55cf66a2-1ea6-4255-a808-7a32dc342b54",
+      "name": "Kaffeerunde",
+      "subtitle": "",
+      "meetingId": "6140140408",
+      "joinUrl": "https://zoom.us/j/6140140408?pwd=VlhaV3J0Ukg5aTEwZEV0OFJiNDRRQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/C011LJN92FP",
+          "text": "#kaffee",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "157f293e-d5b6-4f38-aeb3-daef48300f05",
+      "name": "Bugs That Kill - A Post-Mortem",
+      "subtitle": "[Jan Greis] \n\nWhile most of us probably don't work on software where bugs could cause an immediate loss of life, there are software projects where \"the worst that could happen\" is rather grim. This talk will outline a number of cases where bugs actually or almost resulted in catastrophic consequences.",
+      "meetingId": "804262732",
+      "joinUrl": "https://zoom.us/j/804262732?pwd=Y0VWMkI0djhOa29OamMxRkdYOFc4Zz09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78CL86N",
+          "text": "#td-unterwelt-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "cc058d8f-c6e9-4292-ae9b-b8172d2f2df5",
+      "name": "Curriculum: Wie tickt TNG?",
+      "subtitle": "[curriculum-tng@tngtech.com, Eric Weikl, Christoph Stock] \n\n * Warum gibt es TNG?\n * Was bedeutet der Name?\n * Welche Werte haben wir, und warum?\n * Welche Kunden haben und brauchen wir?\n * Wie organisiert sich TNG, und warum?\n * Solche grundlegenden Themen werden im Vortrag besprochen und oft viele Fragen beantwortet.",
+      "meetingId": "277324357",
+      "joinUrl": "https://zoom.us/j/277324357?pwd=bHV5Nm8walVaMUNmb1AvRk53YU9oQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CLLG504A3",
+          "text": "#td-frogstar-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "963d3935-39bd-49b0-8389-c78652f08a81",
+      "name": "MSD Testdaten Teil I: Testdatengenerierung mit Schwerpunkt Unittests",
+      "subtitle": "[Jonas Höf, Jiri Chmela] \n\nTesten von komplexem Code birgt einige Herausforderungen und Fallen. In diesem Vortrag geht es darum, wie man Testdaten sinnvoll erzeugt, damit der Testcode auch bei einer großen Anzahl an Tests und komplexen Objekten verständlich und gut wartbar bleibt. Konkret werden wir Schritt für Schritt zeigen, welche Vorteile TestdataFactories in Verbindung mit ValueProvidern bringen und worauf man dabei achten sollte. In diesem Teil I geht es um Unit Tests, ein zweiter Vortrag zum Thema Integrationstest baut darauf auf.\n\nHinweis zum Remote-Setup: Bitte tretet dem Slack-Channel #msd-testdata-2021-02-26 [https://tngtech.slack.com/archives/C01PG71DNDR] bei. In diesem Channel werden wir Fragen beantworten und per Videocall die Folien zeigen, während es im Zoom-Stream die Codebeispiele gibt. Die Folien könnt ihr auch hier [https://confluence.tngtech.com/display/TNGWeiterbildung/%28MSD%29+Testdaten]finden.\n\nWe're happy to give the talk in English. Just let us know!",
+      "meetingId": "277324357",
+      "joinUrl": "https://zoom.us/j/277324357?pwd=bHV5Nm8walVaMUNmb1AvRk53YU9oQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CLLG504A3",
+          "text": "#td-frogstar-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "24ae5c78-ee24-4cfb-84f8-52378c726692",
+      "name": "Aktuelle halbe Stunde",
+      "subtitle": "",
+      "meetingId": "690987970",
+      "joinUrl": "https://zoom.us/j/690987970?pwd=dUlacThRY1NjSmZXVXdoYkg1TExvQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CL78AK9DG",
+          "text": "#ahs-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "978c259d-b878-4794-b350-a20949971f9e",
+      "name": "Curriculum: Architektur & Patterns",
+      "subtitle": "[curriculum-architecture@tngtech.com, Michael Echerer] \n\nJede Software hat eine Architektur! - Hoffentlich passend für den Kontext statt zufällig entstanden.Nicht jeder Entwickler nennt sich Architekt, aber jeder im Team gestaltet die Softwarearchitektur mit. Grund genug zu wissen, worum es geht und wieso Architekturarbeit und -dokumentation wichtig ist bzw. nicht vernachlässigt werden darf.\n\nSogenannte Patterns helfen dabei die Architektur im Großen zu gestalten und auch auf Sourcecode-Ebene sauber zu halten. Sie dienen überdies auch der Kommunikation zwischen Entwicklern.\n\nWer bisher nur \"programmiert\" hat, lernt wichtige Aspekte kennen, um ein Software-Entwickler zu werden und was es bedeutet für die Architektur einen Teil der Mitverantwortung früh zu übernehmen.",
+      "meetingId": "277324357",
+      "joinUrl": "https://zoom.us/j/277324357?pwd=bHV5Nm8walVaMUNmb1AvRk53YU9oQT09",
+      "links": [
+        {
+          "href": "https://tngtech.slack.com/archives/CLLG504A3",
+          "text": "#td-frogstar-live",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    },
+    {
+      "roomId": "code-katas",
+      "name": "Code Katas",
+      "subtitle": "[Johannes Leimer, Marion Knopp, Ruben Straube, Sandro Bauer] \n\nSpontanteilnahme möglich - Keine Anmeldung erforderlichAlle weiteren Infos sind im Slack-Channel #code-katas-24 [https://tngtech.slack.com/archives/C01GWDEPW64].\n\nIn 2021 möchten wir an den 2/4er Techdays ein neues Format ausprobieren: Regelmäßige Code-Katas! Während diesen kleinen Programmieraufgaben üben wir Techniken wie Test-Driven Development, Pairing, Refactoring oder andere handwerkliche Fähigkeiten.",
+      "meetingId": "94568125415",
+      "joinUrl": "https://zoom.us/j/94568125415?pwd=WWF3blRyRUZ0VTdFeUxnU004SVNzZz09",
+      "links": [
+        {
+          "text": "#code-katas-24",
+          "href": "https://tngtech.slack.com/archives/C01GWDEPW64",
+          "icon": "https://cdn.iconscout.com/icon/free/png-256/slack-1425877-1205068.png"
+        }
+      ]
+    }
+  ]
+}
