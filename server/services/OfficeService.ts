@@ -9,7 +9,7 @@ import fs from "fs";
 import { Schedule, SessionLegacy } from "../express/types/Schedule";
 import { DateTime } from "luxon";
 import { Block, Office, OfficeWithBlocks } from "../express/types/Office";
-import { officeLegacyToOfficeWithBlocks } from "../express/utils/convertOffice";
+import { getOfficeWithBlocksFromOffice } from "../express/utils/convertOffice";
 import { Room } from "../express/types/Room";
 import { Session } from "../express/types/Session";
 
@@ -164,13 +164,3 @@ const sessionBelongsToRoom = (room: RoomLegacy) => (session: SessionLegacy) => {
 
 export const getStartDateTime = (start: string, zone: string | undefined, sessionStartMinutesOffset: number) =>
   DateTime.fromFormat(start, "HH:mm", { zone }).minus({ minute: sessionStartMinutesOffset });
-
-export const getOfficeWithBlocksFromOffice = (
-  officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy
-): OfficeWithBlocks => {
-  if ("blocks" in officeOrConfigOptionsLegacy) {
-    return officeOrConfigOptionsLegacy as OfficeWithBlocks;
-  } else {
-    return officeLegacyToOfficeWithBlocks(officeOrConfigOptionsLegacy as ConfigOptionsLegacy);
-  }
-};

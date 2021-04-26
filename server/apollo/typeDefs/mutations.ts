@@ -1,56 +1,57 @@
 // @ts-nocheck
 
-import { BlockApollo, SessionApollo } from "./ApolloTypes";
-import { GroupApollo, RoomApollo } from "./TypesApollo";
+import { gql } from "apollo-server-express";
+import { pubsub } from "../ApolloPubSubService";
 
-import { withFilter } from "apollo-server-express";
-import { pubsub } from "./ApolloPubSubService";
+export const typeDefsMutations = gql`
+  type Mutation {
+    addParticipantToMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutatedResponse!
+    removeParticipantFromMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutatedResponse!
+    updateOffice(officeInput: OfficeInput!): OfficeMutatedResponse!
+    addRoomToGroup(roomInput: RoomInput!, groupId: ID!): RoomInGroupMutatedResponse!
+    removeRoomFromGroup(roomId: ID!, groupId: ID!): RoomInGroupMutatedResponse!
+  }
 
-export const resolvers = {
-  Query: {
-    getOffice: (_, __, { dataSources }) => {
-      return dataSources.officeStore.getOffice();
-    },
-    getBlock: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getBlock(id);
-    },
-    getGroup: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getGroup(id);
-    },
-    getGroupJoinConfig: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getGroupJoinConfig(id);
-    },
-    getSession: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getSession(id);
-    },
-    getRoom: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getRoom(id);
-    },
-    getRoomLinks: (_, { ids }, { dataSources }) => {
-      return dataSources.officeStore.getRoomLinks(ids);
-    },
-    getAllMeetings: (_, __, { dataSources }) => {
-      return dataSources.participantsStore.getAllMeetings();
-    },
-    getParticipantsInMeeting: (_, { id }, { dataSources }) => {
-      return dataSources.participantsStore.getParticipantsInMeeting(id);
-    },
-    getClientConfig: (_, { id }, { dataSources }) => {
-      return dataSources.clientConfigStore.getClientConfig();
-    },
-  },
-  Subscription: {
-    participantMutated: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
-        (payload, variables) => payload.participantMutated.success && payload.groupId === variables.groupId
-      ),
-    },
-    roomInGroupMutated: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(["ROOM_IN_GROUP_ADDED", "ROOM_IN_GROUP_REMOVED"]),
-        (payload, variables) => payload.roomInGroupMutated.success // && payload.groupId === variables.groupId
-      ),
+  enum MutationType {
+    ADD
+    REMOVE
+    UPDATE
+  }
+
+  interface MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
+  }
+
+  type ParticipantMutatedResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
+    participant: Participant!
+    meetingId: ID!
+  }
+
+  type OfficeMutatedResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
+    office: Office!
+  }
+
+  type RoomInGroupMutatedResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
+    room: Room
+    groupId: ID!
+  }
+`;
+
+export const resolversMutations = {
+  MutationResponse: {
+    __resolveType(response: MutationResponse) {
+      return "MutationResponse";
     },
   },
   Mutation: {
@@ -130,35 +131,6 @@ export const resolvers = {
         pubsub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
       }
       return mutationResponse;
-    },
-  },
-  Block: {
-    __resolveType(block: BlockApollo) {
-      if (block.type === "GROUP_BLOCK") {
-        return "GroupBlock";
-      } else if (block.type === "SCHEDULE_BLOCK") {
-        return "ScheduleBlock";
-      } else if (block.type === "SESSION_BLOCK") {
-        return "SessionBlock";
-      } else {
-        return null;
-      }
-    },
-  },
-  Session: {
-    __resolveType(session: SessionApollo) {
-      if (session.type === "GROUP_SESSION") {
-        return "GroupSession";
-      } else if (session.type === "ROOM_SESSION") {
-        return "RoomSession";
-      } else {
-        return null;
-      }
-    },
-  },
-  MutationResponse: {
-    __resolveType(response: MutationResponse) {
-      return "MutationResponse";
     },
   },
 };

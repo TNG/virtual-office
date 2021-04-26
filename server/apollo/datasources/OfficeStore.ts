@@ -29,8 +29,8 @@ import {
   TrackApolloConfig,
   TrackApolloDb,
 } from "../TypesApollo";
-import { getOfficeWithBlocksFromOffice } from "../../services/OfficeService";
 import { v4 as uuid } from "uuid";
+import { getOfficeWithBlocksFromOffice } from "../../express/utils/convertOffice";
 
 @Service()
 export class OfficeStore extends DataSource {

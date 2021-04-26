@@ -183,7 +183,6 @@ export const GroupBlockGrid = (props: Props) => {
         if (!subscriptionData.data) {
           return currentData;
         } else {
-          console.log("Enter subscription");
           let newGroup: GroupApollo = JSON.parse(JSON.stringify(currentData.getGroup));
           if (subscriptionData.data.roomInGroupMutated.mutationType === "ADD") {
             newGroup.rooms.push(subscriptionData.data.roomInGroupMutated.room);

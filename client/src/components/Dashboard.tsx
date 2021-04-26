@@ -20,7 +20,6 @@ import {
 import { getApolloClient } from "../apollo/ApolloClient";
 import { ClientConfigApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
-import useDeepCompareEffect from "use-deep-compare-effect";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({

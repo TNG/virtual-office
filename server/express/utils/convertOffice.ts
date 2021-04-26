@@ -1,4 +1,4 @@
-import { OfficeWithBlocks } from "../types/Office";
+import { Office, OfficeWithBlocks } from "../types/Office";
 import { SessionLegacy, TrackLegacy } from "../types/Schedule";
 import { GroupLegacy } from "../types/GroupLegacy";
 import { RoomConfigLegacy } from "../types/RoomLegacy";
@@ -8,7 +8,17 @@ import { Session } from "../types/Session";
 import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
 import { compact } from "lodash";
 
-export function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy): OfficeWithBlocks {
+export const getOfficeWithBlocksFromOffice = (
+  officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy
+): OfficeWithBlocks => {
+  if ("blocks" in officeOrConfigOptionsLegacy) {
+    return officeOrConfigOptionsLegacy as OfficeWithBlocks;
+  } else {
+    return officeLegacyToOfficeWithBlocks(officeOrConfigOptionsLegacy as ConfigOptionsLegacy);
+  }
+};
+
+function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy): OfficeWithBlocks {
   configOptionsLegacy = cleanOfficeLegacy(configOptionsLegacy);
 
   if (!configOptionsLegacy.schedule) {

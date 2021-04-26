@@ -1,6 +1,7 @@
 {
-  "name": "Virtual Office GraphQL Server Schema",
+  "name": "Virtual Office GraphQL Remote Server Schema",
   "schemaPath": "server/apollo/schema.ts",
+  "excludes": ["server/build/**"],
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {

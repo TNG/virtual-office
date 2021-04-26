@@ -1,12 +1,11 @@
 import { Service } from "typedi";
 import { ApolloServer } from "apollo-server-express";
-import { typeDefs } from "./schema";
-import { resolvers } from "./resolvers";
 import { Express } from "express";
 import { OfficeStore } from "./datasources/OfficeStore";
 import { ParticipantsStore } from "./datasources/ParticipantsStore";
 import { Server } from "http";
 import { ClientConfigStore } from "./datasources/ClientConfigStore";
+import { schema } from "./schema";
 
 @Service()
 export class ApolloServerService {
@@ -18,8 +17,7 @@ export class ApolloServerService {
 
   async init(expressApp: Express, httpServer: Server): Promise<ApolloServer> {
     const apolloServer = new ApolloServer({
-      typeDefs,
-      resolvers,
+      schema: schema,
       dataSources: () => ({
         officeStore: this.officeStore,
         participantsStore: this.participantsStore,
