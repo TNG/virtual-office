@@ -20,6 +20,7 @@ import {
 import { getApolloClient } from "../apollo/ApolloClient";
 import { ClientConfigApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -65,7 +66,9 @@ export const Dashboard = () => {
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [searchText, setSearchText] = useState("");
 
-  const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE);
+  const { data: officeData, loading: officeLoading, error: officeError } = useQuery(GET_OFFICE_COMPLETE, {
+    pollInterval: 10000,
+  });
   const {
     subscribeToMore: subscribeToMeetings,
     data: meetingsData,
@@ -83,7 +86,7 @@ export const Dashboard = () => {
   });
 
   useEffect(() => {
-    subscribeToParticipantMutations();
+    subscribeToParticipantMutated();
   }, []);
 
   useEffect(() => {
@@ -147,7 +150,7 @@ export const Dashboard = () => {
     );
   }
 
-  function subscribeToParticipantMutations() {
+  function subscribeToParticipantMutated() {
     subscribeToMeetings({
       document: PARTICIPANT_MUTATED_SUBSCRIPTION,
       updateQuery: (currentData, { subscriptionData }) => {

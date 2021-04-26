@@ -132,15 +132,16 @@ export const PARTICIPANT_MUTATED_SUBSCRIPTION = gql`
 `;
 
 export const ROOM_IN_GROUP_MUTATED_SUBSCRIPTION = gql`
-  subscription roomInGroupMutated {
-    roomInGroupMutated {
+  subscription roomInGroupMutated($groupId: ID!) {
+    roomInGroupMutated(groupId: $groupId) {
       mutationType
-      group {
-        ...GroupFragmentComplete
+      room {
+        ...RoomFragmentComplete
       }
+      groupId
     }
   }
-  ${GROUP_FRAGMENT_COMPLETE}
+  ${ROOM_FRAGMENT_COMPLETE}
 `;
 
 export const GET_CLIENT_CONFIG_COMPLETE = gql`

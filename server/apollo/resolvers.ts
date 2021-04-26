@@ -43,47 +43,17 @@ export const resolvers = {
     participantMutated: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(["PARTICIPANT_ADDED", "PARTICIPANT_REMOVED"]),
-        (payload, variables) => payload.participantMutated.success
+        (payload, variables) => payload.participantMutated.success && payload.groupId === variables.groupId
       ),
     },
     roomInGroupMutated: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(["ROOM_IN_GROUP_ADDED", "ROOM_IN_GROUP_REMOVED"]),
-        (payload, variables) => payload.roomInGroupMutated.success
+        (payload, variables) => payload.roomInGroupMutated.success // && payload.groupId === variables.groupId
       ),
     },
   },
   Mutation: {
-    addRoomToGroup: (_, { roomInput, groupId }, { dataSources }) => {
-      const success: boolean = dataSources.officeStore.addRoomToGroup(roomInput, groupId);
-
-      const mutationResponse = {
-        success: success,
-        message: success ? "Successfully added room to group!" : "GroupId not existing!",
-        mutationType: "ADD",
-        group: dataSources.officeStore.getGroup(groupId),
-      };
-
-      if (success) {
-        pubsub.publish("ROOM_IN_GROUP_ADDED", { roomInGroupMutated: mutationResponse });
-      }
-      return mutationResponse;
-    },
-    removeRoomFromGroup: (_, { roomId, groupId }, { dataSources }) => {
-      const success: boolean = dataSources.officeStore.removeRoomFromGroup(roomId, groupId);
-
-      const mutationResponse = {
-        success: success,
-        message: success ? "Successfully removed room from group!" : "Room or group not existing or room not in group!",
-        mutationType: "REMOVE",
-        group: dataSources.officeStore.getGroup(groupId),
-      };
-
-      if (success) {
-        pubsub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
-      }
-      return mutationResponse;
-    },
     addParticipantToMeeting: (_, { participant, meetingId }, { dataSources }) => {
       const success: boolean = dataSources.participantsStore.addParticipantToMeeting(participant, meetingId);
 
@@ -113,6 +83,51 @@ export const resolvers = {
 
       if (success) {
         pubsub.publish("PARTICIPANT_REMOVED", { participantMutated: mutationResponse });
+      }
+      return mutationResponse;
+    },
+    updateOffice: (_, { officeInput }, { dataSources }) => {
+      const success: boolean = dataSources.officeStore.updateOffice(officeInput);
+
+      const mutationResponse = {
+        success: success,
+        message: success ? "Successfully updated office!" : "Some error occured!",
+        mutationType: "UPDATE",
+        office: dataSources.officeStore.getOffice(),
+      };
+
+      return mutationResponse;
+    },
+    addRoomToGroup: (_, { roomInput, groupId }, { dataSources }) => {
+      const { success, room } = dataSources.officeStore.addRoomToGroup(roomInput, groupId);
+
+      const mutationResponse = {
+        success: success,
+        message: success ? "Successfully added room to group!" : "GroupId not existing!",
+        mutationType: "ADD",
+        room: room,
+        groupId: groupId,
+      };
+
+      if (success) {
+        pubsub.publish("ROOM_IN_GROUP_ADDED", { roomInGroupMutated: mutationResponse });
+      }
+      return mutationResponse;
+    },
+    removeRoomFromGroup: (_, { roomId, groupId }, { dataSources }) => {
+      const room: RoomApollo = dataSources.officeStore.getRoom(roomId);
+      const success: boolean = dataSources.officeStore.removeRoomFromGroup(roomId, groupId);
+
+      const mutationResponse = {
+        success: success,
+        message: success ? "Successfully removed room from group!" : "Room or group not existing or room not in group!",
+        mutationType: "REMOVE",
+        room: room,
+        groupId: groupId,
+      };
+
+      if (success) {
+        pubsub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
       }
       return mutationResponse;
     },

@@ -4,14 +4,9 @@ import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@
 import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { useQuery } from "@apollo/client";
-import {
-  GET_GROUP_SHORT,
-  GET_ALL_MEETINGS_COMPLETE,
-  PARTICIPANT_MUTATED_SUBSCRIPTION,
-  ROOM_IN_GROUP_MUTATED_SUBSCRIPTION,
-} from "../apollo/gqlQueries";
+import { GET_GROUP_SHORT, GET_ALL_MEETINGS_COMPLETE, ROOM_IN_GROUP_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
 import { partition } from "lodash";
-import { GroupApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
+import { GroupApollo, MeetingApollo, ParticipantApollo, RoomApollo } from "../../../server/apollo/TypesApollo";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -84,7 +79,7 @@ export const GroupBlockGrid = (props: Props) => {
   const { data: meetingsData, loading: meetingsLoading, error: meetingsError } = useQuery(GET_ALL_MEETINGS_COMPLETE);
 
   useEffect(() => {
-    subscribeToRoomInGroupMutations();
+    subscribeToRoomInGroupMutated();
   }, []);
 
   if (!(groupData && meetingsData)) {
@@ -180,15 +175,24 @@ export const GroupBlockGrid = (props: Props) => {
     );
   }
 
-  function subscribeToRoomInGroupMutations() {
+  function subscribeToRoomInGroupMutated() {
     subscribeToGroup({
       document: ROOM_IN_GROUP_MUTATED_SUBSCRIPTION,
+      variables: { groupId: id },
       updateQuery: (currentData, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return currentData;
         } else {
-          console.log(subscriptionData.data.roomInGroupMutated.group);
-          return { getGroup: subscriptionData.data.roomInGroupMutated.group };
+          console.log("Enter subscription");
+          let newGroup: GroupApollo = JSON.parse(JSON.stringify(currentData.getGroup));
+          if (subscriptionData.data.roomInGroupMutated.mutationType === "ADD") {
+            newGroup.rooms.push(subscriptionData.data.roomInGroupMutated.room);
+          } else if (subscriptionData.data.roomInGroupMutated.mutationType === "REMOVE") {
+            newGroup.rooms = newGroup.rooms.filter(
+              (room: RoomApollo) => room.id !== subscriptionData.data.roomInGroupMutated.room.id
+            );
+          }
+          return { getGroup: newGroup };
         }
       },
     });

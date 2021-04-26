@@ -148,15 +148,16 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    participantMutated: ParticipantMutationResponse!
-    roomInGroupMutated: RoomInGroupMutationResponse!
+    participantMutated: ParticipantMutatedResponse!
+    roomInGroupMutated(groupId: ID!): RoomInGroupMutatedResponse!
   }
 
   type Mutation {
-    addParticipantToMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutationResponse!
-    removeParticipantFromMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutationResponse!
-    addRoomToGroup(roomInput: RoomInput!, groupId: ID!): RoomInGroupMutationResponse!
-    removeRoomFromGroup(roomId: ID!, groupId: ID!): RoomInGroupMutationResponse!
+    addParticipantToMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutatedResponse!
+    removeParticipantFromMeeting(participant: ParticipantInput!, meetingId: ID!): ParticipantMutatedResponse!
+    updateOffice(officeInput: OfficeInput!): OfficeMutatedResponse!
+    addRoomToGroup(roomInput: RoomInput!, groupId: ID!): RoomInGroupMutatedResponse!
+    removeRoomFromGroup(roomId: ID!, groupId: ID!): RoomInGroupMutatedResponse!
   }
 
   enum MutationType {
@@ -171,7 +172,7 @@ export const typeDefs = gql`
     mutationType: MutationType!
   }
 
-  type ParticipantMutationResponse implements MutationResponse {
+  type ParticipantMutatedResponse implements MutationResponse {
     success: Boolean!
     message: String!
     mutationType: MutationType!
@@ -179,11 +180,19 @@ export const typeDefs = gql`
     meetingId: ID!
   }
 
-  type RoomInGroupMutationResponse implements MutationResponse {
+  type OfficeMutatedResponse implements MutationResponse {
     success: Boolean!
     message: String!
     mutationType: MutationType!
-    group: Group
+    office: Office!
+  }
+
+  type RoomInGroupMutatedResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    mutationType: MutationType!
+    room: Room
+    groupId: ID!
   }
 
   input ParticipantInput {
@@ -191,6 +200,47 @@ export const typeDefs = gql`
     username: String!
     email: String
     imageUrl: String
+  }
+
+  input OfficeInput {
+    version: String!
+    blocks: [BlockInput!]!
+  }
+
+  input BlockInput {
+    type: String!
+    name: String
+    group: GroupInput
+    sessions: [SessionInput!]
+    tracks: [TrackInput!]
+    title: String
+  }
+
+  input TrackInput {
+    name: String!
+  }
+
+  input SessionInput {
+    type: String!
+    start: String!
+    end: String!
+    trackName: String
+    group: GroupInput
+    room: RoomInput
+  }
+
+  input GroupInput {
+    name: String!
+    rooms: [RoomInput!]!
+    description: String
+    groupJoinConfig: GroupJoinConfigInput
+  }
+
+  input GroupJoinConfigInput {
+    minimumParticipantCount: Int!
+    title: String!
+    description: String!
+    subtitle: String
   }
 
   input RoomInput {
