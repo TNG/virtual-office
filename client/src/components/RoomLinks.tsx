@@ -5,9 +5,9 @@ import { makeStyles } from "@material-ui/styles";
 import LinkIcon from "@material-ui/icons/Link";
 import { useQuery } from "@apollo/client";
 import { GET_CLIENT_CONFIG_COMPLETE, GET_ROOM_LINKS_COMPLETE } from "../apollo/gqlQueries";
-import { defaultClientConfig } from "../contexts/ClientConfigContext";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { RoomLink } from "../../../server/types/Room";
+import { defaultClientConfig } from "../DefaultClientConfig";
 
 /** Styles */
 interface StyleProps {

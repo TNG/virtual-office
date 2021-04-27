@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { ClientConfig } from "../../server/express/types/ClientConfig";
+import { ClientConfig } from "../../server/types/ClientConfig";
 
 const theme = (config: ClientConfig) =>
   createMuiTheme({

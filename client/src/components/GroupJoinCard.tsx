@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/styles";
 import GroupIcon from "@material-ui/icons/QueuePlayNext";
 import { useQuery } from "@apollo/client";
 import { GET_CLIENT_CONFIG_COMPLETE, GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
-import { defaultClientConfig } from "../contexts/ClientConfigContext";
 import { ClientConfig } from "../../../server/types/ClientConfig";
+import { defaultClientConfig } from "../DefaultClientConfig";
 
 /** Styles */
 interface StyleProps {

@@ -8,9 +8,9 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
-import { defaultClientConfig } from "../contexts/ClientConfigContext";
 import { Track } from "../../../server/types/Block";
 import { ClientConfig } from "../../../server/types/ClientConfig";
+import { defaultClientConfig } from "../DefaultClientConfig";
 
 /** Styles */
 interface StyleProps {

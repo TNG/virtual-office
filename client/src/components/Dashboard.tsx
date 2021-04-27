@@ -18,9 +18,9 @@ import {
   PARTICIPANT_MUTATED_SUBSCRIPTION,
 } from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
-import { defaultClientConfig } from "../contexts/ClientConfigContext";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { Meeting, Participant } from "../../../server/types/Meeting";
+import { defaultClientConfig } from "../DefaultClientConfig";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({

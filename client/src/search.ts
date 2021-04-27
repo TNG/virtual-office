@@ -1,13 +1,3 @@
-import {
-  BlockApollo,
-  GroupApollo,
-  MeetingApollo,
-  OfficeApollo,
-  ParticipantApollo,
-  RoomApollo,
-  SessionApollo,
-  TrackApollo,
-} from "../../server/apollo/TypesApollo";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import {
   BLOCK_SEARCH_FRAGMENT,
@@ -15,37 +5,43 @@ import {
   ROOM_SEARCH_FRAGMENT,
   SESSION_SEARCH_FRAGMENT,
 } from "./apollo/gqlFragments";
+import { Block, Track } from "../../server/types/Block";
+import { Group } from "../../server/types/Group";
+import { Session } from "../../server/types/Session";
+import { Room } from "../../server/types/Room";
+import { Meeting, Participant } from "../../server/types/Meeting";
+import { OfficeWithBlocks } from "../../server/types/OfficeWithBlocks";
 
-type OfficeApolloClient = OfficeApollo & { __typename: "Office" };
-type BlockApolloClient = BlockApollo & { __typename: "Block" | "GroupBlock" | "ScheduleBlock" | "SessionBlock" };
-type GroupApolloClient = GroupApollo & { __typename: "Group" };
-type TrackApolloClient = TrackApollo & { __typename: "Track" };
-type SessionApolloClient = SessionApollo & { __typename: "Session" | "RoomSession" | "GroupSession" };
-type RoomApolloClient = RoomApollo & { __typename: "Room" };
-type ParticipantApolloClient = ParticipantApollo & { __typename: "Participant" };
+type OfficeWithBlocksClient = OfficeWithBlocks & { __typename: "Office" };
+type BlockClient = Block & { __typename: "Block" | "GroupBlock" | "ScheduleBlock" | "SessionBlock" };
+type GroupClient = Group & { __typename: "Group" };
+type TrackClient = Track & { __typename: "Track" };
+type SessionClient = Session & { __typename: "Session" | "RoomSession" | "GroupSession" };
+type RoomClient = Room & { __typename: "Room" };
+type ParticipantClient = Participant & { __typename: "Participant" };
 
 type SearchInput = {
   searchObject:
-    | OfficeApolloClient
-    | BlockApolloClient
-    | GroupApolloClient
-    | TrackApolloClient
-    | SessionApolloClient
-    | RoomApolloClient
-    | ParticipantApolloClient;
+    | OfficeWithBlocksClient
+    | BlockClient
+    | GroupClient
+    | TrackClient
+    | SessionClient
+    | RoomClient
+    | ParticipantClient;
   searchText: string;
-  meetings?: MeetingApollo[];
+  meetings?: Meeting[];
   client?: ApolloClient<NormalizedCacheObject>;
   someParentMatches?: boolean;
 };
 
 export function applySearchToOffice(
-  office: OfficeApollo,
-  meetings: MeetingApollo[],
+  office: OfficeWithBlocks,
+  meetings: Meeting[],
   searchText: string,
   client: ApolloClient<NormalizedCacheObject>
 ) {
-  office.blocks.map((block: BlockApollo) => {
+  office.blocks.map((block: Block) => {
     blockMatchesSearch({
       searchObject: { __typename: "Block", ...block },
       meetings,
@@ -84,7 +80,7 @@ function blockMatchesSearch(searchInput: SearchInput): boolean {
       client,
     });
   } else {
-    block.sessions.forEach((session: SessionApollo) => {
+    block.sessions.forEach((session: Session) => {
       someSessionMatches =
         sessionMatchesSearch({
           searchObject: { __typename: "Session", ...session },
@@ -95,7 +91,7 @@ function blockMatchesSearch(searchInput: SearchInput): boolean {
         }) || someSessionMatches;
     });
     if (block.type === "SCHEDULE_BLOCK") {
-      block.tracks?.forEach((track: TrackApollo) => {
+      block.tracks?.forEach((track: Track) => {
         someTrackMatches =
           trackMatchesSearch({
             searchObject: { __typename: "Track", ...track },
@@ -140,7 +136,7 @@ function groupMatchesSearch(searchInput: SearchInput): boolean {
   someParentMatches = someParentMatches || somePropMatches;
   let someRoomMatches = false;
 
-  group.rooms.forEach((room: RoomApollo) => {
+  group.rooms.forEach((room: Room) => {
     someRoomMatches =
       roomMatchesSearch({
         searchObject: { __typename: "Room", ...room },
@@ -173,11 +169,9 @@ function roomMatchesSearch(searchInput: SearchInput): boolean {
   let someParticipantMatches: boolean = false;
 
   if (room.meetingId) {
-    const meeting: MeetingApollo | undefined = meetings?.find(
-      (meeting: MeetingApollo) => meeting.id === room.meetingId
-    );
-    const participants: ParticipantApollo[] = meeting ? meeting.participants : [];
-    participants.forEach((participant: ParticipantApollo) => {
+    const meeting: Meeting | undefined = meetings?.find((meeting: Meeting) => meeting.id === room.meetingId);
+    const participants: Participant[] = meeting ? meeting.participants : [];
+    participants.forEach((participant: Participant) => {
       someParticipantMatches =
         participantMatchesSearch({
           searchObject: { __typename: "Participant", ...participant },

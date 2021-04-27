@@ -113,10 +113,12 @@ export class Config {
       }
     }
 
-    logger.warn(`Config file '${configFile}' does not exist or is not a valid office, creating default config`);
-    const emptyConfig: OfficeWithBlocksConfig = { version: "2", blocks: [] };
-    fs.writeFileSync(`${findRootDir()}/server/office.json`, JSON.stringify(emptyConfig));
-    return emptyConfig;
+    logger.warn(
+      `Config file '${configFile}' does not exist or is not a valid office, creating default empty office instance.`
+    );
+    const emptyOfficeWithBlocksConfig: OfficeWithBlocksConfig = { version: "2", blocks: [] };
+    fs.writeFileSync(`${findRootDir()}/server/office_default_empty.json`, JSON.stringify(emptyOfficeWithBlocksConfig));
+    return emptyOfficeWithBlocksConfig;
   }
 
   private static readAdminEndpointsCredentials(): Credentials | undefined {

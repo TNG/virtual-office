@@ -1,8 +1,8 @@
 import io from "socket.io-client";
 import { fromEvent, Observable } from "rxjs";
-import { Meeting } from "../../../server/express/types/Meeting";
-import { ClientConfig } from "../../../server/express/types/ClientConfig";
-import { OfficeWithBlocks } from "../../../server/express/types/Office";
+import { OfficeWithBlocks } from "../../../server/types/OfficeWithBlocks";
+import { ClientConfig } from "../../../server/types/ClientConfig";
+import { Meeting } from "../../../server/types/Meeting";
 
 export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;

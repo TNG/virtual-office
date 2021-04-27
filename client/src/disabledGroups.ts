@@ -1,5 +1,5 @@
-import { GroupLegacy } from "../../server/express/types/GroupLegacy";
 import { DateTime } from "luxon";
+import { GroupLegacy } from "../../server/types/legacyTypes/GroupLegacy";
 
 export interface PotentiallyDisabledGroup {
   isUpcoming: boolean;

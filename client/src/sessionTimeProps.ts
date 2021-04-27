@@ -1,9 +1,9 @@
-import { Session } from "../../server/express/types/Session";
 import { parseTime } from "./time";
 import { DateTime } from "luxon";
-import { ClientConfigApollo } from "../../server/apollo/TypesApollo";
+import { ClientConfig } from "../../server/types/ClientConfig";
+import { Session } from "../../server/types/Session";
 
-export function sessionHasEnded({ end }: Session, { timezone }: ClientConfigApollo): boolean {
+export function sessionHasEnded({ end }: Session, { timezone }: ClientConfig): boolean {
   const zone = timezone;
   const endTime = parseTime(end, zone);
   const now = DateTime.local();
@@ -12,7 +12,7 @@ export function sessionHasEnded({ end }: Session, { timezone }: ClientConfigApol
 
 export function sessionIsActive(
   { start, end }: Session,
-  { timezone, sessionStartMinutesOffset }: ClientConfigApollo
+  { timezone, sessionStartMinutesOffset }: ClientConfig
 ): boolean {
   const zone = timezone;
   const startTime = parseTime(start, zone).minus({ minute: sessionStartMinutesOffset ?? 0 });

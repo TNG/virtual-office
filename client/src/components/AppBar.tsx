@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-import { User } from "../../../server/express/types/User";
 import {
   AppBar as MaterialAppBar,
   Avatar,
@@ -17,6 +16,7 @@ import {
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
+import { UserLegacy } from "../../../server/types/legacyTypes/UserLegacy";
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -96,7 +96,7 @@ export interface Props {
 const AppBar = (props: Props) => {
   const classes = useStyles();
 
-  const [user, setUser] = useState<User | undefined>(undefined);
+  const [user, setUser] = useState<UserLegacy | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 

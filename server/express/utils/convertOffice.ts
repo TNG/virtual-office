@@ -18,7 +18,7 @@ export const getOfficeWithBlocksConfigFromOfficeConfig = (officeConfig: OfficeCo
 };
 
 function officeConfigLegacyToOfficeWithBlocksConfig(officeConfigLegacy: OfficeConfigLegacy): OfficeWithBlocksConfig {
-  officeConfigLegacy = cleanOfficeLegacy(officeConfigLegacy);
+  officeConfigLegacy = cleanOfficeConfigLegacy(officeConfigLegacy);
 
   if (!officeConfigLegacy.schedule) {
     return {
@@ -46,7 +46,7 @@ function officeConfigLegacyToOfficeWithBlocksConfig(officeConfigLegacy: OfficeCo
   }
 }
 
-function cleanOfficeLegacy(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
+function cleanOfficeConfigLegacy(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
   officeConfigLegacy = removeUnusedGroups(officeConfigLegacy);
   officeConfigLegacy = addDummyGroup(officeConfigLegacy);
   officeConfigLegacy = removeUnusedSessions(officeConfigLegacy);
