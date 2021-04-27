@@ -34,11 +34,11 @@ const calculateGridTemplateRows = ({
   },
 }: StyleProps) => {
   const earliestStart = sessions
-    .map((session: any) => DateTime.fromFormat(session.start, "HH:mm", { zone: clientConfig?.timezone }))
+    .map((session: any) => DateTime.fromFormat(session.start, "HH:mm", { zone: clientConfig.timezone }))
     .sort()
     .shift();
   const latestEnd = sessions
-    .map((session: any) => DateTime.fromFormat(session.end, "HH:mm", { zone: clientConfig?.timezone }))
+    .map((session: any) => DateTime.fromFormat(session.end, "HH:mm", { zone: clientConfig.timezone }))
     .sort()
     .pop();
   let result = `[trackHeader] auto `;

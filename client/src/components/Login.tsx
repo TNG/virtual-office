@@ -8,7 +8,7 @@ import { StyleConfig } from "../types";
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
   root: {
     backgroundColor: `${theme.palette.background.default}`,
-    backgroundImage: (config) => `url(${config?.backgroundUrl || Background})`,
+    backgroundImage: (config) => `url(${config.backgroundUrl || Background})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },

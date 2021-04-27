@@ -89,12 +89,6 @@ export const Dashboard = () => {
     subscribeToParticipantMutated();
   }, []);
 
-  /*useEffect(() => {
-    if (officeData && meetingsData && clientConfigData && blocksData) {
-      setInitialLoadCompleted(true);
-    }
-  }, [officeLoading, meetingsLoading, clientConfigLoading, blocksLoading]);*/
-
   useEffect(() => {
     if (officeData && meetingsData) {
       applySearchToOffice(officeData.getOffice, meetingsData.getAllMeetings, searchText, getApolloClient());

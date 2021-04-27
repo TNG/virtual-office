@@ -133,7 +133,7 @@ function sessionLegacyToSessionConfig(
       end: sessionLegacy.end,
       room: roomConfigLegacyToRoomConfig(
         officeConfigLegacy.rooms.find(
-          (roomConfigegacy: RoomConfigLegacy) => roomConfigegacy.roomId === sessionLegacy.roomId
+          (roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacy.roomId === sessionLegacy.roomId
         )!
       ),
       trackName:
