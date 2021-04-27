@@ -6,7 +6,7 @@ import { sessionIsActive, sessionHasEnded } from "../sessionTimeProps";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
 import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
-import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
+import { ClientConfig } from "../../../server/types/ClientConfig";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -71,7 +71,7 @@ export const SessionBlockGrid = (props: Props) => {
     variables: { id },
   });
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
-    getClientConfig: ClientConfigApollo;
+    getClientConfig: ClientConfig;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
   if (!blockData) {

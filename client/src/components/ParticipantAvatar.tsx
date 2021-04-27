@@ -1,8 +1,7 @@
 import React from "react";
 import { Avatar, Theme, Tooltip, useTheme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-
-import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
+import { Participant } from "../../../server/types/Meeting";
 
 const useStyles = makeStyles<Theme>({
   avatar: {
@@ -12,7 +11,7 @@ const useStyles = makeStyles<Theme>({
   },
 });
 
-const ParticipantAvatar = ({ participant, zIndex }: { participant: MeetingParticipant; zIndex?: number }) => {
+const ParticipantAvatar = ({ participant, zIndex }: { participant: Participant; zIndex?: number }) => {
   function getInitialsFrom(username: string) {
     return username
       .split(" ")

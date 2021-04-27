@@ -1,5 +1,5 @@
 import { InMemoryCache } from "@apollo/client";
-import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
+import { Participant } from "../../../server/types/Meeting";
 
 export const apolloCache = new InMemoryCache({
   possibleTypes: {
@@ -27,7 +27,7 @@ export const apolloCache = new InMemoryCache({
           return toReference({ __typename: "Room", id: args!.id });
         },
         getParticipantsInMeeting(_, { args, toReference, readField }) {
-          return readField<ParticipantApollo[]>("participants", toReference({ __typename: "Meeting", id: args!.id }));
+          return readField<Participant[]>("participants", toReference({ __typename: "Meeting", id: args!.id }));
         },
       },
     },

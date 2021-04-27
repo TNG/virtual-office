@@ -3,21 +3,21 @@ import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { DateTime } from "luxon";
-import { Track } from "../../../server/express/types/Office";
 import RoomCard from "./RoomCard";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
-import { ClientConfigApollo, TrackApollo } from "../../../server/apollo/TypesApollo";
 import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
+import { Track } from "../../../server/types/Block";
+import { ClientConfig } from "../../../server/types/ClientConfig";
 
 /** Styles */
 interface StyleProps {
-  clientConfig: ClientConfigApollo;
+  clientConfig: ClientConfig;
   data: {
     getBlock: {
-      tracks: TrackApollo[];
+      tracks: Track[];
       sessions: {
         id: string;
         start: string;
@@ -115,7 +115,7 @@ export const ScheduleBlockGrid = (props: Props) => {
     variables: { id },
   });
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
-    getClientConfig: ClientConfigApollo;
+    getClientConfig: ClientConfig;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
   const classes = useStyles({
@@ -139,7 +139,7 @@ export const ScheduleBlockGrid = (props: Props) => {
   function renderTrackHeader() {
     return (
       <>
-        {blockData.getBlock.tracks.map((track: TrackApollo) => {
+        {blockData.getBlock.tracks.map((track: Track) => {
           return (
             <div
               key={`track-${track.name}`}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Theme, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/styles";
@@ -9,8 +9,7 @@ import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatchesSearch } from "../search";
 import { useQuery } from "@apollo/client";
-import { GET_PARTICIPANTS_IN_MEETING_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
-import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
+import { GET_PARTICIPANTS_IN_MEETING_COMPLETE } from "../apollo/gqlQueries";
 
 const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";
 const useStyles = makeStyles<Theme>((theme) => ({

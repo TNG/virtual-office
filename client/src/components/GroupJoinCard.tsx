@@ -6,11 +6,11 @@ import GroupIcon from "@material-ui/icons/QueuePlayNext";
 import { useQuery } from "@apollo/client";
 import { GET_CLIENT_CONFIG_COMPLETE, GET_GROUP_JOIN_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
-import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
+import { ClientConfig } from "../../../server/types/ClientConfig";
 
 /** Styles */
 interface StyleProps {
-  clientConfig: ClientConfigApollo;
+  clientConfig: ClientConfig;
   props: Props;
 }
 const useStyles = makeStyles<Theme, StyleProps>((theme) => ({
@@ -76,7 +76,7 @@ const GroupJoinCard = (props: Props) => {
     error: groupJoinError,
   } = useQuery(GET_GROUP_JOIN_CONFIG_COMPLETE, { variables: { id } });
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
-    getClientConfig: ClientConfigApollo;
+    getClientConfig: ClientConfig;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
   const classes = useStyles({

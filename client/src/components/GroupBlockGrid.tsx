@@ -6,7 +6,9 @@ import GroupJoinCard from "./GroupJoinCard";
 import { useQuery } from "@apollo/client";
 import { GET_GROUP_SHORT, GET_ALL_MEETINGS_COMPLETE, ROOM_IN_GROUP_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
 import { partition } from "lodash";
-import { GroupApollo, MeetingApollo, ParticipantApollo, RoomApollo } from "../../../server/apollo/TypesApollo";
+import { Meeting, Participant } from "../../../server/types/Meeting";
+import { Room } from "../../../server/types/Room";
+import { Group } from "../../../server/types/Group";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
@@ -157,9 +159,9 @@ export const GroupBlockGrid = (props: Props) => {
     }
   }
 
-  function participantsInMeeting(meetingId: string | undefined): ParticipantApollo[] {
-    const meeting: MeetingApollo | undefined = meetingsData.getAllMeetings.find(
-      (meeting: MeetingApollo) => meeting.id === meetingId
+  function participantsInMeeting(meetingId: string | undefined): Participant[] {
+    const meeting: Meeting | undefined = meetingsData.getAllMeetings.find(
+      (meeting: Meeting) => meeting.id === meetingId
     );
     if (meeting) {
       return meeting.participants;
@@ -183,12 +185,12 @@ export const GroupBlockGrid = (props: Props) => {
         if (!subscriptionData.data) {
           return currentData;
         } else {
-          let newGroup: GroupApollo = JSON.parse(JSON.stringify(currentData.getGroup));
+          let newGroup: Group = JSON.parse(JSON.stringify(currentData.getGroup));
           if (subscriptionData.data.roomInGroupMutated.mutationType === "ADD") {
             newGroup.rooms.push(subscriptionData.data.roomInGroupMutated.room);
           } else if (subscriptionData.data.roomInGroupMutated.mutationType === "REMOVE") {
             newGroup.rooms = newGroup.rooms.filter(
-              (room: RoomApollo) => room.id !== subscriptionData.data.roomInGroupMutated.room.id
+              (room: Room) => room.id !== subscriptionData.data.roomInGroupMutated.room.id
             );
           }
           return { getGroup: newGroup };

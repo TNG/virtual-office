@@ -8,12 +8,12 @@ import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { useQuery } from "@apollo/client";
 import { GET_CLIENT_CONFIG_COMPLETE, GET_ROOM_SHORT } from "../apollo/gqlQueries";
-import { ClientConfigApollo } from "../../../server/apollo/TypesApollo";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
+import { ClientConfig } from "../../../server/types/ClientConfig";
 
 /** Styles */
 interface StyleProps {
-  clientConfig: ClientConfigApollo;
+  clientConfig: ClientConfig;
   props: Props;
 }
 
@@ -114,7 +114,7 @@ const RoomCard = (props: Props) => {
 
   const { data: roomData, loading: roomLoading, error: roomError } = useQuery(GET_ROOM_SHORT, { variables: { id } });
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
-    getClientConfig: ClientConfigApollo;
+    getClientConfig: ClientConfig;
   }>(GET_CLIENT_CONFIG_COMPLETE);
 
   const [collapseDescription, setCollapseDescription] = React.useState(true);

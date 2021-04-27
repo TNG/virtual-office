@@ -18,8 +18,9 @@ import {
   PARTICIPANT_MUTATED_SUBSCRIPTION,
 } from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
-import { ClientConfigApollo, MeetingApollo, ParticipantApollo } from "../../../server/apollo/TypesApollo";
 import { defaultClientConfig } from "../contexts/ClientConfigContext";
+import { ClientConfig } from "../../../server/types/ClientConfig";
+import { Meeting, Participant } from "../../../server/types/Meeting";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
@@ -75,7 +76,7 @@ export const Dashboard = () => {
     error: meetingsError,
   } = useQuery(GET_ALL_MEETINGS_COMPLETE);
   const { data: clientConfigData, loading: clientConfigLoading, error: clientConfigError } = useQuery<{
-    getClientConfig: ClientConfigApollo;
+    getClientConfig: ClientConfig;
   }>(GET_CLIENT_CONFIG_COMPLETE);
   const { data: blocksData, loading: blocksLoading, error: blocksError } = useQuery(GET_OFFICE_SHORT);
 
@@ -156,15 +157,14 @@ export const Dashboard = () => {
         if (!subscriptionData.data) {
           return currentData;
         }
-        let newMeetings: MeetingApollo[] = JSON.parse(JSON.stringify(currentData.getAllMeetings));
-        newMeetings.forEach((meeting: MeetingApollo) => {
+        let newMeetings: Meeting[] = JSON.parse(JSON.stringify(currentData.getAllMeetings));
+        newMeetings.forEach((meeting: Meeting) => {
           if (meeting.id === subscriptionData.data.participantMutated.meetingId) {
             if (subscriptionData.data.participantMutated.mutationType === "ADD") {
               meeting.participants.push(subscriptionData.data.participantMutated.participant);
             } else if (subscriptionData.data.participantMutated.mutationType === "REMOVE") {
               meeting.participants = meeting.participants.filter(
-                (participant: ParticipantApollo) =>
-                  participant.id !== subscriptionData.data.participantMutated.participant.id
+                (participant: Participant) => participant.id !== subscriptionData.data.participantMutated.participant.id
               );
             }
           }

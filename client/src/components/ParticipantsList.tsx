@@ -2,7 +2,7 @@ import { Card, CardHeader, Theme } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import ParticipantAvatar from "./ParticipantAvatar";
-import { ParticipantApollo } from "../../../server/apollo/TypesApollo";
+import { Participant } from "../../../server/types/Meeting";
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
@@ -29,10 +29,10 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
 }));
 
-const ParticipantsList = ({ participants }: { participants: ParticipantApollo[] }) => {
+const ParticipantsList = ({ participants }: { participants: Participant[] }) => {
   const classes = useStyles();
 
-  function renderParticipant(participant: ParticipantApollo) {
+  function renderParticipant(participant: Participant) {
     return (
       <div key={participant.id} className={classes.participant}>
         <Card>

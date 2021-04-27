@@ -2,6 +2,7 @@ import { ApolloClient, HttpLink, NormalizedCacheObject, split } from "@apollo/cl
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { apolloCache } from "./ApolloCache";
+import { clientTypeDefs } from "./clientSchema";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:9000/graphql",
@@ -31,6 +32,7 @@ export function getApolloClient(): ApolloClient<NormalizedCacheObject> {
       link: splitLink,
       cache: apolloCache,
       connectToDevTools: true,
+      typeDefs: clientTypeDefs,
     });
   }
   return apolloClient;
