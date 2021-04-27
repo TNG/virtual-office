@@ -29,6 +29,9 @@ export const apolloCache = new InMemoryCache({
         getParticipantsInMeeting(_, { args, toReference, readField }) {
           return readField<Participant[]>("participants", toReference({ __typename: "Meeting", id: args!.id }));
         },
+        getRoomLinks(_, { args, toReference }) {
+          return args?.ids.map((roomLinkId: string) => toReference({ __typename: "RoomLink", id: roomLinkId }));
+        },
       },
     },
   },
