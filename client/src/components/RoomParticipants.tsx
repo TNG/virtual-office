@@ -9,7 +9,7 @@ import ParticipantsList from "./ParticipantsList";
 import Dialog from "./Dialog";
 import { participantMatchesSearch } from "../search";
 import { useQuery } from "@apollo/client";
-import { GET_PARTICIPANTS_IN_MEETING_COMPLETE } from "../apollo/gqlQueries";
+import { GET_PARTICIPANTS_IN_MEETING_COMPLETE } from "../apollo/gqlOpsMeeting";
 
 const ANONYMOUS_PARTICIPANTS = (import.meta as any).env.SNOWPACK_PUBLIC_ANONYMOUS_PARTICIPANTS === "true";
 const useStyles = makeStyles<Theme>((theme) => ({

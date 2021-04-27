@@ -5,8 +5,9 @@ import RoomCard from "./RoomCard";
 import { sessionIsActive, sessionHasEnded } from "../sessionTimeProps";
 import { browserTimeZone, parseTime, printHoursMinutes } from "../time";
 import { useQuery } from "@apollo/client";
-import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 import { ClientConfig } from "../../../server/types/ClientConfig";
+import { GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlOpsClientConfig";
+import { GET_BLOCK_SHORT } from "../apollo/gqlOpsBlock";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({

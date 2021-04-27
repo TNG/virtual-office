@@ -10,17 +10,13 @@ import { Footer } from "./Footer";
 import { BlockGrid } from "./BlockGrid";
 import { applySearchToOffice } from "../search";
 import { useQuery } from "@apollo/client";
-import {
-  GET_CLIENT_CONFIG_COMPLETE,
-  GET_ALL_MEETINGS_COMPLETE,
-  GET_OFFICE_COMPLETE,
-  GET_OFFICE_SHORT,
-  PARTICIPANT_MUTATED_SUBSCRIPTION,
-} from "../apollo/gqlQueries";
 import { getApolloClient } from "../apollo/ApolloClient";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { Meeting, Participant } from "../../../server/types/Meeting";
 import { defaultClientConfig } from "../DefaultClientConfig";
+import { GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlOpsClientConfig";
+import { GET_ALL_MEETINGS_COMPLETE, PARTICIPANT_MUTATED_SUBSCRIPTION } from "../apollo/gqlOpsMeeting";
+import { GET_OFFICE_COMPLETE, GET_OFFICE_SHORT } from "../apollo/gqlOpsOffice";
 
 /** Styles */
 const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({

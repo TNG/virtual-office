@@ -1,16 +1,14 @@
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
-import {
-  BLOCK_SEARCH_FRAGMENT,
-  GROUP_SEARCH_FRAGMENT,
-  ROOM_SEARCH_FRAGMENT,
-  SESSION_SEARCH_FRAGMENT,
-} from "./apollo/gqlFragments";
 import { Block, Track } from "../../server/types/Block";
 import { Group } from "../../server/types/Group";
 import { Session } from "../../server/types/Session";
 import { Room } from "../../server/types/Room";
 import { Meeting, Participant } from "../../server/types/Meeting";
 import { OfficeWithBlocks } from "../../server/types/OfficeWithBlocks";
+import { BLOCK_SEARCH_FRAGMENT } from "./apollo/gqlOpsBlock";
+import { GROUP_SEARCH_FRAGMENT } from "./apollo/gqlOpsGroup";
+import { SESSION_SEARCH_FRAGMENT } from "./apollo/gqlOpsSession";
+import { ROOM_SEARCH_FRAGMENT } from "./apollo/gqlOpsRoom";
 
 type OfficeWithBlocksClient = OfficeWithBlocks & { __typename: "Office" };
 type BlockClient = Block & { __typename: "Block" | "GroupBlock" | "ScheduleBlock" | "SessionBlock" };

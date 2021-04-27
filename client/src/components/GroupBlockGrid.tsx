@@ -4,11 +4,12 @@ import { Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@
 import RoomCard from "./RoomCard";
 import GroupJoinCard from "./GroupJoinCard";
 import { useQuery } from "@apollo/client";
-import { GET_GROUP_SHORT, GET_ALL_MEETINGS_COMPLETE, ROOM_IN_GROUP_MUTATED_SUBSCRIPTION } from "../apollo/gqlQueries";
 import { partition } from "lodash";
 import { Meeting, Participant } from "../../../server/types/Meeting";
 import { Room } from "../../../server/types/Room";
 import { Group } from "../../../server/types/Group";
+import { GET_ALL_MEETINGS_COMPLETE } from "../apollo/gqlOpsMeeting";
+import { GET_GROUP_SHORT, ROOM_IN_GROUP_MUTATED_SUBSCRIPTION } from "../apollo/gqlOpsGroup";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({

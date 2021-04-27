@@ -4,10 +4,11 @@ import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import LinkIcon from "@material-ui/icons/Link";
 import { useQuery } from "@apollo/client";
-import { GET_CLIENT_CONFIG_COMPLETE, GET_ROOM_LINKS_COMPLETE } from "../apollo/gqlQueries";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { RoomLink } from "../../../server/types/Room";
 import { defaultClientConfig } from "../DefaultClientConfig";
+import { GET_ROOM_LINKS_COMPLETE } from "../apollo/gqlOpsRoom";
+import { GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlOpsClientConfig";
 
 /** Styles */
 interface StyleProps {

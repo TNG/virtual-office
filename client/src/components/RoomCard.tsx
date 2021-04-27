@@ -7,9 +7,10 @@ import RoomIcon from "@material-ui/icons/People";
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
 import { useQuery } from "@apollo/client";
-import { GET_CLIENT_CONFIG_COMPLETE, GET_ROOM_SHORT } from "../apollo/gqlQueries";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { defaultClientConfig } from "../DefaultClientConfig";
+import { GET_ROOM_SHORT } from "../apollo/gqlOpsRoom";
+import { GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlOpsClientConfig";
 
 /** Styles */
 interface StyleProps {

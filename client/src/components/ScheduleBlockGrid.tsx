@@ -7,10 +7,11 @@ import RoomCard from "./RoomCard";
 import { GroupBlockGrid } from "./GroupBlockGrid";
 import { sessionHasEnded, sessionIsActive } from "../sessionTimeProps";
 import { useQuery } from "@apollo/client";
-import { GET_BLOCK_SHORT, GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlQueries";
 import { Track } from "../../../server/types/Block";
 import { ClientConfig } from "../../../server/types/ClientConfig";
 import { defaultClientConfig } from "../DefaultClientConfig";
+import { GET_CLIENT_CONFIG_COMPLETE } from "../apollo/gqlOpsClientConfig";
+import { GET_BLOCK_SHORT } from "../apollo/gqlOpsBlock";
 
 /** Styles */
 interface StyleProps {

@@ -5,7 +5,7 @@ import { GroupBlockGrid } from "./GroupBlockGrid";
 import { ScheduleBlockGrid } from "./ScheduleBlockGrid";
 import { SessionBlockGrid } from "./SessionBlockGrid";
 import { useQuery } from "@apollo/client";
-import { GET_BLOCK_SHORT } from "../apollo/gqlQueries";
+import { GET_BLOCK_SHORT } from "../apollo/gqlOpsBlock";
 
 /** Styles */
 const useStyles = makeStyles<Theme, Props>((theme) => ({
