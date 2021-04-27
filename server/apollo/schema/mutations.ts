@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { gql } from "apollo-server-express";
-import { pubsub } from "../ApolloPubSubService";
+import { pubSub } from "../ApolloPubSubService";
 
 export const typeDefsMutations = gql`
   type Mutation {
@@ -67,7 +67,7 @@ export const resolversMutations = {
       };
 
       if (success) {
-        pubsub.publish("PARTICIPANT_ADDED", { participantMutated: mutationResponse });
+        pubSub.publish("PARTICIPANT_ADDED", { participantMutated: mutationResponse });
       }
       return mutationResponse;
     },
@@ -83,7 +83,7 @@ export const resolversMutations = {
       };
 
       if (success) {
-        pubsub.publish("PARTICIPANT_REMOVED", { participantMutated: mutationResponse });
+        pubSub.publish("PARTICIPANT_REMOVED", { participantMutated: mutationResponse });
       }
       return mutationResponse;
     },
@@ -111,7 +111,7 @@ export const resolversMutations = {
       };
 
       if (success) {
-        pubsub.publish("ROOM_IN_GROUP_ADDED", { roomInGroupMutated: mutationResponse });
+        pubSub.publish("ROOM_IN_GROUP_ADDED", { roomInGroupMutated: mutationResponse });
       }
       return mutationResponse;
     },
@@ -128,7 +128,7 @@ export const resolversMutations = {
       };
 
       if (success) {
-        pubsub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
+        pubSub.publish("ROOM_IN_GROUP_REMOVED", { roomInGroupMutated: mutationResponse });
       }
       return mutationResponse;
     },

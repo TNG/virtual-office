@@ -5,7 +5,7 @@ import { OfficeStore } from "./datasources/OfficeStore";
 import { ParticipantsStore } from "./datasources/ParticipantsStore";
 import { Server } from "http";
 import { ClientConfigStore } from "./datasources/ClientConfigStore";
-import { schema } from "./schema";
+import { schema } from "./schema/schema";
 
 @Service()
 export class ApolloServerService {

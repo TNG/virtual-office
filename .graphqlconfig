@@ -1,6 +1,6 @@
 {
   "name": "Virtual Office GraphQL Remote Server Schema",
-  "schemaPath": "server/apollo/schema.ts",
+  "schemaPath": "server/apollo/schema/schema.ts",
   "excludes": ["server/build/**"],
   "extensions": {
     "endpoints": {

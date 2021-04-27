@@ -51,12 +51,19 @@ export class ParticipantsStore extends DataSource {
     }
   }
 
-  public removeParticipantFromMeeting(participant: Participant, id: string) {
+  public removeParticipantFromMeeting(participant: Participant, id: string): boolean {
     const meeting: Meeting = this.getOrCreateMeeting(id);
     const participantCountBefore: number = meeting.participants.length;
     meeting.participants = meeting.participants.filter(
       (existingPart: Participant) => existingPart.id !== participant.id
     );
     return participantCountBefore > meeting.participants.length;
+  }
+
+  public endMeeting(id: string): { success: boolean; priorParticipants: Participant[] } {
+    const meeting: Meeting = this.getOrCreateMeeting(id);
+    const priorParticipants = meeting.participants;
+    meeting.participants = [];
+    return { success: true, priorParticipants };
   }
 }
