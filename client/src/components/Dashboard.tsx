@@ -89,11 +89,11 @@ export const Dashboard = () => {
     subscribeToParticipantMutated();
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (officeData && meetingsData && clientConfigData && blocksData) {
       setInitialLoadCompleted(true);
     }
-  }, [officeLoading, meetingsLoading, clientConfigLoading, blocksLoading]);
+  }, [officeLoading, meetingsLoading, clientConfigLoading, blocksLoading]);*/
 
   useEffect(() => {
     if (officeData && meetingsData) {
@@ -101,11 +101,11 @@ export const Dashboard = () => {
     }
   }, [searchText, officeData, meetingsData]);
 
-  if (!(officeData && meetingsData && clientConfigData && blocksData)) {
-    return null;
+  if (!initialLoadCompleted && officeData && meetingsData && clientConfigData && blocksData) {
+    setInitialLoadCompleted(true);
   }
 
-  if (clientConfigData.getClientConfig.faviconUrl) {
+  if (clientConfigData?.getClientConfig.faviconUrl) {
     const favicon = document.getElementById("favicon") as HTMLLinkElement;
     const appleTouchIcon = document.getElementById("apple-touch-icon") as HTMLLinkElement;
     if (favicon && appleTouchIcon) {
@@ -127,8 +127,8 @@ export const Dashboard = () => {
       <div className={classes.content}>
         <AppBar
           onSearchTextChange={setSearchText}
-          title={clientConfigData.getClientConfig.title}
-          logoUrl={clientConfigData.getClientConfig.logoUrl}
+          title={clientConfigData?.getClientConfig.title}
+          logoUrl={clientConfigData?.getClientConfig.logoUrl}
         />
         <div className={classes.scroller}>{content}</div>
         {initialLoadCompleted ? <Footer /> : ""}
