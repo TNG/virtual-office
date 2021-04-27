@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { minBy } from "lodash";
 // import { random } from "lodash";
 
-import { RoomLegacy, RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
+import { RoomLegacy, RoomWithMeetingIdLegacy } from "../types/legacyTypes/RoomLegacy";
 import { OfficeService } from "./OfficeService";
 import { MeetingsService } from "./MeetingsService";
 /*import { logger } from "../log";

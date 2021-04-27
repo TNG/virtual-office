@@ -1,29 +1,29 @@
 import { Service } from "typedi";
 import { Config } from "../Config";
-import { ClientConfig } from "../express/types/ClientConfig";
+import { ClientConfigLegacy } from "../types/legacyTypes/ClientConfigLegacy";
 
-const defaultClientConfig: ClientConfig = {
+const defaultClientConfig: ClientConfigLegacy = {
   viewMode: "grid",
   theme: "dark",
   sessionStartMinutesOffset: 10,
 };
 
-export type ClientConfigListener = (config: ClientConfig) => void;
+export type ClientConfigListener = (config: ClientConfigLegacy) => void;
 
 @Service()
 export class ClientConfigService {
-  private clientConfig: ClientConfig = defaultClientConfig;
+  private clientConfig: ClientConfigLegacy = defaultClientConfig;
   private listeners: ClientConfigListener[] = [];
 
   constructor(config: Config) {
     this.updateClientConfig(config.clientConfig);
   }
 
-  public getClientConfig(): ClientConfig {
+  public getClientConfig(): ClientConfigLegacy {
     return this.clientConfig;
   }
 
-  updateClientConfig(clientConfig: Partial<ClientConfig> = {}) {
+  updateClientConfig(clientConfig: Partial<ClientConfigLegacy> = {}) {
     this.clientConfig = {
       ...this.clientConfig,
       ...clientConfig,

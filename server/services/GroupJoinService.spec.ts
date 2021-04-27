@@ -5,11 +5,11 @@ import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
 
 import { GroupJoinService } from "./GroupJoinService";
 import { OfficeService } from "./OfficeService";
-import { GroupLegacy } from "../express/types/GroupLegacy";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { GroupLegacy } from "../types/legacyTypes/GroupLegacy";
+import { MeetingParticipantLegacy } from "../types/legacyTypes/MeetingLegacy";
 import { MeetingsService } from "./MeetingsService";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
+import { MeetingEventLegacy } from "../types/legacyTypes/MeetingLegacy";
+import { RoomWithMeetingIdLegacy } from "../types/legacyTypes/RoomLegacy";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;
@@ -44,8 +44,8 @@ describe("GroupJoinService", () => {
     } as RoomWithMeetingIdLegacy;
   }
 
-  function generateParticipants(count: number): MeetingParticipant[] {
-    return range(count).map(() => ({} as MeetingParticipant));
+  function generateParticipants(count: number): MeetingParticipantLegacy[] {
+    return range(count).map(() => ({} as MeetingParticipantLegacy));
   }
 
   let clock: InstalledClock;
@@ -157,7 +157,7 @@ describe("GroupJoinService", () => {
       (listener as any)({
         meetingId: room.meetingId,
         type: "join",
-      } as MeetingEvent);
+      } as MeetingEventLegacy);
     });
 
     it("should ignore participant leave events", () => {
@@ -170,7 +170,7 @@ describe("GroupJoinService", () => {
       (listener as any)({
         meetingId: room.meetingId,
         type: "leave",
-      } as MeetingEvent);
+      } as MeetingEventLegacy);
 
       expect(groupJoinService.participantsInRoom(room)).toEqual(2);
     });

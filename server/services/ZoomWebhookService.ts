@@ -4,7 +4,7 @@ import { Config } from "../Config";
 import { OfficeService } from "./OfficeService";
 import { logger } from "../log";
 import Timeout = NodeJS.Timeout;
-import { Room } from "../express/types/Room";
+import { RoomConfig } from "../types/Room";
 
 const MAPPING_UPDATE_INTERVAL = 15 * 60 * 1000;
 
@@ -36,7 +36,7 @@ export class ZoomWebhookService {
       const meetingIds = new Set<string>();
 
       const rooms = this.officeService.getAllRooms();
-      rooms.forEach((room: Room) => room.meetingId && meetingIds.add(room.meetingId));
+      rooms.forEach((roomConfig: RoomConfig) => roomConfig.meetingId && meetingIds.add(roomConfig.meetingId));
 
       const mappingUpdate = {
         endpoint: this.config.baseUrl + "/api/zoomus/webhook",

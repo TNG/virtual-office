@@ -1,11 +1,11 @@
 import { KnownUsersService } from "./KnownUsersService";
-import { User } from "../express/types/User";
+import { UserLegacy } from "../types/legacyTypes/UserLegacy";
 
 describe("KnownUsersService", () => {
   let knownUsersService: KnownUsersService;
   let listener: jest.Mock;
 
-  const user: User = {
+  const user: UserLegacy = {
     name: "Max Mustermann",
     email: "max.mustermann@example.com",
     id: "1234",

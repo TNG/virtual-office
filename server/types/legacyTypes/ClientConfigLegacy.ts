@@ -1,4 +1,4 @@
-export interface ClientConfig {
+export interface ClientConfigLegacy {
   backgroundUrl?: string;
   viewMode: "list" | "grid";
   theme: "dark" | "light";

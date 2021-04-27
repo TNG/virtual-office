@@ -1,5 +1,6 @@
 import { gql } from "apollo-server-express";
-import { BlockApollo, SessionApollo } from "../TypesApollo";
+import { Block } from "../../types/Block";
+import { Session } from "../../types/Session";
 
 export const typeDefsTypes = gql`
   type Office {
@@ -138,7 +139,7 @@ export const typeDefsTypes = gql`
 
 export const resolversTypes = {
   Block: {
-    __resolveType(block: BlockApollo) {
+    __resolveType(block: Block) {
       if (block.type === "GROUP_BLOCK") {
         return "GroupBlock";
       } else if (block.type === "SCHEDULE_BLOCK") {
@@ -151,7 +152,7 @@ export const resolversTypes = {
     },
   },
   Session: {
-    __resolveType(session: SessionApollo) {
+    __resolveType(session: Session) {
       if (session.type === "GROUP_SESSION") {
         return "GroupSession";
       } else if (session.type === "ROOM_SESSION") {

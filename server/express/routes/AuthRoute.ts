@@ -4,7 +4,7 @@ import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
 import { Strategy as SlackStrategy } from "passport-slack-oauth2";
-import { User } from "../types/User";
+import { UserLegacy } from "../../types/legacyTypes/UserLegacy";
 import { KnownUsersService } from "../../services/KnownUsersService";
 
 passport.serializeUser(function (user, done) {
@@ -12,10 +12,10 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (user, done) {
-  done(null, user as User);
+  done(null, user as UserLegacy);
 });
 
-function adaptSlackUser(profile: any): User {
+function adaptSlackUser(profile: any): UserLegacy {
   const {
     id,
     displayName: name,

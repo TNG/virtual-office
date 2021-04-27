@@ -2,9 +2,8 @@ import { Block, KnownBlock } from "@slack/types";
 import { ImageElement, WebClient } from "@slack/web-api";
 import { Service } from "typedi";
 import { Config } from "../Config";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { hasSlackNotifications, RoomWithSlackNotification } from "../express/types/RoomLegacy";
+import { MeetingEventLegacy, MeetingParticipantLegacy } from "../types/legacyTypes/MeetingLegacy";
+import { hasSlackNotifications, RoomWithSlackNotificationLegacy } from "../types/legacyTypes/RoomLegacy";
 import { logger } from "../log";
 import { MeetingsService } from "./MeetingsService";
 import { OfficeService } from "./OfficeService";
@@ -28,7 +27,7 @@ export class SlackBotService {
     this.meetingsService.listenParticipantsChange((event) => this.onRoomEvent(event));
   }
 
-  private onRoomEvent(event: MeetingEvent) {
+  private onRoomEvent(event: MeetingEventLegacy) {
     this.officeService
       .getRoomsForMeetingId(event.meetingId)
       .filter(hasSlackNotifications)
@@ -39,7 +38,7 @@ export class SlackBotService {
       );
   }
 
-  private async sendSlackNotificationOnMeetingEvent(event: MeetingEvent, room: RoomWithSlackNotification) {
+  private async sendSlackNotificationOnMeetingEvent(event: MeetingEventLegacy, room: RoomWithSlackNotificationLegacy) {
     const participants = this.meetingsService.getParticipantsIn(room.meetingId);
     const slackNotification = room.slackNotification;
     logger.info(
@@ -55,7 +54,7 @@ export class SlackBotService {
     }
   }
 
-  private async sendParticipantUpdate(room: RoomWithSlackNotification, participants: MeetingParticipant[]) {
+  private async sendParticipantUpdate(room: RoomWithSlackNotificationLegacy, participants: MeetingParticipantLegacy[]) {
     const imageElements: ImageElement[] = participants
       .filter((participant) => participant.imageUrl)
       .map((participant) => ({
@@ -97,7 +96,10 @@ export class SlackBotService {
     }
   }
 
-  private async sendMessageToRoom(room: RoomWithSlackNotification, blocks: (KnownBlock | Block)[]): Promise<string> {
+  private async sendMessageToRoom(
+    room: RoomWithSlackNotificationLegacy,
+    blocks: (KnownBlock | Block)[]
+  ): Promise<string> {
     const res = await this.slackClient.chat.postMessage({
       channel: room.slackNotification.channelId,
       text: "",
@@ -107,7 +109,10 @@ export class SlackBotService {
     return res.ts as string;
   }
 
-  private async updateMessageForRoom(room: RoomWithSlackNotification, blocks: (KnownBlock | Block)[]): Promise<string> {
+  private async updateMessageForRoom(
+    room: RoomWithSlackNotificationLegacy,
+    blocks: (KnownBlock | Block)[]
+  ): Promise<string> {
     const existingSlackMessageId = this.slackMessageIdsPerRoom[room.roomId];
     if (!existingSlackMessageId) {
       throw Error(`No slack message found for room ${room.roomId}`);

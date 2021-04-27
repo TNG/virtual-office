@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 
-export const GroupJoinConfigCodec = t.intersection([
+export const GroupJoinConfigLegacyCodec = t.intersection([
   t.type({
     minimumParticipantCount: t.number,
     title: t.string,
@@ -10,7 +10,7 @@ export const GroupJoinConfigCodec = t.intersection([
     subtitle: t.string,
   }),
 ]);
-export type GroupJoinConfig = t.TypeOf<typeof GroupJoinConfigCodec>;
+export type GroupJoinConfigLegacy = t.TypeOf<typeof GroupJoinConfigLegacyCodec>;
 
 export const GroupLegacyCodec = t.intersection([
   t.type({
@@ -22,13 +22,13 @@ export const GroupLegacyCodec = t.intersection([
     disabledAfter: t.string,
     disabledBefore: t.string,
     joinableAfter: t.string,
-    groupJoin: GroupJoinConfigCodec,
+    groupJoin: GroupJoinConfigLegacyCodec,
   }),
 ]);
 export type GroupLegacy = t.TypeOf<typeof GroupLegacyCodec>;
 
-export interface GroupWithGroupJoin extends GroupLegacy {
-  groupJoin: GroupJoinConfig;
+export interface GroupWithGroupJoinLegacy extends GroupLegacy {
+  groupJoin: GroupJoinConfigLegacy;
 }
 
-export const hasGroupJoin = (group: GroupLegacy): group is GroupWithGroupJoin => !!group.groupJoin;
+export const hasGroupJoin = (group: GroupLegacy): group is GroupWithGroupJoinLegacy => !!group.groupJoin;

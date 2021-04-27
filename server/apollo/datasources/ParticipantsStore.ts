@@ -1,10 +1,10 @@
 import { Service } from "typedi";
 import { DataSource } from "apollo-datasource";
-import { MeetingApollo, ParticipantApollo } from "../TypesApollo";
+import { Meeting, Participant } from "../../types/Meeting";
 
 @Service()
 export class ParticipantsStore extends DataSource {
-  private meetings: MeetingApollo[] = [];
+  private meetings: Meeting[] = [];
 
   constructor() {
     super();
@@ -18,12 +18,12 @@ export class ParticipantsStore extends DataSource {
     //this.context = config.context;
   }
 
-  public getAllMeetings(): MeetingApollo[] {
+  public getAllMeetings(): Meeting[] {
     return this.meetings;
   }
 
-  public getOrCreateMeeting(id: string): MeetingApollo {
-    let meeting: MeetingApollo | undefined = this.meetings.find((meeting: MeetingApollo) => meeting.id === id);
+  public getOrCreateMeeting(id: string): Meeting {
+    let meeting: Meeting | undefined = this.meetings.find((meeting: Meeting) => meeting.id === id);
     if (!meeting) {
       meeting = {
         id: id,
@@ -34,14 +34,14 @@ export class ParticipantsStore extends DataSource {
     return meeting;
   }
 
-  public getParticipantsInMeeting(id: string): ParticipantApollo[] {
+  public getParticipantsInMeeting(id: string): Participant[] {
     return this.getOrCreateMeeting(id).participants;
   }
 
-  public addParticipantToMeeting(participant: ParticipantApollo, id: string): boolean {
-    const meeting: MeetingApollo = this.getOrCreateMeeting(id);
-    const sameParticipantsInMeeting: ParticipantApollo[] = meeting.participants.filter(
-      (existingPart: ParticipantApollo) => existingPart.id === participant.id
+  public addParticipantToMeeting(participant: Participant, id: string): boolean {
+    const meeting: Meeting = this.getOrCreateMeeting(id);
+    const sameParticipantsInMeeting: Participant[] = meeting.participants.filter(
+      (existingPart: Participant) => existingPart.id === participant.id
     );
     if (sameParticipantsInMeeting.length === 0) {
       meeting.participants.push(participant);
@@ -51,11 +51,11 @@ export class ParticipantsStore extends DataSource {
     }
   }
 
-  public removeParticipantFromMeeting(participant: ParticipantApollo, id: string) {
-    const meeting: MeetingApollo = this.getOrCreateMeeting(id);
+  public removeParticipantFromMeeting(participant: Participant, id: string) {
+    const meeting: Meeting = this.getOrCreateMeeting(id);
     const participantCountBefore: number = meeting.participants.length;
     meeting.participants = meeting.participants.filter(
-      (existingPart: ParticipantApollo) => existingPart.id !== participant.id
+      (existingPart: Participant) => existingPart.id !== participant.id
     );
     return participantCountBefore > meeting.participants.length;
   }

@@ -2,9 +2,9 @@ import { Service } from "typedi";
 import { DataSource } from "apollo-datasource";
 import { Config } from "../../Config";
 import { v4 as uuid } from "uuid";
-import { ClientConfigApollo, ClientConfigApolloConfig, ClientConfigApolloDb } from "../TypesApollo";
+import { ClientConfig, ClientConfigConfig, ClientConfigDb } from "../../types/ClientConfig";
 
-export const defaultClientConfig: ClientConfigApolloDb = {
+export const defaultClientConfig: ClientConfigDb = {
   id: uuid(),
   viewMode: "grid",
   theme: "dark",
@@ -13,7 +13,7 @@ export const defaultClientConfig: ClientConfigApolloDb = {
 
 @Service()
 export class ClientConfigStore extends DataSource {
-  private clientConfig: ClientConfigApolloDb = defaultClientConfig;
+  private clientConfig: ClientConfigDb = defaultClientConfig;
 
   constructor(config: Config) {
     super();
@@ -24,14 +24,14 @@ export class ClientConfigStore extends DataSource {
     //this.context = config.context;
   }
 
-  updateClientConfig(clientConfig: Partial<ClientConfigApolloConfig> = {}) {
+  updateClientConfig(clientConfig: Partial<ClientConfigConfig> = {}) {
     this.clientConfig = {
       ...this.clientConfig,
       ...clientConfig,
     };
   }
 
-  public getClientConfig(): ClientConfigApollo {
+  public getClientConfig(): ClientConfig {
     return this.clientConfig;
   }
 }

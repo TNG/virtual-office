@@ -1,221 +1,208 @@
 import { DataSource } from "apollo-datasource";
 import { Config } from "../../Config";
-import { Office, OfficeWithBlocks } from "../../express/types/Office";
+import { OfficeWithBlocks, OfficeWithBlocksConfig } from "../../types/OfficeWithBlocks";
 import { Service } from "typedi";
-import {
-  BlockApollo,
-  BlockApolloConfig,
-  BlockApolloDb,
-  GroupApollo,
-  GroupApolloConfig,
-  GroupApolloDb,
-  GroupJoinConfigApollo,
-  GroupJoinConfigApolloConfig,
-  GroupJoinConfigApolloDb,
-  OfficeApollo,
-  OfficeApolloDb,
-  RoomApollo,
-  RoomApolloConfig,
-  RoomApolloDb,
-  RoomLinkApollo,
-  RoomLinkApolloConfig,
-  RoomLinkApolloDb,
-  RoomSessionApollo,
-  SessionApollo,
-  SessionApolloConfig,
-  SessionApolloDb,
-  SlackNotificationApolloConfig,
-  SlackNotificationApolloDb,
-  TrackApolloConfig,
-  TrackApolloDb,
-} from "../TypesApollo";
 import { v4 as uuid } from "uuid";
-import { getOfficeWithBlocksFromOffice } from "../../express/utils/convertOffice";
+import { getOfficeWithBlocksConfigFromOfficeConfig } from "../../express/utils/convertOffice";
+import { OfficeWithBlocksDb } from "../../types/OfficeWithBlocks";
+import { Block, BlockConfig, BlockDb, TrackConfig, TrackDb } from "../../types/Block";
+import {
+  Group,
+  GroupConfig,
+  GroupDb,
+  GroupJoinConfig,
+  GroupJoinConfigConfig,
+  GroupJoinConfigDb,
+} from "../../types/Group";
+import { RoomSession, Session, SessionConfig, SessionDb } from "../../types/Session";
+import {
+  Room,
+  RoomConfig,
+  RoomDb,
+  RoomLink,
+  RoomLinkConfig,
+  RoomLinkDb,
+  SlackNotificationConfig,
+  SlackNotificationDb,
+} from "../../types/Room";
+import { OfficeConfig } from "../../types/Office";
 
 @Service()
 export class OfficeStore extends DataSource {
-  private office: OfficeApolloDb = {
+  private office: OfficeWithBlocksDb = {
     id: uuid(),
-    version: "2_APOLLO",
+    version: "2",
     blocks: [],
   };
-  private blocks: BlockApolloDb[] = [];
-  private groups: GroupApolloDb[] = [];
-  private sessions: SessionApolloDb[] = [];
-  private rooms: RoomApolloDb[] = [];
+  private blocks: BlockDb[] = [];
+  private groups: GroupDb[] = [];
+  private sessions: SessionDb[] = [];
+  private rooms: RoomDb[] = [];
 
   constructor(config: Config) {
     super();
-    const officeParsed: Office = config.configOptions;
-    this.createOfficeApollo(officeParsed);
+    const officeParsed: OfficeConfig = config.configOptions;
+    this.createOffice(officeParsed);
   }
 
   initialize() {
     //this.context = config.context;
   }
 
-  private createOfficeApollo(officeParsed: Office) {
-    const officeWithBlocks: OfficeWithBlocks = getOfficeWithBlocksFromOffice(officeParsed);
-    officeWithBlocks.blocks.forEach((blockApolloConfig: BlockApolloConfig) => {
-      const blockApolloDb: BlockApolloDb = this.importBlockApolloConfig(blockApolloConfig);
-      this.office.blocks.push(blockApolloDb.id);
+  private createOffice(officeParsed: OfficeConfig) {
+    const officeWithBlocks: OfficeWithBlocksConfig = getOfficeWithBlocksConfigFromOfficeConfig(officeParsed);
+    officeWithBlocks.blocks.forEach((blockConfig: BlockConfig) => {
+      const blockDb: BlockDb = this.importBlockConfig(blockConfig);
+      this.office.blocks.push(blockDb.id);
     });
   }
 
-  private importBlockApolloConfig(blockApolloConfig: BlockApolloConfig): BlockApolloDb {
-    let blockApolloDb: BlockApolloDb;
-    if (blockApolloConfig.type === "GROUP_BLOCK") {
-      blockApolloDb = {
+  private importBlockConfig(blockConfig: BlockConfig): BlockDb {
+    let blockDb: BlockDb;
+    if (blockConfig.type === "GROUP_BLOCK") {
+      blockDb = {
         id: uuid(),
-        type: blockApolloConfig.type,
-        name: blockApolloConfig.name,
-        group: this.importGroupApolloConfig(blockApolloConfig.group).id,
+        type: blockConfig.type,
+        name: blockConfig.name,
+        group: this.importGroupConfig(blockConfig.group).id,
       };
-    } else if (blockApolloConfig.type === "SCHEDULE_BLOCK") {
-      blockApolloDb = {
+    } else if (blockConfig.type === "SCHEDULE_BLOCK") {
+      blockDb = {
         id: uuid(),
-        type: blockApolloConfig.type,
-        name: blockApolloConfig.name,
-        tracks: blockApolloConfig.tracks?.map((trackApolloConfig: TrackApolloConfig) =>
-          this.importTrackApolloConfig(trackApolloConfig)
-        ),
-        sessions: blockApolloConfig.sessions.map(
-          (sessionApolloConfig: SessionApolloConfig) => this.importSessionApolloConfig(sessionApolloConfig).id
+        type: blockConfig.type,
+        name: blockConfig.name,
+        tracks: blockConfig.tracks?.map((trackConfig: TrackConfig) => this.importTrackConfig(trackConfig)),
+        sessions: blockConfig.sessions.map(
+          (sessionConfig: SessionConfig) => this.importSessionConfig(sessionConfig).id
         ),
       };
     } else {
-      blockApolloDb = {
+      blockDb = {
         id: uuid(),
-        name: blockApolloConfig.name,
-        type: blockApolloConfig.type,
-        sessions: blockApolloConfig.sessions.map(
-          (sessionApolloConfig: SessionApolloConfig) => this.importSessionApolloConfig(sessionApolloConfig).id
+        name: blockConfig.name,
+        type: blockConfig.type,
+        sessions: blockConfig.sessions.map(
+          (sessionConfig: SessionConfig) => this.importSessionConfig(sessionConfig).id
         ),
-        title: blockApolloConfig.title,
+        title: blockConfig.title,
       };
     }
 
-    this.blocks.push(blockApolloDb);
-    return blockApolloDb;
+    this.blocks.push(blockDb);
+    return blockDb;
   }
 
-  private importTrackApolloConfig(trackApolloConfig: TrackApolloConfig): TrackApolloDb {
+  private importTrackConfig(trackConfig: TrackConfig): TrackDb {
     return {
       id: uuid(),
-      name: trackApolloConfig.name,
+      name: trackConfig.name,
     };
   }
 
-  private importGroupApolloConfig(groupApolloConfig: GroupApolloConfig): GroupApolloDb {
-    const groupApolloDb: GroupApolloDb = {
+  private importGroupConfig(groupConfig: GroupConfig): GroupDb {
+    const groupDb: GroupDb = {
       id: uuid(),
-      name: groupApolloConfig.name,
-      rooms: groupApolloConfig.rooms.map(
-        (roomApolloConfig: RoomApolloConfig) => this.importRoomApolloConfig(roomApolloConfig).id
-      ),
-      description: groupApolloConfig.description,
-      groupJoinConfig: groupApolloConfig.groupJoinConfig
-        ? this.importGroupJoinConfigApolloConfig(groupApolloConfig.groupJoinConfig)
+      name: groupConfig.name,
+      rooms: groupConfig.rooms.map((roomConfig: RoomConfig) => this.importRoomConfig(roomConfig).id),
+      description: groupConfig.description,
+      groupJoinConfig: groupConfig.groupJoinConfig
+        ? this.importGroupJoinConfigConfig(groupConfig.groupJoinConfig)
         : undefined,
     };
-    this.groups.push(groupApolloDb);
-    return groupApolloDb;
+    this.groups.push(groupDb);
+    return groupDb;
   }
 
-  private importGroupJoinConfigApolloConfig(
-    groupJoinConfigApolloConfig: GroupJoinConfigApolloConfig
-  ): GroupJoinConfigApolloDb {
+  private importGroupJoinConfigConfig(groupJoinConfigConfig: GroupJoinConfigConfig): GroupJoinConfigDb {
     return {
       id: uuid(),
-      minimumParticipantCount: groupJoinConfigApolloConfig.minimumParticipantCount,
-      title: groupJoinConfigApolloConfig.title,
-      description: groupJoinConfigApolloConfig.description,
-      subtitle: groupJoinConfigApolloConfig.subtitle,
+      minimumParticipantCount: groupJoinConfigConfig.minimumParticipantCount,
+      title: groupJoinConfigConfig.title,
+      description: groupJoinConfigConfig.description,
+      subtitle: groupJoinConfigConfig.subtitle,
     };
   }
 
-  private importSessionApolloConfig(sessionApolloConfig: SessionApolloConfig): SessionApolloDb {
-    let sessionApolloDb: SessionApolloDb;
-    if (sessionApolloConfig.type === "GROUP_SESSION") {
-      sessionApolloDb = {
+  private importSessionConfig(sessionConfig: SessionConfig): SessionDb {
+    let sessionDb: SessionDb;
+    if (sessionConfig.type === "GROUP_SESSION") {
+      sessionDb = {
         id: uuid(),
-        type: sessionApolloConfig.type,
-        start: sessionApolloConfig.start,
-        end: sessionApolloConfig.end,
-        trackName: sessionApolloConfig.trackName,
-        group: this.importGroupApolloConfig(sessionApolloConfig.group).id,
+        type: sessionConfig.type,
+        start: sessionConfig.start,
+        end: sessionConfig.end,
+        trackName: sessionConfig.trackName,
+        group: this.importGroupConfig(sessionConfig.group).id,
       };
     } else {
-      sessionApolloDb = {
+      sessionDb = {
         id: uuid(),
-        type: sessionApolloConfig.type,
-        start: sessionApolloConfig.start,
-        end: sessionApolloConfig.end,
-        trackName: sessionApolloConfig.trackName,
-        room: this.importRoomApolloConfig(sessionApolloConfig.room).id,
+        type: sessionConfig.type,
+        start: sessionConfig.start,
+        end: sessionConfig.end,
+        trackName: sessionConfig.trackName,
+        room: this.importRoomConfig(sessionConfig.room).id,
       };
     }
-    this.sessions.push(sessionApolloDb);
-    return sessionApolloDb;
+    this.sessions.push(sessionDb);
+    return sessionDb;
   }
 
-  private importRoomApolloConfig(roomApolloConfig: RoomApolloConfig): RoomApolloDb {
-    const roomApolloDb: RoomApolloDb = {
+  private importRoomConfig(roomConfig: RoomConfig): RoomDb {
+    const roomDb: RoomDb = {
       id: uuid(),
-      name: roomApolloConfig.name,
-      description: roomApolloConfig.description,
-      joinUrl: roomApolloConfig.joinUrl,
-      titleUrl: roomApolloConfig.titleUrl,
-      icon: roomApolloConfig.icon,
-      roomLinks: roomApolloConfig.roomLinks?.map((roomLinkApolloConfig: RoomLinkApolloConfig) =>
-        this.importRoomLinkApolloConfig(roomLinkApolloConfig)
+      name: roomConfig.name,
+      description: roomConfig.description,
+      joinUrl: roomConfig.joinUrl,
+      titleUrl: roomConfig.titleUrl,
+      icon: roomConfig.icon,
+      roomLinks: roomConfig.roomLinks?.map((roomLinkConfig: RoomLinkConfig) =>
+        this.importRoomLinkConfig(roomLinkConfig)
       ),
-      slackNotification: roomApolloConfig.slackNotification
-        ? this.importSlackNotificationApolloConfig(roomApolloConfig.slackNotification)
+      slackNotification: roomConfig.slackNotification
+        ? this.importSlackNotificationConfig(roomConfig.slackNotification)
         : undefined,
-      meetingId: roomApolloConfig.meetingId,
+      meetingId: roomConfig.meetingId,
     };
-    this.rooms.push(roomApolloDb);
-    return roomApolloDb;
+    this.rooms.push(roomDb);
+    return roomDb;
   }
 
-  private importRoomLinkApolloConfig(roomLinkApolloConfig: RoomLinkApolloConfig): RoomLinkApolloDb {
+  private importRoomLinkConfig(roomLinkConfig: RoomLinkConfig): RoomLinkDb {
     return {
       id: uuid(),
-      href: roomLinkApolloConfig.href,
-      text: roomLinkApolloConfig.text,
-      icon: roomLinkApolloConfig.icon,
-      linkGroup: roomLinkApolloConfig.linkGroup,
+      href: roomLinkConfig.href,
+      text: roomLinkConfig.text,
+      icon: roomLinkConfig.icon,
+      linkGroup: roomLinkConfig.linkGroup,
     };
   }
 
-  private importSlackNotificationApolloConfig(
-    slackNotificationApolloConfig: SlackNotificationApolloConfig
-  ): SlackNotificationApolloDb {
+  private importSlackNotificationConfig(slackNotificationConfig: SlackNotificationConfig): SlackNotificationDb {
     return {
       id: uuid(),
-      channelId: slackNotificationApolloConfig.channelId,
-      notificationInterval: slackNotificationApolloConfig.notificationInterval,
+      channelId: slackNotificationConfig.channelId,
+      notificationInterval: slackNotificationConfig.notificationInterval,
     };
   }
 
-  public getOffice(): OfficeApollo {
-    const officeDb: OfficeApolloDb = this.office;
+  public getOffice(): OfficeWithBlocks {
+    const officeDb: OfficeWithBlocksDb = this.office;
     return {
       id: officeDb.id,
       version: officeDb.version,
       blocks: officeDb.blocks
         .map((blockId: string) => this.getBlock(blockId))
-        .filter((block: BlockApollo | undefined): block is BlockApollo => block !== undefined),
+        .filter((block: Block | undefined): block is Block => block !== undefined),
     };
   }
 
-  public getBlock(id: string): BlockApollo | undefined {
-    const blockDb: BlockApolloDb | undefined = this.blocks.find((block: BlockApolloDb) => block.id === id);
+  public getBlock(id: string): Block | undefined {
+    const blockDb: BlockDb | undefined = this.blocks.find((block: BlockDb) => block.id === id);
     if (!blockDb) {
       return undefined;
     } else if (blockDb.type === "GROUP_BLOCK") {
-      const group: GroupApollo | undefined = this.getGroup(blockDb.group);
+      const group: Group | undefined = this.getGroup(blockDb.group);
       if (group) {
         return {
           id: blockDb.id,
@@ -225,9 +212,9 @@ export class OfficeStore extends DataSource {
         };
       }
     } else if (blockDb.type === "SCHEDULE_BLOCK") {
-      const sessions: RoomSessionApollo[] = blockDb.sessions
+      const sessions: RoomSession[] = blockDb.sessions
         .map((sessionId: string) => this.getSession(sessionId))
-        .filter((session: SessionApollo | undefined): session is RoomSessionApollo => session !== undefined);
+        .filter((session: Session | undefined): session is RoomSession => session !== undefined);
       if (sessions.length > 0) {
         return {
           id: blockDb.id,
@@ -238,9 +225,9 @@ export class OfficeStore extends DataSource {
         };
       }
     } else if (blockDb.type === "SESSION_BLOCK") {
-      const sessions: RoomSessionApollo[] = blockDb.sessions
+      const sessions: RoomSession[] = blockDb.sessions
         .map((sessionId: string) => this.getSession(sessionId))
-        .filter((session: SessionApollo | undefined): session is RoomSessionApollo => session !== undefined);
+        .filter((session: Session | undefined): session is RoomSession => session !== undefined);
       if (sessions.length > 0) {
         return {
           id: blockDb.id,
@@ -253,12 +240,12 @@ export class OfficeStore extends DataSource {
     }
   }
 
-  public getGroup(id: string): GroupApollo | undefined {
-    const groupDb: GroupApolloDb | undefined = this.groups.find((group: GroupApolloDb) => group.id === id);
+  public getGroup(id: string): Group | undefined {
+    const groupDb: GroupDb | undefined = this.groups.find((group: GroupDb) => group.id === id);
     if (groupDb) {
-      const rooms: RoomApollo[] = groupDb.rooms
+      const rooms: Room[] = groupDb.rooms
         .map((roomId: string) => this.getRoom(roomId))
-        .filter((room: RoomApollo | undefined): room is RoomApollo => room !== undefined);
+        .filter((room: Room | undefined): room is Room => room !== undefined);
       if (rooms.length > 0) {
         return {
           id: groupDb.id,
@@ -271,7 +258,7 @@ export class OfficeStore extends DataSource {
     }
   }
 
-  public getGroupJoinConfig(id: string): GroupJoinConfigApollo | undefined {
+  public getGroupJoinConfig(id: string): GroupJoinConfig | undefined {
     for (let i = 0; i < this.groups.length; i++) {
       if (this.groups[i].groupJoinConfig?.id === id) {
         return this.groups[i].groupJoinConfig;
@@ -280,12 +267,12 @@ export class OfficeStore extends DataSource {
     return undefined;
   }
 
-  public getSession(id: string): SessionApollo | undefined {
-    const sessionDb: SessionApolloDb | undefined = this.sessions.find((session: SessionApolloDb) => session.id === id);
+  public getSession(id: string): Session | undefined {
+    const sessionDb: SessionDb | undefined = this.sessions.find((session: SessionDb) => session.id === id);
     if (!sessionDb) {
       return undefined;
     } else if (sessionDb.type === "GROUP_SESSION") {
-      const group: GroupApollo | undefined = this.getGroup(sessionDb.group);
+      const group: Group | undefined = this.getGroup(sessionDb.group);
       if (group) {
         return {
           id: sessionDb.id,
@@ -297,7 +284,7 @@ export class OfficeStore extends DataSource {
         };
       }
     } else if (sessionDb.type === "ROOM_SESSION") {
-      const room: RoomApollo | undefined = this.getRoom(sessionDb.room);
+      const room: Room | undefined = this.getRoom(sessionDb.room);
       if (room) {
         return {
           id: sessionDb.id,
@@ -311,14 +298,14 @@ export class OfficeStore extends DataSource {
     }
   }
 
-  public getRoom(id: string): RoomApollo | undefined {
-    return this.rooms.find((room: RoomApollo) => room.id === id);
+  public getRoom(id: string): Room | undefined {
+    return this.rooms.find((room: Room) => room.id === id);
   }
 
-  public getRoomLinks(ids: string[]): RoomLinkApollo[] {
-    const roomLinks: RoomLinkApollo[] = [];
-    this.rooms.forEach((room: RoomApollo) => {
-      room.roomLinks?.forEach((roomLink: RoomLinkApollo) => {
+  public getRoomLinks(ids: string[]): RoomLink[] {
+    const roomLinks: RoomLink[] = [];
+    this.rooms.forEach((room: Room) => {
+      room.roomLinks?.forEach((roomLink: RoomLink) => {
         if (ids.includes(roomLink.id)) {
           roomLinks.push(roomLink);
         }
@@ -330,29 +317,26 @@ export class OfficeStore extends DataSource {
   public updateOffice(officeInput: OfficeWithBlocks): boolean {
     this.office = {
       id: uuid(),
-      version: "2_APOLLO",
+      version: "2",
       blocks: [],
     };
     this.blocks = [];
     this.groups = [];
     this.sessions = [];
     this.rooms = [];
-    officeInput.blocks.forEach((blockApolloConfig: BlockApolloConfig) => {
-      const blockApolloDb: BlockApolloDb = this.importBlockApolloConfig(blockApolloConfig);
-      this.office.blocks.push(blockApolloDb.id);
+    officeInput.blocks.forEach((blockConfig: BlockConfig) => {
+      const blockDb: BlockDb = this.importBlockConfig(blockConfig);
+      this.office.blocks.push(blockDb.id);
     });
     return true;
   }
 
-  public addRoomToGroup(
-    roomApolloConfig: RoomApolloConfig,
-    groupId: string
-  ): { success: boolean; room: RoomApollo | undefined } {
+  public addRoomToGroup(roomConfig: RoomConfig, groupId: string): { success: boolean; room: Room | undefined } {
     for (let group of this.groups) {
       if (group.id === groupId) {
-        const roomApolloDb: RoomApolloDb = this.importRoomApolloConfig(roomApolloConfig);
-        group.rooms.push(roomApolloDb.id);
-        return { success: true, room: roomApolloDb };
+        const roomDb: RoomDb = this.importRoomConfig(roomConfig);
+        group.rooms.push(roomDb.id);
+        return { success: true, room: roomDb };
       }
     }
     return { success: false, room: undefined };

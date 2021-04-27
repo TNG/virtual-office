@@ -1,33 +1,32 @@
-import { Office, OfficeWithBlocks } from "../types/Office";
-import { SessionLegacy, TrackLegacy } from "../types/Schedule";
-import { GroupLegacy } from "../types/GroupLegacy";
-import { RoomConfigLegacy } from "../types/RoomLegacy";
-import { Room } from "../types/Room";
-import { Group } from "../types/Group";
-import { Session } from "../types/Session";
-import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
 import { compact } from "lodash";
+import { OfficeConfig } from "../../types/Office";
+import { OfficeConfigLegacy } from "../../types/legacyTypes/OfficeConfigLegacy";
+import { OfficeWithBlocksConfig } from "../../types/OfficeWithBlocks";
+import { GroupLegacy } from "../../types/legacyTypes/GroupLegacy";
+import { SessionLegacy, TrackLegacy } from "../../types/legacyTypes/ScheduleLegacy";
+import { RoomConfigLegacy } from "../../types/legacyTypes/RoomLegacy";
+import { GroupConfig } from "../../types/Group";
+import { RoomConfig } from "../../types/Room";
+import { SessionConfig } from "../../types/Session";
 
-export const getOfficeWithBlocksFromOffice = (
-  officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy
-): OfficeWithBlocks => {
-  if ("blocks" in officeOrConfigOptionsLegacy) {
-    return officeOrConfigOptionsLegacy as OfficeWithBlocks;
+export const getOfficeWithBlocksConfigFromOfficeConfig = (officeConfig: OfficeConfig): OfficeWithBlocksConfig => {
+  if ("blocks" in officeConfig) {
+    return officeConfig as OfficeWithBlocksConfig;
   } else {
-    return officeLegacyToOfficeWithBlocks(officeOrConfigOptionsLegacy as ConfigOptionsLegacy);
+    return officeConfigLegacyToOfficeWithBlocksConfig(officeConfig as OfficeConfigLegacy);
   }
 };
 
-function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy): OfficeWithBlocks {
-  configOptionsLegacy = cleanOfficeLegacy(configOptionsLegacy);
+function officeConfigLegacyToOfficeWithBlocksConfig(officeConfigLegacy: OfficeConfigLegacy): OfficeWithBlocksConfig {
+  officeConfigLegacy = cleanOfficeLegacy(officeConfigLegacy);
 
-  if (!configOptionsLegacy.schedule) {
+  if (!officeConfigLegacy.schedule) {
     return {
       version: "2",
-      blocks: configOptionsLegacy.groups.map((groupLegacy: GroupLegacy) => ({
+      blocks: officeConfigLegacy.groups.map((groupLegacy: GroupLegacy) => ({
         type: "GROUP_BLOCK",
         name: groupLegacy.name || "",
-        group: groupLegacytoGroup(configOptionsLegacy, groupLegacy),
+        group: groupLegacyToGroupConfig(officeConfigLegacy, groupLegacy),
       })),
     };
   } else {
@@ -37,9 +36,9 @@ function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy
         {
           type: "SCHEDULE_BLOCK",
           name: "",
-          tracks: configOptionsLegacy.schedule.tracks.map((track: TrackLegacy) => ({ name: track.name })),
-          sessions: configOptionsLegacy.schedule.sessions.map((sessionLegacy: SessionLegacy) =>
-            sessionLegacyToSession(configOptionsLegacy, sessionLegacy)
+          tracks: officeConfigLegacy.schedule.tracks.map((track: TrackLegacy) => ({ name: track.name })),
+          sessions: officeConfigLegacy.schedule.sessions.map((sessionLegacy: SessionLegacy) =>
+            sessionLegacyToSessionConfig(officeConfigLegacy, sessionLegacy)
           ),
         },
       ],
@@ -47,69 +46,69 @@ function officeLegacyToOfficeWithBlocks(configOptionsLegacy: ConfigOptionsLegacy
   }
 }
 
-function cleanOfficeLegacy(configOptionsLegacy: ConfigOptionsLegacy): ConfigOptionsLegacy {
-  configOptionsLegacy = removeUnusedGroups(configOptionsLegacy);
-  configOptionsLegacy = addDummyGroup(configOptionsLegacy);
-  configOptionsLegacy = removeUnusedSessions(configOptionsLegacy);
-  return configOptionsLegacy;
+function cleanOfficeLegacy(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
+  officeConfigLegacy = removeUnusedGroups(officeConfigLegacy);
+  officeConfigLegacy = addDummyGroup(officeConfigLegacy);
+  officeConfigLegacy = removeUnusedSessions(officeConfigLegacy);
+  return officeConfigLegacy;
 }
 
-function removeUnusedGroups(configOptionsLegacy: ConfigOptionsLegacy): ConfigOptionsLegacy {
-  configOptionsLegacy.groups = configOptionsLegacy.groups.filter((groupLegacy: GroupLegacy) => {
-    if (!configOptionsLegacy.schedule) {
-      return configOptionsLegacy.rooms.some(
+function removeUnusedGroups(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
+  officeConfigLegacy.groups = officeConfigLegacy.groups.filter((groupLegacy: GroupLegacy) => {
+    if (!officeConfigLegacy.schedule) {
+      return officeConfigLegacy.rooms.some(
         (roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacy.groupId === groupLegacy.id
       );
     } else {
-      return configOptionsLegacy.schedule.sessions.some(
+      return officeConfigLegacy.schedule.sessions.some(
         (sessionLegacy: SessionLegacy) => sessionLegacy.groupId === groupLegacy.id
       );
     }
   });
-  return configOptionsLegacy;
+  return officeConfigLegacy;
 }
 
-function addDummyGroup(officeLegacy: ConfigOptionsLegacy): ConfigOptionsLegacy {
-  officeLegacy.groups.push({
+function addDummyGroup(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
+  officeConfigLegacy.groups.push({
     id: "",
     name: "",
   });
-  officeLegacy.rooms.forEach((roomLegacy: RoomConfigLegacy) => {
-    if (!roomLegacy.groupId) {
-      roomLegacy.groupId = "";
+  officeConfigLegacy.rooms.forEach((roomConfigLegacy: RoomConfigLegacy) => {
+    if (!roomConfigLegacy.groupId) {
+      roomConfigLegacy.groupId = "";
     }
   });
-  return officeLegacy;
+  return officeConfigLegacy;
 }
 
 // Session must have valid room or group reference
-function removeUnusedSessions(officeLegacy: ConfigOptionsLegacy): ConfigOptionsLegacy {
-  if (officeLegacy.schedule) {
-    officeLegacy.schedule.sessions = officeLegacy.schedule.sessions.filter(
+function removeUnusedSessions(officeConfigLegacy: OfficeConfigLegacy): OfficeConfigLegacy {
+  if (officeConfigLegacy.schedule) {
+    officeConfigLegacy.schedule.sessions = officeConfigLegacy.schedule.sessions.filter(
       (sessionLegacy: SessionLegacy) =>
         (sessionLegacy.roomId &&
-          officeLegacy.rooms.some(
+          officeConfigLegacy.rooms.some(
             (roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacy.roomId === sessionLegacy.roomId
           )) ||
         (sessionLegacy.groupId &&
-          officeLegacy.groups.some((groupsLegacy: GroupLegacy) => groupsLegacy.id === sessionLegacy.groupId))
+          officeConfigLegacy.groups.some((groupsLegacy: GroupLegacy) => groupsLegacy.id === sessionLegacy.groupId))
     );
   }
-  return officeLegacy;
+  return officeConfigLegacy;
 }
 
-function groupLegacytoGroup(officeLegacy: ConfigOptionsLegacy, groupLegacy: GroupLegacy): Group {
+function groupLegacyToGroupConfig(officeConfigLegacy: OfficeConfigLegacy, groupLegacy: GroupLegacy): GroupConfig {
   return {
     name: groupLegacy.name || "",
     description: groupLegacy.description,
-    rooms: officeLegacy.rooms
+    rooms: officeConfigLegacy.rooms
       .filter((roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacy.groupId === groupLegacy.id)
-      .map((roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacyToRoom(roomConfigLegacy)),
+      .map((roomConfigLegacy: RoomConfigLegacy) => roomConfigLegacyToRoomConfig(roomConfigLegacy)),
     groupJoinConfig: groupLegacy.groupJoin,
   };
 }
 
-function roomConfigLegacyToRoom(roomConfigLegacy: RoomConfigLegacy): Room {
+function roomConfigLegacyToRoomConfig(roomConfigLegacy: RoomConfigLegacy): RoomConfig {
   return {
     name: roomConfigLegacy.name,
     meetingId: roomConfigLegacy.meetingId,
@@ -123,19 +122,22 @@ function roomConfigLegacyToRoom(roomConfigLegacy: RoomConfigLegacy): Room {
 }
 
 // if Session has roomId and groupId, roomId has prevalence
-function sessionLegacyToSession(configOptionsLegacy: ConfigOptionsLegacy, sessionLegacy: SessionLegacy): Session {
+function sessionLegacyToSessionConfig(
+  officeConfigLegacy: OfficeConfigLegacy,
+  sessionLegacy: SessionLegacy
+): SessionConfig {
   if (sessionLegacy.roomId) {
     return {
       type: "ROOM_SESSION",
       start: sessionLegacy.start,
       end: sessionLegacy.end,
-      room: roomConfigLegacyToRoom(
-        configOptionsLegacy.rooms.find(
+      room: roomConfigLegacyToRoomConfig(
+        officeConfigLegacy.rooms.find(
           (roomConfigegacy: RoomConfigLegacy) => roomConfigegacy.roomId === sessionLegacy.roomId
         )!
       ),
       trackName:
-        configOptionsLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name ||
+        officeConfigLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name ||
         "",
     };
   } else {
@@ -143,12 +145,12 @@ function sessionLegacyToSession(configOptionsLegacy: ConfigOptionsLegacy, sessio
       type: "GROUP_SESSION",
       start: sessionLegacy.start,
       end: sessionLegacy.end,
-      group: groupLegacytoGroup(
-        configOptionsLegacy,
-        configOptionsLegacy.groups.find((groupLegacy: GroupLegacy) => groupLegacy.id === sessionLegacy.groupId)!
+      group: groupLegacyToGroupConfig(
+        officeConfigLegacy,
+        officeConfigLegacy.groups.find((groupLegacy: GroupLegacy) => groupLegacy.id === sessionLegacy.groupId)!
       ),
       trackName:
-        configOptionsLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name ||
+        officeConfigLegacy.schedule?.tracks.find((track: TrackLegacy) => track.id === sessionLegacy.trackId)?.name ||
         "",
     };
   }

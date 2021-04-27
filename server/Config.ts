@@ -1,12 +1,13 @@
 import { Service } from "typedi";
 import { findRootDir } from "./express/utils/findRootDir";
 import { v4 as uuid } from "uuid";
-import { ClientConfig } from "./express/types/ClientConfig";
 import * as fs from "fs";
 import { logger } from "./log";
-import { Office, OfficeWithBlocks, OfficeWithBlocksCodec } from "./express/types/Office";
-import { ConfigOptionsLegacyCodec } from "./express/types/ConfigOptionsLegacy";
+import { OfficeConfigLegacyCodec } from "./types/legacyTypes/OfficeConfigLegacy";
 import { isRight } from "fp-ts/Either";
+import { ClientConfigConfig } from "./types/ClientConfig";
+import { OfficeConfig } from "./types/Office";
+import { OfficeWithBlocksConfig, OfficeWithBlocksConfigCodec } from "./types/OfficeWithBlocks";
 
 export interface SlackConfig {
   clientId: string;
@@ -28,20 +29,20 @@ export class Config {
   public readonly port = process.env.PORT || 9000;
   public readonly disableAuth = process.env.DISABLE_AUTH === "true";
   public readonly slack = Config.readSlackConfig(this.disableAuth);
-  public readonly configOptions: Office = Config.readConfigFromFile();
+  public readonly configOptions: OfficeConfig = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
   public readonly enableParticipantLogging = process.env.ENABLE_PARTICIPANT_LOGGING === "true";
   public readonly adminEndpointsCredentials?: Credentials = Config.readAdminEndpointsCredentials();
   public readonly anonymousParticipants = process.env.ANONYMOUS_PARTICIPANTS === "true";
-  public readonly clientConfig: ClientConfig = Config.readClientConfig();
+  public readonly clientConfig: ClientConfigConfig = Config.readClientConfig();
   public readonly writeOfficeUpdatesToFileSystem = process.env.WRITE_OFFICE_UPDATES_TO_FILE_SYSTEM === "true";
   public readonly eventWebhook = process.env.EVENT_WEBHOOK;
   public readonly zoomWebhookApi = process.env.ZOOM_WEBHOOK_API;
 
   constructor() {}
 
-  private static readClientConfig(): ClientConfig {
+  private static readClientConfig(): ClientConfigConfig {
     const backgroundUrl = process.env.BACKGROUND_URL;
     const theme = process.env.THEME;
     const viewMode = process.env.VIEW_MODE;
@@ -86,9 +87,9 @@ export class Config {
     };
   }
 
-  public static isOffice(config: any): boolean {
-    const configDecodedLegacy = ConfigOptionsLegacyCodec.decode(config);
-    const configDecodedBlocks = OfficeWithBlocksCodec.decode(config);
+  public static isOfficeConfig(config: any): boolean {
+    const configDecodedLegacy = OfficeConfigLegacyCodec.decode(config);
+    const configDecodedBlocks = OfficeWithBlocksConfigCodec.decode(config);
     return isRight(configDecodedLegacy) || isRight(configDecodedBlocks);
   }
 
@@ -96,10 +97,10 @@ export class Config {
     return process.env.CONFIG_LOCATION || `${findRootDir()}/server/office.json`;
   }
 
-  private static readConfigFromFile(): Office {
+  private static readConfigFromFile(): OfficeConfig {
     if (process.env.CONFIG) {
       const parsedConfig = JSON.parse(process.env.CONFIG);
-      if (Config.isOffice(parsedConfig)) {
+      if (Config.isOfficeConfig(parsedConfig)) {
         return parsedConfig;
       }
     }
@@ -107,13 +108,13 @@ export class Config {
     const configFile = Config.getConfigFile();
     if (fs.existsSync(configFile)) {
       const parsedConfig = require(configFile);
-      if (Config.isOffice(parsedConfig)) {
+      if (Config.isOfficeConfig(parsedConfig)) {
         return parsedConfig;
       }
     }
 
     logger.warn(`Config file '${configFile}' does not exist or is not a valid office, creating default config`);
-    const emptyConfig: OfficeWithBlocks = { version: "2", blocks: [] };
+    const emptyConfig: OfficeWithBlocksConfig = { version: "2", blocks: [] };
     fs.writeFileSync(`${findRootDir()}/server/office.json`, JSON.stringify(emptyConfig));
     return emptyConfig;
   }

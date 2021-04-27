@@ -1,19 +1,20 @@
 import { Service } from "typedi";
 import { Config } from "../Config";
-import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
-import { GroupLegacy } from "../express/types/GroupLegacy";
-import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingIdLegacy } from "../express/types/RoomLegacy";
+import { GroupLegacy } from "../types/legacyTypes/GroupLegacy";
+import { RoomLegacy, RoomConfigLegacy, RoomWithMeetingIdLegacy } from "../types/legacyTypes/RoomLegacy";
 import { logger } from "../log";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
-import { Schedule, SessionLegacy } from "../express/types/Schedule";
+import { ScheduleLegacy, SessionLegacy } from "../types/legacyTypes/ScheduleLegacy";
 import { DateTime } from "luxon";
-import { Block, Office, OfficeWithBlocks } from "../express/types/Office";
-import { getOfficeWithBlocksFromOffice } from "../express/utils/convertOffice";
-import { Room } from "../express/types/Room";
-import { Session } from "../express/types/Session";
+import { getOfficeWithBlocksConfigFromOfficeConfig } from "../express/utils/convertOffice";
+import { OfficeWithBlocksConfig } from "../types/OfficeWithBlocks";
+import { RoomConfig } from "../types/Room";
+import { BlockConfig } from "../types/Block";
+import { SessionConfig } from "../types/Session";
+import { OfficeConfig } from "../types/Office";
 
-export type OfficeChangeListener = (office: OfficeWithBlocks) => void;
+export type OfficeChangeListener = (office: OfficeWithBlocksConfig) => void;
 
 const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
   a: SessionLegacy,
@@ -27,37 +28,37 @@ export class OfficeService {
   private officeChangeListeners: OfficeChangeListener[] = [];
   private groups: GroupLegacy[] = [];
   private rooms: RoomLegacy[] = [];
-  private schedule: Schedule | undefined = undefined;
-  private office: OfficeWithBlocks = {
+  private schedule: ScheduleLegacy | undefined = undefined;
+  private office: OfficeWithBlocksConfig = {
     version: "2",
     blocks: [],
   };
 
   public constructor(private readonly config: Config) {
-    const officeParsed: Office = config.configOptions;
-    this.office = getOfficeWithBlocksFromOffice(officeParsed);
+    const officeParsed: OfficeConfig = config.configOptions;
+    this.office = getOfficeWithBlocksConfigFromOfficeConfig(officeParsed);
   }
 
-  getOffice(): OfficeWithBlocks {
+  getOffice(): OfficeWithBlocksConfig {
     return this.office;
   }
 
   hasMeetingIdConfigured(meetingId: string): boolean {
-    return this.getAllRooms().some((room: Room) => room.meetingId === meetingId);
+    return this.getAllRooms().some((roomConfig: RoomConfig) => roomConfig.meetingId === meetingId);
   }
 
-  getAllRooms(): Room[] {
-    let rooms: Room[] = [];
+  getAllRooms(): RoomConfig[] {
+    let rooms: RoomConfig[] = [];
 
-    this.office.blocks.forEach((block: Block) => {
-      if (block.type === "GROUP_BLOCK") {
-        rooms.push(...block.group.rooms);
-      } else if (block.type === "SCHEDULE_BLOCK") {
-        block.sessions.forEach((session: Session) => {
-          if (session.type === "GROUP_SESSION") {
-            rooms.push(...session.group.rooms);
-          } else if (session.type === "ROOM_SESSION") {
-            rooms.push(session.room);
+    this.office.blocks.forEach((blockConfig: BlockConfig) => {
+      if (blockConfig.type === "GROUP_BLOCK") {
+        rooms.push(...blockConfig.group.rooms);
+      } else if (blockConfig.type === "SCHEDULE_BLOCK") {
+        blockConfig.sessions.forEach((sessionConfig: SessionConfig) => {
+          if (sessionConfig.type === "GROUP_SESSION") {
+            rooms.push(...sessionConfig.group.rooms);
+          } else if (sessionConfig.type === "ROOM_SESSION") {
+            rooms.push(sessionConfig.room);
           }
         });
       }
@@ -123,8 +124,8 @@ export class OfficeService {
     };
   }
 
-  replaceOfficeWith(officeOrConfigOptionsLegacy: Office | ConfigOptionsLegacy) {
-    this.office = getOfficeWithBlocksFromOffice(officeOrConfigOptionsLegacy);
+  replaceOfficeWith(officeConfig: OfficeConfig) {
+    this.office = getOfficeWithBlocksConfigFromOfficeConfig(officeConfig);
 
     this.writeOfficeToFileSystem();
     this.notifyOfficeChangeListeners();

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { Container } from "typedi";
 import { Config } from "../../Config";
-import { User } from "../types/User";
+import { UserLegacy } from "../../types/legacyTypes/UserLegacy";
 
-function getLoginUser(req: Request): User | undefined {
+function getLoginUser(req: Request): UserLegacy | undefined {
   const userValue = req.signedCookies.currentUser;
   return userValue && JSON.parse(userValue);
 }
@@ -23,5 +23,5 @@ export default function ensureLoggedIn(req: Request, res: Response, next: NextFu
 }
 
 export interface AuthenticatedRequest extends Request {
-  currentUser?: User;
+  currentUser?: UserLegacy;
 }

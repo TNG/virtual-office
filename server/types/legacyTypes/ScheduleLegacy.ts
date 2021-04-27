@@ -20,8 +20,8 @@ export const SessionLegacyCodec = t.intersection([
 ]);
 export type SessionLegacy = t.TypeOf<typeof SessionLegacyCodec>;
 
-export const ScheduleCodec = t.type({
+export const ScheduleLegacyCodec = t.type({
   tracks: t.array(TrackLegacyCodec),
   sessions: t.array(SessionLegacyCodec),
 });
-export type Schedule = t.TypeOf<typeof ScheduleCodec>;
+export type ScheduleLegacy = t.TypeOf<typeof ScheduleLegacyCodec>;

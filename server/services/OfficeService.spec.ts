@@ -1,7 +1,7 @@
 import { OfficeService } from "./OfficeService";
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
-import { RoomLegacy } from "../express/types/RoomLegacy";
+import { RoomLegacy } from "../types/legacyTypes/RoomLegacy";
 
 describe("OfficeService", () => {
   let officeService: OfficeService;

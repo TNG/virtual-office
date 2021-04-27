@@ -6,7 +6,7 @@ import { isRight } from "fp-ts/Either";
 import { RoomConfigLegacy, RoomLegacy } from "../types/RoomLegacy";
 import { GroupLegacy } from "../types/GroupLegacy";
 import { SessionLegacy, TrackLegacy } from "../types/Schedule";
-import { ConfigOptionsLegacy } from "../types/ConfigOptionsLegacy";
+import { OfficeConfigLegacy } from "../types/OfficeConfigLegacy";
 import { GroupSession, RoomSession, Session } from "../types/Session";
 
 describe("OfficeConverter", () => {
@@ -70,8 +70,8 @@ describe("OfficeConverter", () => {
     joinUrl: "http://bla.blub",
   };
 
-  let officeLegacySimple: ConfigOptionsLegacy;
-  let officeLegacySchedule: ConfigOptionsLegacy;
+  let officeLegacySimple: OfficeConfigLegacy;
+  let officeLegacySchedule: OfficeConfigLegacy;
   let config: Config;
 
   beforeEach(() => {

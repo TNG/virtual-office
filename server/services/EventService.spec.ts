@@ -1,6 +1,6 @@
 import { Config } from "../Config";
 import { instance, mock, when } from "ts-mockito";
-import { OfficeLegacy } from "../express/types/OfficeLegacy";
+import { OfficeLegacy } from "../types/legacyTypes/OfficeLegacy";
 import { EventService } from "./EventService";
 import axios from "axios";
 import { Settings } from "luxon";

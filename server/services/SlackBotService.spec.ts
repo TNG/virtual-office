@@ -1,7 +1,7 @@
 import { MeetingsService } from "./MeetingsService";
 import { Config } from "../Config";
 import { anything, instance, mock, when } from "ts-mockito";
-import { MeetingEvent } from "../express/types/MeetingEvent";
+import { MeetingEventLegacy } from "../types/legacyTypes/MeetingLegacy";
 import { SlackBotService } from "./SlackBotService";
 import { OfficeService } from "./OfficeService";
 
@@ -28,7 +28,7 @@ describe("SlackBotService", () => {
   let participantsService: MeetingsService;
   let officeService: OfficeService;
 
-  let onRoomEvent: (event: MeetingEvent) => void;
+  let onRoomEvent: (event: MeetingEventLegacy) => void;
 
   beforeEach(() => {
     mockPostMessage.mockClear();

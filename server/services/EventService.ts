@@ -2,14 +2,14 @@ import axios from "axios";
 import { Service } from "typedi";
 import { Config } from "../Config";
 import { logger } from "../log";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { MeetingParticipantLegacy } from "../types/legacyTypes/MeetingLegacy";
 import { OfficeService } from "./OfficeService";
 
 @Service()
 export class EventService {
   constructor(private config: Config, private officeService: OfficeService) {}
 
-  async trackJoinEvent(meetingId: string, toJoin: MeetingParticipant) {
+  async trackJoinEvent(meetingId: string, toJoin: MeetingParticipantLegacy) {
     const activeRoom = this.officeService.getActiveRoom(meetingId);
     if (activeRoom) {
       await this.trackEvent(toJoin.id, "Session", "Join", activeRoom?.name);

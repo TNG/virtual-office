@@ -1,17 +1,17 @@
-import { ConfigOptionsLegacy } from "../express/types/ConfigOptionsLegacy";
 import { Container } from "typedi";
 import { ExpressApp } from "../express/ExpressApp";
 import { Express } from "express";
 import request from "supertest";
 import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { MeetingParticipantLegacy } from "../types/legacyTypes/MeetingLegacy";
+import { OfficeConfigLegacy } from "../types/legacyTypes/OfficeConfigLegacy";
 
 export class TestServer {
   constructor(private readonly app: Express) {}
 
   async getParticipantIds(meetingId: string) {
     const response = await request(this.app).get(`/api/meeting/${meetingId}/participants`).expect(200);
-    const body = response.body as MeetingParticipant[];
+    const body = response.body as MeetingParticipantLegacy[];
     return body.map((participant) => participant.id);
   }
 
@@ -32,7 +32,7 @@ export class TestServer {
   }
 }
 
-export async function startTestServerWithConfig(config: ConfigOptionsLegacy): Promise<TestServer> {
+export async function startTestServerWithConfig(config: OfficeConfigLegacy): Promise<TestServer> {
   process.env.SLACK_SECRET = "abc";
   process.env.SLACK_CLIENT_ID = "abc";
   process.env.SLACK_CALLBACK_URL = "http://localhost";

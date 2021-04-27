@@ -1,7 +1,7 @@
-import { MeetingParticipant } from "../types/MeetingParticipant";
-import { User } from "../types/User";
+import { MeetingParticipantLegacy } from "../../types/legacyTypes/MeetingLegacy";
+import { UserLegacy } from "../../types/legacyTypes/UserLegacy";
 
-export function enrichParticipant(participant: MeetingParticipant, user: User): MeetingParticipant {
+export function enrichParticipant(participant: MeetingParticipantLegacy, user: UserLegacy): MeetingParticipantLegacy {
   return {
     ...participant,
     email: participant.email || user.email,

@@ -1,12 +1,16 @@
 import { Service } from "typedi";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
 import { logger } from "../log";
 import { KnownUsersService } from "./KnownUsersService";
-import { EventListener, EventType, MeetingEvent } from "../express/types/MeetingEvent";
-import { User } from "../express/types/User";
+import {
+  MeetingLegacy,
+  EventListenerLegacy,
+  EventTypeLegacy,
+  MeetingEventLegacy,
+  MeetingParticipantLegacy,
+} from "../types/legacyTypes/MeetingLegacy";
+import { UserLegacy } from "../types/legacyTypes/UserLegacy";
 import { comparableUsername } from "../express/utils/compareableUsername";
 import { enrichParticipant } from "../express/utils/enrichUser";
-import { Meeting } from "../express/types/Meeting";
 import { OfficeService } from "./OfficeService";
 import { Config } from "../Config";
 import { EventService } from "./EventService";
@@ -14,9 +18,9 @@ import { EventService } from "./EventService";
 @Service({ multiple: false })
 export class MeetingsService {
   private meetingParticipants: {
-    [meetingId: string]: MeetingParticipant[];
+    [meetingId: string]: MeetingParticipantLegacy[];
   } = {};
-  private roomChangeListeners: EventListener[] = [];
+  private roomChangeListeners: EventListenerLegacy[] = [];
 
   constructor(
     private readonly knownUsersService: KnownUsersService,
@@ -27,7 +31,7 @@ export class MeetingsService {
     this.knownUsersService.listen((user) => this.onUserUpdate(user));
   }
 
-  getAllMeetings(): Meeting[] {
+  getAllMeetings(): MeetingLegacy[] {
     return Object.keys(this.meetingParticipants)
       .filter((meetingId) => this.officeService.hasMeetingIdConfigured(meetingId))
       .map((meetingId) => ({
@@ -36,7 +40,7 @@ export class MeetingsService {
       }));
   }
 
-  getParticipantsIn(meetingId: string): MeetingParticipant[] {
+  getParticipantsIn(meetingId: string): MeetingParticipantLegacy[] {
     if (!this.officeService.hasMeetingIdConfigured(meetingId)) {
       return [];
     }
@@ -44,7 +48,7 @@ export class MeetingsService {
     return participants.map((participant) => this.enrich(participant));
   }
 
-  joinRoom(meetingId: string, toJoin: MeetingParticipant) {
+  joinRoom(meetingId: string, toJoin: MeetingParticipantLegacy) {
     if (!this.meetingParticipants[meetingId]) {
       this.meetingParticipants[meetingId] = [];
     }
@@ -65,7 +69,7 @@ export class MeetingsService {
     this.eventService.trackJoinEvent(meetingId, toJoin);
   }
 
-  leave(meetingId: string, toLeave: MeetingParticipant) {
+  leave(meetingId: string, toLeave: MeetingParticipantLegacy) {
     logger.info(`leaveRoom - participant with id ${toLeave.id}`);
 
     const participants = this.meetingParticipants[meetingId];
@@ -113,7 +117,7 @@ export class MeetingsService {
     this.meetingParticipants = {};
   }
 
-  private enrich(participant: MeetingParticipant): MeetingParticipant {
+  private enrich(participant: MeetingParticipantLegacy): MeetingParticipantLegacy {
     if (this.config.anonymousParticipants) {
       return {
         id: participant.id,
@@ -129,12 +133,12 @@ export class MeetingsService {
     return enrichParticipant(participant, user);
   }
 
-  private notify(meetingId: string, participant: MeetingParticipant, type: EventType) {
+  private notify(meetingId: string, participant: MeetingParticipantLegacy, type: EventTypeLegacy) {
     if (!this.officeService.hasMeetingIdConfigured(meetingId)) {
       return;
     }
 
-    const event: MeetingEvent = {
+    const event: MeetingEventLegacy = {
       participant: this.enrich(participant),
       meetingId: meetingId,
       type,
@@ -143,11 +147,11 @@ export class MeetingsService {
     this.roomChangeListeners.forEach((listener) => listener(event));
   }
 
-  listenParticipantsChange(listener: (event: MeetingEvent) => void) {
+  listenParticipantsChange(listener: (event: MeetingEventLegacy) => void) {
     this.roomChangeListeners.push(listener);
   }
 
-  onUserUpdate(user: User) {
+  onUserUpdate(user: UserLegacy) {
     const username = comparableUsername(user.name);
     Object.entries(this.meetingParticipants).map(([room, participants]) => {
       const found = participants.find((participant) => comparableUsername(participant.username) === username);
