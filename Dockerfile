@@ -1,4 +1,4 @@
-FROM node:12 as build
+FROM node:16 as build
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY server ./server/
 RUN cd client && npm run build
 RUN cd server && npm run build
 
-FROM node:12
+FROM node:16
 
 WORKDIR /app
 
