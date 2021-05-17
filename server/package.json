@@ -46,7 +46,7 @@
     "@types/cors": "2.8.10",
     "@types/express": "4.17.11",
     "@types/jest": "26.0.23",
-    "@types/lodash": "4.14.168",
+    "@types/lodash": "4.14.169",
     "@types/luxon": "1.26.5",
     "@types/node": "14.14.43",
     "@types/passport": "1.0.6",
