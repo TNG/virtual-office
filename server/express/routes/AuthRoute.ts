@@ -3,7 +3,6 @@ import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
-// @ts-ignore
 import { Strategy as SlackStrategy } from "passport-slack-oauth2";
 import { User } from "../types/User";
 import { KnownUsersService } from "../../services/KnownUsersService";
