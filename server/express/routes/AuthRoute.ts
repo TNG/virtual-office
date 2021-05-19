@@ -3,7 +3,8 @@ import { ExpressRoute } from "./ExpressRoute";
 import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
-import { Strategy as SlackStrategy } from "passport-slack";
+// @ts-ignore
+import { Strategy as SlackStrategy } from "passport-slack-oauth2";
 import { User } from "../types/User";
 import { KnownUsersService } from "../../services/KnownUsersService";
 
@@ -55,10 +56,10 @@ export class AuthRoute implements ExpressRoute {
   router(): Router {
     const router = Router();
 
-    router.get("/auth/slack", passport.authenticate("slack"));
+    router.get("/auth/slack", passport.authenticate("Slack"));
 
     router.get("/auth/slack/callback", (req, res, next) => {
-      passport.authenticate("slack", (err, profile) => {
+      passport.authenticate("Slack", (err, profile) => {
         if (err || !profile) {
           const message = (err && err.message) || "Unknown error";
           return res.redirect(`/?error=${encodeURIComponent(message)}`);
