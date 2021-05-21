@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
+import { Participant } from "./Participant";
 
 @ObjectType()
 export class Meeting {
@@ -10,19 +11,4 @@ export class Meeting {
 
   @Field((type) => [Participant])
   participants!: Participant[];
-}
-
-@ObjectType()
-export class Participant {
-  @Field((type) => ID)
-  id!: string;
-
-  @Field()
-  username!: string;
-
-  @Field({ nullable: true })
-  email?: string;
-
-  @Field({ nullable: true })
-  imageUrl?: string;
 }

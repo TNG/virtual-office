@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
+import { MutationResponse } from "./MutationResponse";
 
 @ObjectType()
 export class Participant {
@@ -13,4 +14,13 @@ export class Participant {
 
   @Field({ nullable: true })
   imageUrl?: String;
+}
+
+@ObjectType({ implements: MutationResponse })
+export class ParticipantMutatedResponse extends MutationResponse {
+  @Field()
+  participant!: Participant;
+
+  @Field((type) => ID)
+  meetingId!: string;
 }
