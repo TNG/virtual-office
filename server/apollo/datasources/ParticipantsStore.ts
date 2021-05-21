@@ -8,10 +8,6 @@ export class ParticipantsStore extends DataSource {
 
   constructor() {
     super();
-    this.meetings.push({
-      id: "91905545648",
-      participants: [{ id: "zettsebastian", username: "Sebastian Zett" }],
-    });
   }
 
   initialize() {
