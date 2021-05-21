@@ -23,22 +23,22 @@ export const resolversQueries = {
       return dataSources.officeStore.getOffice();
     },
     getBlock: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getBlock(id);
+      return dataSources.blockStore.getBlock(id);
     },
     getGroup: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getGroup(id);
+      return dataSources.groupStore.getGroup(id);
     },
     getGroupJoinConfig: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getGroupJoinConfig(id);
+      return dataSources.groupStore.getGroupJoinConfig(id);
     },
     getSession: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getSession(id);
+      return dataSources.sessionStore.getSession(id);
     },
     getRoom: (_, { id }, { dataSources }) => {
-      return dataSources.officeStore.getRoom(id);
+      return dataSources.roomStore.getRoom(id);
     },
     getRoomLinks: (_, { ids }, { dataSources }) => {
-      return dataSources.officeStore.getRoomLinks(ids);
+      return dataSources.roomStore.getRoomLinks(ids);
     },
     getAllMeetings: (_, __, { dataSources }) => {
       return dataSources.participantsStore.getAllMeetings();
