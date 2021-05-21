@@ -2,11 +2,10 @@ import { DataSource } from "apollo-datasource";
 import { Service } from "typedi";
 import { v4 as uuid } from "uuid";
 import { TrackConfig, TrackDb } from "../../types/Block";
-import { Group } from "../../types/Group";
-import { Session, SessionConfig, SessionDb } from "../../types/Session";
-import { Room } from "../../types/Room";
+import { SessionConfig, SessionDb } from "../../types/Session";
 import { GroupStore } from "./GroupStore";
 import { RoomStore } from "./RoomStore";
+import { GroupSession, RoomSession, Session } from "../../graphql/types/Session";
 
 @Service()
 export class SessionStore extends DataSource {
@@ -53,29 +52,13 @@ export class SessionStore extends DataSource {
     if (!sessionDb) {
       return undefined;
     } else if (sessionDb.type === "GROUP_SESSION") {
-      const group: Group | undefined = this.groupStore.getGroup(sessionDb.group);
-      if (group) {
-        return {
-          id: sessionDb.id,
-          type: sessionDb.type,
-          start: sessionDb.start,
-          end: sessionDb.end,
-          group: group,
-          trackName: sessionDb.trackName,
-        };
-      }
+      const groupSession = new GroupSession(sessionDb.id, sessionDb.start, sessionDb.end, sessionDb.group);
+      groupSession.trackName = sessionDb.trackName;
+      return groupSession;
     } else if (sessionDb.type === "ROOM_SESSION") {
-      const room: Room | undefined = this.roomStore.getRoom(sessionDb.room);
-      if (room) {
-        return {
-          id: sessionDb.id,
-          type: sessionDb.type,
-          start: sessionDb.start,
-          end: sessionDb.end,
-          room: room,
-          trackName: sessionDb.trackName,
-        };
-      }
+      const roomSession = new RoomSession(sessionDb.id, sessionDb.start, sessionDb.end, sessionDb.room);
+      roomSession.trackName = sessionDb.trackName;
+      return roomSession;
     }
   }
 

@@ -4,12 +4,13 @@ import { OfficeWithBlocks, OfficeWithBlocksConfig, OfficeWithBlocksDb } from "..
 import { Service } from "typedi";
 import { v4 as uuid } from "uuid";
 import { getOfficeWithBlocksConfigFromOfficeConfig } from "../../express/utils/convertOffice";
-import { Block, BlockConfig, BlockDb } from "../../types/Block";
+import { BlockConfig, BlockDb } from "../../types/Block";
 import { OfficeConfig } from "../../types/Office";
 import { BlockStore } from "./BlockStore";
 import { SessionStore } from "./SessionStore";
 import { RoomStore } from "./RoomStore";
 import { GroupStore } from "./GroupStore";
+import { Office } from "../../graphql/types/Office";
 
 @Service()
 export class OfficeStore extends DataSource {
@@ -43,15 +44,9 @@ export class OfficeStore extends DataSource {
     });
   }
 
-  public getOffice(): OfficeWithBlocks {
-    const officeDb: OfficeWithBlocksDb = this.office;
-    return {
-      id: officeDb.id,
-      version: officeDb.version,
-      blocks: officeDb.blocks
-        .map((blockId: string) => this.blockStore.getBlock(blockId))
-        .filter((block: Block | undefined): block is Block => block !== undefined),
-    };
+  public getOffice(): Office {
+    const { id, version, blocks }: OfficeWithBlocksDb = this.office;
+    return new Office(id, version, blocks);
   }
 
   public updateOffice(officeInput: OfficeWithBlocks): boolean {

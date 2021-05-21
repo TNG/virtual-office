@@ -1,16 +1,10 @@
 import { DataSource } from "apollo-datasource";
 import { Service } from "typedi";
 import { v4 as uuid } from "uuid";
-import {
-  Group,
-  GroupConfig,
-  GroupDb,
-  GroupJoinConfig,
-  GroupJoinConfigConfig,
-  GroupJoinConfigDb,
-} from "../../types/Group";
-import { Room, RoomConfig } from "../../types/Room";
+import { GroupConfig, GroupDb, GroupJoinConfig, GroupJoinConfigConfig, GroupJoinConfigDb } from "../../types/Group";
+import { RoomConfig } from "../../types/Room";
 import { RoomStore } from "./RoomStore";
+import { Group } from "../../graphql/types/Group";
 
 @Service()
 export class GroupStore extends DataSource {
@@ -47,18 +41,7 @@ export class GroupStore extends DataSource {
   public getGroup(id: string): Group | undefined {
     const groupDb: GroupDb | undefined = this.groups.find((group: GroupDb) => group.id === id);
     if (groupDb) {
-      const rooms: Room[] = groupDb.rooms
-        .map((roomId: string) => this.roomStore.getRoom(roomId))
-        .filter((room: Room | undefined): room is Room => room !== undefined);
-      if (rooms.length > 0) {
-        return {
-          id: groupDb.id,
-          name: groupDb.name,
-          rooms: rooms,
-          description: groupDb.description,
-          groupJoinConfig: groupDb.groupJoinConfig,
-        };
-      }
+      return new Group(groupDb);
     }
   }
 

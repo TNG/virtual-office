@@ -2,7 +2,6 @@ import { DataSource } from "apollo-datasource";
 import { Service } from "typedi";
 import { v4 as uuid } from "uuid";
 import {
-  Room,
   RoomConfig,
   RoomDb,
   RoomLink,
@@ -11,6 +10,7 @@ import {
   SlackNotificationConfig,
   SlackNotificationDb,
 } from "../../types/Room";
+import { Room } from "../../graphql/types/Room";
 
 @Service()
 export class RoomStore extends DataSource {
@@ -59,7 +59,10 @@ export class RoomStore extends DataSource {
   }
 
   public getRoom(id: string): Room | undefined {
-    return this.rooms.find((room: Room) => room.id === id);
+    const roomDb = this.rooms.find((room: Room) => room.id === id);
+    if (roomDb) {
+      return new Room(roomDb);
+    }
   }
 
   public getRoomLinks(ids: string[]): RoomLink[] {

@@ -10,6 +10,13 @@ import { SlackBotService } from "./services/SlackBotService";
 import { ZoomWebhookService } from "./services/ZoomWebhookService";
 import { ApolloServerService } from "./apollo/ApolloServerService";
 import { HttpServerService } from "./apollo/HttpServerService";
+import { OfficeResolver } from "./graphql/resolvers/OfficeResolver";
+import { buildSchema } from "type-graphql";
+import { ScheduleBlockResolver, SessionBlockResolver } from "./graphql/resolvers/BlockResolver";
+import { GroupSessionResolver, RoomSessionResolver } from "./graphql/resolvers/SessionResolver";
+import { GroupSession } from "./graphql/types/Session";
+import { MeetingResolver } from "./graphql/resolvers/MeetingResolver";
+import { ClientConfigResolver } from "./graphql/resolvers/ClientConfigResolver";
 
 const result = dotenv.config();
 if (result.error) {
@@ -32,10 +39,24 @@ if (result.error) {
     Container.get(ZoomWebhookService);
   }
 
+  const schema = await buildSchema({
+    resolvers: [
+      OfficeResolver,
+      MeetingResolver,
+      ClientConfigResolver,
+      ScheduleBlockResolver,
+      SessionBlockResolver,
+      RoomSessionResolver,
+      GroupSessionResolver,
+    ],
+    container: Container,
+    orphanedTypes: [GroupSession],
+  });
+
   const httpServer = Container.get(HttpServerService);
   const httpServerInstance = await httpServer.create(appInstance);
   const apolloServer = Container.get(ApolloServerService);
-  const apolloServerInstance = await apolloServer.init(appInstance, httpServerInstance);
+  const apolloServerInstance = await apolloServer.init(appInstance, httpServerInstance, schema);
   httpServerInstance.listen(config.port, () => {
     logger.info(`Server listening on http://localhost:${config.port}${apolloServerInstance.graphqlPath}`);
     logger.info(`Subscriptions ready at ws://localhost:${config.port}${apolloServerInstance.subscriptionsPath}`);
