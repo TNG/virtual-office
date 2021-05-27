@@ -165,8 +165,8 @@ const RoomCard = (props: Props) => {
   );
   const actionsView = (joinUrlView || participantsView) && (
     <CardActions className={classes.actions}>
-      {participantsView ?? <div />}
-      {joinUrlView ?? <div />}
+      {participantsView || <div />}
+      {joinUrlView || <div />}
     </CardActions>
   );
 
