@@ -33,7 +33,7 @@
     "socket.io": "2.4.1",
     "swagger-ui-express": "4.1.6",
     "typedi": "0.8.0",
-    "uuid": "8.3.0"
+    "uuid": "8.3.2"
   },
   "engines": {
     "node": "14.x",
