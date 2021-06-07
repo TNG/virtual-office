@@ -23,7 +23,7 @@
     "express-async-handler": "1.1.4",
     "express-basic-auth": "1.2.0",
     "lodash": "4.17.21",
-    "luxon": "1.26.0",
+    "luxon": "1.27.0",
     "passport": "0.4.1",
     "passport-oauth2": "1.5.0",
     "passport-slack-oauth2": "1.1.0",
