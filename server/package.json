@@ -32,7 +32,7 @@
     "reflect-metadata": "0.1.13",
     "socket.io": "2.4.1",
     "swagger-ui-express": "4.1.6",
-    "typedi": "0.8.0",
+    "typedi": "0.10.0",
     "uuid": "8.3.2"
   },
   "engines": {
