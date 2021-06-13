@@ -38,7 +38,7 @@
     "@types/sinonjs__fake-timers": "6.0.2",
     "@types/socket.io-client": "1.4.36",
     "@types/uuid": "8.3.0",
-    "@web/test-runner": "0.13.8",
+    "@web/test-runner": "0.13.11",
     "chai": "4.3.4",
     "snowpack": "2.18.0",
     "uuid": "8.3.2"
