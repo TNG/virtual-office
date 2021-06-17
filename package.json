@@ -1,6 +1,10 @@
 {
   "name": "virtual-office",
   "version": "0.1.0",
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x"
+  },
   "devDependencies": {
     "@testing-library/cypress": "7.0.6",
     "cypress": "7.5.0",
@@ -23,5 +27,9 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
-  }
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }
