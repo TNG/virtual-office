@@ -8,7 +8,7 @@ export class SocketService {
   private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
   public init(): SocketService {
-    this.socket = io({ path: "/api/updates" });
+    this.socket = io({ path: "/api/updates", transports: ["websocket"] });
     this.socket.on("unauthenticated", () => {
       document.location.reload();
     });
