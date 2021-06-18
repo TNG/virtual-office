@@ -40,7 +40,7 @@
     "@types/uuid": "8.3.0",
     "@web/test-runner": "0.13.11",
     "chai": "4.3.4",
-    "snowpack": "2.18.0",
+    "snowpack": "2.18.5",
     "uuid": "8.3.2"
   },
   "scripts": {
