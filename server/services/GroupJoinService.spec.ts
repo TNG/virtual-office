@@ -1,7 +1,7 @@
 import { capture, instance, mock, when } from "ts-mockito";
 import { v4 as uuid } from "uuid";
 import { range } from "lodash";
-import fakeTimers, { InstalledClock } from "@sinonjs/fake-timers";
+import { Clock, install } from "@sinonjs/fake-timers";
 
 import { GroupJoinService } from "./GroupJoinService";
 import { OfficeService } from "./OfficeService";
@@ -48,14 +48,14 @@ describe("GroupJoinService", () => {
     return range(count).map(() => ({} as MeetingParticipant));
   }
 
-  let clock: InstalledClock;
+  let clock: Clock;
 
   afterEach(() => {
     clock.uninstall();
   });
 
   beforeEach(() => {
-    clock = fakeTimers.install({ now: 1 });
+    clock = install({ now: 1 });
     officeService = mock(OfficeService);
     participantsService = mock(MeetingsService);
 
