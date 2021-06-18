@@ -1,6 +1,10 @@
 {
   "name": "virtual-office",
   "version": "0.1.0",
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x"
+  },
   "devDependencies": {
     "@testing-library/cypress": "7.0.6",
     "cypress": "7.5.0",
@@ -11,17 +15,21 @@
   "scripts": {
     "format": "prettier --write \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
     "lint": "prettier --check \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
-    "installAll": "npm install && (cd client && npm install) && (cd server && npm install)",
-    "buildAll": "(cd client && npm run build) && (cd server && npm run build)",
-    "testAll": "(cd server && npm run test) && (cd client && npm run test:ci)",
+    "installAll": "npm install",
+    "buildAll": "npm run build --workspaces",
+    "testAll": "npm test --workspaces",
     "cypress": "TZ=Etc/UTC cypress run",
     "cypress:dev": "TZ=Etc/UTC CYPRESS_BASE_URL=http://localhost:8080 cypress open",
-    "start": "cd server && npm run start",
-    "start:e2e": "cd server && npm run start:e2e"
+    "start": "npm start --workspace=server",
+    "start:e2e": "npm run start:e2e --workspace=server"
   },
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint"
     }
-  }
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }
