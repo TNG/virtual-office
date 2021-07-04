@@ -1,24 +1,26 @@
 FROM node:16 as build
+ENV CYPRESS_INSTALL_BINARY=0
 
 WORKDIR /app
 
+COPY ./package*.json ./
 COPY client/package*.json ./client/
 COPY server/package*.json ./server/
-RUN cd client && npm ci
-RUN cd server && npm ci
+RUN npm install
 
 COPY client ./client/
 COPY server ./server/
 
-RUN cd client && npm run build
-RUN cd server && npm run build
+RUN npm run build --workspaces
 
 FROM node:16
+ENV NODE_ENV=production
 
 WORKDIR /app
 
+COPY ./package*.json ./
 COPY server/package*.json ./server/
-RUN cd server && npm ci --only=production
+RUN npm install
 
 USER node
 
