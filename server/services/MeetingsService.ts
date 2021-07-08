@@ -121,7 +121,10 @@ export class MeetingsService {
       };
     }
 
-    const user = this.knownUsersService.find(participant.username);
+    const user =
+      (participant.email && this.knownUsersService.find(participant.email)) ||
+      this.knownUsersService.find(participant.username);
+
     if (!user) {
       return participant;
     }

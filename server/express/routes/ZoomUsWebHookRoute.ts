@@ -10,6 +10,7 @@ function loggableParticipant(participant: ZoomusParticipant, enableParticipantLo
   return {
     ...participant,
     user_name: enableParticipantLogging ? participant.user_name : "xxxx",
+    email: enableParticipantLogging ? participant.email : "xxxx",
   };
 }
 
@@ -17,6 +18,7 @@ interface ZoomusParticipant {
   id?: string;
   user_id: string;
   user_name: string;
+  email?: string;
 }
 
 export interface ZoomUsEvent {
@@ -78,10 +80,8 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
   }
 }
 
-const mapParticipant = (
-  meetingId: string,
-  participant: { id?: string; user_name: string; user_id: string }
-): MeetingParticipant => ({
+const mapParticipant = (meetingId: string, participant: ZoomusParticipant): MeetingParticipant => ({
   username: participant.user_name,
   id: `zoomus_${meetingId}_${participant.user_id}`, // id is permanent for logged in users, user_id is temporary per meeting
+  email: participant.email,
 });

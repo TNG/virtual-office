@@ -4,6 +4,7 @@ function participantFor(userId: string, id?: string) {
   return {
     user_id: userId,
     user_name: "shree",
+    email: `${userId}@test`,
     id: id,
     join_time: "2019-07-16T17:13:13Z",
   };

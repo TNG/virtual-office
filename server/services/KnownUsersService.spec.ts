@@ -32,6 +32,15 @@ describe("KnownUsersService", () => {
     expect(knownUsersService.find(user.name)).toBeUndefined();
   });
 
+  it("can remove users with email", () => {
+    const userWithEmail = { ...user, email: "user@example.com" };
+    knownUsersService.add(userWithEmail);
+    knownUsersService.remove(userWithEmail);
+
+    expect(knownUsersService.find(userWithEmail.name)).toBeUndefined();
+    expect(knownUsersService.find(userWithEmail.email)).toBeUndefined();
+  });
+
   it("can find user by username", () => {
     knownUsersService.add(user);
 
@@ -39,6 +48,14 @@ describe("KnownUsersService", () => {
     expect(knownUsersService.find("MaxMustermann")).toEqual(user);
     expect(knownUsersService.find("maxmustermann")).toEqual(user);
     expect(knownUsersService.find("maxmusterman")).toBeUndefined();
+  });
+
+  it("can find user by email", () => {
+    const userWithEmail = { ...user, email: "user@example.com" };
+    knownUsersService.add(userWithEmail);
+
+    expect(knownUsersService.find(userWithEmail.name)).toEqual(userWithEmail);
+    expect(knownUsersService.find(userWithEmail.email)).toEqual(userWithEmail);
   });
 
   it("can find users with umlauts", () => {

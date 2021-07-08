@@ -12,23 +12,34 @@ export class KnownUsersService {
   private knownUsers: { [comparableUsername: string]: User } = {};
 
   remove(toRemove: User): User | undefined {
-    const foundElement = this.find(toRemove.name);
-    if (foundElement) {
+    if (toRemove.email) {
+      const userByEmail = this.find(toRemove.email);
+      if (userByEmail) {
+        delete this.knownUsers[comparableUsername(toRemove.email)];
+      }
+    }
+
+    const userByName = this.find(toRemove.name);
+    if (userByName) {
       delete this.knownUsers[comparableUsername(toRemove.name)];
     }
-    return foundElement;
+    return userByName;
   }
 
   add(user: User) {
     const removed = this.remove(user);
     this.knownUsers[comparableUsername(user.name)] = user;
+    if (user.email) {
+      this.knownUsers[comparableUsername(user.email)] = user;
+    }
+
     if (!isEqual(user, removed)) {
       this.notify(user);
     }
   }
 
-  find(username: string): User | undefined {
-    return this.knownUsers[comparableUsername(username)];
+  find(usernameOrEmail: string): User | undefined {
+    return this.knownUsers[comparableUsername(usernameOrEmail)];
   }
 
   public listen(listener: UserUpdateListener) {
