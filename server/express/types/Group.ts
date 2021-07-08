@@ -3,6 +3,7 @@ export type GroupJoinConfig = {
   title: string;
   subtitle?: string;
   description: string;
+  minimumRoomsToShow?: number;
 };
 
 export interface Group {
