@@ -89,8 +89,9 @@ export class GroupJoinService {
     // Then start an empty room
     const emptyRooms = this.roomsWithParticipants(groupRooms, 0);
     if (emptyRooms.length > 0) {
-      logger.info(`chooseRoom(group=${group.id}) - choosing an empty room`);
-      return randomRoomIn(emptyRooms);
+      logger.info(`chooseRoom(group=${group.id}) - choosing first empty room`);
+      logger.info(`chooseRoom(group=${group.id}) - choosing first empty room`);
+      return emptyRooms[0];
     }
 
     // And when no empty rooms are available, but all rooms have participants above the threshold, take
