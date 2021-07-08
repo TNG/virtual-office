@@ -134,6 +134,7 @@ const ScheduleGroupGrid = (props: Props) => {
   function renderGroupJoinCard() {
     return (
       group.groupJoin &&
+      isJoinable &&
       renderGridCard(
         `group-join-${group.id}`,
         <GroupJoinCard
