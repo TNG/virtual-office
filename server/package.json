@@ -43,7 +43,7 @@
     "@sinonjs/fake-timers": "7.1.2",
     "@types/axios": "0.14.0",
     "@types/cookie-parser": "1.4.2",
-    "@types/cors": "2.8.11",
+    "@types/cors": "2.8.12",
     "@types/express": "4.17.13",
     "@types/jest": "26.0.24",
     "@types/lodash": "4.14.170",
