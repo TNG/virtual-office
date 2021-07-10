@@ -23,7 +23,7 @@
     "@testing-library/user-event": "13.1.9",
     "@types/chai": "4.2.21",
     "@types/jest": "26.0.24",
-    "@types/lodash": "4.14.170",
+    "@types/lodash": "4.14.171",
     "@types/luxon": "1.27.0",
     "@types/node": "14.17.4",
     "@types/react": "17.0.13",
