@@ -25,7 +25,7 @@
     "@types/jest": "26.0.24",
     "@types/lodash": "4.14.172",
     "@types/luxon": "1.27.1",
-    "@types/node": "14.17.7",
+    "@types/node": "14.17.9",
     "@types/react": "17.0.15",
     "@types/react-dom": "17.0.9",
     "@types/react-router-dom": "5.1.8",
