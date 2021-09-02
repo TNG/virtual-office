@@ -35,7 +35,7 @@
     "chai": "4.3.4",
     "ts-jest": "27.0.3",
     "uuid": "8.3.2",
-    "vite": "2.5.1"
+    "vite": "2.5.3"
   },
   "scripts": {
     "start": "vite",
