@@ -27,7 +27,7 @@
     "passport": "0.4.1",
     "passport-oauth2": "1.6.0",
     "passport-slack-oauth2": "1.1.1",
-    "pino": "6.13.1",
+    "pino": "6.13.2",
     "pino-pretty": "4.8.0",
     "reflect-metadata": "0.1.13",
     "socket.io": "2.4.1",
