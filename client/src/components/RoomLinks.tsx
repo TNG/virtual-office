@@ -42,6 +42,12 @@ const useStyles = makeStyles<Theme, Props>({
     marginRight: 12,
     borderRadius: 4,
   },
+  iconBig: {
+    width: 48,
+    height: 48,
+    marginRight: 12,
+    borderRadius: 4,
+  },
 });
 
 interface Props {
@@ -71,13 +77,16 @@ const RoomLinks = (props: Props) => {
           <div className={classes.linkGroup}>
             {groupLinks.map((link, index) => (
               <Link key={link.text + index} className={classes.link} href={link.href} target="_blank">
-                {link.icon ? (
+                {link.iconBig ? (
+                  <img className={classes.iconBig} src={link.iconBig} alt={link.text} />
+                ) : link.icon ? (
                   <img className={classes.icon} src={link.icon} alt={link.text} />
                 ) : (
                   <LinkIcon className={classes.icon} />
                 )}
                 <Typography className={classes.linkText} variant="body2">
                   {link.text}
+                  {link.iconBig ? <br /> : ""}
                 </Typography>
               </Link>
             ))}
