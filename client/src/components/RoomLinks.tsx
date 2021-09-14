@@ -47,6 +47,8 @@ const useStyles = makeStyles<Theme, Props>({
     height: 48,
     marginRight: 12,
     borderRadius: 4,
+    objectFit: "cover",
+    objectPosition: "center",
   },
 });
 
