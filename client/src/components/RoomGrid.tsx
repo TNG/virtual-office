@@ -41,6 +41,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       width: "25%",
     },
   },
+  cardFullWidth: {
+    width: "100%",
+    flex: "0 0 auto",
+    padding: 8,
+    boxSizing: "border-box",
+  },
 }));
 
 interface Props {
@@ -56,9 +62,9 @@ const RoomGrid = (props: Props) => {
   const { group, rooms, meetings, isDisabled, isJoinable, isListMode } = props;
   const classes = useStyles(props);
 
-  function renderGridCard(key: string, card: any) {
+  function renderGridCard(key: string, card: any, fullWidth: boolean = false) {
     return (
-      <div key={key} className={classes.card}>
+      <div key={key} className={fullWidth ? classes.cardFullWidth : classes.card}>
         {card}
       </div>
     );
@@ -98,7 +104,8 @@ const RoomGrid = (props: Props) => {
           isJoinable={isJoinable}
           isListMode={isListMode}
           fillHeight={true}
-        />
+        />,
+        room.fullWidth
       );
     });
   }

@@ -16,6 +16,7 @@ interface RoomWithoutId {
     channelId: string;
     notificationInterval?: number;
   };
+  fullWidth?: boolean;
 }
 
 export interface RoomConfig extends RoomWithoutId {
