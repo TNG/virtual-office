@@ -35,10 +35,12 @@ function searchRooms(search: string, rooms: Room[], groups: Group[], meetings: M
       ((group.name && group.name.toLowerCase().includes(search)) ||
         (group.groupJoin && group.groupJoin.title.toLowerCase().includes(search)));
 
-    const participants = (room.meetingId && meetings[room.meetingId] && meetings[room.meetingId].participants) || [];
-    const someParticipantMatches = participants.some((participant) => participantMatches(search, participant));
+    // const participants = (room.meetingId && meetings[room.meetingId] && meetings[room.meetingId].participants) || [];
+    // const someParticipantMatches = participants.some((participant) => participantMatches(search, participant));
 
-    return nameMatches || groupMatches || someParticipantMatches;
+    const someSpeakerMatches = room.links && room.links.some(link => link.text.toLowerCase().includes(search));
+
+    return groupMatches || someSpeakerMatches || nameMatches;
   }
 
   return rooms.filter((room) => roomMatches(room));
