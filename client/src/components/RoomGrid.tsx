@@ -14,7 +14,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   title: {
     color: "#fff",
     margin: 12,
-    marginTop: 24,
+    marginTop: 6,
     padding: 0,
     opacity: (props) => (props.isDisabled ? 0.9 : 1),
   },
