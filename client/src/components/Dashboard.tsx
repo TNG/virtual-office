@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     },
     padding: 12,
     [theme.breakpoints.up("xl")]: {
-      maxWidth: 1500,
+      maxWidth: 2400,
     },
   },
   toggleGroupsButton: {
