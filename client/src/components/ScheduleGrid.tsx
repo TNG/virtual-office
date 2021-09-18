@@ -119,23 +119,23 @@ const ScheduleGrid = (props: Props) => {
   const { schedule, rooms, groupsWithRooms, meetings, isListMode, clientConfig } = props;
   const classes = useStyles({ schedule, clientConfig });
 
-  function renderTrackHeader() {
-    return (
-      <>
-        {schedule.tracks.map(({ id, name }) => {
-          return (
-            <div
-              key={`track-${id}`}
-              className={classes.trackHeader}
-              style={{ gridRow: `trackHeader`, gridColumn: `track-${id}` }}
-            >
-              {name}
-            </div>
-          );
-        })}
-      </>
-    );
-  }
+  // function renderTrackHeader() {
+  //   return (
+  //     <>
+  //       {schedule.tracks.map(({ id, name }) => {
+  //         return (
+  //           <div
+  //             key={`track-${id}`}
+  //             className={classes.trackHeader}
+  //             style={{ gridRow: `trackHeader`, gridColumn: `track-${id}` }}
+  //           >
+  //             {name}
+  //           </div>
+  //         );
+  //       })}
+  //     </>
+  //   );
+  // }
 
   function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
     if (meetingId && meetings[meetingId]) {
@@ -234,7 +234,6 @@ const ScheduleGrid = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.schedule}>
-        {renderTrackHeader()}
         {renderSchedule()}
       </div>
     </div>
