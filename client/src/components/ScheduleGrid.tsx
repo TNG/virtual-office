@@ -39,7 +39,7 @@ const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: Sty
         continue;
       }
       const paddedHour = String(hour).padStart(2, "0");
-      result += `[time-${paddedHour}00] auto [time-${paddedHour}15] auto [time-${paddedHour}30] auto [time-${paddedHour}45] auto `;
+      result += `[time-${paddedHour}00] auto [time-${paddedHour}05] auto [time-${paddedHour}10] auto [time-${paddedHour}15] auto [time-${paddedHour}20] auto [time-${paddedHour}25] auto [time-${paddedHour}30] auto [time-${paddedHour}35] auto [time-${paddedHour}40] auto [time-${paddedHour}45] auto [time-${paddedHour}50] auto [time-${paddedHour}55] auto `;
     }
   }
   return result;
@@ -154,6 +154,7 @@ const ScheduleGrid = (props: Props) => {
     const gridRowStart = `time-${start.replace(":", "")}`;
     const gridRowEnd = `time-${end.replace(":", "")}`;
     const gridColumn = trackEnd ? `track-${trackStart}-start / track-${trackEnd}-end` : `track-${trackStart}`;
+    console.log("key: " + gridRowStart + "-" + gridRowEnd + ".")
     return (
       <div key={key} className={classes.card} style={{ gridRow: `${gridRowStart} / ${gridRowEnd}`, gridColumn }}>
         {card}
