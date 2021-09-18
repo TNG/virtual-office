@@ -86,6 +86,13 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
+  location: {
+    height: 34,
+    padding: 5,
+    flex: "0 0 auto",
+    display: "flex",
+    justifyContent: "center",
+  },
   titleLink: {
     color: theme.palette.common.black,
     textDecoration: "none",
@@ -155,19 +162,24 @@ const RoomCard = (props: Props) => {
   const joinUrlView = renderJoinUrl();
   const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
     <div className={classes.participants}>
-      <RoomParticipants
-        name={room.name}
-        participants={participants}
-        showParticipants={participantsOpen}
-        setShowParticipants={setParticipantsOpen}
-      />
+      {/*<RoomParticipants*/}
+      {/*  name={room.name}*/}
+      {/*  participants={participants}*/}
+      {/*  showParticipants={participantsOpen}*/}
+      {/*  setShowParticipants={setParticipantsOpen}*/}
+      {/*/>*/}
     </div>
   );
-  const actionsView = (joinUrlView || participantsView) && (
+  const actionsView = (joinUrlView) && (
     <CardActions className={classes.actions}>
       {participantsView || <div />}
       {joinUrlView || <div />}
     </CardActions>
+  );
+  const locationView = (
+    <CardContent className={classes.location}>
+      {<Typography>{room.location}</Typography> || <div />}
+    </CardContent>
   );
 
   const bodyView = (contentView || actionsView) && (
@@ -198,18 +210,11 @@ const RoomCard = (props: Props) => {
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
         classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
-        avatar={
-          room.icon ? (
-            <Avatar variant="square" src={room.icon} />
-          ) : (
-            <RoomIcon className={classes.roomIcon} color="action" />
-          )
-        }
         title={renderTitle()}
         subheader={renderSubheader()}
       />
-
       {bodyView}
+      {locationView}
     </Card>
   );
 };

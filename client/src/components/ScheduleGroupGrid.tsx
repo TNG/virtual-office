@@ -39,13 +39,13 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       width: "50%",
     },
     [theme.breakpoints.up("md")]: {
-      width: "33.33%",
+      width: "14.28571428571429%",
     },
     [theme.breakpoints.up("lg")]: {
-      width: "33.33%",
+      width: "14.28571428571429%",
     },
     [theme.breakpoints.up("xl")]: {
-      width: "25%",
+      width: "14.28571428571429%",
     },
   },
   groupHeaderCard: {

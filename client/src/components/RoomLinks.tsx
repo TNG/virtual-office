@@ -43,8 +43,8 @@ const useStyles = makeStyles<Theme, Props>({
     borderRadius: 4,
   },
   iconBig: {
-    width: 48,
-    height: 48,
+    width: 60,
+    height: 60,
     marginRight: 12,
     borderRadius: 4,
     objectFit: "cover",
@@ -99,7 +99,6 @@ const RoomLinks = (props: Props) => {
     <div className={classes.root}>
       {Object.entries(groupedLinks).map(([group, groupLinks]) => (
         <div className={classes.group} key={group}>
-          <Typography variant="subtitle2">{group}</Typography>
           <div className={classes.linkGroup}>
             {groupLinks.map((link, index) => renderRoomLink(link, index))}
           </div>
