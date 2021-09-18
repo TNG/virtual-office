@@ -115,13 +115,13 @@ const AppBar = (props: Props) => {
           <div className={classes.logoContainer}>
             <img className={classes.logo} src={props.logoUrl} alt="logo" />
           </div>
-        ) : (
-          <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
-            <LocalCafeIcon />
-          </IconButton>
+        ) : ( null
+          // <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
+          //   <LocalCafeIcon />
+          // </IconButton>
         )}
         <Typography variant="h6" className={classes.title}>
-          {props.title ?? "Virtual Office"}
+          {}
         </Typography>
         <SearchInput onSearchTextChange={props.onSearchTextChange} drawBorder={false} />
         {user && (
