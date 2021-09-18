@@ -34,7 +34,7 @@ const useStyles = makeStyles<Theme, Props>({
   linkText: {
     overflow: "hidden",
     textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
+    whiteSpace: "pre-line",
   },
   icon: {
     width: 24,
