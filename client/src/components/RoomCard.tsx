@@ -15,6 +15,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: 12,
+    paddingBottom: 0,
     boxSizing: "border-box",
     height: (props) => (props.fillHeight ? "100%" : undefined),
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
@@ -87,11 +88,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     justifyContent: "space-between",
   },
   location: {
-    height: 34,
+    height: 44,
     padding: 5,
-    flex: "0 0 auto",
+    flex: "5 0 auto",
     display: "flex",
     justifyContent: "center",
+    alignItems: "flex-end",
   },
   titleLink: {
     color: theme.palette.common.black,
