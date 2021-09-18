@@ -186,8 +186,8 @@ const ScheduleGrid = (props: Props) => {
         const room = rooms[roomId];
         const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
         const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
-        const timezone = browserTimeZone();
-        const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
+        // const timezone = browserTimeZone();
+        const timeString = `${formattedStart}-${formattedEnd}`; //${clientConfig?.timezone ? ` ${timezone}` : ""}
         const roomWithTime = {
           ...room,
           subtitle: `(${timeString}) ${room.subtitle || ""}`,
