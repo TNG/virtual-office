@@ -99,9 +99,9 @@ const Dashboard = () => {
     context.init();
 
     const stateUpdate = context.onNotify();
-    const stateSubscription = stateUpdate.subscribe((incomingMessage: MeetingEvent) => {
-      setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
-    });
+    // const stateSubscription = stateUpdate.subscribe((incomingMessage: MeetingEvent) => {
+    //   setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
+    // });
 
     const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
@@ -116,7 +116,7 @@ const Dashboard = () => {
     });
 
     return () => {
-      stateSubscription.unsubscribe();
+      // stateSubscription.unsubscribe();
       initSubscription.unsubscribe();
       context.disconnect();
       officeSubscription.unsubscribe();
