@@ -40,7 +40,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     overflowY: "auto",
   },
   scroller: {
-    maxWidth: 1200,
+    maxWidth: 3000,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 12,
