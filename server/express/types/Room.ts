@@ -6,7 +6,6 @@ interface RoomWithoutId {
   name: string;
   subtitle?: string;
   description?: string;
-  location?: string,
   joinUrl?: string;
   titleUrl?: string;
   temporary?: boolean;
@@ -17,7 +16,6 @@ interface RoomWithoutId {
     channelId: string;
     notificationInterval?: number;
   };
-  fullWidth?: boolean;
 }
 
 export interface RoomConfig extends RoomWithoutId {

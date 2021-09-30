@@ -40,7 +40,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     overflowY: "auto",
   },
   scroller: {
-    maxWidth: 3000,
+    maxWidth: 1200,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 12,
@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     },
     padding: 12,
     [theme.breakpoints.up("xl")]: {
-      maxWidth: 3000,
+      maxWidth: 1500,
     },
   },
   toggleGroupsButton: {
@@ -99,9 +99,9 @@ const Dashboard = () => {
     context.init();
 
     const stateUpdate = context.onNotify();
-    // const stateSubscription = stateUpdate.subscribe((incomingMessage: MeetingEvent) => {
-    //   setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
-    // });
+    const stateSubscription = stateUpdate.subscribe((incomingMessage: MeetingEvent) => {
+      setMeetings((prevMeetings) => mapMeetingEventToMeetings(prevMeetings, incomingMessage));
+    });
 
     const officeSubscription = context.onOffice().subscribe((event) => setOfficeState(officeStateFrom(event)));
     const clientConfigSubscription = context.onClientConfig().subscribe((event) => setConfig(event));
@@ -116,7 +116,7 @@ const Dashboard = () => {
     });
 
     return () => {
-      // stateSubscription.unsubscribe();
+      stateSubscription.unsubscribe();
       initSubscription.unsubscribe();
       context.disconnect();
       officeSubscription.unsubscribe();

@@ -1,21 +1,20 @@
-import React, {useEffect, useRef} from "react";
-import {compact} from "lodash";
-import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/styles";
-import {ExpandLess, ExpandMore} from "@material-ui/icons";
+import React, { useEffect, useRef } from "react";
+import { compact } from "lodash";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import RoomIcon from "@material-ui/icons/People";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
-import {Room} from "../../../server/express/types/Room";
-import {MeetingParticipant} from "../../../server/express/types/MeetingParticipant";
+import { Room } from "../../../server/express/types/Room";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     padding: 12,
-    paddingBottom: 0,
     boxSizing: "border-box",
     height: (props) => (props.fillHeight ? "100%" : undefined),
     opacity: (props) => (props.isDisabled ? 0.65 : 1),
@@ -87,14 +86,6 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
-  location: {
-    height: 44,
-    padding: 5,
-    flex: "5 0 auto",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-end",
-  },
   titleLink: {
     color: theme.palette.common.black,
     textDecoration: "none",
@@ -119,7 +110,7 @@ interface Props {
 
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const {room, participants, isDisabled, isJoinable, isListMode} = props;
+  const { room, participants, isDisabled, isJoinable, isListMode } = props;
 
   const subtitleRef = useRef(null);
 
@@ -158,31 +149,25 @@ const RoomCard = (props: Props) => {
     );
   }
 
-  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode}/>;
+  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 
   const joinUrlView = renderJoinUrl();
   const participantsView = (!isDisabled || isJoinable) && room.meetingId && (
     <div className={classes.participants}>
-      {/*<RoomParticipants*/}
-      {/*  name={room.name}*/}
-      {/*  participants={participants}*/}
-      {/*  showParticipants={participantsOpen}*/}
-      {/*  setShowParticipants={setParticipantsOpen}*/}
-      {/*/>*/}
+      <RoomParticipants
+        name={room.name}
+        participants={participants}
+        showParticipants={participantsOpen}
+        setShowParticipants={setParticipantsOpen}
+      />
     </div>
   );
-  const actionsView = (joinUrlView) && (
+  const actionsView = (joinUrlView || participantsView) && (
     <CardActions className={classes.actions}>
-      {participantsView || <div/>}
-      {joinUrlView || <div/>}
+      {participantsView || <div />}
+      {joinUrlView || <div />}
     </CardActions>
-  );
-  const locationView = (
-    room.location ? (
-      <CardContent className={classes.location}>
-        {<Typography>{room.location}</Typography> || <div/>}
-      </CardContent>) : (null)
   );
 
   const bodyView = (contentView || actionsView) && (
@@ -196,7 +181,7 @@ const RoomCard = (props: Props) => {
     const subtitle = compact([room.subtitle, room.description]).join(" - ");
     const subtitleClass = collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle;
     const expandButton = expandable && (
-      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore/> : <ExpandLess/>}</div>
+      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>
     );
 
     return (
@@ -212,12 +197,19 @@ const RoomCard = (props: Props) => {
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        classes={{root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar}}
+        classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
+        avatar={
+          room.icon ? (
+            <Avatar variant="square" src={room.icon} />
+          ) : (
+            <RoomIcon className={classes.roomIcon} color="action" />
+          )
+        }
         title={renderTitle()}
         subheader={renderSubheader()}
       />
+
       {bodyView}
-      {locationView}
     </Card>
   );
 };

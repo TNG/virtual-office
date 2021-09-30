@@ -119,23 +119,23 @@ const ScheduleGrid = (props: Props) => {
   const { schedule, rooms, groupsWithRooms, meetings, isListMode, clientConfig } = props;
   const classes = useStyles({ schedule, clientConfig });
 
-  // function renderTrackHeader() {
-  //   return (
-  //     <>
-  //       {schedule.tracks.map(({ id, name }) => {
-  //         return (
-  //           <div
-  //             key={`track-${id}`}
-  //             className={classes.trackHeader}
-  //             style={{ gridRow: `trackHeader`, gridColumn: `track-${id}` }}
-  //           >
-  //             {name}
-  //           </div>
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // }
+  function renderTrackHeader() {
+    return (
+      <>
+        {schedule.tracks.map(({ id, name }) => {
+          return (
+            <div
+              key={`track-${id}`}
+              className={classes.trackHeader}
+              style={{ gridRow: `trackHeader`, gridColumn: `track-${id}` }}
+            >
+              {name}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
 
   function participantsInMeeting(meetingId: string | undefined): MeetingParticipant[] {
     if (meetingId && meetings[meetingId]) {
@@ -154,7 +154,7 @@ const ScheduleGrid = (props: Props) => {
     const gridRowStart = `time-${start.replace(":", "")}`;
     const gridRowEnd = `time-${end.replace(":", "")}`;
     const gridColumn = trackEnd ? `track-${trackStart}-start / track-${trackEnd}-end` : `track-${trackStart}`;
-    console.log("key: " + gridRowStart + "-" + gridRowEnd + ".")
+    console.log("key: " + gridRowStart + "-" + gridRowEnd + ".");
     return (
       <div key={key} className={classes.card} style={{ gridRow: `${gridRowStart} / ${gridRowEnd}`, gridColumn }}>
         {card}
@@ -186,8 +186,8 @@ const ScheduleGrid = (props: Props) => {
         const room = rooms[roomId];
         const formattedStart = printHoursMinutes(parseTime(start, clientConfig?.timezone));
         const formattedEnd = printHoursMinutes(parseTime(end, clientConfig?.timezone));
-        // const timezone = browserTimeZone();
-        const timeString = `${formattedStart}-${formattedEnd}`; //${clientConfig?.timezone ? ` ${timezone}` : ""}
+        const timezone = browserTimeZone();
+        const timeString = `${formattedStart}-${formattedEnd}${clientConfig?.timezone ? ` ${timezone}` : ""}`;
         const roomWithTime = {
           ...room,
           subtitle: `(${timeString}) ${room.subtitle || ""}`,
@@ -234,6 +234,7 @@ const ScheduleGrid = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.schedule}>
+        {renderTrackHeader()}
         {renderSchedule()}
       </div>
     </div>
