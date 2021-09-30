@@ -154,7 +154,7 @@ const ScheduleGrid = (props: Props) => {
     const gridRowStart = `time-${start.replace(":", "")}`;
     const gridRowEnd = `time-${end.replace(":", "")}`;
     const gridColumn = trackEnd ? `track-${trackStart}-start / track-${trackEnd}-end` : `track-${trackStart}`;
-    console.log("key: " + gridRowStart + "-" + gridRowEnd + ".")
+    console.log("key: " + gridRowStart + "-" + gridRowEnd + ".");
     return (
       <div key={key} className={classes.card} style={{ gridRow: `${gridRowStart} / ${gridRowEnd}`, gridColumn }}>
         {card}
@@ -233,9 +233,7 @@ const ScheduleGrid = (props: Props) => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.schedule}>
-        {renderSchedule()}
-      </div>
+      <div className={classes.schedule}>{renderSchedule()}</div>
     </div>
   );
 };

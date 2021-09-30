@@ -38,7 +38,7 @@ function searchRooms(search: string, rooms: Room[], groups: Group[], meetings: M
     // const participants = (room.meetingId && meetings[room.meetingId] && meetings[room.meetingId].participants) || [];
     // const someParticipantMatches = participants.some((participant) => participantMatches(search, participant));
 
-    const someSpeakerMatches = room.links && room.links.some(link => link.text.toLowerCase().includes(search));
+    const someSpeakerMatches = room.links && room.links.some((link) => link.text.toLowerCase().includes(search));
 
     return groupMatches || someSpeakerMatches || nameMatches;
   }

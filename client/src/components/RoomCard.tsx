@@ -1,14 +1,14 @@
-import React, {useEffect, useRef} from "react";
-import {compact} from "lodash";
-import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/styles";
-import {ExpandLess, ExpandMore} from "@material-ui/icons";
+import React, { useEffect, useRef } from "react";
+import { compact } from "lodash";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import RoomIcon from "@material-ui/icons/People";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";
-import {Room} from "../../../server/express/types/Room";
-import {MeetingParticipant} from "../../../server/express/types/MeetingParticipant";
+import { Room } from "../../../server/express/types/Room";
+import { MeetingParticipant } from "../../../server/express/types/MeetingParticipant";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
@@ -119,7 +119,7 @@ interface Props {
 
 const RoomCard = (props: Props) => {
   const classes = useStyles(props);
-  const {room, participants, isDisabled, isJoinable, isListMode} = props;
+  const { room, participants, isDisabled, isJoinable, isListMode } = props;
 
   const subtitleRef = useRef(null);
 
@@ -158,7 +158,7 @@ const RoomCard = (props: Props) => {
     );
   }
 
-  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode}/>;
+  const roomLinksView = (room.links ?? []).length > 0 && <RoomLinks links={room.links} isListMode={isListMode} />;
   const contentView = roomLinksView && <CardContent className={classes.content}>{roomLinksView}</CardContent>;
 
   const joinUrlView = renderJoinUrl();
@@ -172,18 +172,15 @@ const RoomCard = (props: Props) => {
       {/*/>*/}
     </div>
   );
-  const actionsView = (joinUrlView) && (
+  const actionsView = joinUrlView && (
     <CardActions className={classes.actions}>
-      {participantsView || <div/>}
-      {joinUrlView || <div/>}
+      {participantsView || <div />}
+      {joinUrlView || <div />}
     </CardActions>
   );
-  const locationView = (
-    room.location ? (
-      <CardContent className={classes.location}>
-        {<Typography>{room.location}</Typography> || <div/>}
-      </CardContent>) : (null)
-  );
+  const locationView = room.location ? (
+    <CardContent className={classes.location}>{<Typography>{room.location}</Typography> || <div />}</CardContent>
+  ) : null;
 
   const bodyView = (contentView || actionsView) && (
     <div className={classes.body}>
@@ -196,7 +193,7 @@ const RoomCard = (props: Props) => {
     const subtitle = compact([room.subtitle, room.description]).join(" - ");
     const subtitleClass = collapseSubtitle ? classes.collapsedSubtitle : classes.expandedSubtitle;
     const expandButton = expandable && (
-      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore/> : <ExpandLess/>}</div>
+      <div className={classes.expandButton}>{collapseSubtitle ? <ExpandMore /> : <ExpandLess />}</div>
     );
 
     return (
@@ -212,7 +209,7 @@ const RoomCard = (props: Props) => {
   return (
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
-        classes={{root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar}}
+        classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
         title={renderTitle()}
         subheader={renderSubheader()}
       />

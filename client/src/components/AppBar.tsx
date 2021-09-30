@@ -111,15 +111,16 @@ const AppBar = (props: Props) => {
   return (
     <MaterialAppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        {props.logoUrl ? (
-          <div className={classes.logoContainer}>
-            <img className={classes.logo} src={props.logoUrl} alt="logo" />
-          </div>
-        ) : ( null
+        {
+          props.logoUrl ? (
+            <div className={classes.logoContainer}>
+              <img className={classes.logo} src={props.logoUrl} alt="logo" />
+            </div>
+          ) : null
           // <IconButton className={classes.coffee} aria-label="home" edge="start" color="inherit">
           //   <LocalCafeIcon />
           // </IconButton>
-        )}
+        }
         <Typography variant="h6" className={classes.title}>
           {}
         </Typography>
