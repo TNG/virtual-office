@@ -6,7 +6,7 @@ import { range } from "lodash";
 
 import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
 import { joinRoomEvent } from "../../testUtils/meetingEvents";
-import { sleep } from "../../testUtils/sleep";
+import { Clock, install } from "@sinonjs/fake-timers";
 
 const groupId = "myGroupId";
 const room1 = {
@@ -39,22 +39,25 @@ const config: ConfigOptions = {
 
 describe("GroupJoin", () => {
   let server: TestServer;
+  let clock: Clock;
+
   beforeEach(async () => {
+    clock = install();
     server = await startTestServerWithConfig(config);
   });
 
   afterEach(() => {
+    clock.uninstall();
     Container.reset();
   });
 
   async function joinGroupRoom(user: any) {
     const timeToWaitInTheBeginning = Math.random() * 300;
-    await sleep(timeToWaitInTheBeginning);
+    clock.tick(timeToWaitInTheBeginning);
 
     const roomId = await server.joinGroup(groupId);
 
-    const timeToClick = Math.random() * 2000;
-    await sleep(timeToClick);
+    clock.tick(Math.random() * 2000);
 
     await server.sendMeetingEvent(joinRoomEvent(roomId, `user_${user}`, undefined));
   }
