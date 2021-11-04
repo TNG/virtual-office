@@ -19,7 +19,7 @@
   "devDependencies": {
     "@sinonjs/fake-timers": "7.1.2",
     "@testing-library/jest-dom": "5.15.0",
-    "@testing-library/react": "11.2.7",
+    "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
     "@types/chai": "4.2.22",
     "@types/jest": "27.0.2",
