@@ -59,7 +59,7 @@
     "diff": "4.0.2",
     "jest": "27.3.1",
     "jest-junit": "12.3.0",
-    "nodemon": "2.0.14",
+    "nodemon": "2.0.15",
     "supertest": "6.1.6",
     "ts-essentials": "7.0.3",
     "ts-jest": "27.0.7",
