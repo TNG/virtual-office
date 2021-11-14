@@ -6,7 +6,7 @@
     "npm": "7.x"
   },
   "devDependencies": {
-    "@testing-library/cypress": "7.0.7",
+    "@testing-library/cypress": "8.0.2",
     "cypress": "7.7.0",
     "husky": "4.3.8",
     "prettier": "2.0.5",
