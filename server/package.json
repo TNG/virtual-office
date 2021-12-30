@@ -61,7 +61,7 @@
     "jest-junit": "12.3.0",
     "nodemon": "2.0.15",
     "supertest": "6.1.6",
-    "ts-essentials": "7.0.3",
+    "ts-essentials": "9.1.2",
     "ts-jest": "27.0.7",
     "ts-mockito": "2.6.1",
     "ts-node": "9.1.1",
