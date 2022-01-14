@@ -164,3 +164,8 @@ You have to provide configuration parameters to the server by environment variab
 As a convenient alternative you can provide it via an `.env` file (see `.env-example`) that will be loaded by [dotenv](https://www.npmjs.com/package/dotenv).
 
 See [Contributing](CONTRIBUTING.md) for details.
+
+### License
+
+Virtual Office is published under the Apache License 2.0, see
+https://www.apache.org/licenses/LICENSE-2.0 for details.
