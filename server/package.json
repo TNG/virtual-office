@@ -48,7 +48,7 @@
     "@types/jest": "27.0.2",
     "@types/lodash": "4.14.176",
     "@types/luxon": "1.27.1",
-    "@types/node": "14.17.33",
+    "@types/node": "16.11.19",
     "@types/passport": "1.0.7",
     "@types/pino": "6.3.12",
     "@types/sinonjs__fake-timers": "6.0.4",
