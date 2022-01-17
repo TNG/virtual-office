@@ -23,11 +23,6 @@
     "start": "npm start --workspace=server",
     "start:e2e": "npm run start:e2e --workspace=server"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint"
-    }
-  },
   "workspaces": [
     "client",
     "server"
