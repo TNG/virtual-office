@@ -1,6 +1,5 @@
-import pino from "pino";
+import { pino, LogFn } from "pino";
 
-type LogFn = (msg: string, obj?: any) => void;
 export interface Logger {
   trace: LogFn;
   debug: LogFn;
@@ -10,18 +9,13 @@ export interface Logger {
 }
 
 const instance = pino({
-  prettyPrint: true,
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+    },
+  },
   level: process.env.LOG_LEVEL || "info",
 });
 
-function buildLogFn(level: string) {
-  return (message: string, data?: any) => instance[level](data || {}, message);
-}
-
-export const logger: Logger = {
-  trace: buildLogFn("trace"),
-  debug: buildLogFn("debug"),
-  info: buildLogFn("info"),
-  warn: buildLogFn("warn"),
-  error: buildLogFn("error"),
-};
+export const logger = instance;
