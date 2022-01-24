@@ -4,7 +4,7 @@ import { parseTime, printHoursMinutes } from "./time";
 
 describe("time", () => {
   beforeEach(() => {
-    Settings.defaultZoneName = "UTC";
+    Settings.defaultZone = "UTC";
   });
 
   describe("parseTime", () => {
