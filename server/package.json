@@ -40,7 +40,7 @@
     "npm": "7.x"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "7.1.2",
+    "@sinonjs/fake-timers": "8.1.0",
     "@types/axios": "0.14.0",
     "@types/cookie-parser": "1.4.2",
     "@types/cors": "2.8.12",
