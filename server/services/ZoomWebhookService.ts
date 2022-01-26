@@ -47,7 +47,9 @@ export class ZoomWebhookService {
         logger.info(`Sent mapping update to ${updateMappingEndpoint}`);
         logger.debug("Mapping update", mappingUpdate);
       } catch (e) {
-        logger.error("Could not send mapping update", { error: e?.response?.data });
+        if (axios.isAxiosError(e) && e.response) {
+          logger.error("Could not send mapping update", { error: e.response?.data });
+        }
       }
 
       this.setMappingUpdateTimeout();
