@@ -50,7 +50,7 @@
     "@types/luxon": "2.0.9",
     "@types/node": "16.11.19",
     "@types/passport": "1.0.7",
-    "@types/sinonjs__fake-timers": "6.0.4",
+    "@types/sinonjs__fake-timers": "8.1.1",
     "@types/socket.io": "3.0.1",
     "@types/supertest": "2.0.11",
     "@types/swagger-ui-express": "4.1.3",

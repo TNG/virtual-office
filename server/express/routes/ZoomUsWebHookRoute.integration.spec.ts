@@ -4,7 +4,7 @@ import { Container } from "typedi";
 import { ConfigOptions } from "../types/ConfigOptions";
 import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
 import { endMeetingEvent, joinRoomEvent, leaveRoomEvent } from "../../testUtils/meetingEvents";
-import { Clock, install } from "@sinonjs/fake-timers";
+import { install, InstalledClock } from "@sinonjs/fake-timers";
 
 const room1 = {
   meetingId: "1",
@@ -24,7 +24,7 @@ const config: ConfigOptions = {
 
 describe("Zoomus Webhooks", () => {
   let server: TestServer;
-  let clock: Clock;
+  let clock: InstalledClock;
 
   beforeEach(async () => {
     clock = install();

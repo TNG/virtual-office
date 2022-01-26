@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { install, Clock } from "@sinonjs/fake-timers";
+import { install, InstalledClock } from "@sinonjs/fake-timers";
 import { Group } from "../../server/express/types/Group";
 import { v4 as uuid } from "uuid";
 import { DateTime } from "luxon";
-import { PotentiallyDisabledGroup, mapPotentiallyDisabledGroups } from "./disabledGroups";
+import { mapPotentiallyDisabledGroups, PotentiallyDisabledGroup } from "./disabledGroups";
 
 describe("disabledRooms", () => {
-  let clock: Clock;
+  let clock: InstalledClock;
   const now = 10000;
 
   afterEach(() => {
