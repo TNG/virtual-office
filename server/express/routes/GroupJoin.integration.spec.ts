@@ -6,7 +6,7 @@ import { range } from "lodash";
 
 import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
 import { joinRoomEvent } from "../../testUtils/meetingEvents";
-import { Clock, install } from "@sinonjs/fake-timers";
+import { install, InstalledClock } from "@sinonjs/fake-timers";
 
 const groupId = "myGroupId";
 const room1 = {
@@ -39,7 +39,7 @@ const config: ConfigOptions = {
 
 describe("GroupJoin", () => {
   let server: TestServer;
-  let clock: Clock;
+  let clock: InstalledClock;
 
   beforeEach(async () => {
     clock = install();
