@@ -15,7 +15,7 @@
   "dependencies": {
     "@slack/web-api": "6.6.0",
     "axios": "0.24.0",
-    "body-parser": "1.19.1",
+    "body-parser": "1.19.2",
     "cookie-parser": "1.4.6",
     "cors": "2.8.5",
     "dotenv": "8.6.0",
