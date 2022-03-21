@@ -24,7 +24,7 @@
     "@types/chai": "4.3.0",
     "@types/jest": "27.0.2",
     "@types/lodash": "4.14.180",
-    "@types/luxon": "2.3.0",
+    "@types/luxon": "2.3.1",
     "@types/node": "16.11.26",
     "@types/react": "17.0.40",
     "@types/react-dom": "17.0.13",
