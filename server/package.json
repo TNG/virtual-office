@@ -13,7 +13,7 @@
     "generateTestData": "ts-node ./generateTestData.ts"
   },
   "dependencies": {
-    "@slack/web-api": "6.7.0",
+    "@slack/web-api": "6.7.1",
     "axios": "0.26.1",
     "body-parser": "1.19.2",
     "cookie-parser": "1.4.6",
