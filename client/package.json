@@ -27,7 +27,7 @@
     "@types/luxon": "2.3.1",
     "@types/node": "16.11.26",
     "@types/react": "17.0.44",
-    "@types/react-dom": "17.0.14",
+    "@types/react-dom": "17.0.15",
     "@types/react-router-dom": "5.3.3",
     "@types/sinonjs__fake-timers": "8.1.1",
     "@types/socket.io-client": "1.4.36",
