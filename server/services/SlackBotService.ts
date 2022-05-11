@@ -20,11 +20,11 @@ export class SlackBotService {
     private readonly meetingsService: MeetingsService,
     private readonly officeService: OfficeService
   ) {
-    if (!(config.slack && config.slack.botOAuthAccessToken)) {
-      throw Error("No slack config found");
+    if (!config.slackBotOAuthAccessToken) {
+      throw Error("No slack bot config found");
     }
 
-    this.slackClient = new WebClient(config.slack.botOAuthAccessToken);
+    this.slackClient = new WebClient(config.slackBotOAuthAccessToken);
     this.meetingsService.listenParticipantsChange((event) => this.onRoomEvent(event));
   }
 

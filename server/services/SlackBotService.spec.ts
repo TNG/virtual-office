@@ -35,7 +35,7 @@ describe("SlackBotService", () => {
     jest.clearAllTimers();
 
     config = mock(Config);
-    when(config.slack).thenReturn({ clientId: "", secret: "", botOAuthAccessToken: "token" });
+    when(config.slackBotOAuthAccessToken).thenReturn("token");
 
     participantsService = mock(MeetingsService);
     officeService = mock(OfficeService);

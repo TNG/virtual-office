@@ -4,8 +4,10 @@ import { Router } from "express";
 import passport from "passport";
 import { Config } from "../../Config";
 import { Strategy as SlackStrategy } from "passport-slack-oauth2";
+import { BasicStrategy } from "passport-http";
 import { User } from "../types/User";
 import { KnownUsersService } from "../../services/KnownUsersService";
+import { logger } from "../../log";
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -33,14 +35,15 @@ function adaptSlackUser(profile: any): User {
 @Service()
 export class AuthRoute implements ExpressRoute {
   constructor(readonly config: Config, readonly knownUsersService: KnownUsersService) {
-    const slackConfig = config.slack;
-    if (slackConfig) {
+    const authConfig = config.authConfig;
+    if (authConfig?.type === "slack") {
+      logger.info("Using slack strategy");
       passport.use(
         new SlackStrategy(
           {
-            clientID: slackConfig.clientId,
-            clientSecret: slackConfig.secret,
-            callbackURL: slackConfig.callbackURL,
+            clientID: authConfig.clientId,
+            clientSecret: authConfig.secret,
+            callbackURL: authConfig.callbackURL,
             scope: ["identity.basic", "identity.email", "identity.avatar"],
           },
           (accessToken: string, refreshToken: string, profile: any, cb: any) => {
@@ -48,6 +51,17 @@ export class AuthRoute implements ExpressRoute {
             return cb(undefined, user);
           }
         )
+      );
+    } else if (authConfig?.type === "basic") {
+      logger.info("Using basic strategy");
+      passport.use(
+        new BasicStrategy(function (username, password, cb) {
+          console.log(username, password, authConfig);
+          if (username === authConfig.username && password === authConfig.password) {
+            cb(undefined, { type: "basic" });
+          }
+          cb(undefined, false);
+        })
       );
     }
   }

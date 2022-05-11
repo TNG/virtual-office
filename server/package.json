@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@slack/web-api": "6.7.1",
+    "@types/passport-http": "0.3.9",
     "axios": "0.27.2",
     "body-parser": "1.20.0",
     "cookie-parser": "1.4.6",
@@ -25,6 +26,7 @@
     "lodash": "4.17.21",
     "luxon": "2.4.0",
     "passport": "0.6.0",
+    "passport-http": "0.3.0",
     "passport-oauth2": "1.6.1",
     "passport-slack-oauth2": "1.1.1",
     "pino": "7.11.0",

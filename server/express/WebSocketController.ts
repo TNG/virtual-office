@@ -48,19 +48,19 @@ export class WebSocketController {
     socket.on("connection", (request: any) => {
       secureCookieParser(request.handshake, {} as any, () => {});
       const currentUser = request.handshake.signedCookies.currentUser;
-      if (!currentUser && !this.config.disableAuth) {
-        socket.to(request.id).emit("unauthenticated");
-        request.disconnect(true);
-      } else {
+      if (currentUser || this.config.authConfig.type === "disabled") {
         socket.to(request.id).emit("init", {
           office: this.officeService.getOffice(),
           meetings: this.meetingsService.getAllMeetings(),
           config: this.clientConfigService.getClientConfig(),
         });
 
-        if (currentUser) {
+        if (currentUser.id && currentUser.id !== "basic") {
           this.knownUsersService.add(JSON.parse(currentUser));
         }
+      } else {
+        socket.to(request.id).emit("unauthenticated");
+        request.disconnect(true);
       }
 
       logger.trace(`createSocket - new client socket connection => sending current state`);
