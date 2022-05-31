@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@slack/web-api": "6.7.1",
-    "@types/passport-http": "0.3.9",
     "axios": "0.27.2",
     "body-parser": "1.20.0",
     "cookie-parser": "1.4.6",
@@ -52,6 +51,7 @@
     "@types/luxon": "2.3.2",
     "@types/node": "16.11.36",
     "@types/passport": "1.0.7",
+    "@types/passport-http": "0.3.9",
     "@types/sinonjs__fake-timers": "8.1.1",
     "@types/socket.io": "3.0.1",
     "@types/supertest": "2.0.12",
