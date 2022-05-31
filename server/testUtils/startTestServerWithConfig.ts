@@ -33,9 +33,6 @@ export class TestServer {
 }
 
 export async function startTestServerWithConfig(config: ConfigOptions): Promise<TestServer> {
-  process.env.SLACK_SECRET = "abc";
-  process.env.SLACK_CLIENT_ID = "abc";
-  process.env.SLACK_CALLBACK_URL = "http://localhost";
   process.env.DISABLE_AUTH = "true";
   process.env.CONFIG = JSON.stringify(config);
 

@@ -56,7 +56,6 @@ export class AuthRoute implements ExpressRoute {
       logger.info("Using basic strategy");
       passport.use(
         new BasicStrategy(function (username, password, cb) {
-          console.log(username, password, authConfig);
           if (username === authConfig.username && password === authConfig.password) {
             cb(undefined, { type: "basic" });
           }

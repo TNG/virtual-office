@@ -51,6 +51,9 @@ export default function ensureLoggedIn(req: Request, res: Response, next: NextFu
       }
     })(req, res, next);
   }
+  if (authConfig.type === "disabled") {
+    return next();
+  }
   res.status(401).end();
   next("router");
   return;
