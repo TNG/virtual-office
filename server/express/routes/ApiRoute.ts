@@ -39,17 +39,6 @@ export class ApiRoute implements ExpressRoute {
       res.json(this.meetingsService.getParticipantsIn(req.params.meetingId));
     });
 
-    router.post("/rooms", ensureLoggedIn, (req, res) => {
-      // ToDo: Should we even restrict that on the backend API?
-      const success = this.officeService.createRoom({ ...req.body, temporary: true });
-      res.sendStatus(success ? 204 : 409);
-    });
-
-    router.delete("/rooms/:roomId", ensureLoggedIn, (req, res) => {
-      const success = this.officeService.deleteRoom(req.params.roomId);
-      res.sendStatus(success ? 204 : 405);
-    });
-
     router.get("/groups/:groupId/join", ensureLoggedIn, (req, res) => {
       const room = this.groupJoinService.joinRoomFor(req.params.groupId);
       if (!room) {

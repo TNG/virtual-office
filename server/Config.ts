@@ -6,12 +6,17 @@ import { ClientConfig } from "./express/types/ClientConfig";
 import * as fs from "fs";
 import { logger } from "./log";
 
-export interface SlackConfig {
+export interface SlackAuthConfig {
+  type: "slack";
   clientId: string;
   secret: string;
   callbackURL?: string;
-  botOAuthAccessToken?: string;
 }
+
+export interface BasicAuthConfig extends Credentials {
+  type: "basic";
+}
+export type AuthConfig = { type: "disabled" } | SlackAuthConfig | BasicAuthConfig;
 
 export interface Credentials {
   username: string;
@@ -24,8 +29,8 @@ const DAYS_30_MS = 1000 * 60 * 60 * 24 * 30;
 export class Config {
   public readonly baseUrl = process.env.BASE_URL;
   public readonly port = process.env.PORT || 9000;
-  public readonly disableAuth = process.env.DISABLE_AUTH === "true";
-  public readonly slack = Config.readSlackConfig(this.disableAuth);
+  public readonly authConfig = Config.readAuthConfig();
+  public readonly slackBotOAuthAccessToken = process.env.SLACK_BOT_OAUTH_ACCESS_TOKEN;
   public readonly configOptions: ConfigOptions = Config.readConfigFromFile();
   public readonly sessionSecret = process.env.SESSION_SECRET || uuid();
   public readonly cookieMaxAgeMs = parseInt(process.env.COOKIE_MAX_AGE_MS || `${DAYS_30_MS}`, 10);
@@ -63,25 +68,27 @@ export class Config {
     };
   }
 
-  private static readSlackConfig(disableAuth: boolean): SlackConfig | undefined {
-    if (disableAuth) {
-      return undefined;
+  private static readAuthConfig(): AuthConfig {
+    if (process.env.DISABLE_AUTH === "true") {
+      return { type: "disabled" };
     }
 
     const secret = process.env.SLACK_SECRET;
     const clientId = process.env.SLACK_CLIENT_ID;
     const callbackURL = process.env.SLACK_CALLBACK_URL;
-    const botOAuthAccessToken = process.env.SLACK_BOT_OAUTH_ACCESS_TOKEN;
-    if (!secret || !clientId) {
-      throw new Error("Slack Config invalid: SLACK_SECRET and SLACK_CLIENT_ID must be set.");
-    }
 
-    return {
-      clientId,
-      secret,
-      callbackURL,
-      botOAuthAccessToken,
-    };
+    const username = process.env.BASIC_AUTH_USERNAME;
+    const password = process.env.BASIC_AUTH_PASSWORD;
+
+    if (secret && clientId) {
+      if (username || password) {
+        throw new Error("Failed to configure auth, both Slack and Basic Auth config has been found!");
+      }
+      return { type: "slack", secret, clientId, callbackURL };
+    } else if (username && password) {
+      return { type: "basic", username, password };
+    }
+    throw new Error("Failed to configure auth. Neither Slack nor Basic Auth config can be found");
   }
 
   public static getConfigFile(): string {
