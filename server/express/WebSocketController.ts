@@ -55,7 +55,7 @@ export class WebSocketController {
           config: this.clientConfigService.getClientConfig(),
         });
 
-        if (currentUser.id && currentUser.id !== "basic") {
+        if (currentUser?.id && currentUser.id !== "basic") {
           this.knownUsersService.add(JSON.parse(currentUser));
         }
       } else {
