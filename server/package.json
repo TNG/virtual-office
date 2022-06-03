@@ -49,7 +49,7 @@
     "@types/jest": "27.0.2",
     "@types/lodash": "4.14.182",
     "@types/luxon": "2.3.2",
-    "@types/node": "16.11.36",
+    "@types/node": "16.11.38",
     "@types/passport": "1.0.8",
     "@types/passport-http": "0.3.9",
     "@types/sinonjs__fake-timers": "8.1.1",
