@@ -50,7 +50,7 @@
     "@types/lodash": "4.14.182",
     "@types/luxon": "2.3.2",
     "@types/node": "16.11.39",
-    "@types/passport": "1.0.8",
+    "@types/passport": "1.0.9",
     "@types/passport-http": "0.3.9",
     "@types/sinonjs__fake-timers": "8.1.1",
     "@types/socket.io": "3.0.1",
