@@ -17,7 +17,7 @@
     "use-deep-compare-effect": "1.8.1"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "8.1.0",
+    "@sinonjs/fake-timers": "9.1.2",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "13.5.0",
