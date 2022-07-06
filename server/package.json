@@ -60,7 +60,7 @@
     "jest": "27.5.1",
     "jest-junit": "13.2.0",
     "nodemon": "2.0.18",
-    "supertest": "6.2.3",
+    "supertest": "6.2.4",
     "ts-essentials": "9.1.2",
     "ts-jest": "27.1.5",
     "ts-mockito": "2.6.1",
