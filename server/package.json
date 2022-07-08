@@ -59,7 +59,7 @@
     "@types/uuid": "8.3.4",
     "jest": "27.5.1",
     "jest-junit": "13.2.0",
-    "nodemon": "2.0.18",
+    "nodemon": "2.0.19",
     "supertest": "6.2.4",
     "ts-essentials": "9.1.2",
     "ts-jest": "27.1.5",
