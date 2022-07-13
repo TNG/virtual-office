@@ -14,7 +14,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
   title: {
     color: "#fff",
     margin: 12,
-    marginTop: 24,
+    marginTop: 6,
     padding: 0,
     opacity: (props) => (props.isDisabled ? 0.9 : 1),
   },
@@ -32,13 +32,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => ({
       width: "50%",
     },
     [theme.breakpoints.up("md")]: {
-      width: "33.33%",
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: "33.33%",
-    },
-    [theme.breakpoints.up("xl")]: {
-      width: "25%",
+      width: "14.28571428571429%",
     },
   },
 }));

@@ -40,7 +40,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     overflowY: "auto",
   },
   scroller: {
-    maxWidth: 1200,
+    maxWidth: 3000,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 12,
@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, StyleConfig>((theme) => ({
     },
     padding: 12,
     [theme.breakpoints.up("xl")]: {
-      maxWidth: 1500,
+      maxWidth: 3000,
     },
   },
   toggleGroupsButton: {
