@@ -76,7 +76,7 @@ const RoomGrid = (props: Props) => {
 
     const minimumRoomsToShow = group.groupJoin.minimumRoomsToShow || 1;
     const [emptyRooms, filledRooms] = partition(rooms, (room) => participantsInMeeting(room.meetingId).length === 0);
-    return [...filledRooms, ...emptyRooms.slice(0, minimumRoomsToShow - filledRooms.length)];
+    return [...filledRooms, ...emptyRooms.slice(0, Math.max(minimumRoomsToShow - filledRooms.length, 1))];
   }
 
   function renderRoomCards() {
