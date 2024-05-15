@@ -198,6 +198,13 @@ const RoomCard = (props: Props) => {
     <Card className={classes.root} key={room.roomId}>
       <CardHeader
         classes={{ root: classes.header, content: classes.headerContent, avatar: classes.headerAvatar }}
+        avatar={
+          room.icon ? (
+            <Avatar variant="square" src={room.icon} />
+          ) : (
+            <RoomIcon className={classes.roomIcon} color="action" />
+          )
+        }
         title={renderTitle()}
         subheader={renderSubheader()}
       />
