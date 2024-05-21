@@ -51,7 +51,7 @@
     "@types/luxon": "2.3.2",
     "@types/node": "18.19.33",
     "@types/passport": "1.0.9",
-    "@types/passport-http": "0.3.9",
+    "@types/passport-http": "0.3.11",
     "@types/sinonjs__fake-timers": "8.1.1",
     "@types/socket.io": "3.0.1",
     "@types/supertest": "2.0.12",
