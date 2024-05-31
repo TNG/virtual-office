@@ -24,7 +24,7 @@
     "express-basic-auth": "1.2.1",
     "lodash": "4.17.21",
     "luxon": "2.5.2",
-    "passport": "0.6.0",
+    "passport": "0.7.0",
     "passport-http": "0.3.0",
     "passport-oauth2": "1.6.1",
     "passport-slack-oauth2": "1.1.1",
