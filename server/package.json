@@ -30,7 +30,7 @@
     "passport-slack-oauth2": "1.2.0",
     "pino": "7.11.0",
     "pino-pretty": "7.6.1",
-    "reflect-metadata": "0.1.13",
+    "reflect-metadata": "0.2.2",
     "socket.io": "4.5.1",
     "swagger-ui-express": "4.4.0",
     "typedi": "0.10.0",
