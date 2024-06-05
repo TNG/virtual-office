@@ -31,7 +31,7 @@
     "pino": "7.11.0",
     "pino-pretty": "7.6.1",
     "reflect-metadata": "0.2.2",
-    "socket.io": "4.5.1",
+    "socket.io": "4.7.5",
     "swagger-ui-express": "4.6.3",
     "typedi": "0.10.0",
     "uuid": "8.3.2"
