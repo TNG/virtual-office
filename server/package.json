@@ -41,7 +41,7 @@
     "npm": "8.x"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "8.1.0",
+    "@sinonjs/fake-timers": "11.3.1",
     "@types/axios": "0.14.0",
     "@types/cookie-parser": "1.4.7",
     "@types/cors": "2.8.17",
