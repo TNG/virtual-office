@@ -1,4 +1,4 @@
-FROM node:16 as build
+FROM node:20 as build
 ENV CYPRESS_INSTALL_BINARY=0
 
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY server ./server/
 
 RUN npm run build --workspaces
 
-FROM node:16
+FROM node:20
 ENV NODE_ENV=production
 
 WORKDIR /app

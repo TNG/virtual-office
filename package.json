@@ -2,7 +2,7 @@
   "name": "virtual-office",
   "version": "0.1.0",
   "engines": {
-    "node": "16.x",
+    "node": "20.x",
     "npm": "8.x"
   },
   "devDependencies": {
