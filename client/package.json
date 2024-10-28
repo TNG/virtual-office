@@ -25,7 +25,7 @@
     "@types/jest": "27.5.2",
     "@types/lodash": "4.17.4",
     "@types/luxon": "2.4.0",
-    "@types/node": "18.19.33",
+    "@types/node": "20.17.2",
     "@types/react": "17.0.80",
     "@types/react-dom": "17.0.25",
     "@types/react-router-dom": "5.3.3",
@@ -59,7 +59,7 @@
     ]
   },
   "engines": {
-    "node": "16.x",
+    "node": "20.x",
     "npm": "8.x"
   }
 }
