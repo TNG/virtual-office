@@ -21,7 +21,7 @@
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "13.5.0",
-    "@types/chai": "4.3.20",
+    "@types/chai": "5.2.3",
     "@types/jest": "27.5.2",
     "@types/lodash": "4.17.21",
     "@types/luxon": "2.4.0",
