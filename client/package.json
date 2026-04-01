@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@material-ui/core": "4.12.4",
-    "@material-ui/icons": "4.11.3",
+    "@mui/icons-material": "5.0.0",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "4.11.5",
     "axios": "0.30.3",
