@@ -17,7 +17,7 @@
     "axios": "0.30.3",
     "body-parser": "1.20.4",
     "cookie-parser": "1.4.7",
-    "cors": "2.8.5",
+    "cors": "2.8.6",
     "dotenv": "8.6.0",
     "express": "4.22.1",
     "express-async-handler": "1.2.0",
