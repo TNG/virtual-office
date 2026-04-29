@@ -34,7 +34,7 @@
     "socket.io": "4.8.1",
     "swagger-ui-express": "4.6.3",
     "typedi": "0.10.0",
-    "uuid": "8.3.2"
+    "uuid": "14.0.0"
   },
   "engines": {
     "node": "20.x",
