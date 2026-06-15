@@ -7,7 +7,7 @@ import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
 import { MeetingParticipant } from "../express/types/MeetingParticipant";
 
 export class TestServer {
-  constructor(private readonly app: Express) {}
+  constructor(public readonly app: Express) {}
 
   async getParticipantIds(meetingId: string) {
     const response = await request(this.app).get(`/api/meeting/${meetingId}/participants`).expect(200);
