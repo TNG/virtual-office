@@ -1,4 +1,4 @@
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Request, Response, Router } from "express";
 import { Service } from "typedi";
 

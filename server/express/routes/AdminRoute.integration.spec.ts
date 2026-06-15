@@ -1,10 +1,10 @@
 import "reflect-metadata";
 
 import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
+import { ConfigOptions } from "../types/ConfigOptions.js";
+import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
 import request from "supertest";
-import { joinRoomEvent } from "../../testUtils/meetingEvents";
+import { joinRoomEvent } from "../../testUtils/meetingEvents.js";
 
 const roomId = "room1";
 const config: ConfigOptions = {

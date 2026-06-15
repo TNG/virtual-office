@@ -2,15 +2,16 @@
   "name": "virtual_office_server",
   "description": "Virtual Office Server",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
     "test": "jest",
     "format": "cd .. && npm run format",
     "start": "node build/server/index.js",
-    "serve:e2e": "nodemon --exec 'ts-node -r dotenv/config --files ./index.ts dotenv_config_path=../cypress/.env.test'",
-    "start:e2e": "node -r dotenv/config build/server/index.js dotenv_config_path=../cypress/.env.test",
-    "generateTestData": "ts-node ./generateTestData.ts"
+    "serve:e2e": "nodemon --exec 'node --loader ts-node/esm -r dotenv/config --files ./index.ts dotenv_config_path=../cypress/.env.test'",
+    "start:e2e": "node --experimental-detect-module -r dotenv/config build/server/index.js dotenv_config_path=../cypress/.env.test",
+    "generateTestData": "node --loader ts-node/esm ./generateTestData.ts"
   },
   "dependencies": {
     "@slack/web-api": "7.13.0",
@@ -42,7 +43,6 @@
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "8.1.0",
-    "@types/axios": "0.14.4",
     "@types/cookie-parser": "1.4.10",
     "@types/cors": "2.8.19",
     "@types/express": "4.17.25",

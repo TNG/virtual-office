@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
 import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
+import { ConfigOptions } from "../types/ConfigOptions.js";
+import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
 import request from "supertest";
 
 const config: ConfigOptions = {

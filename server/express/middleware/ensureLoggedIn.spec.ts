@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Container } from "typedi";
-import { Config, AuthConfig } from "../../Config";
-import ensureLoggedIn, { AuthenticatedRequest } from "./ensureLoggedIn";
+import { Config, AuthConfig } from "../../Config.js";
+import ensureLoggedIn, { AuthenticatedRequest } from "./ensureLoggedIn.js";
 
 jest.mock("passport", () => ({
   authenticate: jest.fn(),
 }));
-jest.mock("../../log", () => ({
+jest.mock("../../log.js", () => ({
   logger: { error: jest.fn() },
 }));
 

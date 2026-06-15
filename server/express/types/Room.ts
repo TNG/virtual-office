@@ -1,4 +1,4 @@
-import { RoomLink } from "./RoomLink";
+import { RoomLink } from "./RoomLink.js";
 import { MarkRequired } from "ts-essentials";
 
 interface RoomWithoutId {

@@ -1,12 +1,12 @@
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
-import { logger } from "../../log";
-import { MeetingsService } from "../../services/MeetingsService";
-import { OfficeService } from "../../services/OfficeService";
-import { Config } from "../../Config";
+import { logger } from "../../log.js";
+import { MeetingsService } from "../../services/MeetingsService.js";
+import { OfficeService } from "../../services/OfficeService.js";
+import { Config } from "../../Config.js";
 import { Service } from "typedi";
-import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware";
-import { ClientConfigService } from "../../services/ClientConfigService";
+import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware.js";
+import { ClientConfigService } from "../../services/ClientConfigService.js";
 import { Response } from "express-serve-static-core";
 
 function sendNotPersistentResponse(res: Response) {

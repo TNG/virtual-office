@@ -1,4 +1,4 @@
-import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
+import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute.js";
 
 function participantFor(userId: string, id?: string) {
   return {

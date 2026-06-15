@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Service } from "typedi";
-import { Config } from "../Config";
-import { OfficeService } from "./OfficeService";
-import { logger } from "../log";
+import { Config } from "../Config.js";
+import { OfficeService } from "./OfficeService.js";
+import { logger } from "../log.js";
 import Timeout = NodeJS.Timeout;
 
 const MAPPING_UPDATE_INTERVAL = 15 * 60 * 1000;
@@ -46,8 +46,8 @@ export class ZoomWebhookService {
         await axios.post(updateMappingEndpoint, mappingUpdate, {});
         logger.info(`Sent mapping update to ${updateMappingEndpoint}`);
         logger.debug("Mapping update", mappingUpdate);
-      } catch (e) {
-        if (axios.isAxiosError(e) && e.response) {
+      } catch (e: any) {
+        if (axios.isAxiosError?.(e) && e.response) {
           logger.error("Could not send mapping update", { error: e.response?.data });
         }
       }

@@ -1,4 +1,4 @@
-import { comparableUsername } from "./compareableUsername";
+import { comparableUsername } from "./compareableUsername.js";
 
 describe("comparableUsername", () => {
   it("should lowercase the username", () => {

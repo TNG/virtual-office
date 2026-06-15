@@ -1,13 +1,13 @@
 import { Service } from "typedi";
-import { Office } from "../express/types/Office";
-import { Config } from "../Config";
-import { ConfigOptions } from "../express/types/ConfigOptions";
-import { Group } from "../express/types/Group";
-import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room";
-import { logger } from "../log";
+import { Office } from "../express/types/Office.js";
+import { Config } from "../Config.js";
+import { ConfigOptions } from "../express/types/ConfigOptions.js";
+import { Group } from "../express/types/Group.js";
+import { Room, RoomConfig, RoomWithMeetingId } from "../express/types/Room.js";
+import { logger } from "../log.js";
 import { v4 as uuid } from "uuid";
 import fs from "fs";
-import { Schedule, Session } from "../express/types/Schedule";
+import { Schedule, Session } from "../express/types/Schedule.js";
 import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;

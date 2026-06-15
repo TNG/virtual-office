@@ -1,9 +1,9 @@
-import { MeetingsService } from "./MeetingsService";
-import { Config } from "../Config";
+import { MeetingsService } from "./MeetingsService.js";
+import { Config } from "../Config.js";
 import { anything, instance, mock, when } from "ts-mockito";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { SlackBotService } from "./SlackBotService";
-import { OfficeService } from "./OfficeService";
+import { MeetingEvent } from "../express/types/MeetingEvent.js";
+import { SlackBotService } from "./SlackBotService.js";
+import { OfficeService } from "./OfficeService.js";
 
 const mockDateNow = jest.spyOn(Date, "now");
 // @ts-ignore

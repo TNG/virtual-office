@@ -1,11 +1,11 @@
 import "reflect-metadata";
 
 import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
+import { ConfigOptions } from "../types/ConfigOptions.js";
 import { range } from "lodash";
 
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
-import { joinRoomEvent } from "../../testUtils/meetingEvents";
+import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
+import { joinRoomEvent } from "../../testUtils/meetingEvents.js";
 import { install, InstalledClock } from "@sinonjs/fake-timers";
 
 const groupId = "myGroupId";

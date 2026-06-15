@@ -1,5 +1,5 @@
-import { ClientConfigService } from "./ClientConfigService";
-import { Config } from "../Config";
+import { ClientConfigService } from "./ClientConfigService.js";
+import { Config } from "../Config.js";
 describe("ClientConfigService", () => {
   let clientConfigService: ClientConfigService;
   let listener: jest.Mock;

@@ -23,6 +23,7 @@
     "start": "npm start --workspace=server",
     "start:e2e": "npm run start:e2e --workspace=server"
   },
+  "type": "module",
   "workspaces": [
     "client",
     "server"

@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import * as swaggerUi from "swagger-ui-express";
 import * as apiJson from "./api.json";
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Service } from "typedi";
-import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware";
-import { Config } from "../../Config";
+import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware.js";
+import { Config } from "../../Config.js";
 
 @Service()
 export class ApiDocsRoute implements ExpressRoute {

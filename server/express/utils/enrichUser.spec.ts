@@ -1,6 +1,6 @@
-import { enrichParticipant } from "./enrichUser";
-import { MeetingParticipant } from "../types/MeetingParticipant";
-import { User } from "../types/User";
+import { enrichParticipant } from "./enrichUser.js";
+import { MeetingParticipant } from "../types/MeetingParticipant.js";
+import { User } from "../types/User.js";
 
 describe("enrichParticipant", () => {
   const participant: MeetingParticipant = {

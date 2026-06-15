@@ -1,15 +1,15 @@
 import { Service } from "typedi";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { logger } from "../log";
-import { KnownUsersService } from "./KnownUsersService";
-import { EventListener, EventType, MeetingEvent } from "../express/types/MeetingEvent";
-import { User } from "../express/types/User";
-import { comparableUsername } from "../express/utils/compareableUsername";
-import { enrichParticipant } from "../express/utils/enrichUser";
-import { Meeting } from "../express/types/Meeting";
-import { OfficeService } from "./OfficeService";
-import { Config } from "../Config";
-import { EventService } from "./EventService";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
+import { logger } from "../log.js";
+import { KnownUsersService } from "./KnownUsersService.js";
+import { EventListener, EventType, MeetingEvent } from "../express/types/MeetingEvent.js";
+import { User } from "../express/types/User.js";
+import { comparableUsername } from "../express/utils/compareableUsername.js";
+import { enrichParticipant } from "../express/utils/enrichUser.js";
+import { Meeting } from "../express/types/Meeting.js";
+import { OfficeService } from "./OfficeService.js";
+import { Config } from "../Config.js";
+import { EventService } from "./EventService.js";
 
 @Service({ multiple: false })
 export class MeetingsService {

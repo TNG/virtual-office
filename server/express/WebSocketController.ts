@@ -1,17 +1,17 @@
 import { Service } from "typedi";
-import { Socket } from "socket.io";
-import { logger } from "../log";
+import { Server as SocketIOServer } from "socket.io";
+import { logger } from "../log.js";
 import { Server } from "http";
-import { MeetingsService } from "../services/MeetingsService";
+import { MeetingsService } from "../services/MeetingsService.js";
 import cookieParser from "cookie-parser";
-import { Config } from "../Config";
-import { KnownUsersService } from "../services/KnownUsersService";
-import { OfficeService } from "../services/OfficeService";
-import { ClientConfigService } from "../services/ClientConfigService";
+import { Config } from "../Config.js";
+import { KnownUsersService } from "../services/KnownUsersService.js";
+import { OfficeService } from "../services/OfficeService.js";
+import { ClientConfigService } from "../services/ClientConfigService.js";
 
 @Service({ multiple: false })
 export class WebSocketController {
-  private socket?: Socket = undefined;
+  private socketServer?: SocketIOServer = undefined;
 
   constructor(
     private readonly officeService: OfficeService,
@@ -22,22 +22,21 @@ export class WebSocketController {
   ) {}
 
   init(server: Server) {
-    this.socket = this.createSocket(server);
+    this.socketServer = this.createSocket(server);
 
     this.meetingsService.listenParticipantsChange((event) => {
-      this.socket && this.socket.emit("notify", event);
+      this.socketServer && this.socketServer.emit("notify", event);
     });
     this.officeService.listenOfficeChanges((office) => {
-      this.socket && this.socket.emit("office", office);
+      this.socketServer && this.socketServer.emit("office", office);
     });
     this.clientConfigService.listenClientConfig((config) => {
-      this.socket && this.socket.emit("clientConfig", config);
+      this.socketServer && this.socketServer.emit("clientConfig", config);
     });
   }
 
-  private createSocket(server: Server): Socket {
-    const io = require("socket.io");
-    const socket = io(server, {
+  private createSocket(server: Server): SocketIOServer {
+    const socket = new SocketIOServer(server, {
       path: "/api/updates",
       pingInterval: 5000,
       pingTimeout: 5000,

@@ -1,10 +1,10 @@
-import { ConfigOptions } from "../express/types/ConfigOptions";
+import { ConfigOptions } from "../express/types/ConfigOptions.js";
 import { Container } from "typedi";
-import { ExpressApp } from "../express/ExpressApp";
+import { ExpressApp } from "../express/ExpressApp.js";
 import { Express } from "express";
 import request from "supertest";
-import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
 
 export class TestServer {
   constructor(public readonly app: Express) {}

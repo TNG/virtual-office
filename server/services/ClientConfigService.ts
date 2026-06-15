@@ -1,6 +1,6 @@
 import { Service } from "typedi";
-import { Config } from "../Config";
-import { ClientConfig } from "../express/types/ClientConfig";
+import { Config } from "../Config.js";
+import { ClientConfig } from "../express/types/ClientConfig.js";
 
 const defaultClientConfig: ClientConfig = {
   viewMode: "grid",

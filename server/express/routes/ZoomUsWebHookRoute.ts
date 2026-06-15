@@ -1,10 +1,10 @@
 import { Service } from "typedi";
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
-import { MeetingsService } from "../../services/MeetingsService";
-import { MeetingParticipant } from "../types/MeetingParticipant";
-import { logger } from "../../log";
-import { Config } from "../../Config";
+import { MeetingsService } from "../../services/MeetingsService.js";
+import { MeetingParticipant } from "../types/MeetingParticipant.js";
+import { logger } from "../../log.js";
+import { Config } from "../../Config.js";
 
 function loggableParticipant(participant: ZoomusParticipant, enableParticipantLogging: boolean): ZoomusParticipant {
   return {

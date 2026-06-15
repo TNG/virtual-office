@@ -1,10 +1,10 @@
-import { Config } from "../Config";
+import { Config } from "../Config.js";
 import { instance, mock, when } from "ts-mockito";
-import { Office } from "../express/types/Office";
-import { EventService } from "./EventService";
+import { Office } from "../express/types/Office.js";
+import { EventService } from "./EventService.js";
 import axios from "axios";
 import { Settings } from "luxon";
-import { OfficeService } from "./OfficeService";
+import { OfficeService } from "./OfficeService.js";
 
 jest.mock("axios");
 

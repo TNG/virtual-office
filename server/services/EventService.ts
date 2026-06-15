@@ -1,9 +1,9 @@
 import axios from "axios";
 import { Service } from "typedi";
-import { Config } from "../Config";
-import { logger } from "../log";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { OfficeService } from "./OfficeService";
+import { Config } from "../Config.js";
+import { logger } from "../log.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
+import { OfficeService } from "./OfficeService.js";
 
 @Service()
 export class EventService {

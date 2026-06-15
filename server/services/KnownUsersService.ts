@@ -1,8 +1,8 @@
 import { isEqual } from "lodash";
 
-import { User } from "../express/types/User";
+import { User } from "../express/types/User.js";
 import { Service } from "typedi";
-import { comparableUsername } from "../express/utils/compareableUsername";
+import { comparableUsername } from "../express/utils/compareableUsername.js";
 
 export type UserUpdateListener = (user: User) => void;
 

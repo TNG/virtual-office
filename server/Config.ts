@@ -1,10 +1,10 @@
 import { Service } from "typedi";
-import { findRootDir } from "./express/utils/findRootDir";
+import { findRootDir } from "./express/utils/findRootDir.js";
 import { v4 as uuid } from "uuid";
-import { ConfigOptions } from "./express/types/ConfigOptions";
-import { ClientConfig } from "./express/types/ClientConfig";
+import { ConfigOptions } from "./express/types/ConfigOptions.js";
+import { ClientConfig } from "./express/types/ClientConfig.js";
 import * as fs from "fs";
-import { logger } from "./log";
+import { logger } from "./log.js";
 
 export interface SlackAuthConfig {
   type: "slack";
@@ -102,7 +102,7 @@ export class Config {
 
     const configFile = Config.getConfigFile();
     if (fs.existsSync(configFile)) {
-      return require(configFile);
+      return JSON.parse(fs.readFileSync(configFile, "utf-8"));
     } else {
       logger.warn(`Config file '${configFile}' does not exist, creating default config`);
       const emptyConfig: ConfigOptions = { rooms: [], groups: [] };
