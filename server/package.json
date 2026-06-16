@@ -38,8 +38,8 @@
     "uuid": "^11.0.0"
   },
   "engines": {
-    "node": "24.x",
-    "npm": "10.x"
+    "node": ">=24",
+    "npm": ">=10"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^14.0.0",
@@ -59,7 +59,7 @@
     "nodemon": "^3.0.0",
     "supertest": "^7.0.0",
     "ts-essentials": "9.4.2",
-    "ts-jest": "^29.4.0",
+    "ts-jest": "^29.4.11",
     "ts-mockito": "2.6.1",
     "tsx": "^4.0.0",
     "typescript": "^5.8.0"

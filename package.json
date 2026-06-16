@@ -2,8 +2,8 @@
   "name": "virtual-office",
   "version": "0.1.0",
   "engines": {
-    "node": "24.x",
-    "npm": "10.x"
+    "node": ">=24",
+    "npm": ">=10"
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.0.0",
