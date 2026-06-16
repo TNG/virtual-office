@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -19,12 +19,10 @@ axios.get("/api/clientConfig").then(({ data }) => {
     <BrowserRouter>
       <ThemeProvider theme={theme(data)}>
         <CssBaseline />
-        <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/login">
-            <Login />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </ThemeProvider>
     </BrowserRouter>
   );
