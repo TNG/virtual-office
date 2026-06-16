@@ -18,7 +18,7 @@
     "use-deep-compare-effect": "1.8.1"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "8.1.0",
+    "@sinonjs/fake-timers": "^14.0.0",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "13.5.0",
@@ -30,8 +30,6 @@
     "@types/react": "17.0.91",
     "@types/react-dom": "17.0.26",
     "@types/react-router-dom": "5.3.3",
-    "@types/sinonjs__fake-timers": "8.1.5",
-    "@types/socket.io-client": "1.4.36",
     "@vitejs/plugin-react": "^4.0.0",
     "chai": "4.5.0",
     "jest-environment-jsdom": "^29.7.0",
