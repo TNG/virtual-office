@@ -5,12 +5,15 @@ module.exports = {
   moduleNameMapper: {
     "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
   },
-  globals: {
-    "ts-jest": {
+  transformIgnorePatterns: [
+    "/node_modules/(?!(uuid)/)",
+  ],
+  transform: {
+    "^.+\\.[jt]sx?$": ["ts-jest", {
       tsconfig: "tsconfig.test.json",
       diagnostics: {
         errorCodes: ["TS1343"],
       },
-    },
+    }],
   },
 };
