@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,7 +14,8 @@ import axios from "axios";
 
 axios.get("/api/clientConfig").then(({ data }) => {
   document.title = data.title ?? "Virtual Office";
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("root")!);
+  root.render(
     <BrowserRouter>
       <ThemeProvider theme={theme(data)}>
         <CssBaseline />
@@ -25,8 +26,7 @@ axios.get("/api/clientConfig").then(({ data }) => {
           </Route>
         </Switch>
       </ThemeProvider>
-    </BrowserRouter>,
-    document.getElementById("root")
+    </BrowserRouter>
   );
 });
 
