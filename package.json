@@ -6,10 +6,10 @@
     "npm": "8.x"
   },
   "devDependencies": {
-    "@testing-library/cypress": "8.0.7",
-    "cypress": "7.7.0",
-    "husky": "7.0.4",
-    "prettier": "2.0.5",
+    "@testing-library/cypress": "^10.0.0",
+    "cypress": "^13.0.0",
+    "husky": "^9.0.0",
+    "prettier": "^3.0.0",
     "typescript": "^5.8.0"
   },
   "scripts": {
@@ -19,7 +19,7 @@
     "buildAll": "npm run build --workspaces",
     "testAll": "npm test --workspaces",
     "cypress": "TZ=Etc/UTC cypress run",
-    "cypress:dev": "TZ=Etc/UTC CYPRESS_BASE_URL=http://localhost:8080 cypress open",
+    "cypress:dev": "TZ=Etc/UTC cypress open",
     "start": "npm start --workspace=server",
     "start:e2e": "npm run start:e2e --workspace=server"
   },
