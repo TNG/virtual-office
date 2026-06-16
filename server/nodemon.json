@@ -1,5 +1,5 @@
 {
   "ext": "ts",
   "ignore": ["**/*.spec.ts"],
-  "exec": "node --loader ts-node/esm --files ./index.ts"
+  "exec": "tsx ./index.ts"
 }

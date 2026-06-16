@@ -28,7 +28,7 @@ jobs:
     - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
-        node-version: '16.x'
+        node-version: '24.x'
     - name: npm install
       run: npm install
     - name: lint
@@ -40,6 +40,6 @@ jobs:
     - name: test client
       run: npm test --workspace=client
     - name: Run cypress tests
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v6
       with:
         start: npm run start:e2e
