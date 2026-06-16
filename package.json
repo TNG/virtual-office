@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.0.0",
-    "cypress": "^15.0.0",
+    "cypress": "^15.17.0",
     "husky": "^9.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.8.0"
