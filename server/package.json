@@ -7,7 +7,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "test": "jest",
-    "format": "cd .. && npm run format",
+    "format": "cd .. && pnpm run format",
     "start": "node build/server/index.js",
     "serve:e2e": "nodemon --exec 'tsx -r dotenv/config ./index.ts dotenv_config_path=../cypress/.env.test'",
     "start:e2e": "node --experimental-detect-module --import dotenv/config build/server/index.js dotenv_config_path=../cypress/.env.test",
@@ -39,7 +39,7 @@
   },
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^14.0.0",
