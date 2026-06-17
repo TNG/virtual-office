@@ -29,7 +29,7 @@ you can find our experiences in two articles (German only):
 
 0. Install all dependencies.
     ```
-    npm run installAll
+    pnpm run installAll
     ```
 
 0. Create a new Slack App, as currently the only authentication option is Slack (https://api.slack.com/apps).
@@ -59,14 +59,14 @@ you can find our experiences in two articles (German only):
 
 0. Compile and start the application in production mode
     ```
-    npm run buildAll
-    cd server && npm start
+    pnpm run buildAll
+    cd server && pnpm start
     ```
 
 0. (Alternative) Serve the application in development mode
     ```
-    cd server && npm run dev
-    cd client && npm start
+    cd server && pnpm run dev
+    cd client && pnpm start
     ```
 
 #### Available Environment Variables

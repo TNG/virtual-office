@@ -13,10 +13,10 @@ We love pull requests. Here is a quick guide:
 1. You need to have Node.JS installed
 2. Fork the repo (see https://help.github.com/articles/fork-a-repo).
 3. Create a new branch from master.
-4. Run `npm installAll`
+4. Run `pnpm installAll`
 5. Copy the `.env-example` both in `client` and `server` to `.env`, add Slack credentials
 5. Add your change together with a test (tests are not needed for refactorings and documentation changes).
-6. Run `npm run testAll` and `npm run format` and ensure all tests are passing.
+6. Run `pnpm run testAll` and `pnpm run format` and ensure all tests are passing.
 7. Create a Pull Request
 
 ### Commits
