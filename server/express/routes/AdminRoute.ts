@@ -41,19 +41,13 @@ export class AdminRoute implements ExpressRoute {
       res.sendStatus(200);
     });
     router.post("/replaceOffice", loginMiddleware, (req: any, res) => {
-      logger.info("replacing office", {
-        user: req.auth.user,
-        data: req.body,
-      });
+      logger.info({ user: req.auth.user, data: req.body }, "replacing office");
       this.officeService.replaceOfficeWith(req.body);
 
       sendNotPersistentResponse(res);
     });
     router.patch("/clientConfig", loginMiddleware, (req: any, res) => {
-      logger.info("update clientConfig", {
-        user: req.auth.user,
-        data: req.body,
-      });
+      logger.info({ user: req.auth.user, data: req.body }, "update clientConfig");
 
       this.clientConfigService.updateClientConfig(req.body);
       sendNotPersistentResponse(res);

@@ -26,7 +26,7 @@ export class EventService {
       try {
         await axios.post(webhookTemplate);
       } catch (error) {
-        logger.error("Failed to track event", error);
+        logger.error({ error }, "Failed to track event");
       }
     }
   }
