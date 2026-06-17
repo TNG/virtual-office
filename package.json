@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.0.0",
@@ -15,24 +15,29 @@
   "scripts": {
     "format": "prettier --write \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
     "lint": "prettier --check \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
-    "installAll": "npm install",
-    "buildAll": "npm run build --workspaces",
-    "testAll": "npm test --workspaces",
+    "installAll": "pnpm install",
+    "buildAll": "pnpm run --recursive build",
+    "testAll": "pnpm run --recursive test",
     "cypress": "TZ=Etc/UTC cypress run",
     "cypress:dev": "TZ=Etc/UTC cypress open",
-    "start": "npm start --workspace=server",
-    "start:e2e": "npm run start:e2e --workspace=server"
+    "start": "pnpm --filter=virtual_office_server start",
+    "start:e2e": "pnpm --filter=virtual_office_server run start:e2e"
   },
   "type": "module",
-  "workspaces": [
-    "client",
-    "server"
-  ],
-  "overrides": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@types/react": "^19.0.0",
-    "ws": "^8.21.0",
-    "js-yaml": "^4.2.0"
+  "pnpm": {
+    "overrides": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0",
+      "@types/react": "^19.0.0",
+      "ws": "^8.21.0",
+      "js-yaml": "^4.2.0"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react": "^19",
+        "react-dom": "^19",
+        "@types/react": "^19"
+      }
+    }
   }
 }
