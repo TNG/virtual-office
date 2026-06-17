@@ -1,6 +1,5 @@
 import "reflect-metadata";
 
-import { Container } from "typedi";
 import { ConfigOptions } from "../types/ConfigOptions.js";
 import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
 import { endMeetingEvent, joinRoomEvent, leaveRoomEvent } from "../../testUtils/meetingEvents.js";

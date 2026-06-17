@@ -6,7 +6,7 @@ module.exports = {
     "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!(.pnpm/)?(?:uuid|chai)/)",
+    "node_modules/(?!(?:.pnpm/[^/]+/node_modules/)?(?:uuid|chai)/)",
   ],
   transform: {
     "^.+\\.[jt]sx?$": ["ts-jest", {

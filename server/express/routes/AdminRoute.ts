@@ -7,7 +7,7 @@ import { Config } from "../../Config.js";
 import { Service } from "typedi";
 import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware.js";
 import { ClientConfigService } from "../../services/ClientConfigService.js";
-import { Response } from "express-serve-static-core";
+import { Response } from "express";
 
 function sendNotPersistentResponse(res: Response) {
   res

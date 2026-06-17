@@ -1,3 +1,30 @@
 packages:
   - client
   - server
+
+allowBuilds:
+  '@scarf/scarf': true
+  cypress: true
+  esbuild: true
+  unrs-resolver: true
+
+minimumReleaseAge: 4320
+
+overrides:
+  react: ^19.0.0
+  react-dom: ^19.0.0
+  '@types/react': ^19.0.0
+  ws: ^8.21.0
+  js-yaml: ^4.2.0
+
+peerDependencyRules:
+  allowedVersions:
+    react: ^19
+    react-dom: ^19
+    '@types/react': ^19
+
+onlyBuiltDependencies:
+  - '@scarf/scarf'
+  - cypress
+  - esbuild
+  - unrs-resolver
