@@ -1,8 +1,7 @@
 import "reflect-metadata";
 
-import { Container } from "typedi";
 import { ConfigOptions } from "../types/ConfigOptions.js";
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
+import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
 import request from "supertest";
 import { joinRoomEvent } from "../../testUtils/meetingEvents.js";
 
@@ -28,7 +27,7 @@ describe("AdminRoute", () => {
   });
 
   afterEach(() => {
-    Container.reset();
+    cleanupTestServer();
   });
 
   describe("DELETE /api/admin/rooms/:roomId", () => {
@@ -57,7 +56,7 @@ describe("AdminRoute", () => {
 
   describe("with admin credentials configured", () => {
     beforeEach(async () => {
-      Container.reset();
+      cleanupTestServer();
       process.env.ADMIN_USERNAME = "admin";
       process.env.ADMIN_PASSWORD = "secret";
       server = await startTestServerWithConfig(config);

@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 import { Container } from "typedi";
 import { ConfigOptions } from "../types/ConfigOptions.js";
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
+import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
 import request from "supertest";
 
 const config: ConfigOptions = {
@@ -18,7 +18,7 @@ describe("MonitoringRoute", () => {
   });
 
   afterEach(() => {
-    Container.reset();
+    cleanupTestServer();
   });
 
   it("should return 200 and OK on GET /api/monitoring/health", async () => {

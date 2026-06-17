@@ -27,13 +27,19 @@ const cleanupReservationsInterval = 1000 * 30; // 30 seconds;
 export class GroupJoinService {
   private reservedSpaces: ReservedSpaces = {};
 
+  private intervalHandle: ReturnType<typeof setInterval>;
+
   constructor(private readonly officeService: OfficeService, private readonly meetingsService: MeetingsService) {
-    setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
+    this.intervalHandle = setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
     meetingsService.listenParticipantsChange((event) => {
       if (event.type === "join") {
         this.removeReservedSpaceIn(event.meetingId);
       }
     });
+  }
+
+  dispose() {
+    clearInterval(this.intervalHandle);
   }
 
   joinRoomFor(groupId: string): Room | undefined {

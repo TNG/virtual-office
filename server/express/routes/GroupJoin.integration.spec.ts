@@ -1,10 +1,9 @@
 import "reflect-metadata";
 
-import { Container } from "typedi";
 import { ConfigOptions } from "../types/ConfigOptions.js";
 import { range } from "lodash";
 
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig.js";
+import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
 import { joinRoomEvent } from "../../testUtils/meetingEvents.js";
 import { install, InstalledClock } from "@sinonjs/fake-timers";
 
@@ -42,22 +41,22 @@ describe("GroupJoin", () => {
   let clock: InstalledClock;
 
   beforeEach(async () => {
-    clock = install();
+    clock = install({ shouldAdvanceTime: true });
     server = await startTestServerWithConfig(config);
   });
 
   afterEach(() => {
     clock.uninstall();
-    Container.reset();
+    cleanupTestServer();
   });
 
   async function joinGroupRoom(user: any) {
     const timeToWaitInTheBeginning = Math.random() * 300;
-    clock.tick(timeToWaitInTheBeginning);
+    await clock.tickAsync(timeToWaitInTheBeginning);
 
     const roomId = await server.joinGroup(groupId);
 
-    clock.tick(Math.random() * 2000);
+    await clock.tickAsync(Math.random() * 2000);
 
     await server.sendMeetingEvent(joinRoomEvent(roomId, `user_${user}`, undefined));
   }

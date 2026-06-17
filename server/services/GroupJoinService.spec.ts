@@ -51,6 +51,7 @@ describe("GroupJoinService", () => {
   let clock: InstalledClock;
 
   afterEach(() => {
+    groupJoinService.dispose();
     clock.uninstall();
   });
 
