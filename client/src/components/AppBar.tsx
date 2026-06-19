@@ -14,7 +14,7 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import LocalCafeIcon from "@material-ui/icons/LocalCafe";
+import { LocalCafe as LocalCafeIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "./SearchInput";
 

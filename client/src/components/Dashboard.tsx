@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 import { MeetingEvent } from "../../../server/express/types/MeetingEvent";
 import { SocketContext } from "../socket/Context";
 
-import Box from "@material-ui/core/Box/Box";
+import { Box } from "@material-ui/core";
 import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";

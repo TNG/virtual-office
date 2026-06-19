@@ -3,7 +3,7 @@ import { Button, Card, CardActions, CardContent, CardHeader, Theme, Typography }
 import { makeStyles } from "@material-ui/styles";
 
 import { Group } from "../../../server/express/types/Group";
-import GroupIcon from "@material-ui/icons/QueuePlayNext";
+import { QueuePlayNext as GroupIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>((theme) => ({
   root: {
