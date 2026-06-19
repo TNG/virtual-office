@@ -34,6 +34,7 @@ USER node
 
 COPY --chown=node --from=build /app/client/build ./client/build
 COPY --chown=node --from=build /app/server/build ./server/build
+COPY --chown=node --from=build /app/server/express/routes/api.json ./server/express/routes/api.json
 
 EXPOSE 9000
 

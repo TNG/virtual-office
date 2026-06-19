@@ -1,10 +1,15 @@
 import { Request, Response, Router } from "express";
-import * as swaggerUi from "swagger-ui-express";
-import * as apiJson from "./api.json";
+import swaggerUi from "swagger-ui-express";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { ExpressRoute } from "./ExpressRoute.js";
 import { Service } from "typedi";
 import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware.js";
 import { Config } from "../../Config.js";
+import { findRootDir } from "../utils/findRootDir.js";
+
+const apiJsonPath = join(findRootDir(), "server", "express", "routes", "api.json");
+const apiJson = JSON.parse(readFileSync(apiJsonPath, "utf-8"));
 
 @Service()
 export class ApiDocsRoute implements ExpressRoute {
@@ -21,3 +26,4 @@ export class ApiDocsRoute implements ExpressRoute {
     return router;
   }
 }
+

@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import lodash from "lodash";
 
 import { User } from "../express/types/User.js";
 import { Service } from "typedi";
@@ -33,7 +33,7 @@ export class KnownUsersService {
       this.knownUsers[comparableUsername(user.email)] = user;
     }
 
-    if (!isEqual(user, removed)) {
+    if (!lodash.isEqual(user, removed)) {
       this.notify(user);
     }
   }

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { ConfigOptions } from "../types/ConfigOptions.js";
-import { range } from "lodash";
+import lodash from "lodash";
 
 import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
 import { joinRoomEvent } from "../../testUtils/meetingEvents.js";
@@ -72,7 +72,7 @@ describe("GroupJoin", () => {
 
   it("should distribute more users equally", async () => {
     const count = 50;
-    await Promise.all(range(count).map(async (_, index) => await joinGroupRoom(index)));
+    await Promise.all(lodash.range(count).map(async (_, index) => await joinGroupRoom(index)));
 
     expect(await server.getParticipantIds(room1.meetingId)).toHaveLength(count / 2);
     expect(await server.getParticipantIds(room2.meetingId)).toHaveLength(count / 2);
