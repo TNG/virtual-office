@@ -23,11 +23,7 @@ beforeEach(() => {
 });
 
 const renderWithTheme = (ui: React.ReactElement) =>
-  render(
-    <ThemeProvider theme={theme(defaultConfig)}>
-      {ui}
-    </ThemeProvider>
-  );
+  render(<ThemeProvider theme={theme(defaultConfig)}>{ui}</ThemeProvider>);
 
 describe("Login", () => {
   it("renders Virtual Office heading", async () => {

@@ -29,7 +29,10 @@ export class GroupJoinService {
 
   private intervalHandle: ReturnType<typeof setInterval>;
 
-  constructor(private readonly officeService: OfficeService, private readonly meetingsService: MeetingsService) {
+  constructor(
+    private readonly officeService: OfficeService,
+    private readonly meetingsService: MeetingsService
+  ) {
     this.intervalHandle = setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
     meetingsService.listenParticipantsChange((event) => {
       if (event.type === "join") {

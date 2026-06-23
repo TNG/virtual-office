@@ -34,7 +34,10 @@ export interface ZoomUsEvent {
 
 @Service()
 export class ZoomUsWebHookRoute implements ExpressRoute {
-  constructor(private readonly roomsService: MeetingsService, private readonly config: Config) {}
+  constructor(
+    private readonly roomsService: MeetingsService,
+    private readonly config: Config
+  ) {}
 
   router(): Router {
     const router = Router();
@@ -48,12 +51,15 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info({
-        event: event,
-        meetingId: id,
-        participant: loggableParticipant(participant, this.config.enableParticipantLogging),
-        traceId,
-      }, "Received an zoom.us notification");
+      logger.info(
+        {
+          event: event,
+          meetingId: id,
+          participant: loggableParticipant(participant, this.config.enableParticipantLogging),
+          traceId,
+        },
+        "Received an zoom.us notification"
+      );
 
       switch (event) {
         case "meeting.participant_joined":

@@ -26,4 +26,3 @@ export class ApiDocsRoute implements ExpressRoute {
     return router;
   }
 }
-

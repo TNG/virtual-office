@@ -7,7 +7,10 @@ import { OfficeService } from "./OfficeService.js";
 
 @Service()
 export class EventService {
-  constructor(private config: Config, private officeService: OfficeService) {}
+  constructor(
+    private config: Config,
+    private officeService: OfficeService
+  ) {}
 
   async trackJoinEvent(meetingId: string, toJoin: MeetingParticipant) {
     const activeRoom = this.officeService.getActiveRoom(meetingId);

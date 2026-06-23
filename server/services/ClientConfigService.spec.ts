@@ -36,9 +36,7 @@ describe("ClientConfigService", () => {
     clientConfigService.updateClientConfig({ theme: "light" });
 
     expect(listener).toHaveBeenCalledTimes(1);
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({ theme: "light" })
-    );
+    expect(listener).toHaveBeenCalledWith(expect.objectContaining({ theme: "light" }));
   });
 
   it("supports multiple listeners", () => {

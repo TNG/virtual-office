@@ -12,19 +12,17 @@ import { DateTime } from "luxon";
 
 export type OfficeChangeListener = (office: Office) => void;
 
-const sortSessionsByStartTime = (zone: string | undefined, sessionStartMinutesOffset: number) => (
-  a: Session,
-  b: Session
-): number =>
-  getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
-  getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
+const sortSessionsByStartTime =
+  (zone: string | undefined, sessionStartMinutesOffset: number) =>
+  (a: Session, b: Session): number =>
+    getStartDateTime(a.start, zone, sessionStartMinutesOffset).valueOf() -
+    getStartDateTime(b.start, zone, sessionStartMinutesOffset).valueOf();
 
-const sortSessionsByDiffToNow = (zone: string | undefined, sessionStartMinutesOffset: number) => (
-  a: Session,
-  b: Session
-): number =>
-  getStartDateTime(b.start, zone, sessionStartMinutesOffset).diffNow().valueOf() -
-  getStartDateTime(a.start, zone, sessionStartMinutesOffset).diffNow().valueOf();
+const sortSessionsByDiffToNow =
+  (zone: string | undefined, sessionStartMinutesOffset: number) =>
+  (a: Session, b: Session): number =>
+    getStartDateTime(b.start, zone, sessionStartMinutesOffset).diffNow().valueOf() -
+    getStartDateTime(a.start, zone, sessionStartMinutesOffset).diffNow().valueOf();
 
 @Service()
 export class OfficeService {

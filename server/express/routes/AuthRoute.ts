@@ -34,7 +34,10 @@ function adaptSlackUser(profile: any): User {
 
 @Service()
 export class AuthRoute implements ExpressRoute {
-  constructor(readonly config: Config, readonly knownUsersService: KnownUsersService) {
+  constructor(
+    readonly config: Config,
+    readonly knownUsersService: KnownUsersService
+  ) {
     const authConfig = config.authConfig;
     if (authConfig?.type === "slack") {
       logger.info("Using slack strategy");

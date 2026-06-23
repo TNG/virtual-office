@@ -137,11 +137,7 @@ describe("ensureLoggedIn", () => {
 
       ensureLoggedIn(req, res, next);
 
-      expect(passport.authenticate).toHaveBeenCalledWith(
-        "basic",
-        { session: false },
-        expect.any(Function)
-      );
+      expect(passport.authenticate).toHaveBeenCalledWith("basic", { session: false }, expect.any(Function));
       expect(authenticateMock).toHaveBeenCalledWith(req, res, next);
     });
 
@@ -163,11 +159,11 @@ describe("ensureLoggedIn", () => {
 
       authCallback!(null, { id: "basic" });
 
-      expect(res.cookie).toHaveBeenCalledWith(
-        "currentUser",
-        JSON.stringify({ id: "basic" }),
-        { signed: true, maxAge: cookieMaxAgeMs, httpOnly: true }
-      );
+      expect(res.cookie).toHaveBeenCalledWith("currentUser", JSON.stringify({ id: "basic" }), {
+        signed: true,
+        maxAge: cookieMaxAgeMs,
+        httpOnly: true,
+      });
       expect(next).toHaveBeenCalledWith();
     });
 

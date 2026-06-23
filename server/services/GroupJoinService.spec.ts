@@ -45,7 +45,7 @@ describe("GroupJoinService", () => {
   }
 
   function generateParticipants(count: number): MeetingParticipant[] {
-    return lodash.range(count).map(() => ({} as MeetingParticipant));
+    return lodash.range(count).map(() => ({}) as MeetingParticipant);
   }
 
   let clock: InstalledClock;

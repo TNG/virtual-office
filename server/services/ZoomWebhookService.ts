@@ -11,7 +11,10 @@ const MAPPING_UPDATE_INTERVAL = 15 * 60 * 1000;
 export class ZoomWebhookService {
   timeout: Timeout | undefined;
 
-  constructor(private config: Config, private readonly officeService: OfficeService) {
+  constructor(
+    private config: Config,
+    private readonly officeService: OfficeService
+  ) {
     if (config.zoomWebhookApi && this.config.baseUrl) {
       this.officeService.listenOfficeChanges(() => this.sendMappingUpdate());
       this.setMappingUpdateTimeout();
