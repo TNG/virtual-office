@@ -3,12 +3,12 @@ import "reflect-metadata";
 import dotenv from "dotenv";
 import { Container } from "typedi";
 
-import { logger } from "./log";
-import { Config } from "./Config";
-import { ExpressApp } from "./express/ExpressApp";
-import { WebSocketController } from "./express/WebSocketController";
-import { SlackBotService } from "./services/SlackBotService";
-import { ZoomWebhookService } from "./services/ZoomWebhookService";
+import { logger } from "./log.js";
+import { Config } from "./Config.js";
+import { ExpressApp } from "./express/ExpressApp.js";
+import { WebSocketController } from "./express/WebSocketController.js";
+import { SlackBotService } from "./services/SlackBotService.js";
+import { ZoomWebhookService } from "./services/ZoomWebhookService.js";
 
 const result = dotenv.config();
 if (result.error) {

@@ -1,13 +1,13 @@
 import { Block, KnownBlock } from "@slack/types";
 import { ImageElement, WebClient } from "@slack/web-api";
 import { Service } from "typedi";
-import { Config } from "../Config";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { hasSlackNotifications, RoomWithSlackNotification } from "../express/types/Room";
-import { logger } from "../log";
-import { MeetingsService } from "./MeetingsService";
-import { OfficeService } from "./OfficeService";
+import { Config } from "../Config.js";
+import { MeetingEvent } from "../express/types/MeetingEvent.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
+import { hasSlackNotifications, RoomWithSlackNotification } from "../express/types/Room.js";
+import { logger } from "../log.js";
+import { MeetingsService } from "./MeetingsService.js";
+import { OfficeService } from "./OfficeService.js";
 
 @Service({ multiple: false })
 export class SlackBotService {

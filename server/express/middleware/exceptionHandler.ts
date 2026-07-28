@@ -1,4 +1,4 @@
-import { logger } from "../../log";
+import { logger } from "../../log.js";
 import { NextFunction, Request, Response } from "express";
 
 export default function exceptionHandler(err: any, req: Request, res: Response, next: NextFunction) {

@@ -1,4 +1,4 @@
-import SearchIcon from "@material-ui/icons/Search";
+import { Search as SearchIcon } from "@material-ui/icons";
 import { fade, InputBase, Theme } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";

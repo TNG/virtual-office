@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 
 import { MeetingEvent } from "../../../server/express/types/MeetingEvent";
 import { SocketContext } from "../socket/Context";
 
-import Box from "@material-ui/core/Box/Box";
+import { Box } from "@material-ui/core";
 import AppBar from "./AppBar";
 import Background from "./LoginBackground.jpg";
 import RoomGrid from "./RoomGrid";
@@ -72,10 +72,10 @@ interface OfficeState {
 }
 
 const Dashboard = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/me").catch(() => history.push("/login"));
-  }, [history]);
+    axios.get("/api/me").catch(() => navigate("/login"));
+  }, [navigate]);
 
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
   const [officeState, setOfficeState] = useState({

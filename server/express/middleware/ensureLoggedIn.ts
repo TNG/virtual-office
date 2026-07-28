@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { Container } from "typedi";
-import { Config } from "../../Config";
-import { User } from "../types/User";
+import { Config } from "../../Config.js";
+import { User } from "../types/User.js";
 import passport from "passport";
-import { logger } from "../../log";
+import { logger } from "../../log.js";
 
 function getLoginUser(req: Request): User | undefined {
   const userValue = req.signedCookies.currentUser;

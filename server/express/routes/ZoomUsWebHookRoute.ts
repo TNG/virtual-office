@@ -1,10 +1,10 @@
 import { Service } from "typedi";
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
-import { MeetingsService } from "../../services/MeetingsService";
-import { MeetingParticipant } from "../types/MeetingParticipant";
-import { logger } from "../../log";
-import { Config } from "../../Config";
+import { MeetingsService } from "../../services/MeetingsService.js";
+import { MeetingParticipant } from "../types/MeetingParticipant.js";
+import { logger } from "../../log.js";
+import { Config } from "../../Config.js";
 
 function loggableParticipant(participant: ZoomusParticipant, enableParticipantLogging: boolean): ZoomusParticipant {
   return {
@@ -34,7 +34,10 @@ export interface ZoomUsEvent {
 
 @Service()
 export class ZoomUsWebHookRoute implements ExpressRoute {
-  constructor(private readonly roomsService: MeetingsService, private readonly config: Config) {}
+  constructor(
+    private readonly roomsService: MeetingsService,
+    private readonly config: Config
+  ) {}
 
   router(): Router {
     const router = Router();
@@ -48,12 +51,15 @@ export class ZoomUsWebHookRoute implements ExpressRoute {
         },
       } = req.body as ZoomUsEvent;
 
-      logger.info("Received an zoom.us notification", {
-        event: event,
-        meetingId: id,
-        participant: loggableParticipant(participant, this.config.enableParticipantLogging),
-        traceId,
-      });
+      logger.info(
+        {
+          event: event,
+          meetingId: id,
+          participant: loggableParticipant(participant, this.config.enableParticipantLogging),
+          traceId,
+        },
+        "Received an zoom.us notification"
+      );
 
       switch (event) {
         case "meeting.participant_joined":

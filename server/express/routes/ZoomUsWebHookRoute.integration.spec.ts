@@ -1,9 +1,8 @@
 import "reflect-metadata";
 
-import { Container } from "typedi";
-import { ConfigOptions } from "../types/ConfigOptions";
-import { startTestServerWithConfig, TestServer } from "../../testUtils/startTestServerWithConfig";
-import { endMeetingEvent, joinRoomEvent, leaveRoomEvent } from "../../testUtils/meetingEvents";
+import { ConfigOptions } from "../types/ConfigOptions.js";
+import { startTestServerWithConfig, TestServer, cleanupTestServer } from "../../testUtils/startTestServerWithConfig.js";
+import { endMeetingEvent, joinRoomEvent, leaveRoomEvent } from "../../testUtils/meetingEvents.js";
 import { install, InstalledClock } from "@sinonjs/fake-timers";
 
 const room1 = {
@@ -33,7 +32,7 @@ describe("Zoomus Webhooks", () => {
 
   afterEach(() => {
     clock.uninstall();
-    Container.reset();
+    cleanupTestServer();
   });
 
   it("should handle joining users", async () => {

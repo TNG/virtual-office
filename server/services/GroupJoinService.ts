@@ -1,14 +1,14 @@
 import { Service } from "typedi";
-import { minBy, random } from "lodash";
+import lodash from "lodash";
 
-import { Room, RoomWithMeetingId } from "../express/types/Room";
-import { OfficeService } from "./OfficeService";
-import { MeetingsService } from "./MeetingsService";
-import { logger } from "../log";
-import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/Group";
+import { Room, RoomWithMeetingId } from "../express/types/Room.js";
+import { OfficeService } from "./OfficeService.js";
+import { MeetingsService } from "./MeetingsService.js";
+import { logger } from "../log.js";
+import { GroupWithGroupJoin, hasGroupJoin } from "../express/types/Group.js";
 
 function randomRoomIn(rooms: Room[]): Room | undefined {
-  const entry = random(0, rooms.length - 1);
+  const entry = lodash.random(0, rooms.length - 1);
   return rooms[entry];
 }
 
@@ -27,13 +27,22 @@ const cleanupReservationsInterval = 1000 * 30; // 30 seconds;
 export class GroupJoinService {
   private reservedSpaces: ReservedSpaces = {};
 
-  constructor(private readonly officeService: OfficeService, private readonly meetingsService: MeetingsService) {
-    setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
+  private intervalHandle: ReturnType<typeof setInterval>;
+
+  constructor(
+    private readonly officeService: OfficeService,
+    private readonly meetingsService: MeetingsService
+  ) {
+    this.intervalHandle = setInterval(() => this.cleanupReservedSpaces(), cleanupReservationsInterval);
     meetingsService.listenParticipantsChange((event) => {
       if (event.type === "join") {
         this.removeReservedSpaceIn(event.meetingId);
       }
     });
+  }
+
+  dispose() {
+    clearInterval(this.intervalHandle);
   }
 
   joinRoomFor(groupId: string): Room | undefined {
@@ -65,7 +74,7 @@ export class GroupJoinService {
 
   private chooseRoom(group: GroupWithGroupJoin, groupRooms: RoomWithMeetingId[]): Room | undefined {
     const notEmptyRooms = groupRooms.filter((room) => this.participantsInRoom(room) > 0);
-    const roomWithMinimum = minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
+    const roomWithMinimum = lodash.minBy(notEmptyRooms, (room) => this.participantsInRoom(room));
     const availableMinimumCount = roomWithMinimum ? this.participantsInRoom(roomWithMinimum) : 0;
     const roomsWithMinimumParticipantCount = this.roomsWithParticipants(groupRooms, availableMinimumCount);
 
@@ -116,7 +125,7 @@ export class GroupJoinService {
 
   private removeReservedSpaceIn(roomId: string) {
     const spaces = this.reservedSpaces[roomId] || [];
-    const min = minBy(spaces, (space) => space.expires);
+    const min = lodash.minBy(spaces, (space) => space.expires);
     if (min) {
       this.reservedSpaces[roomId] = this.reservedSpaces[roomId].filter((space) => space !== min);
     }

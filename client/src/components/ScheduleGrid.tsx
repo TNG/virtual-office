@@ -17,11 +17,13 @@ interface StyleProps {
   clientConfig?: ClientConfig;
 }
 
-const findSessionInHour = (hour: number, timezone: string | undefined) => ({ start, end }: Session) => {
-  const dateStart = DateTime.fromFormat(start, "HH:mm", { zone: timezone });
-  const dateEnd = DateTime.fromFormat(end, "HH:mm", { zone: timezone });
-  return dateStart.hour <= hour && dateEnd.hour >= hour;
-};
+const findSessionInHour =
+  (hour: number, timezone: string | undefined) =>
+  ({ start, end }: Session) => {
+    const dateStart = DateTime.fromFormat(start, "HH:mm", { zone: timezone });
+    const dateEnd = DateTime.fromFormat(end, "HH:mm", { zone: timezone });
+    return dateStart.hour <= hour && dateEnd.hour >= hour;
+  };
 
 const calculateGridTemplateRows = ({ schedule: { sessions }, clientConfig }: StyleProps) => {
   const earliestStart = sessions

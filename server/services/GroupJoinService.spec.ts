@@ -1,15 +1,15 @@
 import { capture, instance, mock, when } from "ts-mockito";
 import { v4 as uuid } from "uuid";
-import { range } from "lodash";
+import lodash from "lodash";
 import { install, InstalledClock } from "@sinonjs/fake-timers";
 
-import { GroupJoinService } from "./GroupJoinService";
-import { OfficeService } from "./OfficeService";
-import { Group } from "../express/types/Group";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { MeetingsService } from "./MeetingsService";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { RoomWithMeetingId } from "../express/types/Room";
+import { GroupJoinService } from "./GroupJoinService.js";
+import { OfficeService } from "./OfficeService.js";
+import { Group } from "../express/types/Group.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
+import { MeetingsService } from "./MeetingsService.js";
+import { MeetingEvent } from "../express/types/MeetingEvent.js";
+import { RoomWithMeetingId } from "../express/types/Room.js";
 
 describe("GroupJoinService", () => {
   let groupJoinService: GroupJoinService;
@@ -45,12 +45,13 @@ describe("GroupJoinService", () => {
   }
 
   function generateParticipants(count: number): MeetingParticipant[] {
-    return range(count).map(() => ({} as MeetingParticipant));
+    return lodash.range(count).map(() => ({}) as MeetingParticipant);
   }
 
   let clock: InstalledClock;
 
   afterEach(() => {
+    groupJoinService.dispose();
     clock.uninstall();
   });
 

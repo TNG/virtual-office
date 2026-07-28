@@ -1,13 +1,14 @@
-import { ConfigOptions } from "../express/types/ConfigOptions";
+import { ConfigOptions } from "../express/types/ConfigOptions.js";
 import { Container } from "typedi";
-import { ExpressApp } from "../express/ExpressApp";
+import { ExpressApp } from "../express/ExpressApp.js";
+import { GroupJoinService } from "../services/GroupJoinService.js";
 import { Express } from "express";
 import request from "supertest";
-import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
+import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
 
 export class TestServer {
-  constructor(private readonly app: Express) {}
+  constructor(public readonly app: Express) {}
 
   async getParticipantIds(meetingId: string) {
     const response = await request(this.app).get(`/api/meeting/${meetingId}/participants`).expect(200);
@@ -30,6 +31,13 @@ export class TestServer {
     const redirectLocation = joinResponse.header.location;
     return redirectLocation.split("/").slice(-1)[0];
   }
+}
+
+export function cleanupTestServer() {
+  try {
+    Container.get(GroupJoinService).dispose();
+  } catch {}
+  Container.reset();
 }
 
 export async function startTestServerWithConfig(config: ConfigOptions): Promise<TestServer> {

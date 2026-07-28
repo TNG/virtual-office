@@ -1,13 +1,13 @@
 import { Service } from "typedi";
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
 import passport from "passport";
-import { Config } from "../../Config";
+import { Config } from "../../Config.js";
 import { Strategy as SlackStrategy } from "passport-slack-oauth2";
 import { BasicStrategy } from "passport-http";
-import { User } from "../types/User";
-import { KnownUsersService } from "../../services/KnownUsersService";
-import { logger } from "../../log";
+import { User } from "../types/User.js";
+import { KnownUsersService } from "../../services/KnownUsersService.js";
+import { logger } from "../../log.js";
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -34,7 +34,10 @@ function adaptSlackUser(profile: any): User {
 
 @Service()
 export class AuthRoute implements ExpressRoute {
-  constructor(readonly config: Config, readonly knownUsersService: KnownUsersService) {
+  constructor(
+    readonly config: Config,
+    readonly knownUsersService: KnownUsersService
+  ) {
     const authConfig = config.authConfig;
     if (authConfig?.type === "slack") {
       logger.info("Using slack strategy");

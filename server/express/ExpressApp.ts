@@ -5,12 +5,12 @@ import passport from "passport";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
-import { AuthRoute } from "./routes/AuthRoute";
-import exceptionHandler from "./middleware/exceptionHandler";
-import { ApiDocsRoute } from "./routes/ApiDocsRoute";
-import { ApiRoute } from "./routes/ApiRoute";
-import { findRootDir } from "./utils/findRootDir";
-import { Config } from "../Config";
+import { AuthRoute } from "./routes/AuthRoute.js";
+import exceptionHandler from "./middleware/exceptionHandler.js";
+import { ApiDocsRoute } from "./routes/ApiDocsRoute.js";
+import { ApiRoute } from "./routes/ApiRoute.js";
+import { findRootDir } from "./utils/findRootDir.js";
+import { Config } from "../Config.js";
 
 @Service()
 export class ExpressApp {

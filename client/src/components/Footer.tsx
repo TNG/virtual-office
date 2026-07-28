@@ -1,4 +1,4 @@
-import GitHubIcon from "@material-ui/icons/GitHub";
+import { GitHub as GitHubIcon } from "@material-ui/icons";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 

@@ -1,13 +1,13 @@
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
-import { logger } from "../../log";
-import { MeetingsService } from "../../services/MeetingsService";
-import { OfficeService } from "../../services/OfficeService";
-import { Config } from "../../Config";
+import { logger } from "../../log.js";
+import { MeetingsService } from "../../services/MeetingsService.js";
+import { OfficeService } from "../../services/OfficeService.js";
+import { Config } from "../../Config.js";
 import { Service } from "typedi";
-import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware";
-import { ClientConfigService } from "../../services/ClientConfigService";
-import { Response } from "express-serve-static-core";
+import { getAdminLoggedInMiddleware } from "../middleware/getAdminLoggedInMiddleware.js";
+import { ClientConfigService } from "../../services/ClientConfigService.js";
+import { Response } from "express";
 
 function sendNotPersistentResponse(res: Response) {
   res
@@ -41,19 +41,13 @@ export class AdminRoute implements ExpressRoute {
       res.sendStatus(200);
     });
     router.post("/replaceOffice", loginMiddleware, (req: any, res) => {
-      logger.info("replacing office", {
-        user: req.auth.user,
-        data: req.body,
-      });
+      logger.info({ user: req.auth.user, data: req.body }, "replacing office");
       this.officeService.replaceOfficeWith(req.body);
 
       sendNotPersistentResponse(res);
     });
     router.patch("/clientConfig", loginMiddleware, (req: any, res) => {
-      logger.info("update clientConfig", {
-        user: req.auth.user,
-        data: req.body,
-      });
+      logger.info({ user: req.auth.user, data: req.body }, "update clientConfig");
 
       this.clientConfigService.updateClientConfig(req.body);
       sendNotPersistentResponse(res);

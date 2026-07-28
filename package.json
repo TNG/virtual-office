@@ -2,29 +2,27 @@
   "name": "virtual-office",
   "version": "0.1.0",
   "engines": {
-    "node": "20.x",
-    "npm": "8.x"
+    "node": ">=24",
+    "pnpm": ">=11"
   },
+  "packageManager": "pnpm@11.8.0+sha512.c1f5e7c4cb241c8f174b743851d82f42b802324afc8b0f116b96adb15aa06664948dde36960a3ba1079ba5b4b29dd0140135b94b5b5f5263592249d68e555f26",
   "devDependencies": {
-    "@testing-library/cypress": "8.0.7",
-    "cypress": "7.7.0",
-    "husky": "7.0.4",
-    "prettier": "2.0.5",
-    "typescript": "4.9.5"
+    "@testing-library/cypress": "^10.0.0",
+    "cypress": "^15.17.0",
+    "husky": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.8.0"
   },
   "scripts": {
     "format": "prettier --write \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
     "lint": "prettier --check \"{client,server}/**/*.{ts,tsx,html,scss,js,md,json}\"",
-    "installAll": "npm install",
-    "buildAll": "npm run build --workspaces",
-    "testAll": "npm test --workspaces",
+    "installAll": "pnpm install",
+    "buildAll": "pnpm run --recursive build",
+    "testAll": "pnpm run --recursive test",
     "cypress": "TZ=Etc/UTC cypress run",
-    "cypress:dev": "TZ=Etc/UTC CYPRESS_BASE_URL=http://localhost:8080 cypress open",
-    "start": "npm start --workspace=server",
-    "start:e2e": "npm run start:e2e --workspace=server"
+    "cypress:dev": "TZ=Etc/UTC cypress open",
+    "start": "pnpm --filter=virtual_office_server start",
+    "start:e2e": "pnpm --filter=virtual_office_server run start:e2e"
   },
-  "workspaces": [
-    "client",
-    "server"
-  ]
+  "type": "module"
 }

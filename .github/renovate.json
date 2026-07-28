@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:base",
+    "config:recommended",
     ":automergeMinor",
     ":automergeBranch",
     ":gitSignOff",
@@ -8,5 +8,9 @@
   ],
   "ignoreDeps": [
     "prettier"
-  ]
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on Monday"]
+  }
 }

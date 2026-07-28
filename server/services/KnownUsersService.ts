@@ -1,8 +1,8 @@
-import { isEqual } from "lodash";
+import lodash from "lodash";
 
-import { User } from "../express/types/User";
+import { User } from "../express/types/User.js";
 import { Service } from "typedi";
-import { comparableUsername } from "../express/utils/compareableUsername";
+import { comparableUsername } from "../express/utils/compareableUsername.js";
 
 export type UserUpdateListener = (user: User) => void;
 
@@ -33,7 +33,7 @@ export class KnownUsersService {
       this.knownUsers[comparableUsername(user.email)] = user;
     }
 
-    if (!isEqual(user, removed)) {
+    if (!lodash.isEqual(user, removed)) {
       this.notify(user);
     }
   }

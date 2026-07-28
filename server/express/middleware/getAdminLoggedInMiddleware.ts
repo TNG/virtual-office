@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import basicAuth from "express-basic-auth";
-import { Config } from "../../Config";
+import { Config } from "../../Config.js";
 
 export function getAdminLoggedInMiddleware(config: Config): RequestHandler {
   const credentials = config.adminEndpointsCredentials;

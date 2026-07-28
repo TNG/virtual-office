@@ -1,13 +1,16 @@
 import axios from "axios";
 import { Service } from "typedi";
-import { Config } from "../Config";
-import { logger } from "../log";
-import { MeetingParticipant } from "../express/types/MeetingParticipant";
-import { OfficeService } from "./OfficeService";
+import { Config } from "../Config.js";
+import { logger } from "../log.js";
+import { MeetingParticipant } from "../express/types/MeetingParticipant.js";
+import { OfficeService } from "./OfficeService.js";
 
 @Service()
 export class EventService {
-  constructor(private config: Config, private officeService: OfficeService) {}
+  constructor(
+    private config: Config,
+    private officeService: OfficeService
+  ) {}
 
   async trackJoinEvent(meetingId: string, toJoin: MeetingParticipant) {
     const activeRoom = this.officeService.getActiveRoom(meetingId);
@@ -26,7 +29,7 @@ export class EventService {
       try {
         await axios.post(webhookTemplate);
       } catch (error) {
-        logger.error("Failed to track event", error);
+        logger.error({ error }, "Failed to track event");
       }
     }
   }

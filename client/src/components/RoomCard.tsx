@@ -3,7 +3,7 @@ import { compact } from "lodash";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import RoomIcon from "@material-ui/icons/People";
+import { People as RoomIcon } from "@material-ui/icons";
 
 import RoomParticipants from "./RoomParticipants";
 import RoomLinks from "./RoomLinks";

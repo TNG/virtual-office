@@ -1,11 +1,11 @@
-import { MeetingsService } from "./MeetingsService";
+import { MeetingsService } from "./MeetingsService.js";
 import { instance, mock, when } from "ts-mockito";
-import { KnownUsersService } from "./KnownUsersService";
-import { MeetingEvent } from "../express/types/MeetingEvent";
-import { User } from "../express/types/User";
-import { OfficeService } from "./OfficeService";
-import { Config } from "../Config";
-import { EventService } from "./EventService";
+import { KnownUsersService } from "./KnownUsersService.js";
+import { MeetingEvent } from "../express/types/MeetingEvent.js";
+import { User } from "../express/types/User.js";
+import { OfficeService } from "./OfficeService.js";
+import { Config } from "../Config.js";
+import { EventService } from "./EventService.js";
 
 describe("MeetingParticipantsService", () => {
   let participantsService: MeetingsService;

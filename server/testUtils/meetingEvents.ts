@@ -1,4 +1,4 @@
-import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute";
+import { ZoomUsEvent } from "../express/routes/ZoomUsWebHookRoute.js";
 
 function participantFor(userId: string, id?: string) {
   return {
@@ -11,7 +11,7 @@ function participantFor(userId: string, id?: string) {
 }
 
 function eventFor(roomId: string, event: string, participant: any): ZoomUsEvent {
-  return ({
+  return {
     event: event,
     payload: {
       account_id: "abc",
@@ -27,7 +27,7 @@ function eventFor(roomId: string, event: string, participant: any): ZoomUsEvent 
         participant: participant,
       },
     },
-  } as unknown) as ZoomUsEvent;
+  } as unknown as ZoomUsEvent;
 }
 
 export function joinRoomEvent(roomId: string, userId: string, id?: string): ZoomUsEvent {

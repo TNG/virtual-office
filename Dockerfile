@@ -1,31 +1,40 @@
-FROM node:20 as build
+FROM node:24 AS build
 ENV CYPRESS_INSTALL_BINARY=0
 
 WORKDIR /app
 
-COPY ./package*.json ./
-COPY client/package*.json ./client/
-COPY server/package*.json ./server/
-RUN npm install
+RUN npm install -g corepack@latest && corepack enable pnpm
+
+COPY ./package.json ./pnpm-workspace.yaml ./
+COPY client/package.json ./client/
+COPY server/package.json ./server/
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY client ./client/
 COPY server ./server/
 
-RUN npm run build --workspaces
+RUN pnpm run --recursive build
 
-FROM node:20
+FROM node:24
 ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ./package*.json ./
-COPY server/package*.json ./server/
-RUN npm install
+RUN npm install -g corepack@latest && corepack enable pnpm
+
+COPY ./package.json ./pnpm-workspace.yaml ./
+COPY server/package.json ./server/
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile --prod
 
 USER node
 
 COPY --chown=node --from=build /app/client/build ./client/build
 COPY --chown=node --from=build /app/server/build ./server/build
+COPY --chown=node --from=build /app/server/express/routes/api.json ./server/express/routes/api.json
 
 EXPOSE 9000
 

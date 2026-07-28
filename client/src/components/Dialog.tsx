@@ -2,7 +2,7 @@ import React, { MouseEvent } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Modal, Theme, Typography } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Close as CloseIcon } from "@material-ui/icons";
 
 import SearchInput from "./SearchInput";
 

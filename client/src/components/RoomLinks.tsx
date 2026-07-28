@@ -3,7 +3,7 @@ import React from "react";
 import { Link, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { RoomLink } from "../../../server/express/types/RoomLink";
-import LinkIcon from "@material-ui/icons/Link";
+import { Link as LinkIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles<Theme, Props>({
   root: {
@@ -63,11 +63,14 @@ const RoomLinks = (props: Props) => {
     return null;
   }
 
-  const groupedLinks = links.reduce((acc, link) => {
-    const group = link.group || "";
-    acc[group] = [...(acc[group] || []), link];
-    return acc;
-  }, {} as { [group: string]: RoomLink[] });
+  const groupedLinks = links.reduce(
+    (acc, link) => {
+      const group = link.group || "";
+      acc[group] = [...(acc[group] || []), link];
+      return acc;
+    },
+    {} as { [group: string]: RoomLink[] }
+  );
 
   return (
     <div className={classes.root}>

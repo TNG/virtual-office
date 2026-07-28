@@ -1,14 +1,14 @@
 import { Service } from "typedi";
-import { ExpressRoute } from "./ExpressRoute";
+import { ExpressRoute } from "./ExpressRoute.js";
 import { Router } from "express";
-import { MonitoringRoute } from "./MonitoringRoute";
-import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn";
-import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute";
-import { OfficeService } from "../../services/OfficeService";
-import { AdminRoute } from "./AdminRoute";
-import { GroupJoinService } from "../../services/GroupJoinService";
-import { MeetingsService } from "../../services/MeetingsService";
-import { ClientConfigService } from "../../services/ClientConfigService";
+import { MonitoringRoute } from "./MonitoringRoute.js";
+import ensureLoggedIn, { AuthenticatedRequest } from "../middleware/ensureLoggedIn.js";
+import { ZoomUsWebHookRoute } from "./ZoomUsWebHookRoute.js";
+import { OfficeService } from "../../services/OfficeService.js";
+import { AdminRoute } from "./AdminRoute.js";
+import { GroupJoinService } from "../../services/GroupJoinService.js";
+import { MeetingsService } from "../../services/MeetingsService.js";
+import { ClientConfigService } from "../../services/ClientConfigService.js";
 
 @Service()
 export class ApiRoute implements ExpressRoute {

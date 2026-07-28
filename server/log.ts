@@ -8,14 +8,17 @@ export interface Logger {
   error: LogFn;
 }
 
-const instance = pino({
-  transport: {
-    target: "pino-pretty",
-    options: {
-      colorize: true,
-    },
-  },
-  level: process.env.LOG_LEVEL || "info",
-});
+const instance =
+  process.env.NODE_ENV === "test"
+    ? pino({ level: process.env.LOG_LEVEL || "info" })
+    : pino({
+        transport: {
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+          },
+        },
+        level: process.env.LOG_LEVEL || "info",
+      });
 
 export const logger = instance;

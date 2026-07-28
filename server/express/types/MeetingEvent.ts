@@ -1,4 +1,4 @@
-import { MeetingParticipant } from "./MeetingParticipant";
+import { MeetingParticipant } from "./MeetingParticipant.js";
 
 export type EventType = "join" | "leave" | "update";
 
