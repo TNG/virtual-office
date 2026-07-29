@@ -9,7 +9,6 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
 
-
 minimumReleaseAge: 4320
 
 overrides:
@@ -31,3 +30,6 @@ onlyBuiltDependencies:
   - cypress
   - esbuild
   - unrs-resolver
+minimumReleaseAgeExclude:
+  # Renovate security update: body-parser@1.20.6
+  - body-parser@1.20.6
