@@ -77,8 +77,8 @@ importers:
         version: 1.8.1(react@18.3.1)
     devDependencies:
       '@sinonjs/fake-timers':
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^15.0.0
+        version: 15.4.0
       '@testing-library/jest-dom':
         specifier: ^6.0.0
         version: 6.9.1
@@ -201,8 +201,8 @@ importers:
         version: 11.1.1
     devDependencies:
       '@sinonjs/fake-timers':
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^15.0.0
+        version: 15.4.0
       '@swc-node/register':
         specifier: ^1.11.1
         version: 1.11.1(@swc/core@1.15.41)(@swc/types@0.1.27)(supports-color@8.1.1)(typescript@5.9.3)
@@ -1091,9 +1091,6 @@ packages:
 
   '@sinonjs/commons@3.0.1':
     resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
-
-  '@sinonjs/fake-timers@14.0.0':
-    resolution: {integrity: sha512-QfoXRaUTjMVVn/ZbnD4LS3TPtqOkOdKIYCKldIVPnuClcwRKat6LI2mRZ2s5qiBfO6Fy03An35dSls/2/FEc0Q==}
 
   '@sinonjs/fake-timers@15.4.0':
     resolution: {integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==}
@@ -4784,10 +4781,6 @@ snapshots:
   '@sinonjs/commons@3.0.1':
     dependencies:
       type-detect: 4.0.8
-
-  '@sinonjs/fake-timers@14.0.0':
-    dependencies:
-      '@sinonjs/commons': 3.0.1
 
   '@sinonjs/fake-timers@15.4.0':
     dependencies:
