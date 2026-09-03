@@ -42,6 +42,6 @@ jobs:
     - name: test client
       run: pnpm --filter=virtual-office-client test
     - name: Run cypress tests
-      uses: cypress-io/github-action@v6
+      uses: cypress-io/github-action@v7.4.3
       with:
         start: pnpm --filter=virtual_office_server run start:e2e
