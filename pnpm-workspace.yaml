@@ -33,3 +33,5 @@ onlyBuiltDependencies:
 minimumReleaseAgeExclude:
   # Renovate security update: body-parser@1.20.6
   - body-parser@1.20.6
+  # Renovate security update: axios@1.20.0
+  - axios@1.20.0
