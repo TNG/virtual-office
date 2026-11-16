@@ -43,7 +43,7 @@
     "pnpm": ">=11"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "^14.0.0",
+    "@sinonjs/fake-timers": "^15.0.0",
     "@swc-node/register": "^1.11.1",
     "@types/body-parser": "^1.19.6",
     "@types/cookie-parser": "1.4.10",
